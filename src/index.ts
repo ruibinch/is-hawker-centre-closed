@@ -1,17 +1,18 @@
 import fs from 'fs';
 import pdf from 'pdf-parse';
+import { addData } from './aws';
 import { renderPage } from './parser';
-import { ResultEntry } from './types';
+import { Result } from './types';
 import { isBlank } from './utils';
 
-const dataBuffer = fs.readFileSync('./data/mar-2021.pdf');
+const dataBuffer = fs.readFileSync('./data/apr-2021.pdf');
 
 pdf(dataBuffer, {
   pagerender: renderPage,
 }).then((data) => {
   const outputs = data.text.split('\n');
 
-  let result: ResultEntry[] = [];
+  let result: Result[] = [];
   outputs.forEach((output) => {
     if (isBlank(output)) return;
 
@@ -21,4 +22,6 @@ pdf(dataBuffer, {
 
   console.log(result);
   console.log(`${result.length} entries found`);
+
+  addData(result);
 });

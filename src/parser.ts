@@ -1,11 +1,12 @@
 import {
   ColHeader,
   Dimensions,
-  ResultEntry,
+  Result,
   TextBox,
   TextContentItem,
 } from './types';
 import {
+  generateHash,
   getMonthNumber,
   isBlank,
   isBoxesFullyOverlapping,
@@ -58,7 +59,7 @@ export function renderPage(pageData): string {
     const cols = parseCols(textBoxes, colRanges);
     const rowRanges = calcRowRanges(cols.no, pageWidth);
     const rowsRaw = parseRows(cols, rowRanges);
-    const rows = cleanTexts(rowsRaw);
+    const rows = packageIntoResult(rowsRaw);
 
     return JSON.stringify(rows);
   });
@@ -149,10 +150,13 @@ function parseRows(
 }
 
 /**
- * Combines the text values for the boxes in each row/col and removes whitespace.
- * Converts the dates to ISO8601 format.
+ * Packages into the appropriate structure to be returned:
+ * - Cleans texts
+ *   - Combines the text values for the boxes in each row/col and removes whitespace
+ *   - Converts the dates to ISO8601 format
+ * - Adds a SHA1-hash ID to prevent duplicate entries from being saved
  */
-function cleanTexts(rowsRaw: Record<string, TextBox[]>[]): ResultEntry[] {
+function packageIntoResult(rowsRaw: Record<string, TextBox[]>[]): Result[] {
   const cleanTextInRow = (row: TextBox[], isDate = false) => {
     const texts = row.map((entry) => entry.text);
     let text = texts.join('').trim();
@@ -166,9 +170,12 @@ function cleanTexts(rowsRaw: Record<string, TextBox[]>[]): ResultEntry[] {
     return text;
   };
 
-  return rowsRaw.map((row) => ({
-    hawkerCentre: cleanTextInRow(row.hawkerCentre),
-    startDate: cleanTextInRow(row.startDate, true),
-    endDate: cleanTextInRow(row.endDate, true),
-  }));
+  return rowsRaw.map((row) => {
+    const hawkerCentre = cleanTextInRow(row.hawkerCentre);
+    const startDate = cleanTextInRow(row.startDate, true);
+    const endDate = cleanTextInRow(row.endDate, true);
+    const id = generateHash(hawkerCentre, startDate, endDate);
+
+    return { id, hawkerCentre, startDate, endDate };
+  });
 }

@@ -1,4 +1,5 @@
 import { Dimensions } from './types';
+import Hashes from 'jshashes';
 
 export function isBlank(s: string) {
   return s.trim().length === 0;
@@ -16,6 +17,10 @@ export function isBoxesFullyOverlapping(parent: Dimensions, child: Dimensions) {
     parentBottomRight[0] > childBottomRight[0] &&
     parentBottomRight[1] > childBottomRight[1]
   );
+}
+
+export function generateHash(...inputs: string[]): string {
+  return new Hashes.SHA1().hex(inputs.join(''));
 }
 
 export function getMonthNumber(monthName: string): string | null {
