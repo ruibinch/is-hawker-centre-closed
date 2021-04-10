@@ -17,7 +17,6 @@ export function uploadData(data: Result[]) {
       };
       return dynamoDb.put(resultInfo).promise();
     }),
-    // .map((p) => p.catch((e) => e)),
   );
 }
 
