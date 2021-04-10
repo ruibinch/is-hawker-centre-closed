@@ -1,6 +1,6 @@
 import fs from 'fs';
 import pdf from 'pdf-parse';
-import { addData } from './aws';
+import { uploadData } from './aws';
 import { renderPage } from './parser';
 import { Result } from './types';
 import { isBlank } from './utils';
@@ -30,6 +30,6 @@ pdf(dataBuffer, {
 
   if (isUploadToAws) {
     console.log(`[${fileName}.pdf] Uploading to AWS`);
-    addData(result);
+    uploadData(result);
   }
 });

@@ -8,7 +8,7 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 const TABLE_NAME = 'ishawkercentreclosed';
 
-export function addData(data: Result[]) {
+export function uploadData(data: Result[]) {
   Promise.all(
     data.map((result) => {
       const resultInfo: AWS.DynamoDB.DocumentClient.PutItemInput = {
