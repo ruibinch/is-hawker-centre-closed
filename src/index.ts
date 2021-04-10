@@ -5,7 +5,13 @@ import { renderPage } from './parser';
 import { Result } from './types';
 import { isBlank } from './utils';
 
-const dataBuffer = fs.readFileSync('./data/apr-2021.pdf');
+const args = process.argv.slice(2);
+const [fileName, isUploadToAws] = args;
+if (!fileName) {
+  throw new Error('Filename missing');
+}
+
+const dataBuffer = fs.readFileSync(`./data/${fileName}.pdf`);
 
 pdf(dataBuffer, {
   pagerender: renderPage,
@@ -19,9 +25,11 @@ pdf(dataBuffer, {
     const outputJson = JSON.parse(output);
     result = [...result, ...outputJson];
   });
+  // console.log(result);
+  console.log(`[${fileName}.pdf] ${result.length} entries found`);
 
-  console.log(result);
-  console.log(`${result.length} entries found`);
-
-  addData(result);
+  if (isUploadToAws) {
+    console.log(`[${fileName}.pdf] Uploading to AWS`);
+    addData(result);
+  }
 });
