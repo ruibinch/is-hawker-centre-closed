@@ -1,3 +1,4 @@
+import { getMonthNumber, padValueTo2Digits } from '../common/date';
 import {
   ColHeader,
   Dimensions,
@@ -5,13 +6,7 @@ import {
   TextBox,
   TextContentItem,
 } from './types';
-import {
-  generateHash,
-  getMonthNumber,
-  isBlank,
-  isBoxesFullyOverlapping,
-  padDay,
-} from './utils';
+import { generateHash, isBlank, isBoxesFullyOverlapping } from './utils';
 
 const COL_NAMES = ['No', 'Market / Hawker Centre', 'Start Date', 'End Date'];
 const COL_HEADERS: ColHeader[] = ['no', 'hawkerCentre', 'startDate', 'endDate'];
@@ -164,7 +159,7 @@ function packageIntoResult(rowsRaw: Record<string, TextBox[]>[]): Result[] {
     if (isDate) {
       text = (() => {
         const [day, month, year] = text.split(' ');
-        return `${year}-${getMonthNumber(month)}-${padDay(day)}`;
+        return `${year}-${getMonthNumber(month)}-${padValueTo2Digits(day)}`;
       })();
     }
     return text;
@@ -174,8 +169,9 @@ function packageIntoResult(rowsRaw: Record<string, TextBox[]>[]): Result[] {
     const hawkerCentre = cleanTextInRow(row.hawkerCentre);
     const startDate = cleanTextInRow(row.startDate, true);
     const endDate = cleanTextInRow(row.endDate, true);
+    const period = startDate.slice(0, 7);
     const id = generateHash(hawkerCentre, startDate, endDate);
 
-    return { id, hawkerCentre, startDate, endDate };
+    return { id, period, hawkerCentre, startDate, endDate };
   });
 }

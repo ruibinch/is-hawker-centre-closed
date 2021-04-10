@@ -22,6 +22,7 @@ export type Dimensions = {
 
 export type Result = {
   id: string;
+  period: string;
   hawkerCentre: string;
   startDate: string;
   endDate: string;

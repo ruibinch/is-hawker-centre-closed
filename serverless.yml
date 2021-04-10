@@ -1,0 +1,36 @@
+service: ishawkercentreclosed
+
+frameworkVersion: '2'
+
+custom:
+  reader: src/reader
+
+plugins:
+  - serverless-webpack
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: ap-southeast-1
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+          Resource: 'arn:aws:dynamodb:ap-southeast-1:*:table/ishawkercentreclosed'
+
+package:
+  patterns:
+    - '!./**'
+    - 'src/**'
+
+functions:
+  searchByHawkerCentre:
+    handler: ${self:custom.reader}/handler.searchByHawkerCentre
+    events:
+      - http:
+          method: get
+          path: /search/hawkerCentre

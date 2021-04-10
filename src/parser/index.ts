@@ -1,6 +1,6 @@
 import fs from 'fs';
 import pdf from 'pdf-parse';
-import { uploadData } from './aws';
+import { uploadData } from '../common/aws';
 import { renderPage } from './parser';
 import { Result } from './types';
 import { isBlank } from './utils';
@@ -25,10 +25,10 @@ pdf(dataBuffer, {
     const outputJson = JSON.parse(output);
     result = [...result, ...outputJson];
   });
-  // console.log(result);
+  console.log(result);
   console.log(`[${fileName}.pdf] ${result.length} entries found`);
 
-  if (isUploadToAws) {
+  if (isUploadToAws === 'true') {
     console.log(`[${fileName}.pdf] Uploading to AWS`);
     uploadData(result);
   }
