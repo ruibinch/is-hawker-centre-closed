@@ -1,10 +1,8 @@
 import * as AWS from 'aws-sdk';
-import bluebird from 'bluebird';
 import { Result } from '../parser/types';
 import { getCurrentPeriod } from './date';
 
 // AWS config
-AWS.config.setPromisesDependency(bluebird);
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 const TABLE_NAME = 'ishawkercentreclosed';
