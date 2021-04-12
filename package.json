@@ -39,6 +39,7 @@
   },
   "dependencies": {
     "aws-sdk": "^2.884.0",
+    "date-fns": "^2.20.1",
     "jshashes": "^1.0.8",
     "pdf-parse": "^1.1.1"
   }

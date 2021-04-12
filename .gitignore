@@ -1,6 +1,7 @@
 .build
 .serverless
 .vscode
+.webpack
 
 node_modules/
 *.log
