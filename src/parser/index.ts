@@ -25,7 +25,7 @@ pdf(dataBuffer, {
     const outputJson = JSON.parse(output);
     result = [...result, ...outputJson];
   });
-  console.log(result);
+  // console.log(result);
   console.log(`[${fileName}.pdf] ${result.length} entries found`);
 
   if (isUploadToAws === 'true') {

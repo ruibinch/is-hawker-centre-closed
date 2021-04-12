@@ -1,3 +1,18 @@
+export function currentDate(): Date {
+  return new Date(Date.now());
+}
+
+export function isWithinDateBounds(
+  dateToCompare: Date,
+  startDate: Date,
+  endDate: Date,
+) {
+  return (
+    dateToCompare.getTime() >= startDate.getTime() &&
+    dateToCompare.getTime() <= endDate.getTime()
+  );
+}
+
 // Returns in YYYY-MM format
 export function getCurrentPeriod(): string {
   const date = new Date();
