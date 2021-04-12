@@ -14,12 +14,13 @@ provider:
   runtime: nodejs12.x
   stage: dev
   region: ap-southeast-1
+  lambdaHashingVersion: 20201221
   iam:
     role:
       statements:
         - Effect: Allow
           Action:
-            - dynamodb:Query
+            - dynamodb:Scan
           Resource: 'arn:aws:dynamodb:ap-southeast-1:*:table/ishawkercentreclosed'
 
 package:
@@ -29,8 +30,8 @@ package:
 
 functions:
   searchByHawkerCentre:
-    handler: ${self:custom.reader}/handler.searchByHawkerCentre
+    handler: ${self:custom.reader}/search.handler
     events:
       - http:
           method: get
-          path: /search/hawkerCentre
+          path: /search

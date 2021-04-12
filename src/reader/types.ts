@@ -1,5 +1,12 @@
-export type Query = {
+import { Result } from '../parser/types';
+
+export type SearchQuery = {
   term: string;
+};
+
+export type SearchResponse = {
+  params: SearchObject;
+  results: Result[];
 };
 
 export enum SearchModifier {
@@ -9,5 +16,5 @@ export enum SearchModifier {
 
 export type SearchObject = {
   keyword: string;
-  modifier?: SearchModifier;
+  modifier: SearchModifier;
 };
