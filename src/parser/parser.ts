@@ -169,9 +169,8 @@ function packageIntoResult(rowsRaw: Record<string, TextBox[]>[]): Result[] {
     const hawkerCentre = cleanTextInRow(row.hawkerCentre);
     const startDate = cleanTextInRow(row.startDate, true);
     const endDate = cleanTextInRow(row.endDate, true);
-    const period = startDate.slice(0, 7);
     const id = generateHash(hawkerCentre, startDate, endDate);
 
-    return { id, period, hawkerCentre, startDate, endDate };
+    return { id, hawkerCentre, startDate, endDate };
   });
 }
