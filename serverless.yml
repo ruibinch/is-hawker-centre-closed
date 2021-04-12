@@ -4,6 +4,8 @@ frameworkVersion: '2'
 
 custom:
   reader: src/reader
+  webpack:
+    includeModules: true
 
 plugins:
   - serverless-webpack
@@ -29,7 +31,7 @@ package:
     - 'src/**'
 
 functions:
-  searchByHawkerCentre:
+  search:
     handler: ${self:custom.reader}/search.handler
     events:
       - http:
