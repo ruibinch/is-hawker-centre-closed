@@ -6,7 +6,8 @@
   "scripts": {
     "build": "rm -rf ./build && tsc",
     "dev": "nodemon",
-    "run:parse": "ts-node src/parser/index.ts",
+    "run:parser": "ts-node src/parser/index.ts",
+    "run:bot": "ts-node src/bot/index.ts",
     "start": "npm run build && node build/index.js",
     "lint": "eslint . --ext .ts",
     "check-prettier": "prettier --check '**/*.{js,jsx,ts,tsx}' --loglevel warn",
@@ -38,9 +39,13 @@
     "webpack-node-externals": "^2.5.2"
   },
   "dependencies": {
+    "@types/node-telegram-bot-api": "^0.51.1",
     "aws-sdk": "^2.884.0",
+    "axios": "^0.21.1",
     "date-fns": "^2.20.1",
+    "dotenv": "^8.2.0",
     "jshashes": "^1.0.8",
+    "node-telegram-bot-api": "^0.52.0",
     "pdf-parse": "^1.1.1"
   }
 }

@@ -1,4 +1,5 @@
 .build
+.env
 .serverless
 .vscode
 .webpack
