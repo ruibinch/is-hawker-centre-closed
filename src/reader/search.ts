@@ -1,35 +1,9 @@
-import { APIGatewayProxyHandler } from 'aws-lambda';
 import { isSameMonth, parseISO } from 'date-fns';
 import { getTableData } from '../common/aws';
 import { currentDate, isWithinDateBounds } from '../common/date';
 import { parseToEnum } from '../common/enum';
 import { Result } from '../parser/types';
-import {
-  SearchQuery,
-  SearchModifier,
-  SearchObject,
-  SearchResponse,
-} from './types';
-import { makeCallbackWrapper, makeResponseBody } from './utils';
-
-export const handler: APIGatewayProxyHandler = async (
-  event,
-  _context,
-  callback,
-) => {
-  const callbackWrapper = makeCallbackWrapper(callback);
-  const { term } = event.queryStringParameters as SearchQuery;
-
-  await processSearch(term).then((searchResponse) => {
-    if (searchResponse === null) {
-      callbackWrapper(400);
-    } else {
-      callbackWrapper(200, JSON.stringify(searchResponse));
-    }
-  });
-
-  return makeResponseBody(502);
-};
+import { SearchModifier, SearchObject, SearchResponse } from './types';
 
 export async function processSearch(
   term: string,
@@ -66,6 +40,11 @@ export async function processSearch(
     });
 }
 
+/**
+ * Splits the search term up into 2 components:
+ * 1. Keyword
+ * 2. Modifier
+ */
 function parseSearchTerm(term: string): SearchObject {
   const termSplit = term.split(' ');
   const lastWord = termSplit.slice(-1).join('');
@@ -75,6 +54,9 @@ function parseSearchTerm(term: string): SearchObject {
   return { keyword, modifier: modifier ?? SearchModifier.today };
 }
 
+/**
+ * Filters the list of items by keyword matching the hawker centre name.
+ */
 function filterByKeyword(items: Result[], keyword: string) {
   if (keyword === '') {
     return items;
@@ -86,6 +68,9 @@ function filterByKeyword(items: Result[], keyword: string) {
   );
 }
 
+/**
+ * Filters the list of items by date based on the search modifier.
+ */
 function filterByDate(items: Result[], modifier: SearchModifier) {
   const currDate = currentDate();
 

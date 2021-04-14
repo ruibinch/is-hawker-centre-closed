@@ -6,7 +6,7 @@ import { makeMessage } from './message';
 import { BOT_TOKEN } from './variables';
 import { processSearch } from '../reader/search';
 
-export const handler: APIGatewayProxyHandler = async (
+export const bot: APIGatewayProxyHandler = async (
   event,
   _context,
   callback,

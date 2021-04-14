@@ -2,9 +2,8 @@ import * as AWS from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
 import { Result } from '../parser/types';
 
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
-
 const TABLE_NAME = 'ishawkercentreclosed';
+const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 export function uploadData(data: Result[]): void {
   Promise.all(
