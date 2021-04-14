@@ -36,7 +36,7 @@ export async function processSearch(
 ): Promise<SearchResponse | null> {
   const { keyword, modifier } = parseSearchTerm(term);
 
-  return await getTableData()
+  return getTableData()
     .then((response) => {
       const items = response.Items as Result[];
 

@@ -1,12 +1,12 @@
 import * as AWS from 'aws-sdk';
+import { PromiseResult } from 'aws-sdk/lib/request';
 import { Result } from '../parser/types';
 
-// AWS config
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 const TABLE_NAME = 'ishawkercentreclosed';
 
-export function uploadData(data: Result[]) {
+export function uploadData(data: Result[]): void {
   Promise.all(
     data.map((result) => {
       const resultInfo: AWS.DynamoDB.DocumentClient.PutItemInput = {
@@ -19,7 +19,9 @@ export function uploadData(data: Result[]) {
   );
 }
 
-export async function getTableData() {
+export async function getTableData(): Promise<
+  PromiseResult<AWS.DynamoDB.DocumentClient.ScanOutput, AWS.AWSError>
+> {
   const params: AWS.DynamoDB.DocumentClient.ScanInput = {
     TableName: TABLE_NAME,
   };

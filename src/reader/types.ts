@@ -1,5 +1,10 @@
 import { Result } from '../parser/types';
 
+export type ResponseBody = {
+  statusCode: number;
+  body: string;
+};
+
 export type SearchQuery = {
   term: string;
 };

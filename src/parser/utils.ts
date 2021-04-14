@@ -1,11 +1,14 @@
-import { Dimensions } from './types';
 import Hashes from 'jshashes';
+import { Dimensions } from './types';
 
-export function isBlank(s: string) {
+export function isBlank(s: string): boolean {
   return s.trim().length === 0;
 }
 
-export function isBoxesFullyOverlapping(parent: Dimensions, child: Dimensions) {
+export function isBoxesFullyOverlapping(
+  parent: Dimensions,
+  child: Dimensions,
+): boolean {
   const parentTopLeft = [parent.x, parent.y];
   const parentBottomRight = [parent.x + parent.width, parent.y + parent.height];
   const childTopLeft = [child.x, child.y];

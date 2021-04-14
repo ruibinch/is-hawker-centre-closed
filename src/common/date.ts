@@ -6,7 +6,7 @@ export function isWithinDateBounds(
   dateToCompare: Date,
   startDate: Date,
   endDate: Date,
-) {
+): boolean {
   return (
     dateToCompare.getTime() >= startDate.getTime() &&
     dateToCompare.getTime() <= endDate.getTime()

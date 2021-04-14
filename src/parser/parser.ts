@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { getMonthNumber, padValueTo2Digits } from '../common/date';
 import {
   ColHeader,
@@ -19,7 +20,7 @@ const COL_BUFFERS: Record<ColHeader, number> = {
 const ROW_BUFFER = 10;
 
 export function renderPage(pageData): string {
-  let renderOptions = {
+  const renderOptions = {
     normalizeWhitespace: false,
     disableCombineTextItems: true,
   };

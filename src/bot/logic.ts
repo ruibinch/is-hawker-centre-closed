@@ -17,11 +17,11 @@ export const handler: APIGatewayProxyHandler = async (
   const callbackWrapper = makeCallbackWrapper(callback);
 
   const reqBody = JSON.parse(event.body);
-  const message = reqBody.message as TelegramBot.Message;
+  const inputMessage = reqBody.message as TelegramBot.Message;
   const {
     chat: { id: chatId },
     text,
-  } = message;
+  } = inputMessage;
 
   if (!text || text.trim().length === 0) {
     sendMessage(chatId, 'Specify some keywords\\!');
@@ -33,8 +33,8 @@ export const handler: APIGatewayProxyHandler = async (
       if (searchResponse === null) {
         callbackWrapper(400);
       } else {
-        const message = makeMessage(searchResponse);
-        sendMessage(chatId, message);
+        const replyMessage = makeMessage(searchResponse);
+        sendMessage(chatId, replyMessage);
         callbackWrapper(204);
       }
     })

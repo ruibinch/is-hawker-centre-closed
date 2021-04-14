@@ -1,5 +1,7 @@
 import TelegramBot from 'node-telegram-bot-api';
-require('dotenv').config();
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const token = process.env.BOT_TOKEN ?? '';
 const apiGatewayId = process.env.API_GATEWAY_ID;

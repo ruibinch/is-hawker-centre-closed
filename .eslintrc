@@ -1,11 +1,10 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
-  "plugins": [
-    "@typescript-eslint",
-    "prettier",
-    "jest"
-  ],
+  "parserOptions": {
+    "project": ["./tsconfig.json"]
+  },
+  "plugins": ["@typescript-eslint", "prettier", "jest"],
   "extends": [
     "airbnb-typescript/base",
     "eslint:recommended",
@@ -14,7 +13,15 @@
   ],
   "rules": {
     "max-len": ["error", { "code": 120 }],
-    "no-console": 1,
+    "import/prefer-default-export": "off",
+    "no-console": "off",
+    "@typescript-eslint/no-use-before-define": [
+      "error",
+      { "functions": false, "variables": false }
+    ],
+    "@typescript-eslint/naming-convention": "off",
+    "no-underscore-dangle": "off",
+    "no-param-reassign": "off",
     "prettier/prettier": 2
   },
   "env": {

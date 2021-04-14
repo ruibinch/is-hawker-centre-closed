@@ -1,7 +1,7 @@
 import { format, parseISO } from 'date-fns';
 import { SearchModifier, SearchResponse } from '../reader/types';
 
-export function makeMessage(searchResponse: SearchResponse) {
+export function makeMessage(searchResponse: SearchResponse): string {
   const {
     params: { keyword, modifier },
     results,
