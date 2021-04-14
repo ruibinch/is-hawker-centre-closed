@@ -11,8 +11,7 @@
     "start": "npm run build && node build/index.js",
     "lint": "eslint . --ext .ts",
     "check-prettier": "prettier --check '**/*.{js,jsx,ts,tsx}' --loglevel warn",
-    "test": "jest",
-    "test:dev": "jest --watchAll"
+    "test": "TZ=UTC jest"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.75",
