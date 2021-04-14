@@ -1,6 +1,6 @@
 import { isSameMonth, parseISO } from 'date-fns';
-import { getTableData } from '../common/aws';
 import { currentDate, isWithinDateBounds } from '../common/date';
+import { getTableData } from '../common/dynamodb';
 import { parseToEnum } from '../common/enum';
 import { Result } from '../parser/types';
 import { SearchModifier, SearchObject, SearchResponse } from './types';

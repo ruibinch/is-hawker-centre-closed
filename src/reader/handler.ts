@@ -1,7 +1,7 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
+import { makeCallbackWrapper, makeResponseBody } from '../common/lambda';
 import { processSearch } from './search';
 import { SearchQuery } from './types';
-import { makeCallbackWrapper, makeResponseBody } from './utils';
 
 export const search: APIGatewayProxyHandler = async (
   event,

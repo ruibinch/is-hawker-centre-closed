@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import TelegramBot from 'node-telegram-bot-api';
-import { makeCallbackWrapper, makeResponseBody } from '../reader/utils';
+import { makeCallbackWrapper, makeResponseBody } from '../common/lambda';
+import { processSearch } from '../reader/search';
 import { makeMessage } from './message';
 import { BOT_TOKEN } from './variables';
-import { processSearch } from '../reader/search';
 
 export const bot: APIGatewayProxyHandler = async (
   event,

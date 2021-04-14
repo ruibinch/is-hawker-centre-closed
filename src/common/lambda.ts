@@ -1,5 +1,9 @@
 import { APIGatewayProxyResult, Callback } from 'aws-lambda';
-import { ResponseBody } from './types';
+
+type ResponseBody = {
+  statusCode: number;
+  body: string;
+};
 
 export const makeCallbackWrapper = (
   callback: Callback<APIGatewayProxyResult>,
