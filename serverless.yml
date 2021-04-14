@@ -1,8 +1,10 @@
 service: ishawkercentreclosed
 
+useDotenv: true
 frameworkVersion: '2'
 
 custom:
+  bot: src/bot
   reader: src/reader
   webpack:
     includeModules: true
@@ -37,3 +39,9 @@ functions:
       - http:
           method: get
           path: /search
+  bot:
+    handler: ${self:custom.bot}/logic.handler
+    events:
+      - http:
+          method: post
+          path: /bot

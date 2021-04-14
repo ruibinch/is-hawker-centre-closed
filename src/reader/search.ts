@@ -20,9 +20,23 @@ export const handler: APIGatewayProxyHandler = async (
   const callbackWrapper = makeCallbackWrapper(callback);
   const { term } = event.queryStringParameters as SearchQuery;
 
+  await processSearch(term).then((searchResponse) => {
+    if (searchResponse === null) {
+      callbackWrapper(400);
+    } else {
+      callbackWrapper(200, JSON.stringify(searchResponse));
+    }
+  });
+
+  return makeResponseBody(502);
+};
+
+export async function processSearch(
+  term: string,
+): Promise<SearchResponse | null> {
   const { keyword, modifier } = parseSearchTerm(term);
 
-  await getTableData()
+  return await getTableData()
     .then((response) => {
       const items = response.Items as Result[];
 
@@ -44,16 +58,13 @@ export const handler: APIGatewayProxyHandler = async (
         },
         results,
       };
-
-      callbackWrapper(200, JSON.stringify(searchResponse));
+      return searchResponse;
     })
     .catch((error) => {
       console.log(error);
-      callbackWrapper(400);
+      return null;
     });
-
-  return makeResponseBody(502);
-};
+}
 
 function parseSearchTerm(term: string): SearchObject {
   const termSplit = term.split(' ');
