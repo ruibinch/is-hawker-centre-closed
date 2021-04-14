@@ -47,7 +47,7 @@ export async function processSearch(
  */
 function parseSearchTerm(term: string): SearchObject {
   const termSplit = term.split(' ');
-  const lastWord = termSplit.slice(-1).join('');
+  const lastWord = termSplit.slice(-1).join('').toLowerCase();
 
   const modifier = parseToEnum(SearchModifier, lastWord);
   const keyword = modifier ? termSplit.slice(0, -1).join(' ') : term;
