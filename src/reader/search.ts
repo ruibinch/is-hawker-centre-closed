@@ -1,8 +1,8 @@
 import { isSameMonth, parseISO } from 'date-fns';
 import { currentDate, isWithinDateBounds } from '../common/date';
 import { getTableData } from '../common/dynamodb';
-import { parseToEnum } from '../common/enum';
 import { Result } from '../parser/types';
+import { extractSearchModifier } from './searchModifier';
 import { SearchModifier, SearchObject, SearchResponse } from './types';
 
 export async function processSearch(
@@ -46,12 +46,20 @@ export async function processSearch(
  * 2. Modifier
  */
 function parseSearchTerm(term: string): SearchObject {
-  const termSplit = term.split(' ');
-  const lastWord = termSplit.slice(-1).join('').toLowerCase();
+  const modifierResult = extractSearchModifier(term);
 
-  const modifier = parseToEnum(SearchModifier, lastWord);
-  const keyword = modifier ? termSplit.slice(0, -1).join(' ') : term;
-  return { keyword, modifier: modifier ?? SearchModifier.today };
+  if (!modifierResult) {
+    return {
+      keyword: term,
+      modifier: SearchModifier.today, // defaults to today if no modifier
+    };
+  }
+
+  const { modifier, index: modifierStartIndex } = modifierResult;
+  return {
+    keyword: term.slice(0, modifierStartIndex).trim(),
+    modifier,
+  };
 }
 
 /**

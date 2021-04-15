@@ -14,6 +14,13 @@ export enum SearchModifier {
   month = 'month',
 }
 
+export type ExtractSearchModifierResult =
+  | {
+      modifier: SearchModifier;
+      index: number;
+    }
+  | undefined;
+
 export type SearchObject = {
   keyword: string;
   modifier: SearchModifier;
