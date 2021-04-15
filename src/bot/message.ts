@@ -1,4 +1,5 @@
 import { format, parseISO } from 'date-fns';
+import { Result } from '../parser/types';
 import { SearchModifier, SearchResponse } from '../reader/types';
 
 export function makeMessage(searchResponse: SearchResponse): string {
@@ -13,9 +14,16 @@ export function makeMessage(searchResponse: SearchResponse): string {
       keyword,
     )}are undergoing cleaning ${makeTimePeriodSnippet(modifier)}\\.`;
   } else {
-    reply += `Here are the hawker centres ${makeKeywordSnippet(
-      keyword,
-    )}that are closed ${makeTimePeriodSnippet(modifier)}:\n\n`;
+    if (keyword === '') {
+      reply += `There are ${makeNumResultsSnippet(
+        results,
+      )} hawker centres that are closed ${makeTimePeriodSnippet(modifier)}:`;
+    } else {
+      reply += `Here are the hawker centres ${makeKeywordSnippet(
+        keyword,
+      )}that are closed ${makeTimePeriodSnippet(modifier)}:`;
+    }
+    reply += '\n\n';
 
     results.forEach((result) => {
       reply += `*${result.hawkerCentre}*\n`;
@@ -46,6 +54,10 @@ function makeTimePeriodSnippet(modifier: SearchModifier) {
     default:
       return '';
   }
+}
+
+function makeNumResultsSnippet(results: Result[]) {
+  return `*${results.length}*`;
 }
 
 function formatDate(date: string) {

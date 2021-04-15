@@ -203,7 +203,7 @@ describe('bot > message', () => {
             modifier: SearchModifier.today,
           },
           expected: {
-            message: `Here are the hawker centres that are closed today:\n\n`,
+            message: `There are *2* hawker centres that are closed today:\n\n`,
           },
         },
       ],
@@ -215,7 +215,7 @@ describe('bot > message', () => {
             modifier: SearchModifier.tomorrow,
           },
           expected: {
-            message: `Here are the hawker centres that are closed tomorrow:\n\n`,
+            message: `There are *2* hawker centres that are closed tomorrow:\n\n`,
           },
         },
       ],
@@ -227,7 +227,7 @@ describe('bot > message', () => {
             modifier: SearchModifier.month,
           },
           expected: {
-            message: `Here are the hawker centres that are closed this month:\n\n`,
+            message: `There are *2* hawker centres that are closed this month:\n\n`,
           },
         },
       ],
@@ -239,7 +239,7 @@ describe('bot > message', () => {
             modifier: SearchModifier.nextMonth,
           },
           expected: {
-            message: `Here are the hawker centres that are closed next month:\n\n`,
+            message: `There are *2* hawker centres that are closed next month:\n\n`,
           },
         },
       ],
