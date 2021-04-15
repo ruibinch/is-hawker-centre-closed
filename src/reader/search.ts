@@ -1,4 +1,4 @@
-import { isSameMonth, parseISO } from 'date-fns';
+import { differenceInCalendarMonths, isSameMonth, parseISO } from 'date-fns';
 import { currentDate, isWithinDateBounds } from '../common/date';
 import { getTableData } from '../common/dynamodb';
 import { Result } from '../parser/types';
@@ -86,9 +86,18 @@ function filterByDate(items: Result[], modifier: SearchModifier) {
     const startDate = parseISO(item.startDate);
     const endDate = parseISO(item.endDate);
 
-    return modifier === SearchModifier.today
-      ? isWithinDateBounds(currDate, startDate, endDate)
-      : isSameMonth(currDate, startDate);
+    return (() => {
+      if (modifier === SearchModifier.today) {
+        return isWithinDateBounds(currDate, startDate, endDate);
+      }
+      if (modifier === SearchModifier.month) {
+        return isSameMonth(currDate, startDate);
+      }
+      if (modifier === SearchModifier.nextMonth) {
+        return differenceInCalendarMonths(startDate, currDate) === 1;
+      }
+      return false;
+    })();
   });
 }
 

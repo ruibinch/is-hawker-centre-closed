@@ -1,7 +1,7 @@
 import { parseToEnum } from '../common/enum';
 import { ExtractSearchModifierResult, SearchModifier } from './types';
 
-const SEARCH_MODIFIERS = ['today', 'month'];
+const SEARCH_MODIFIERS = ['today', 'month', 'next month'];
 
 export function extractSearchModifier(
   term: string,
@@ -24,9 +24,15 @@ export function extractSearchModifier(
 }
 
 /**
- * Parses the modifier into an appropriate format for parsing to the SearchModifier enum.
+ * Parses the modifier into an appropriate format for parsing to the SearchModifier enum type.
  */
 function parseModifier(s: string): string {
   const str = s.trim();
-  return str;
+
+  switch (str) {
+    case 'next month':
+      return 'nextMonth';
+    default:
+      return str;
+  }
 }

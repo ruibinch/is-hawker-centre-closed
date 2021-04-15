@@ -68,25 +68,7 @@ describe('reader > search', () => {
     });
   });
 
-  it('["rustboro month"] returns a single result occurring in the current month', async () => {
-    await processSearch('rustboro month').then((searchResponse) => {
-      expect(searchResponse).toBeDefined();
-
-      if (searchResponse) {
-        const { results } = searchResponse;
-
-        expect(results).toHaveLength(1);
-        expect(results).toContainEqual({
-          id: '1111111111',
-          hawkerCentre: 'Rustboro City',
-          startDate: '2021-01-25',
-          endDate: '2021-01-29',
-        });
-      }
-    });
-  });
-
-  it('["oldale month"] returns multiple results occurring in the current month', async () => {
+  it('["oldale month"] returns results occurring in the current month', async () => {
     await processSearch('oldale month').then((searchResponse) => {
       expect(searchResponse).toBeDefined();
 
@@ -105,6 +87,24 @@ describe('reader > search', () => {
           hawkerCentre: 'Oldale Town',
           startDate: '2021-01-30',
           endDate: '2021-01-31',
+        });
+      }
+    });
+  });
+
+  it('["verdanturf next month"] returns results occurring in the next month', async () => {
+    await processSearch('verdanturf next month').then((searchResponse) => {
+      expect(searchResponse).toBeDefined();
+
+      if (searchResponse) {
+        const { results } = searchResponse;
+
+        expect(results).toHaveLength(1);
+        expect(results).toContainEqual({
+          id: '1111111111',
+          hawkerCentre: 'Verdanturf Town',
+          startDate: '2021-02-08',
+          endDate: '2021-02-09',
         });
       }
     });
@@ -144,6 +144,30 @@ describe('reader > search', () => {
         expect(results).toHaveLength(5);
         mockTable.slice(0, 5).forEach((entry) => {
           expect(results).toContainEqual(entry);
+        });
+      }
+    });
+  });
+
+  it('["next month"] returns all results occurring in the next month', async () => {
+    await processSearch('next month').then((searchResponse) => {
+      expect(searchResponse).toBeDefined();
+
+      if (searchResponse) {
+        const { results } = searchResponse;
+
+        expect(results).toHaveLength(2);
+        expect(results).toContainEqual({
+          id: '1111111111',
+          hawkerCentre: 'Rustboro City',
+          startDate: '2021-02-02',
+          endDate: '2021-02-05',
+        });
+        expect(results).toContainEqual({
+          id: '1111111111',
+          hawkerCentre: 'Verdanturf Town',
+          startDate: '2021-02-08',
+          endDate: '2021-02-09',
         });
       }
     });
