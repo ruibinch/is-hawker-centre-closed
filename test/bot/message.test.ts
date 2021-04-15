@@ -28,7 +28,7 @@ describe('bot > message', () => {
             modifier: SearchModifier.tomorrow,
           },
           expected: {
-            message: `All good\\! No hawker centres containing the keyword *littleroot* are undergoing cleaning tomorrow\\.`,
+            message: `All good\\! No hawker centres containing the keyword *littleroot* will be undergoing cleaning tomorrow\\.`,
           },
         },
       ],
@@ -52,7 +52,7 @@ describe('bot > message', () => {
             modifier: SearchModifier.nextMonth,
           },
           expected: {
-            message: `All good\\! No hawker centres containing the keyword *littleroot* are undergoing cleaning next month\\.`,
+            message: `All good\\! No hawker centres containing the keyword *littleroot* will be undergoing cleaning next month\\.`,
           },
         },
       ],
@@ -76,7 +76,7 @@ describe('bot > message', () => {
             modifier: SearchModifier.tomorrow,
           },
           expected: {
-            message: `All good\\! No hawker centres are undergoing cleaning tomorrow\\.`,
+            message: `All good\\! No hawker centres will be undergoing cleaning tomorrow\\.`,
           },
         },
       ],
@@ -100,7 +100,7 @@ describe('bot > message', () => {
             modifier: SearchModifier.nextMonth,
           },
           expected: {
-            message: `All good\\! No hawker centres are undergoing cleaning next month\\.`,
+            message: `All good\\! No hawker centres will be undergoing cleaning next month\\.`,
           },
         },
       ],
@@ -167,7 +167,7 @@ describe('bot > message', () => {
             modifier: SearchModifier.tomorrow,
           },
           expected: {
-            message: `Here are the hawker centres containing the keyword *littleroot* that are closed tomorrow:\n\n`,
+            message: `Here are the hawker centres containing the keyword *littleroot* that will be closed tomorrow:\n\n`,
           },
         },
       ],
@@ -191,7 +191,7 @@ describe('bot > message', () => {
             modifier: SearchModifier.nextMonth,
           },
           expected: {
-            message: `Here are the hawker centres containing the keyword *littleroot* that are closed next month:\n\n`,
+            message: `Here are the hawker centres containing the keyword *littleroot* that will be closed next month:\n\n`,
           },
         },
       ],
@@ -215,7 +215,7 @@ describe('bot > message', () => {
             modifier: SearchModifier.tomorrow,
           },
           expected: {
-            message: `There are *2* hawker centres that are closed tomorrow:\n\n`,
+            message: `There are *2* hawker centres that will be closed tomorrow:\n\n`,
           },
         },
       ],
@@ -239,7 +239,7 @@ describe('bot > message', () => {
             modifier: SearchModifier.nextMonth,
           },
           expected: {
-            message: `There are *2* hawker centres that are closed next month:\n\n`,
+            message: `There are *2* hawker centres that will be closed next month:\n\n`,
           },
         },
       ],

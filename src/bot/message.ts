@@ -12,16 +12,22 @@ export function makeMessage(searchResponse: SearchResponse): string {
   if (results.length === 0) {
     reply = `All good\\! No hawker centres ${makeKeywordSnippet(
       keyword,
-    )}are undergoing cleaning ${makeTimePeriodSnippet(modifier)}\\.`;
+    )}${makeTemporalVerbSnippet(
+      modifier,
+    )} undergoing cleaning ${makeTimePeriodSnippet(modifier)}\\.`;
   } else {
     if (keyword === '') {
       reply += `There are ${makeNumResultsSnippet(
         results,
-      )} hawker centres that are closed ${makeTimePeriodSnippet(modifier)}:`;
+      )} hawker centres that ${makeTemporalVerbSnippet(
+        modifier,
+      )} closed ${makeTimePeriodSnippet(modifier)}:`;
     } else {
       reply += `Here are the hawker centres ${makeKeywordSnippet(
         keyword,
-      )}that are closed ${makeTimePeriodSnippet(modifier)}:`;
+      )}that ${makeTemporalVerbSnippet(
+        modifier,
+      )} closed ${makeTimePeriodSnippet(modifier)}:`;
     }
     reply += '\n\n';
 
@@ -50,6 +56,20 @@ function makeTimePeriodSnippet(modifier: SearchModifier) {
       return 'this month';
     case SearchModifier.nextMonth:
       return 'next month';
+    /* istanbul ignore next */
+    default:
+      return '';
+  }
+}
+
+function makeTemporalVerbSnippet(modifier: SearchModifier) {
+  switch (modifier) {
+    case SearchModifier.today:
+    case SearchModifier.month:
+      return 'are';
+    case SearchModifier.tomorrow:
+    case SearchModifier.nextMonth:
+      return 'will be';
     /* istanbul ignore next */
     default:
       return '';
