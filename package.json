@@ -4,13 +4,12 @@
   "license": "UNLICENSED",
   "main": "index.js",
   "scripts": {
-    "build": "rm -rf ./build && tsc",
-    "dev": "nodemon",
+    "dev:parser": "nodemon",
+    "dev": "sls offline start",
     "run:parser": "ts-node src/parser/index.ts",
     "run:bot": "ts-node src/bot/init.ts",
-    "start": "npm run build && node build/index.js",
+    "deploy": "sls deploy -f",
     "lint": "eslint . --ext .ts",
-    "check-prettier": "prettier --check '**/*.{js,jsx,ts,tsx}' --loglevel warn",
     "test": "TZ=UTC jest"
   },
   "devDependencies": {

@@ -1,7 +1,6 @@
 import { parseISO } from 'date-fns';
 
 import { processSearch } from '../../src/reader/search';
-import { SearchResponse } from '../../src/reader/types';
 import { mockTable } from '../__mocks__/db';
 
 // TODO: shift this to a __mocks__ folder
