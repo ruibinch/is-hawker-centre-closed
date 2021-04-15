@@ -4,7 +4,7 @@ import {
   isSameMonth,
   parseISO,
 } from 'date-fns';
-import { currentDate, isWithinDateBounds } from '../common/date';
+import { currentDate, getNextPeriod, isWithinDateBounds } from '../common/date';
 import { getTableData } from '../common/dynamodb';
 import { Result } from '../parser/types';
 import { extractSearchModifier } from './searchModifier';
@@ -13,11 +13,21 @@ import { SearchModifier, SearchObject, SearchResponse } from './types';
 export async function processSearch(
   term: string,
 ): Promise<SearchResponse | null> {
-  const { keyword, modifier } = parseSearchTerm(term);
+  const searchParams = parseSearchTerm(term);
+  const { keyword, modifier } = searchParams;
 
   return getTableData()
     .then((response) => {
       const items = response.Items as Result[];
+
+      const isDataPresent = checkIsDataPresent(items, modifier);
+      if (!isDataPresent) {
+        return {
+          params: searchParams,
+          isDataPresent: false,
+          results: [],
+        };
+      }
 
       const resultsFilteredByKeyword = filterByKeyword(items, keyword);
 
@@ -30,14 +40,10 @@ export async function processSearch(
         resultsFilteredByKeywordAndDate,
       );
 
-      const searchResponse: SearchResponse = {
-        params: {
-          keyword,
-          modifier,
-        },
+      return {
+        params: searchParams,
         results,
       };
-      return searchResponse;
     })
     .catch((error) => {
       console.log(error);
@@ -65,6 +71,21 @@ function parseSearchTerm(term: string): SearchObject {
     keyword: term.slice(0, modifierStartIndex).trim(),
     modifier,
   };
+}
+
+/**
+ * If modifier is "nextMonth", check if the data for that time period is present first.
+ */
+function checkIsDataPresent(items: Result[], modifier: SearchModifier) {
+  if (modifier !== SearchModifier.nextMonth) return true;
+
+  // extract the YYYY-MM portion of the dates and remove duplicates
+  const timePeriods = [
+    ...new Set(items.map((item) => item.startDate.slice(0, 7))),
+  ];
+  const nextPeriod = getNextPeriod();
+
+  return timePeriods.includes(nextPeriod);
 }
 
 /**

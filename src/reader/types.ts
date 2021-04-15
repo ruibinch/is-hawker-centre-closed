@@ -6,6 +6,7 @@ export type SearchQuery = {
 
 export type SearchResponse = {
   params: SearchObject;
+  isDataPresent?: boolean;
   results: Result[];
 };
 

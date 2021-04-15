@@ -1,3 +1,5 @@
+import { addMonths } from 'date-fns';
+
 export function currentDate(): Date {
   return new Date(Date.now());
 }
@@ -14,11 +16,11 @@ export function isWithinDateBounds(
 }
 
 // Returns in YYYY-MM format
-export function getCurrentPeriod(): string {
-  const date = new Date();
-  const year = date.getFullYear();
-  const month = padValueTo2Digits(`${date.getMonth() + 1}`);
-  return `${year}-${month}`;
+export function getNextPeriod(): string {
+  const dateInNextPeriod = addMonths(currentDate(), 1);
+  return `${dateInNextPeriod.getFullYear()}-${padValueTo2Digits(
+    `${dateInNextPeriod.getMonth() + 1}`,
+  )}`;
 }
 
 export function getMonthNumber(monthName: string): string | null {

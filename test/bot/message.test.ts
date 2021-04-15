@@ -264,4 +264,21 @@ describe('bot > message', () => {
       },
     );
   });
+
+  describe('exception cases', () => {
+    it('display a custom message if search modifier is nextMonth and isDataPresent is false', () => {
+      const message = makeMessage({
+        results: [],
+        params: {
+          keyword: '',
+          modifier: SearchModifier.nextMonth,
+        },
+        isDataPresent: false,
+      });
+
+      expect(message).toEqual(
+        `No data is available for next month yet, check back again in a while\\!`,
+      );
+    });
+  });
 });

@@ -5,16 +5,22 @@ import { SearchModifier, SearchResponse } from '../reader/types';
 export function makeMessage(searchResponse: SearchResponse): string {
   const {
     params: { keyword, modifier },
+    isDataPresent,
     results,
   } = searchResponse;
   let reply = '';
 
   if (results.length === 0) {
-    reply = `All good\\! No hawker centres ${makeKeywordSnippet(
-      keyword,
-    )}${makeTemporalVerbSnippet(
-      modifier,
-    )} undergoing cleaning ${makeTimePeriodSnippet(modifier)}\\.`;
+    if (isDataPresent === false && modifier === SearchModifier.nextMonth) {
+      reply =
+        'No data is available for next month yet, check back again in a while\\!';
+    } else {
+      reply = `All good\\! No hawker centres ${makeKeywordSnippet(
+        keyword,
+      )}${makeTemporalVerbSnippet(
+        modifier,
+      )} undergoing cleaning ${makeTimePeriodSnippet(modifier)}\\.`;
+    }
   } else {
     if (keyword === '') {
       reply += `There are ${makeNumResultsSnippet(
