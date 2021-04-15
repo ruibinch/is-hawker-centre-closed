@@ -147,8 +147,8 @@ describe('reader > search', () => {
     });
   });
 
-  it('["today"] returns all results occurring today', async () => {
-    await processSearch('today').then((searchResponse) => {
+  it('["Today"] returns all results occurring today', async () => {
+    await processSearch('Today').then((searchResponse) => {
       expect(searchResponse).toBeDefined();
 
       if (searchResponse) {
@@ -171,8 +171,8 @@ describe('reader > search', () => {
     });
   });
 
-  it('["tmr"] returns all results occurring tomorrow', async () => {
-    await processSearch('tmr').then((searchResponse) => {
+  it('["Tmr"] returns all results occurring tomorrow', async () => {
+    await processSearch('Tmr').then((searchResponse) => {
       expect(searchResponse).toBeDefined();
 
       if (searchResponse) {
@@ -195,8 +195,8 @@ describe('reader > search', () => {
     });
   });
 
-  it('["tomorrow"] returns all results occurring tomorrow', async () => {
-    await processSearch('tomorrow').then((searchResponse) => {
+  it('["Tomorrow"] returns all results occurring tomorrow', async () => {
+    await processSearch('Tomorrow').then((searchResponse) => {
       expect(searchResponse).toBeDefined();
 
       if (searchResponse) {
@@ -219,8 +219,8 @@ describe('reader > search', () => {
     });
   });
 
-  it('["month"] returns all results occurring in the current month', async () => {
-    await processSearch('month').then((searchResponse) => {
+  it('["Month"] returns all results occurring in the current month', async () => {
+    await processSearch('Month').then((searchResponse) => {
       expect(searchResponse).toBeDefined();
 
       if (searchResponse) {
@@ -234,8 +234,8 @@ describe('reader > search', () => {
     });
   });
 
-  it('["next month"] returns all results occurring in the next month', async () => {
-    await processSearch('next month').then((searchResponse) => {
+  it('["Next month"] returns all results occurring in the next month', async () => {
+    await processSearch('Next month').then((searchResponse) => {
       expect(searchResponse).toBeDefined();
 
       if (searchResponse) {

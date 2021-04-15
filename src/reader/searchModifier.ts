@@ -9,7 +9,7 @@ export function extractSearchModifier(
   const modifierRegex = new RegExp(`(${SEARCH_MODIFIERS.join('|')})$`);
 
   // ref: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/exec
-  const matches = modifierRegex.exec(term);
+  const matches = modifierRegex.exec(term.toLowerCase());
   if (matches === null) return undefined;
 
   const modifier = parseModifier(matches[0]);
