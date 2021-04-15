@@ -21,6 +21,18 @@ describe('bot > message', () => {
         },
       ],
       [
+        'keyword defined, modifier "tomorrow"',
+        {
+          inputs: {
+            keyword: 'littleroot',
+            modifier: SearchModifier.tomorrow,
+          },
+          expected: {
+            message: `All good\\! No hawker centres containing the keyword *littleroot* are undergoing cleaning tomorrow\\.`,
+          },
+        },
+      ],
+      [
         'keyword defined, modifier "month"',
         {
           inputs: {
@@ -29,6 +41,18 @@ describe('bot > message', () => {
           },
           expected: {
             message: `All good\\! No hawker centres containing the keyword *littleroot* are undergoing cleaning this month\\.`,
+          },
+        },
+      ],
+      [
+        'keyword defined, modifier "nextMonth"',
+        {
+          inputs: {
+            keyword: 'littleroot',
+            modifier: SearchModifier.nextMonth,
+          },
+          expected: {
+            message: `All good\\! No hawker centres containing the keyword *littleroot* are undergoing cleaning next month\\.`,
           },
         },
       ],
@@ -45,6 +69,18 @@ describe('bot > message', () => {
         },
       ],
       [
+        'keyword empty, modifier "tomorrow"',
+        {
+          inputs: {
+            keyword: '',
+            modifier: SearchModifier.tomorrow,
+          },
+          expected: {
+            message: `All good\\! No hawker centres are undergoing cleaning tomorrow\\.`,
+          },
+        },
+      ],
+      [
         'keyword empty, modifier "month"',
         {
           inputs: {
@@ -53,6 +89,18 @@ describe('bot > message', () => {
           },
           expected: {
             message: `All good\\! No hawker centres are undergoing cleaning this month\\.`,
+          },
+        },
+      ],
+      [
+        'keyword empty, modifier "nextMonth"',
+        {
+          inputs: {
+            keyword: '',
+            modifier: SearchModifier.nextMonth,
+          },
+          expected: {
+            message: `All good\\! No hawker centres are undergoing cleaning next month\\.`,
           },
         },
       ],
@@ -112,6 +160,18 @@ describe('bot > message', () => {
         },
       ],
       [
+        'keyword defined, modifier "tomorrow"',
+        {
+          inputs: {
+            keyword: 'littleroot',
+            modifier: SearchModifier.tomorrow,
+          },
+          expected: {
+            message: `Here are the hawker centres containing the keyword *littleroot* that are closed tomorrow:\n\n`,
+          },
+        },
+      ],
+      [
         'keyword defined, modifier "month"',
         {
           inputs: {
@@ -120,6 +180,18 @@ describe('bot > message', () => {
           },
           expected: {
             message: `Here are the hawker centres containing the keyword *littleroot* that are closed this month:\n\n`,
+          },
+        },
+      ],
+      [
+        'keyword defined, modifier "nextMonth"',
+        {
+          inputs: {
+            keyword: 'littleroot',
+            modifier: SearchModifier.nextMonth,
+          },
+          expected: {
+            message: `Here are the hawker centres containing the keyword *littleroot* that are closed next month:\n\n`,
           },
         },
       ],
@@ -136,6 +208,18 @@ describe('bot > message', () => {
         },
       ],
       [
+        'keyword empty, modifier "tomorrow"',
+        {
+          inputs: {
+            keyword: '',
+            modifier: SearchModifier.tomorrow,
+          },
+          expected: {
+            message: `Here are the hawker centres that are closed tomorrow:\n\n`,
+          },
+        },
+      ],
+      [
         'keyword empty, modifier "month"',
         {
           inputs: {
@@ -144,6 +228,18 @@ describe('bot > message', () => {
           },
           expected: {
             message: `Here are the hawker centres that are closed this month:\n\n`,
+          },
+        },
+      ],
+      [
+        'keyword empty, modifier "nextMonth"',
+        {
+          inputs: {
+            keyword: '',
+            modifier: SearchModifier.nextMonth,
+          },
+          expected: {
+            message: `Here are the hawker centres that are closed next month:\n\n`,
           },
         },
       ],

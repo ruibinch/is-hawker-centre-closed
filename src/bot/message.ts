@@ -33,7 +33,19 @@ function makeKeywordSnippet(keyword: string) {
 }
 
 function makeTimePeriodSnippet(modifier: SearchModifier) {
-  return modifier === SearchModifier.today ? 'today' : 'this month';
+  switch (modifier) {
+    case SearchModifier.today:
+      return 'today';
+    case SearchModifier.tomorrow:
+      return 'tomorrow';
+    case SearchModifier.month:
+      return 'this month';
+    case SearchModifier.nextMonth:
+      return 'next month';
+    /* istanbul ignore next */
+    default:
+      return '';
+  }
 }
 
 function formatDate(date: string) {

@@ -1,7 +1,7 @@
 import { parseToEnum } from '../common/enum';
 import { ExtractSearchModifierResult, SearchModifier } from './types';
 
-const SEARCH_MODIFIERS = ['today', 'month', 'next month'];
+const SEARCH_MODIFIERS = ['today', 'month', 'next month', 'tmr', 'tomorrow'];
 
 export function extractSearchModifier(
   term: string,
@@ -32,6 +32,8 @@ function parseModifier(s: string): string {
   switch (str) {
     case 'next month':
       return 'nextMonth';
+    case 'tmr':
+      return 'tomorrow';
     default:
       return str;
   }

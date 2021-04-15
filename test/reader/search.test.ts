@@ -1,6 +1,7 @@
 import { parseISO } from 'date-fns';
 
 import { processSearch } from '../../src/reader/search';
+import { SearchResponse } from '../../src/reader/types';
 import { mockTable } from '../__mocks__/db';
 
 // TODO: shift this to a __mocks__ folder
@@ -68,6 +69,42 @@ describe('reader > search', () => {
     });
   });
 
+  it('["slateport tmr"] returns all results occurring tomorrow', async () => {
+    await processSearch('slateport tmr').then((searchResponse) => {
+      expect(searchResponse).toBeDefined();
+
+      if (searchResponse) {
+        const { results } = searchResponse;
+
+        expect(results).toHaveLength(1);
+        expect(results).toContainEqual({
+          id: '1111111111',
+          hawkerCentre: 'Slateport City',
+          startDate: '2021-01-02',
+          endDate: '2021-01-02',
+        });
+      }
+    });
+  });
+
+  it('["slateport tomorrow"] returns all results occurring tomorrow', async () => {
+    await processSearch('slateport tomorrow').then((searchResponse) => {
+      expect(searchResponse).toBeDefined();
+
+      if (searchResponse) {
+        const { results } = searchResponse;
+
+        expect(results).toHaveLength(1);
+        expect(results).toContainEqual({
+          id: '1111111111',
+          hawkerCentre: 'Slateport City',
+          startDate: '2021-01-02',
+          endDate: '2021-01-02',
+        });
+      }
+    });
+  });
+
   it('["oldale month"] returns results occurring in the current month', async () => {
     await processSearch('oldale month').then((searchResponse) => {
       expect(searchResponse).toBeDefined();
@@ -128,7 +165,55 @@ describe('reader > search', () => {
           id: '1111111111',
           hawkerCentre: 'Melville City',
           startDate: '2021-01-01',
-          endDate: '2021-01-04',
+          endDate: '2021-01-01',
+        });
+      }
+    });
+  });
+
+  it('["tmr"] returns all results occurring tomorrow', async () => {
+    await processSearch('tmr').then((searchResponse) => {
+      expect(searchResponse).toBeDefined();
+
+      if (searchResponse) {
+        const { results } = searchResponse;
+
+        expect(results).toHaveLength(2);
+        expect(results).toContainEqual({
+          id: '1111111111',
+          hawkerCentre: 'Littleroot Town',
+          startDate: '2021-01-01',
+          endDate: '2021-01-02',
+        });
+        expect(results).toContainEqual({
+          id: '1111111111',
+          hawkerCentre: 'Slateport City',
+          startDate: '2021-01-02',
+          endDate: '2021-01-02',
+        });
+      }
+    });
+  });
+
+  it('["tomorrow"] returns all results occurring tomorrow', async () => {
+    await processSearch('tomorrow').then((searchResponse) => {
+      expect(searchResponse).toBeDefined();
+
+      if (searchResponse) {
+        const { results } = searchResponse;
+
+        expect(results).toHaveLength(2);
+        expect(results).toContainEqual({
+          id: '1111111111',
+          hawkerCentre: 'Littleroot Town',
+          startDate: '2021-01-01',
+          endDate: '2021-01-02',
+        });
+        expect(results).toContainEqual({
+          id: '1111111111',
+          hawkerCentre: 'Slateport City',
+          startDate: '2021-01-02',
+          endDate: '2021-01-02',
         });
       }
     });
