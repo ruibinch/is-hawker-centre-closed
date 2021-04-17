@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
-import TelegramBot from 'node-telegram-bot-api';
 import { makeCallbackWrapper } from '../common/lambda';
+import { makeTelegramApiBase, Message } from '../common/telegram';
 import { processSearch } from '../reader/search';
 import { makeMessage } from './message';
 import { BOT_TOKEN } from './variables';
@@ -19,7 +19,7 @@ export const bot: APIGatewayProxyHandler = async (
   }
 
   const reqBody = JSON.parse(event.body);
-  const inputMessage = reqBody.message as TelegramBot.Message;
+  const inputMessage = reqBody.message as Message;
   const {
     chat: { id: chatId },
     text,
@@ -55,7 +55,7 @@ export const bot: APIGatewayProxyHandler = async (
 };
 
 function sendMessage(chatId: number, message: string) {
-  axios.get(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+  axios.get(`${makeTelegramApiBase(BOT_TOKEN)}/sendMessage`, {
     params: {
       chat_id: chatId,
       text: message,
