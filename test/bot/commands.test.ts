@@ -1,0 +1,40 @@
+import { makeCommandMessage } from '../../src/bot/commands';
+
+describe('bot > commands', () => {
+  describe('/start', () => {
+    it('returns the correct message', () => {
+      const expectedMessage =
+        `An easy way to check if your favourite hawker centre is closed today\\! \u{1F35C}\u{1F35B}\u{1F367}\n\n` +
+        `Simply send the bot some *subset of the hawker centre name*, e\\.g\\. _toa payoh_\n\n` +
+        `For more options\\, type in /help to see how you can customise your query further\\.'`;
+
+      const commandMessage = makeCommandMessage('/start');
+      expect(commandMessage).toEqual(expectedMessage);
+    });
+  });
+
+  describe('/help', () => {
+    it('returns the correct message', () => {
+      const expectedMessage =
+        `The search query follows the structure:\n\n` +
+        '          `\\[keyword\\] \\[modifier\\]`\n\n' +
+        `Supported modifiers are:\n` +
+        `_today_, _tmr_, _tomorrow_, _month_, _next month_\\.\n\n` +
+        `When no modifier is specified, it is set to _today_ by default\\.\n\n`;
+
+      const commandMessage = makeCommandMessage('/help');
+      expect(commandMessage).toEqual(expect.stringContaining(expectedMessage));
+    });
+  });
+
+  describe('an unsupported command', () => {
+    it('returns the correct message', () => {
+      const expectedMessage =
+        `Woops, that isn't a supported command\\.\n\n` +
+        `Please try again with one of the following:\n`;
+
+      const commandMessage = makeCommandMessage('/invalid');
+      expect(commandMessage).toEqual(expect.stringContaining(expectedMessage));
+    });
+  });
+});

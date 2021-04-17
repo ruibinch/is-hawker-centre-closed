@@ -23,13 +23,13 @@ export function makeMessage(searchResponse: SearchResponse): string {
     }
   } else {
     if (keyword === '') {
-      reply += `There are ${makeNumResultsSnippet(
+      reply = `There are ${makeNumResultsSnippet(
         results,
       )} hawker centres that ${makeTemporalVerbSnippet(
         modifier,
       )} closed ${makeTimePeriodSnippet(modifier)}:`;
     } else {
-      reply += `Here are the hawker centres ${makeKeywordSnippet(
+      reply = `Here are the hawker centres ${makeKeywordSnippet(
         keyword,
       )}that ${makeTemporalVerbSnippet(
         modifier,
@@ -38,10 +38,9 @@ export function makeMessage(searchResponse: SearchResponse): string {
     reply += '\n\n';
 
     results.forEach((result) => {
-      reply += `*${result.hawkerCentre}*\n`;
-      reply += `${formatDate(result.startDate)} to ${formatDate(
-        result.endDate,
-      )}\n\n`;
+      reply +=
+        `*${result.hawkerCentre}*\n` +
+        `${formatDate(result.startDate)} to ${formatDate(result.endDate)}\n\n`;
     });
   }
 

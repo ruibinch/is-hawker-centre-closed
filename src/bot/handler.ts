@@ -5,6 +5,7 @@ import { makeCallbackWrapper } from '../common/lambda';
 import { processSearch } from '../reader/search';
 import { makeMessage } from './message';
 import { BOT_TOKEN } from './variables';
+import { isCommand, makeCommandMessage } from './commands';
 
 export const bot: APIGatewayProxyHandler = async (
   event,
@@ -26,6 +27,12 @@ export const bot: APIGatewayProxyHandler = async (
 
   if (!text || text.trim().length === 0) {
     sendMessage(chatId, 'Specify some keywords\\!');
+    return callbackWrapper(204);
+  }
+
+  if (isCommand(text)) {
+    const commandMessage = makeCommandMessage(text);
+    sendMessage(chatId, commandMessage);
     return callbackWrapper(204);
   }
 
