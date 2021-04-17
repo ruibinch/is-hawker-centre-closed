@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { APIGatewayProxyHandler } from 'aws-lambda';
+import { APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
 import TelegramBot from 'node-telegram-bot-api';
-import { makeCallbackWrapper, makeResponseBody } from '../common/lambda';
+import { makeCallbackWrapper } from '../common/lambda';
 import { processSearch } from '../reader/search';
 import { makeMessage } from './message';
 import { BOT_TOKEN } from './variables';
@@ -10,11 +10,12 @@ export const bot: APIGatewayProxyHandler = async (
   event,
   _context,
   callback,
-) => {
-  if (!event.body) {
-    return makeResponseBody(400);
-  }
+): Promise<APIGatewayProxyResult> => {
   const callbackWrapper = makeCallbackWrapper(callback);
+
+  if (!event.body) {
+    return callbackWrapper(400);
+  }
 
   const reqBody = JSON.parse(event.body);
   const inputMessage = reqBody.message as TelegramBot.Message;
@@ -25,25 +26,25 @@ export const bot: APIGatewayProxyHandler = async (
 
   if (!text || text.trim().length === 0) {
     sendMessage(chatId, 'Specify some keywords\\!');
-    return makeResponseBody(204);
+    return callbackWrapper(204);
   }
 
   await processSearch(text)
     .then((searchResponse) => {
       if (searchResponse === null) {
-        callbackWrapper(400);
-      } else {
-        const replyMessage = makeMessage(searchResponse);
-        sendMessage(chatId, replyMessage);
-        callbackWrapper(204);
+        return callbackWrapper(400);
       }
+
+      const replyMessage = makeMessage(searchResponse);
+      sendMessage(chatId, replyMessage);
+      return callbackWrapper(204);
     })
     .catch((error) => {
       console.log(error);
-      callbackWrapper(400);
+      return callbackWrapper(400);
     });
 
-  return makeResponseBody(204);
+  return callbackWrapper(502);
 };
 
 function sendMessage(chatId: number, message: string) {

@@ -7,13 +7,12 @@ type ResponseBody = {
 
 export const makeCallbackWrapper = (
   callback: Callback<APIGatewayProxyResult>,
-) => (statusCode: number, body?: string): void =>
-  callback(null, makeResponseBody(statusCode, body));
+) => (statusCode: number, body?: string): ResponseBody => {
+  const responseBody: ResponseBody = {
+    statusCode,
+    body: body ?? '',
+  };
 
-export const makeResponseBody = (
-  statusCode: number,
-  body?: string,
-): ResponseBody => ({
-  statusCode,
-  body: body ?? '',
-});
+  callback(null, responseBody);
+  return responseBody;
+};
