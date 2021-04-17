@@ -18,18 +18,27 @@ pdf(dataBuffer, {
 }).then((data) => {
   const outputs = data.text.split('\n');
 
-  let result: Result[] = [];
+  let results: Result[] = [];
   outputs.forEach((output) => {
     if (isBlank(output)) return;
 
     const outputJson = JSON.parse(output);
-    result = [...result, ...outputJson];
+    results = [...results, ...outputJson];
   });
-  // console.log(result);
-  console.log(`[${fileName}.pdf] ${result.length} entries found`);
 
   if (isUploadToAws === 'true') {
+    console.log(`[${fileName}.pdf] ${results.length} entries found`);
     console.log(`[${fileName}.pdf] Uploading to AWS`);
-    uploadData(result);
+    uploadData(results);
+  } else {
+    console.log(
+      results
+        .map(
+          (result) =>
+            `${result.hawkerCentre} (${result.startDate} to ${result.endDate})`,
+        )
+        .join('\n\n'),
+    );
+    console.log(`[${fileName}.pdf] ${results.length} entries found`);
   }
 });

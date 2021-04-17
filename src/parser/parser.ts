@@ -166,7 +166,7 @@ function packageIntoResult(rowsRaw: Record<string, TextBox[]>[]): Result[] {
     return text;
   };
 
-  return rowsRaw.map((row) => {
+  const results = rowsRaw.map((row) => {
     const hawkerCentre = cleanTextInRow(row.hawkerCentre);
     const startDate = cleanTextInRow(row.startDate, true);
     const endDate = cleanTextInRow(row.endDate, true);
@@ -174,4 +174,13 @@ function packageIntoResult(rowsRaw: Record<string, TextBox[]>[]): Result[] {
 
     return { id, hawkerCentre, startDate, endDate };
   });
+
+  // remove any duplicate results
+  // this might happen as some index cols get parsed as 2 separate digits, e.g. row 17 is split into "1" and "7"
+  // then, it creates identical row ranges which results in duplicate rows
+  const resultsDeduplicated = results.filter(
+    (result, idx, self) =>
+      self.findIndex((result2) => result.id === result2.id) === idx,
+  );
+  return resultsDeduplicated;
 }
