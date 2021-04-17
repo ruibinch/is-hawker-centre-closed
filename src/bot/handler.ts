@@ -6,6 +6,7 @@ import { processSearch } from '../reader/search';
 import { makeMessage } from './message';
 import { BOT_TOKEN } from './variables';
 import { isCommand, makeCommandMessage } from './commands';
+import { sanitiseInputText } from './utils';
 
 export const bot: APIGatewayProxyHandler = async (
   event,
@@ -25,18 +26,20 @@ export const bot: APIGatewayProxyHandler = async (
     text,
   } = inputMessage;
 
-  if (!text || text.trim().length === 0) {
+  const textSanitised = sanitiseInputText(text);
+
+  if (!textSanitised || textSanitised.trim().length === 0) {
     sendMessage(chatId, 'Specify some keywords\\!');
     return callbackWrapper(204);
   }
 
-  if (isCommand(text)) {
-    const commandMessage = makeCommandMessage(text);
+  if (isCommand(textSanitised)) {
+    const commandMessage = makeCommandMessage(textSanitised);
     sendMessage(chatId, commandMessage);
     return callbackWrapper(204);
   }
 
-  await processSearch(text)
+  await processSearch(textSanitised)
     .then((searchResponse) => {
       if (searchResponse === null) {
         return callbackWrapper(400);
