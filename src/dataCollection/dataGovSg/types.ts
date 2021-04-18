@@ -3,20 +3,21 @@ type DataGovSGResponseBase = {
   success: boolean;
 };
 
-type Field = {
-  type: string;
-  id: string;
+type DataGovSGResponseResultBase = {
+  resource_id: string;
+  fields: Array<{
+    type: string;
+    id: string;
+  }>;
+  limit: number;
+  total: number;
 };
 
 // Hawker centre closure details
 
 export type HawkerCentreClosureResponse = DataGovSGResponseBase & {
-  result: {
-    resource_id: string;
-    fields: Field[];
+  result: DataGovSGResponseResultBase & {
     records: HawkerCentreClosureRecord[];
-    limit: number;
-    total: number;
   };
 };
 
@@ -35,4 +36,12 @@ export type HawkerCentreClosureRecord = {
   other_works_startdate: string;
   other_works_enddate: string;
   remarks_other_works: string;
+};
+
+// Hawker centre details
+
+export type HawkerCentreInfo = {
+  hawkerCentreId: number;
+  name: string;
+  nameSecondary?: string;
 };

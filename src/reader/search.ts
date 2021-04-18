@@ -5,7 +5,7 @@ import {
   parseISO,
 } from 'date-fns';
 import { currentDate, getNextPeriod, isWithinDateBounds } from '../common/date';
-import { getTableData } from '../common/dynamodb';
+import { getAllResults } from '../common/dynamodb';
 import { Result } from '../dataCollection/types';
 import { extractSearchModifier } from './searchModifier';
 import { SearchModifier, SearchObject, SearchResponse } from './types';
@@ -16,7 +16,7 @@ export async function processSearch(
   const searchParams = parseSearchTerm(term);
   const { keyword, modifier } = searchParams;
 
-  return getTableData()
+  return getAllResults()
     .then((response) => {
       const items = response.Items as Result[];
 

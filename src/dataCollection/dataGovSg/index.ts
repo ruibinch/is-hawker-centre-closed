@@ -1,16 +1,33 @@
-import fs from 'fs';
 import { toDateISO8601 } from '../../common/date';
-import { uploadData } from '../../common/dynamodb';
+import { uploadHawkerCentres, uploadResults } from '../../common/dynamodb';
 import { parseToEnum } from '../../common/enum';
 import { ClosureReason, Result } from '../types';
 import { generateHash } from '../utils';
-import { getRawRecords, parseHawkerCentreName } from './utils';
+import { HawkerCentreClosureRecord, HawkerCentreInfo } from './types';
+import { getRawRecords, parseHawkerCentreName, writeFile } from './utils';
 
 const args = process.argv.slice(2);
 const [isUploadToAws] = args;
 
 getRawRecords().then((recordsRaw) => {
-  const results = recordsRaw.reduce((_results: Result[], recordRaw) => {
+  const results = generateResults(recordsRaw);
+
+  const hawkerCentres: HawkerCentreInfo[] = getHawkerCentresList(results);
+
+  console.log(`${results.length} results found`);
+  console.log(`${hawkerCentres.length} hawker centres found`);
+  writeFile(results, 'results.json');
+  writeFile(hawkerCentres, 'hawkerCentres.json');
+
+  if (isUploadToAws === 'true') {
+    console.log(`Uploading to AWS`);
+    uploadResults(results);
+    uploadHawkerCentres(hawkerCentres);
+  }
+});
+
+function generateResults(recordsRaw: HawkerCentreClosureRecord[]): Result[] {
+  return recordsRaw.reduce((_results: Result[], recordRaw) => {
     const {
       _id: hawkerCentreId,
       name,
@@ -63,14 +80,7 @@ getRawRecords().then((recordsRaw) => {
 
     return _results;
   }, []);
-
-  console.log(`${results.length} entries found`);
-  writeFile(results);
-  if (isUploadToAws === 'true') {
-    console.log(`Uploading to AWS`);
-    uploadData(results);
-  }
-});
+}
 
 function generateResult(props: {
   hawkerCentreId: number;
@@ -95,10 +105,17 @@ function generateResult(props: {
   };
 }
 
-function writeFile(results: Result[]) {
-  const filename = 'results.json';
-  fs.writeFile(`./data/${filename}`, JSON.stringify(results), (err) => {
-    if (err) throw err;
-    console.log(`Data successfully written to ${filename}`);
-  });
+function getHawkerCentresList(results: Result[]) {
+  const hawkerCentres = results.map((result) => ({
+    hawkerCentreId: result.hawkerCentreId,
+    name: result.name,
+    nameSecondary: result.nameSecondary,
+  }));
+
+  // remove duplicate entries
+  const hawkerCentresDeduplicated = hawkerCentres.filter(
+    (hc, idx, self) =>
+      self.findIndex((hc2) => hc.hawkerCentreId === hc2.hawkerCentreId) === idx,
+  );
+  return hawkerCentresDeduplicated;
 }
