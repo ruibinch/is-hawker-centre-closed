@@ -2,7 +2,7 @@ import fs from 'fs';
 import pdf from 'pdf-parse';
 import { uploadData } from '../../common/dynamodb';
 import { renderPage } from './parser';
-import { Result } from '../types';
+import { Result } from './types';
 import { isBlank } from './utils';
 
 const args = process.argv.slice(2);

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "sls offline start",
-    "run:parser": "ts-node src/dataCollection/pdfParser/index.ts",
+    "run:datagov": "ts-node src/dataCollection/dataGovSg/index.ts",
     "init:bot": "ts-node src/bot/init.ts",
     "deploy": "sls deploy -f",
     "lint": "eslint . --ext .ts",

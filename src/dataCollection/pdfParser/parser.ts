@@ -1,8 +1,18 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { getMonthNumber, padValueTo2Digits } from '../../common/date';
-import { Result } from '../types';
-import { ColHeader, Dimensions, TextBox, TextContentItem } from './types';
-import { generateHash, isBlank, isBoxesFullyOverlapping } from './utils';
+import { padValueTo2Digits } from '../../common/date';
+import {
+  ColHeader,
+  Dimensions,
+  TextBox,
+  TextContentItem,
+  Result,
+} from './types';
+import {
+  generateHash,
+  getMonthNumber,
+  isBlank,
+  isBoxesFullyOverlapping,
+} from './utils';
 
 const COL_NAMES = ['No', 'Market / Hawker Centre', 'Start Date', 'End Date'];
 const COL_HEADERS: ColHeader[] = ['no', 'hawkerCentre', 'startDate', 'endDate'];

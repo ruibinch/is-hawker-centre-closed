@@ -4,6 +4,7 @@
 .vscode
 .webpack
 
+data/
 node_modules/
 *.log
 src/bot/variables.ts
