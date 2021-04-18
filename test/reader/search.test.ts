@@ -22,6 +22,7 @@ describe('reader > search', () => {
     afterEach(() => {
       dateSpy.mockRestore();
     });
+
     it('["littleroot"] returns a single result occurring today', async () => {
       await processSearch('littleroot').then((searchResponse) => {
         expect(searchResponse).toBeDefined();
@@ -30,12 +31,13 @@ describe('reader > search', () => {
           const { results } = searchResponse;
 
           expect(results).toHaveLength(1);
-          expect(results).toContainEqual({
-            id: '1111111111',
-            hawkerCentre: 'Littleroot Town',
-            startDate: '2021-01-01',
-            endDate: '2021-01-02',
-          });
+          expect(results).toContainEqual(
+            expect.objectContaining({
+              name: 'Littleroot Town',
+              startDate: '2021-01-01',
+              endDate: '2021-01-02',
+            }),
+          );
         }
       });
     });
@@ -48,12 +50,13 @@ describe('reader > search', () => {
           const { results } = searchResponse;
 
           expect(results).toHaveLength(1);
-          expect(results).toContainEqual({
-            id: '1111111111',
-            hawkerCentre: 'Littleroot Town',
-            startDate: '2021-01-01',
-            endDate: '2021-01-02',
-          });
+          expect(results).toContainEqual(
+            expect.objectContaining({
+              name: 'Littleroot Town',
+              startDate: '2021-01-01',
+              endDate: '2021-01-02',
+            }),
+          );
         }
       });
     });
@@ -77,12 +80,13 @@ describe('reader > search', () => {
           const { results } = searchResponse;
 
           expect(results).toHaveLength(1);
-          expect(results).toContainEqual({
-            id: '1111111111',
-            hawkerCentre: 'Slateport City',
-            startDate: '2021-01-02',
-            endDate: '2021-01-02',
-          });
+          expect(results).toContainEqual(
+            expect.objectContaining({
+              name: 'Slateport City',
+              startDate: '2021-01-02',
+              endDate: '2021-01-02',
+            }),
+          );
         }
       });
     });
@@ -95,12 +99,13 @@ describe('reader > search', () => {
           const { results } = searchResponse;
 
           expect(results).toHaveLength(1);
-          expect(results).toContainEqual({
-            id: '1111111111',
-            hawkerCentre: 'Slateport City',
-            startDate: '2021-01-02',
-            endDate: '2021-01-02',
-          });
+          expect(results).toContainEqual(
+            expect.objectContaining({
+              name: 'Slateport City',
+              startDate: '2021-01-02',
+              endDate: '2021-01-02',
+            }),
+          );
         }
       });
     });
@@ -113,18 +118,20 @@ describe('reader > search', () => {
           const { results } = searchResponse;
 
           expect(results).toHaveLength(2);
-          expect(results).toContainEqual({
-            id: '1111111111',
-            hawkerCentre: 'Oldale Town',
-            startDate: '2021-01-15',
-            endDate: '2021-01-18',
-          });
-          expect(results).toContainEqual({
-            id: '1111111111',
-            hawkerCentre: 'Oldale Town',
-            startDate: '2021-01-30',
-            endDate: '2021-01-31',
-          });
+          expect(results).toContainEqual(
+            expect.objectContaining({
+              name: 'Oldale Town',
+              startDate: '2021-01-15',
+              endDate: '2021-01-18',
+            }),
+          );
+          expect(results).toContainEqual(
+            expect.objectContaining({
+              name: 'Oldale Town',
+              startDate: '2021-01-30',
+              endDate: '2021-01-31',
+            }),
+          );
         }
       });
     });
@@ -137,12 +144,13 @@ describe('reader > search', () => {
           const { results } = searchResponse;
 
           expect(results).toHaveLength(1);
-          expect(results).toContainEqual({
-            id: '1111111111',
-            hawkerCentre: 'Verdanturf Town',
-            startDate: '2021-02-08',
-            endDate: '2021-02-09',
-          });
+          expect(results).toContainEqual(
+            expect.objectContaining({
+              name: 'Verdanturf Town',
+              startDate: '2021-02-08',
+              endDate: '2021-02-09',
+            }),
+          );
         }
       });
     });
@@ -155,18 +163,20 @@ describe('reader > search', () => {
           const { results } = searchResponse;
 
           expect(results).toHaveLength(2);
-          expect(results).toContainEqual({
-            id: '1111111111',
-            hawkerCentre: 'Littleroot Town',
-            startDate: '2021-01-01',
-            endDate: '2021-01-02',
-          });
-          expect(results).toContainEqual({
-            id: '1111111111',
-            hawkerCentre: 'Melville City',
-            startDate: '2021-01-01',
-            endDate: '2021-01-01',
-          });
+          expect(results).toContainEqual(
+            expect.objectContaining({
+              name: 'Littleroot Town',
+              startDate: '2021-01-01',
+              endDate: '2021-01-02',
+            }),
+          );
+          expect(results).toContainEqual(
+            expect.objectContaining({
+              name: 'Melville City',
+              startDate: '2021-01-01',
+              endDate: '2021-01-01',
+            }),
+          );
         }
       });
     });
@@ -179,18 +189,20 @@ describe('reader > search', () => {
           const { results } = searchResponse;
 
           expect(results).toHaveLength(2);
-          expect(results).toContainEqual({
-            id: '1111111111',
-            hawkerCentre: 'Littleroot Town',
-            startDate: '2021-01-01',
-            endDate: '2021-01-02',
-          });
-          expect(results).toContainEqual({
-            id: '1111111111',
-            hawkerCentre: 'Slateport City',
-            startDate: '2021-01-02',
-            endDate: '2021-01-02',
-          });
+          expect(results).toContainEqual(
+            expect.objectContaining({
+              name: 'Littleroot Town',
+              startDate: '2021-01-01',
+              endDate: '2021-01-02',
+            }),
+          );
+          expect(results).toContainEqual(
+            expect.objectContaining({
+              name: 'Slateport City',
+              startDate: '2021-01-02',
+              endDate: '2021-01-02',
+            }),
+          );
         }
       });
     });
@@ -203,18 +215,20 @@ describe('reader > search', () => {
           const { results } = searchResponse;
 
           expect(results).toHaveLength(2);
-          expect(results).toContainEqual({
-            id: '1111111111',
-            hawkerCentre: 'Littleroot Town',
-            startDate: '2021-01-01',
-            endDate: '2021-01-02',
-          });
-          expect(results).toContainEqual({
-            id: '1111111111',
-            hawkerCentre: 'Slateport City',
-            startDate: '2021-01-02',
-            endDate: '2021-01-02',
-          });
+          expect(results).toContainEqual(
+            expect.objectContaining({
+              name: 'Littleroot Town',
+              startDate: '2021-01-01',
+              endDate: '2021-01-02',
+            }),
+          );
+          expect(results).toContainEqual(
+            expect.objectContaining({
+              name: 'Slateport City',
+              startDate: '2021-01-02',
+              endDate: '2021-01-02',
+            }),
+          );
         }
       });
     });
@@ -242,18 +256,20 @@ describe('reader > search', () => {
           const { results } = searchResponse;
 
           expect(results).toHaveLength(2);
-          expect(results).toContainEqual({
-            id: '1111111111',
-            hawkerCentre: 'Rustboro City',
-            startDate: '2021-02-02',
-            endDate: '2021-02-05',
-          });
-          expect(results).toContainEqual({
-            id: '1111111111',
-            hawkerCentre: 'Verdanturf Town',
-            startDate: '2021-02-08',
-            endDate: '2021-02-09',
-          });
+          expect(results).toContainEqual(
+            expect.objectContaining({
+              name: 'Rustboro City',
+              startDate: '2021-02-02',
+              endDate: '2021-02-05',
+            }),
+          );
+          expect(results).toContainEqual(
+            expect.objectContaining({
+              name: 'Verdanturf Town',
+              startDate: '2021-02-08',
+              endDate: '2021-02-09',
+            }),
+          );
         }
       });
     });

@@ -97,9 +97,7 @@ function filterByKeyword(items: Result[], keyword: string) {
   }
 
   const filterRegex = new RegExp(`\\b${keyword.toLowerCase()}`);
-  return items.filter((item) =>
-    filterRegex.test(item.hawkerCentre.toLowerCase()),
-  );
+  return items.filter((item) => filterRegex.test(item.name.toLowerCase()));
 }
 
 /**
@@ -147,7 +145,7 @@ function sortInDateAscThenAlphabeticalOrder(items: Result[]) {
     return (
       aStartDate.getTime() - bStartDate.getTime() ||
       aEndDate.getTime() - bEndDate.getTime() ||
-      a.hawkerCentre.localeCompare(b.hawkerCentre)
+      a.name.localeCompare(b.name)
     );
   });
 }

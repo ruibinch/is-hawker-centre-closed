@@ -86,7 +86,7 @@ function generateResult(props: {
 
   return {
     id,
-    hawkerCentreId: hawkerCentreId.toString(),
+    hawkerCentreId,
     name: namePrimary,
     nameSecondary,
     reason,

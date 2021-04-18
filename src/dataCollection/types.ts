@@ -5,7 +5,7 @@ export enum ClosureReason {
 
 export type Result = {
   id: string;
-  hawkerCentreId: string;
+  hawkerCentreId: number;
   name: string;
   nameSecondary?: string;
   reason: ClosureReason;

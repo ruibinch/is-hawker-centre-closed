@@ -39,7 +39,7 @@ export function makeMessage(searchResponse: SearchResponse): string {
 
     results.forEach((result) => {
       reply +=
-        `*${result.hawkerCentre}*\n` +
+        `*${result.name}*\n` +
         `${formatDate(result.startDate)} to ${formatDate(result.endDate)}\n\n`;
     });
   }

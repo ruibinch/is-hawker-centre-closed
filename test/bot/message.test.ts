@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import { makeMessage } from '../../src/bot/message';
-import { Result } from '../../src/dataCollection/types';
+import { ClosureReason, Result } from '../../src/dataCollection/types';
 import { SearchModifier } from '../../src/reader/types';
 
 describe('bot > message', () => {
@@ -129,14 +129,18 @@ describe('bot > message', () => {
   describe('returns a defined results array', () => {
     const results: Result[] = [
       {
-        id: '1111111111',
-        hawkerCentre: 'Littleroot Town',
+        id: '111',
+        hawkerCentreId: 1,
+        reason: ClosureReason.cleaning,
+        name: 'Littleroot Town',
         startDate: '2021-01-01',
         endDate: '2021-01-02',
       },
       {
-        id: '1111111111',
-        hawkerCentre: 'Melville City',
+        id: '111',
+        hawkerCentreId: 5,
+        reason: ClosureReason.cleaning,
+        name: 'Melville City',
         startDate: '2021-01-01',
         endDate: '2021-01-04',
       },
