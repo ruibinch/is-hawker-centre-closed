@@ -1,13 +1,6 @@
-export type DataGovSgResponse = {
+type DataGovSGResponseBase = {
   help: string;
   success: boolean;
-  result: {
-    resource_id: string;
-    fields: Field[];
-    records: Record[];
-    limit: number;
-    total: number;
-  };
 };
 
 type Field = {
@@ -15,7 +8,19 @@ type Field = {
   id: string;
 };
 
-export type Record = {
+// Hawker centre closure details
+
+export type HawkerCentreClosureResponse = DataGovSGResponseBase & {
+  result: {
+    resource_id: string;
+    fields: Field[];
+    records: HawkerCentreClosureRecord[];
+    limit: number;
+    total: number;
+  };
+};
+
+export type HawkerCentreClosureRecord = {
   _id: number;
   name: string;
   address_myenv: string;

@@ -1,8 +1,11 @@
 import axios from 'axios';
 import { overrideData } from './override';
-import { DataGovSgResponse, Record } from './types';
+import {
+  HawkerCentreClosureResponse,
+  HawkerCentreClosureRecord,
+} from './types';
 
-export async function getRawRecords(): Promise<Record[]> {
+export async function getRawRecords(): Promise<HawkerCentreClosureRecord[]> {
   return axios
     .get('https://data.gov.sg/api/action/datastore_search', {
       params: {
@@ -11,7 +14,7 @@ export async function getRawRecords(): Promise<Record[]> {
       },
     })
     .then((response) => {
-      const data = response.data as DataGovSgResponse;
+      const data = response.data as HawkerCentreClosureResponse;
       const dataUpdated = overrideData(data);
 
       return dataUpdated.result.records.map((record) => ({

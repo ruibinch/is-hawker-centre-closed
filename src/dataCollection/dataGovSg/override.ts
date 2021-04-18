@@ -1,10 +1,15 @@
-import { DataGovSgResponse, Record } from './types';
+import {
+  HawkerCentreClosureResponse,
+  HawkerCentreClosureRecord,
+} from './types';
 
 /**
  * Performs a manual override of some data points.
  * Used when the API returns incorrect/old data.
  */
-export function overrideData(data: DataGovSgResponse): DataGovSgResponse {
+export function overrideData(
+  data: HawkerCentreClosureResponse,
+): HawkerCentreClosureResponse {
   const dataUpdated = overrideSingleRecord({
     data,
     id: 104,
@@ -20,13 +25,13 @@ export function overrideData(data: DataGovSgResponse): DataGovSgResponse {
 }
 
 function overrideSingleRecord(props: {
-  data: DataGovSgResponse;
+  data: HawkerCentreClosureResponse;
   id: number;
   overrides: Array<{
     attributeName: string;
     newValue: string;
   }>;
-}): DataGovSgResponse {
+}): HawkerCentreClosureResponse {
   const { data, id, overrides } = props;
 
   const record = findRecordById(data, 104);
@@ -53,9 +58,9 @@ function overrideSingleRecord(props: {
  * Finds a record by the `_id` attribute.
  */
 function findRecordById(
-  data: DataGovSgResponse,
+  data: HawkerCentreClosureResponse,
   id: number,
-): Record | undefined {
+): HawkerCentreClosureRecord | undefined {
   const { records } = data.result;
   return records.find((record) => record._id === id);
 }
@@ -64,10 +69,10 @@ function findRecordById(
  * Combines the updated record with the existing unchanged records.
  */
 function generateUpdatedRecords(
-  data: DataGovSgResponse,
+  data: HawkerCentreClosureResponse,
   id: number,
-  record: Record,
-): Record[] {
+  record: HawkerCentreClosureRecord,
+): HawkerCentreClosureRecord[] {
   const { records } = data.result;
   const recordsUnchanged = records.filter((_record) => _record._id !== id);
   return [...recordsUnchanged, record];
