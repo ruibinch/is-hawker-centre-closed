@@ -1,5 +1,5 @@
 import { format, parseISO } from 'date-fns';
-import { Result } from '../dataCollection/types';
+import { ClosureReason, Result } from '../dataCollection/types';
 import { SearchModifier, SearchResponse } from '../reader/types';
 
 export function makeMessage(searchResponse: SearchResponse): string {
@@ -40,7 +40,9 @@ export function makeMessage(searchResponse: SearchResponse): string {
     results.forEach((result) => {
       reply +=
         `*${result.name}*\n` +
-        `${formatDate(result.startDate)} to ${formatDate(result.endDate)}\n\n`;
+        `${formatDate(result.startDate)} to ${formatDate(
+          result.endDate,
+        )}${makeClosureReasonSnippet(result.reason)}\n\n`;
     });
   }
 
@@ -76,6 +78,15 @@ function makeTemporalVerbSnippet(modifier: SearchModifier) {
     case SearchModifier.nextMonth:
       return 'will be';
     /* istanbul ignore next */
+    default:
+      return '';
+  }
+}
+
+function makeClosureReasonSnippet(reason: ClosureReason) {
+  switch (reason) {
+    case ClosureReason.renovation:
+      return ' _\\(long\\-term renovation works\\)_';
     default:
       return '';
   }

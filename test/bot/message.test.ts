@@ -139,7 +139,7 @@ describe('bot > message', () => {
       {
         id: '111',
         hawkerCentreId: 5,
-        reason: ClosureReason.cleaning,
+        reason: ClosureReason.renovation,
         name: 'Melville City',
         startDate: '2021-01-01',
         endDate: '2021-01-04',
@@ -148,7 +148,7 @@ describe('bot > message', () => {
 
     const makeResultsSection = () =>
       `*Littleroot Town*\n01\\-Jan to 02\\-Jan\n\n` +
-      `*Melville City*\n01\\-Jan to 04\\-Jan\n\n`;
+      `*Melville City*\n01\\-Jan to 04\\-Jan _\\(long\\-term renovation works\\)_\n\n`;
 
     it.each([
       [
