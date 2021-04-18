@@ -10,7 +10,7 @@ const apiGatewayId = process.env.API_GATEWAY_ID;
 axios
   .get(`${makeTelegramApiBase(token)}/setWebhook`, {
     params: {
-      url: `https://${apiGatewayId}.execute-api.ap-southeast-1.amazonaws.com/dev/bot`,
+      url: `https://${apiGatewayId}.execute-api.ap-southeast-1.amazonaws.com/dev/bot?token=${token}`,
     },
   })
   .then(() => {

@@ -7,6 +7,7 @@ import { makeMessage } from './message';
 import { BOT_TOKEN } from './variables';
 import { isCommand, makeCommandMessage } from './commands';
 import { sanitiseInputText } from './utils';
+import { validateToken } from './auth';
 
 export const bot: APIGatewayProxyHandler = async (
   event,
@@ -14,6 +15,9 @@ export const bot: APIGatewayProxyHandler = async (
   callback,
 ): Promise<APIGatewayProxyResult> => {
   const callbackWrapper = makeCallbackWrapper(callback);
+  if (!validateToken(event.queryStringParameters)) {
+    return callbackWrapper(403);
+  }
 
   if (!event.body) {
     return callbackWrapper(400);
