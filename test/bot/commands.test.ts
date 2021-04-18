@@ -17,10 +17,10 @@ describe('bot > commands', () => {
     it('returns the correct message', () => {
       const expectedMessage =
         `The search query follows the structure:\n\n` +
-        '          `\\[keyword\\] \\[modifier\\]`\n\n' +
-        `Supported modifiers are:\n` +
-        `_today_, _tmr_, _tomorrow_, _month_, _next month_\\.\n\n` +
-        `When no modifier is specified, it is set to _today_ by default\\.\n\n`;
+        '          `\\[keyword\\] \\[timeframe\\]`\n\n' +
+        `Supported timeframes are:\n` +
+        `_today_, _tmr_, _tomorrow_, _month_, _next month_\n\n` +
+        `When no timeframe is specified, it is default to _today_\\.\n\n`;
 
       const commandMessage = makeCommandMessage('/help');
       expect(commandMessage).toEqual(expect.stringContaining(expectedMessage));
