@@ -19,10 +19,3 @@ export type Dimensions = {
   width: number;
   height: number;
 };
-
-export type Result = {
-  id: string;
-  hawkerCentre: string;
-  startDate: string;
-  endDate: string;
-};

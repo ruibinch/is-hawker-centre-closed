@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import { makeMessage } from '../../src/bot/message';
-import { Result } from '../../src/parser/types';
+import { Result } from '../../src/dataCollection/types';
 import { SearchModifier } from '../../src/reader/types';
 
 describe('bot > message', () => {

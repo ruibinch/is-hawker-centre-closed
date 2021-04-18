@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "sls offline start",
-    "dev:parser": "nodemon",
-    "run:parser": "ts-node src/parser/index.ts",
+    "run:parser": "ts-node src/dataCollection/pdfParser/index.ts",
     "init:bot": "ts-node src/bot/init.ts",
     "deploy": "sls deploy -f",
     "lint": "eslint . --ext .ts",
@@ -26,7 +25,6 @@
     "eslint-plugin-jest": "^24.1.0",
     "eslint-plugin-prettier": "^3.1.2",
     "jest": "^26.5.3",
-    "nodemon": "^2.0.7",
     "prettier": "^2.2.1",
     "serverless-offline": "^6.9.0",
     "serverless-webpack": "^5.4.1",

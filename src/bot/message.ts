@@ -1,5 +1,5 @@
 import { format, parseISO } from 'date-fns';
-import { Result } from '../parser/types';
+import { Result } from '../dataCollection/types';
 import { SearchModifier, SearchResponse } from '../reader/types';
 
 export function makeMessage(searchResponse: SearchResponse): string {

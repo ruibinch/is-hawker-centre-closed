@@ -1,4 +1,4 @@
-import { Result } from '../../src/parser/types';
+import { Result } from '../../src/dataCollection/types';
 
 export const mockTable: Result[] = [
   {

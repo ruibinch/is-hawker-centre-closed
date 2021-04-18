@@ -6,7 +6,7 @@ import {
 } from 'date-fns';
 import { currentDate, getNextPeriod, isWithinDateBounds } from '../common/date';
 import { getTableData } from '../common/dynamodb';
-import { Result } from '../parser/types';
+import { Result } from '../dataCollection/types';
 import { extractSearchModifier } from './searchModifier';
 import { SearchModifier, SearchObject, SearchResponse } from './types';
 

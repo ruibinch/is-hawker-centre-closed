@@ -1,6 +1,6 @@
 import * as AWS from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
-import { Result } from '../parser/types';
+import { Result } from '../dataCollection/types';
 
 const TABLE_NAME = 'ishawkercentreclosed';
 const dynamoDb = new AWS.DynamoDB.DocumentClient();

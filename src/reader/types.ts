@@ -1,4 +1,4 @@
-import { Result } from '../parser/types';
+import { Result } from '../dataCollection/types';
 
 export type SearchQuery = {
   term: string;

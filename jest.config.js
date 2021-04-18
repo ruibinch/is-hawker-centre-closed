@@ -6,7 +6,7 @@ module.exports = {
   collectCoverageFrom: [
     '<rootDir>/src/**/*.ts',
     '!<rootDir>/src/common/*.ts',
-    '!<rootDir>/src/parser/*.ts',
+    '!<rootDir>/src/dataCollection/*.ts',
   ],
   collectCoverage: true,
   coverageReporters: ['text', 'text-summary'],
