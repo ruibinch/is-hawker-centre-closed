@@ -6,7 +6,7 @@ describe('bot > commands', () => {
       const expectedMessage =
         `An easy way to check if your favourite hawker centre is closed today\\! \u{1F35C}\u{1F35B}\u{1F367}\n\n` +
         `Simply send the bot some *subset of the hawker centre name*, e\\.g\\. _toa payoh_\n\n` +
-        `For more options\\, type in /help to see how you can customise your query further\\.'`;
+        `For more options\\, type in /help to see how you can customise your query further\\.`;
 
       const commandMessage = makeCommandMessage('/start');
       expect(commandMessage).toEqual(expectedMessage);
