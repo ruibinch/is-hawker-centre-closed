@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { overrideData } from './override';
 import { DataGovSgResponse, Record } from './types';
 
 export async function getRawRecords(): Promise<Record[]> {
@@ -11,8 +12,9 @@ export async function getRawRecords(): Promise<Record[]> {
     })
     .then((response) => {
       const data = response.data as DataGovSgResponse;
+      const dataUpdated = overrideData(data);
 
-      return data.result.records.map((record) => ({
+      return dataUpdated.result.records.map((record) => ({
         _id: record._id,
         name: record.name,
         address_myenv: record.address_myenv,

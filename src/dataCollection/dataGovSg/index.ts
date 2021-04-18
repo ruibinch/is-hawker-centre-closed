@@ -64,9 +64,9 @@ getRawRecords().then((recordsRaw) => {
     return _results;
   }, []);
 
+  console.log(`${results.length} entries found`);
   writeFile(results);
   if (isUploadToAws === 'true') {
-    console.log(`${results.length} entries found`);
     console.log(`Uploading to AWS`);
     uploadData(results);
   }
