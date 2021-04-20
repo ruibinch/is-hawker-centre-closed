@@ -7,6 +7,8 @@ import { isInfoCommand, makeCommandMessage } from './commands';
 import { sanitiseInputText } from './utils';
 import { validateToken } from './auth';
 import { runSearch } from './search';
+import { isFavouritesCommand } from './favourites/utils';
+import { manageFavourites } from './favourites';
 
 export const bot: APIGatewayProxyHandler = async (
   event,
@@ -42,6 +44,23 @@ export const bot: APIGatewayProxyHandler = async (
     return callbackWrapper(204);
   }
 
+  if (isFavouritesCommand(textSanitised)) {
+    return manageFavourites(textSanitised).then((searchHCResponse) => {
+      if (searchHCResponse === null) {
+        return callbackWrapper(400);
+      }
+
+      const { message, choices } = searchHCResponse;
+
+      if (choices) {
+        sendMessageWithChoices(chatId, message, choices);
+      } else {
+        sendMessage(chatId, message);
+      }
+      return callbackWrapper(204);
+    });
+  }
+
   await runSearch(textSanitised).then((replyMessage) => {
     if (replyMessage === null) {
       return callbackWrapper(400);
@@ -61,5 +80,24 @@ function sendMessage(chatId: number, message: string) {
       text: message,
       parse_mode: 'MarkdownV2',
     },
+  });
+}
+
+function sendMessageWithChoices(
+  chatId: number,
+  message: string,
+  choices: string[],
+) {
+  const params = {
+    chat_id: chatId,
+    text: message,
+    reply_markup: {
+      keyboard: choices.map((choice) => [{ text: choice }]),
+      one_time_keyboard: true,
+    },
+  };
+
+  axios.get(`${makeTelegramApiBase(BOT_TOKEN)}/sendMessage`, {
+    params,
   });
 }
