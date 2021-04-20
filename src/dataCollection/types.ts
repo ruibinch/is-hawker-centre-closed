@@ -12,3 +12,9 @@ export type Result = {
   startDate: string;
   endDate: string;
 };
+
+export type HawkerCentreInfo = {
+  hawkerCentreId: number;
+  name: string;
+  nameSecondary?: string;
+};

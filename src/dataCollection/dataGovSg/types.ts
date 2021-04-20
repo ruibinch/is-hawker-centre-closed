@@ -37,11 +37,3 @@ export type HawkerCentreClosureRecord = {
   other_works_enddate: string;
   remarks_other_works: string;
 };
-
-// Hawker centre details
-
-export type HawkerCentreInfo = {
-  hawkerCentreId: number;
-  name: string;
-  nameSecondary?: string;
-};
