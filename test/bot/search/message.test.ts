@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
-import { makeMessage } from '../../src/bot/message';
-import { ClosureReason, Result } from '../../src/dataCollection/types';
-import { SearchModifier } from '../../src/reader/types';
+import { makeMessage } from '../../../src/bot/search/message';
+import { ClosureReason, Result } from '../../../src/dataCollection/types';
+import { SearchModifier } from '../../../src/reader/types';
 
 describe('bot > message', () => {
   describe('returns an empty results array', () => {

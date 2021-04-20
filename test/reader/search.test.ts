@@ -6,7 +6,7 @@ import { mockTable } from '../__mocks__/db';
 
 // TODO: shift this to a __mocks__ folder
 jest.mock('../../src/common/dynamodb', () => ({
-  getTableData: () => Promise.resolve({ Items: mockTable }),
+  getAllResults: () => Promise.resolve({ Items: mockTable }),
 }));
 
 describe('reader > search', () => {

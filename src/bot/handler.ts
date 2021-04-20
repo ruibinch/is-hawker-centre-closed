@@ -2,12 +2,11 @@ import axios from 'axios';
 import { APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
 import { makeCallbackWrapper } from '../common/lambda';
 import { makeTelegramApiBase, Message } from '../common/telegram';
-import { processSearch } from '../reader/search';
-import { makeMessage } from './message';
 import { BOT_TOKEN } from './variables';
 import { isCommand, makeCommandMessage } from './commands';
 import { sanitiseInputText } from './utils';
 import { validateToken } from './auth';
+import { runSearch } from './search';
 
 export const bot: APIGatewayProxyHandler = async (
   event,
@@ -43,20 +42,14 @@ export const bot: APIGatewayProxyHandler = async (
     return callbackWrapper(204);
   }
 
-  await processSearch(textSanitised)
-    .then((searchResponse) => {
-      if (searchResponse === null) {
-        return callbackWrapper(400);
-      }
-
-      const replyMessage = makeMessage(searchResponse);
-      sendMessage(chatId, replyMessage);
-      return callbackWrapper(204);
-    })
-    .catch((error) => {
-      console.log(error);
+  await runSearch(textSanitised).then((replyMessage) => {
+    if (replyMessage === null) {
       return callbackWrapper(400);
-    });
+    }
+
+    sendMessage(chatId, replyMessage);
+    return callbackWrapper(204);
+  });
 
   return callbackWrapper(502);
 };
