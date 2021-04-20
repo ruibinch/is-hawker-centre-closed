@@ -27,6 +27,17 @@ describe('bot > commands', () => {
     });
   });
 
+  describe('/fav', () => {
+    it('returns the correct helper message', () => {
+      const expectedMessage =
+        `Please specify some keyword to filter the list of hawker centres for you to add to your favourites\\.\n\n` +
+        `e\\.g\\. _/fav `;
+
+      const commandMessage = makeCommandMessage('/fav');
+      expect(commandMessage).toEqual(expect.stringContaining(expectedMessage));
+    });
+  });
+
   describe('an unsupported command', () => {
     it('returns the correct message', () => {
       const expectedMessage =

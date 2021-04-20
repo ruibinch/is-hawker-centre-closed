@@ -3,7 +3,7 @@ import { APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
 import { makeCallbackWrapper } from '../common/lambda';
 import { makeTelegramApiBase, Message } from '../common/telegram';
 import { BOT_TOKEN } from './variables';
-import { isCommand, makeCommandMessage } from './commands';
+import { isInfoCommand, makeCommandMessage } from './commands';
 import { sanitiseInputText } from './utils';
 import { validateToken } from './auth';
 import { runSearch } from './search';
@@ -36,7 +36,7 @@ export const bot: APIGatewayProxyHandler = async (
     return callbackWrapper(204);
   }
 
-  if (isCommand(textSanitised)) {
+  if (isInfoCommand(textSanitised)) {
     const commandMessage = makeCommandMessage(textSanitised);
     sendMessage(chatId, commandMessage);
     return callbackWrapper(204);

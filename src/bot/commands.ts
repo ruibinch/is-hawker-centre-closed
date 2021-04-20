@@ -1,18 +1,18 @@
 /* eslint-disable max-len */
-const SUPPORTED_COMMANDS = ['/start', '/help'];
+const SUPPORTED_COMMANDS = ['/start', '/help', '/fav'];
 
-export function isCommand(s: string): boolean {
-  return s.startsWith('/');
+export function isInfoCommand(s: string): boolean {
+  return s.startsWith('/') && s.split(' ').length === 1;
 }
 
-function isSupportedCommand(s: string): boolean {
+function isSupportedInfoCommand(s: string): boolean {
   return SUPPORTED_COMMANDS.includes(s);
 }
 
 export function makeCommandMessage(s: string): string {
   let reply = '';
 
-  if (!isSupportedCommand(s)) {
+  if (!isSupportedInfoCommand(s)) {
     reply =
       `Woops, that isn't a supported command\\.\n\n` +
       `Please try again with one of the following:\n` +
@@ -36,6 +36,12 @@ export function makeCommandMessage(s: string): string {
         `_today_, _tmr_, _tomorrow_, _month_, _next month_\n\n` +
         `When no timeframe is specified, it is default to _today_\\.\n\n`;
       reply += makeRandomExample();
+      break;
+    }
+    case '/fav': {
+      reply =
+        `Please specify some keyword to filter the list of hawker centres for you to add to your favourites\\.\n\n` +
+        `e\\.g\\. _/fav ${getRandomExampleKeyword()}_`;
       break;
     }
     /* istanbul ignore next */
@@ -65,6 +71,11 @@ function makeRandomExample(): string {
   const example = examples[generateRandomInt(0, examples.length)];
   const [searchTerm, keyword, modifier] = example;
   return `e\\.g\\. _${searchTerm}_ will display the hawker centres containing the keyword __${keyword}__ that are closed __${modifier}__\\.`;
+}
+
+function getRandomExampleKeyword(): string {
+  const example = examples[generateRandomInt(0, examples.length)];
+  return example[1];
 }
 
 // Returns a number in the range [min, max)
