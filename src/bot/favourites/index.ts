@@ -1,5 +1,5 @@
 import { SearchHCResponse } from './types';
-import { addNewHCToFavourites } from './utils';
+import { addNewHCToFavourites } from './logic';
 
 // TODO: to update return type when adding more favourites commands
 export async function manageFavourites(

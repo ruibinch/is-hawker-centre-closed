@@ -35,7 +35,9 @@ export async function addNewHCToFavourites(
 
       if (hcFilteredByKeyword.length === 0) {
         return {
-          message: `No results found for keyword *${keyword}*\\. Try again?`,
+          message: `No results found${
+            keyword.length > 0 ? ` for keyword *${keyword}*` : ''
+          }\\. Try again?`,
         };
       }
 
@@ -69,7 +71,7 @@ function filterByKeyword(
   keyword: string,
 ): HawkerCentreInfo[] {
   if (keyword === '') {
-    return items;
+    return [];
   }
 
   const filterRegex = new RegExp(`\\b${keyword.toLowerCase()}`);

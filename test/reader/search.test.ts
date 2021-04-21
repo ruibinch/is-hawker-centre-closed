@@ -2,11 +2,11 @@
 import { parseISO } from 'date-fns';
 
 import { processSearch } from '../../src/reader/search';
-import { mockTable } from '../__mocks__/db';
+import { mockResults } from '../__mocks__/db';
 
 // TODO: shift this to a __mocks__ folder
 jest.mock('../../src/common/dynamodb', () => ({
-  getAllResults: () => Promise.resolve({ Items: mockTable }),
+  getAllResults: () => Promise.resolve({ Items: mockResults }),
 }));
 
 describe('reader > search', () => {
@@ -241,7 +241,7 @@ describe('reader > search', () => {
           const { results } = searchResponse;
 
           expect(results).toHaveLength(5);
-          mockTable.slice(0, 5).forEach((entry) => {
+          mockResults.slice(0, 5).forEach((entry) => {
             expect(results).toContainEqual(entry);
           });
         }

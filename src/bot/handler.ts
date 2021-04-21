@@ -7,7 +7,7 @@ import { isInfoCommand, makeCommandMessage } from './commands';
 import { sanitiseInputText } from './utils';
 import { validateToken } from './auth';
 import { runSearch } from './search';
-import { isFavouritesCommand } from './favourites/utils';
+import { isFavouritesCommand } from './favourites/logic';
 import { manageFavourites } from './favourites';
 
 export const bot: APIGatewayProxyHandler = async (

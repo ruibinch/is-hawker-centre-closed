@@ -1,6 +1,10 @@
-import { ClosureReason, Result } from '../../src/dataCollection/types';
+import {
+  ClosureReason,
+  HawkerCentreInfo,
+  Result,
+} from '../../src/dataCollection/types';
 
-export const mockTable: Result[] = [
+export const mockResults: Result[] = [
   {
     id: '111',
     hawkerCentreId: 1,
@@ -56,5 +60,85 @@ export const mockTable: Result[] = [
     name: 'Verdanturf Town',
     startDate: '2021-02-08',
     endDate: '2021-02-09',
+  },
+];
+
+export const mockHawkerCentres: HawkerCentreInfo[] = [
+  {
+    hawkerCentreId: 1,
+    name: 'Devon Corporation',
+  },
+  {
+    hawkerCentreId: 2,
+    name: 'Slateport Market',
+  },
+  {
+    hawkerCentreId: 3,
+    name: 'Fortree Market',
+  },
+  {
+    hawkerCentreId: 11,
+    name: 'Rustboro Gym',
+    nameSecondary: 'Rocky road ahead',
+  },
+  {
+    hawkerCentreId: 12,
+    name: 'Dewford Gym',
+    nameSecondary: "Surfer's Paradise",
+  },
+  {
+    hawkerCentreId: 13,
+    name: 'Mauville Gym',
+    nameSecondary: "Nikola Tesla's descendants",
+  },
+  {
+    hawkerCentreId: 14,
+    name: 'Lavaridge Gym',
+    nameSecondary: 'Land of hot springs',
+  },
+  {
+    hawkerCentreId: 15,
+    name: 'Petalburg Gym',
+    nameSecondary: 'Slaking the king',
+  },
+  {
+    hawkerCentreId: 16,
+    name: 'Fortree Gym',
+    nameSecondary: 'Treehouse living',
+  },
+  {
+    hawkerCentreId: 17,
+    name: 'Mossdeep Gym',
+    nameSecondary: 'Psychics in space',
+  },
+  {
+    hawkerCentreId: 18,
+    name: 'Sootopolis Gym',
+    nameSecondary: 'A town in a crater',
+  },
+  {
+    hawkerCentreId: 19,
+    name: 'Sidney Gym',
+    nameSecondary: 'Mightyena used Intimidate',
+  },
+  {
+    hawkerCentreId: 20,
+    name: 'Phoebe Gym',
+    nameSecondary: 'Ghostly figures',
+  },
+  {
+    hawkerCentreId: 21,
+    name: 'Glacia Gym',
+    nameSecondary: 'Ice cream heaven',
+  },
+  {
+    hawkerCentreId: 22,
+    name: 'Drake Gym',
+    nameSecondary: 'How to train a dragon',
+  },
+  {
+    hawkerCentreId: 23,
+    name: 'Champion Gym',
+    nameSecondary: 'Where the very best belong',
   },
 ];
