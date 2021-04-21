@@ -1,6 +1,7 @@
 import fs from 'fs';
 import pdf from 'pdf-parse';
-import { uploadResults } from '../../common/dynamodb';
+
+// import { uploadResults } from '../../common/dynamodb';
 import { renderPage } from './parser';
 import { Result } from './types';
 import { isBlank } from './utils';
@@ -29,7 +30,7 @@ pdf(dataBuffer, {
   if (isUploadToAws === 'true') {
     console.log(`[${fileName}.pdf] ${results.length} entries found`);
     console.log(`[${fileName}.pdf] Uploading to AWS`);
-    uploadResults(results);
+    // uploadResults(results);
   } else {
     console.log(
       results

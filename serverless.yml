@@ -4,7 +4,6 @@ frameworkVersion: '2'
 
 custom:
   bot: src/bot
-  reader: src/reader
   webpack:
     includeModules: true
 
@@ -40,12 +39,6 @@ package:
     - 'src/**'
 
 functions:
-  search:
-    handler: ${self:custom.reader}/handler.search
-    events:
-      - http:
-          method: get
-          path: /search
   bot:
     handler: ${self:custom.bot}/handler.bot
     events:

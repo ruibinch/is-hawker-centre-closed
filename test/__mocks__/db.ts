@@ -2,7 +2,7 @@ import {
   ClosureReason,
   HawkerCentreInfo,
   Result,
-} from '../../src/dataCollection/types';
+} from '../../src/common/types';
 
 export const mockResults: Result[] = [
   {

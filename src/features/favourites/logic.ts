@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import { getAllHawkerCentres } from '../../common/dynamodb';
-import { HawkerCentreInfo } from '../../dataCollection/types';
+import { HawkerCentreInfo } from '../../common/types';
 import { SearchHCResponse } from './types';
 
 const FAVOURITES_COMMANDS = ['/fav'];

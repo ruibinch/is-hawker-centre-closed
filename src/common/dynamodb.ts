@@ -1,6 +1,7 @@
 import * as AWS from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
-import { HawkerCentreInfo, Result } from '../dataCollection/types';
+
+import { HawkerCentreInfo, Result } from './types';
 
 const TABLE_RESULTS = 'ishawkercentreclosed';
 const TABLE_HC = 'ihcc-hawkerCentres';

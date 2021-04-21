@@ -4,9 +4,14 @@ import {
   isSameMonth,
   parseISO,
 } from 'date-fns';
-import { currentDate, getNextPeriod, isWithinDateBounds } from '../common/date';
-import { getAllResults } from '../common/dynamodb';
-import { Result } from '../dataCollection/types';
+
+import {
+  currentDate,
+  getNextPeriod,
+  isWithinDateBounds,
+} from '../../common/date';
+import { getAllResults } from '../../common/dynamodb';
+import { Result } from '../../common/types';
 import { extractSearchModifier } from './searchModifier';
 import { SearchModifier, SearchObject, SearchResponse } from './types';
 

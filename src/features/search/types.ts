@@ -1,4 +1,4 @@
-import { Result } from '../dataCollection/types';
+import { Result } from '../../common/types';
 
 export type SearchQuery = {
   term: string;

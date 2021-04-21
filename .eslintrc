@@ -19,10 +19,21 @@
       "error",
       { "functions": false, "variables": false }
     ],
+    "import/order": [
+      "error",
+      {
+        "newlines-between": "always",
+        "groups": [["external", "builtin"]],
+        "pathGroupsExcludedImportTypes": ["builtin"],
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        }
+      }
+    ],
     "@typescript-eslint/naming-convention": "off",
     "no-underscore-dangle": "off",
-    "no-param-reassign": "off",
-    "prettier/prettier": 2
+    "no-param-reassign": "off"
   },
   "env": {
     "browser": true,

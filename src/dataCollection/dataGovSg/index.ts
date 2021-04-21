@@ -1,7 +1,7 @@
 import { toDateISO8601 } from '../../common/date';
 import { uploadHawkerCentres, uploadResults } from '../../common/dynamodb';
 import { parseToEnum } from '../../common/enum';
-import { ClosureReason, HawkerCentreInfo, Result } from '../types';
+import { ClosureReason, HawkerCentreInfo, Result } from '../../common/types';
 import { generateHash } from '../utils';
 import { HawkerCentreClosureRecord } from './types';
 import { getRawRecords, parseHawkerCentreName, writeFile } from './utils';

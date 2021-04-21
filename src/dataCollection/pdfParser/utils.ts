@@ -1,4 +1,5 @@
 import Hashes from 'jshashes';
+
 import { Dimensions } from './types';
 
 export function isBlank(s: string): boolean {

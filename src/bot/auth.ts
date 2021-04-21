@@ -1,4 +1,5 @@
 import { APIGatewayProxyEventQueryStringParameters } from 'aws-lambda';
+
 import { BOT_TOKEN } from './variables';
 
 type QueryParams = {

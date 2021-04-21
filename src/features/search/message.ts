@@ -1,6 +1,7 @@
 import { format, parseISO } from 'date-fns';
-import { ClosureReason, Result } from '../../dataCollection/types';
-import { SearchModifier, SearchResponse } from '../../reader/types';
+
+import { ClosureReason, Result } from '../../common/types';
+import { SearchModifier, SearchResponse } from './types';
 
 export function makeMessage(searchResponse: SearchResponse): string {
   const {

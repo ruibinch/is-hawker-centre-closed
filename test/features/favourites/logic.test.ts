@@ -1,4 +1,4 @@
-import { addNewHCToFavourites } from '../../../src/bot/favourites/logic';
+import { addNewHCToFavourites } from '../../../src/features/favourites';
 import { mockHawkerCentres } from '../../__mocks__/db';
 
 // TODO: shift this to a __mocks__ folder

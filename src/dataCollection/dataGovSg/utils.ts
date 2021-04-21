@@ -1,5 +1,6 @@
 import axios from 'axios';
 import fs from 'fs';
+
 import { overrideData } from './override';
 import {
   HawkerCentreClosureResponse,
@@ -59,7 +60,7 @@ export function parseHawkerCentreName(
   return [namePrimary, nameSecondary];
 }
 
-export function writeFile(results: any[], filename: string): void {
+export function writeFile(results: unknown[], filename: string): void {
   fs.writeFile(`./data/${filename}`, JSON.stringify(results), (err) => {
     if (err) throw err;
     console.log(`Data successfully written to ${filename}`);

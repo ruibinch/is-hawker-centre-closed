@@ -1,14 +1,14 @@
-import axios from 'axios';
 import { APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
+import axios from 'axios';
+
 import { makeCallbackWrapper } from '../common/lambda';
 import { makeTelegramApiBase, Message } from '../common/telegram';
-import { BOT_TOKEN } from './variables';
+import { isFavouritesCommand, manageFavourites } from '../features/favourites';
+import { runSearch } from '../features/search';
+import { validateToken } from './auth';
 import { isInfoCommand, makeCommandMessage } from './commands';
 import { sanitiseInputText } from './utils';
-import { validateToken } from './auth';
-import { runSearch } from './search';
-import { isFavouritesCommand } from './favourites/logic';
-import { manageFavourites } from './favourites';
+import { BOT_TOKEN } from './variables';
 
 export const bot: APIGatewayProxyHandler = async (
   event,
@@ -91,16 +91,14 @@ function sendMessageWithChoices(
   message: string,
   choices: string[],
 ) {
-  const params = {
-    chat_id: chatId,
-    text: message,
-    reply_markup: {
-      keyboard: choices.map((choice) => [{ text: choice }]),
-      one_time_keyboard: true,
-    },
-  };
-
   axios.get(`${makeTelegramApiBase(BOT_TOKEN)}/sendMessage`, {
-    params,
+    params: {
+      chat_id: chatId,
+      text: message,
+      reply_markup: {
+        keyboard: choices.map((choice) => [{ text: choice }]),
+        one_time_keyboard: true,
+      },
+    },
   });
 }
