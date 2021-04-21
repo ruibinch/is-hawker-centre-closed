@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
 import { getAllHawkerCentres } from '../../common/dynamodb';
-import { HawkerCentreInfo } from '../../common/types';
-import { SearchHCResponse } from './types';
+import { BotResponse, HawkerCentreInfo } from '../../common/types';
 
 const FAVOURITES_COMMANDS = ['/fav'];
 const MAX_CHOICES = 10;
@@ -13,7 +12,7 @@ export function isFavouritesCommand(s: string): boolean {
 
 export async function addNewHCToFavourites(
   keyword: string,
-): Promise<SearchHCResponse | null> {
+): Promise<BotResponse | null> {
   return getAllHawkerCentres()
     .then((response) => {
       const items = response.Items as HawkerCentreInfo[];

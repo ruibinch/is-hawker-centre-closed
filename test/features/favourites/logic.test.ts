@@ -9,11 +9,11 @@ jest.mock('../../../src/common/dynamodb', () => ({
 describe('bot > favourites', () => {
   describe('addNewHCToFavourites', () => {
     it('["slateport"] returns a single choice', async () => {
-      await addNewHCToFavourites('slateport').then((searchHCResponse) => {
-        expect(searchHCResponse).toBeDefined();
+      await addNewHCToFavourites('slateport').then((botResponse) => {
+        expect(botResponse).toBeDefined();
 
-        if (searchHCResponse) {
-          const { message, choices } = searchHCResponse;
+        if (botResponse) {
+          const { message, choices } = botResponse;
 
           expect(message).toStrictEqual(
             'Confirm that this is the hawker centre to be added?',
@@ -27,11 +27,11 @@ describe('bot > favourites', () => {
     });
 
     it('["fortree"] returns multiple choices for selection', async () => {
-      await addNewHCToFavourites('fortree').then((searchHCResponse) => {
-        expect(searchHCResponse).toBeDefined();
+      await addNewHCToFavourites('fortree').then((botResponse) => {
+        expect(botResponse).toBeDefined();
 
-        if (searchHCResponse) {
-          const { message, choices } = searchHCResponse;
+        if (botResponse) {
+          const { message, choices } = botResponse;
 
           expect(message).toStrictEqual(`Choose your favourite hawker centre:`);
           expect(choices).toHaveLength(2);
@@ -46,11 +46,11 @@ describe('bot > favourites', () => {
     });
 
     it('["psychic"] searches on secondary name', async () => {
-      await addNewHCToFavourites('psychic').then((searchHCResponse) => {
-        expect(searchHCResponse).toBeDefined();
+      await addNewHCToFavourites('psychic').then((botResponse) => {
+        expect(botResponse).toBeDefined();
 
-        if (searchHCResponse) {
-          const { message, choices } = searchHCResponse;
+        if (botResponse) {
+          const { message, choices } = botResponse;
 
           expect(message).toStrictEqual(
             'Confirm that this is the hawker centre to be added?',
@@ -64,28 +64,26 @@ describe('bot > favourites', () => {
     });
 
     it('["Slateport Market"] an exact match will add it to the favourites list', async () => {
-      await addNewHCToFavourites('Slateport Market').then(
-        (searchHCResponse) => {
-          expect(searchHCResponse).toBeDefined();
+      await addNewHCToFavourites('Slateport Market').then((botResponse) => {
+        expect(botResponse).toBeDefined();
 
-          if (searchHCResponse) {
-            const { message, choices } = searchHCResponse;
+        if (botResponse) {
+          const { message, choices } = botResponse;
 
-            expect(message).toStrictEqual(
-              `Great, adding *Slateport Market* to your list of favourites\\!`,
-            );
-            expect(choices).toBeUndefined();
-          }
-        },
-      );
+          expect(message).toStrictEqual(
+            `Great, adding *Slateport Market* to your list of favourites\\!`,
+          );
+          expect(choices).toBeUndefined();
+        }
+      });
     });
 
     it('["oldale"] returns an error message when there are no results', async () => {
-      await addNewHCToFavourites('oldale').then((searchHCResponse) => {
-        expect(searchHCResponse).toBeDefined();
+      await addNewHCToFavourites('oldale').then((botResponse) => {
+        expect(botResponse).toBeDefined();
 
-        if (searchHCResponse) {
-          const { message, choices } = searchHCResponse;
+        if (botResponse) {
+          const { message, choices } = botResponse;
 
           expect(message).toStrictEqual(
             'No results found for keyword *oldale*\\. Try again?',
@@ -96,11 +94,11 @@ describe('bot > favourites', () => {
     });
 
     it('["gym"] returns an error message when there are too many results', async () => {
-      await addNewHCToFavourites('gym').then((searchHCResponse) => {
-        expect(searchHCResponse).toBeDefined();
+      await addNewHCToFavourites('gym').then((botResponse) => {
+        expect(botResponse).toBeDefined();
 
-        if (searchHCResponse) {
-          const { message, choices } = searchHCResponse;
+        if (botResponse) {
+          const { message, choices } = botResponse;
 
           expect(message).toStrictEqual(
             'Too many results to be displayed, please further refine your search\\.',
@@ -111,11 +109,11 @@ describe('bot > favourites', () => {
     });
 
     it('[""] empty keyword returns no results', async () => {
-      await addNewHCToFavourites('').then((searchHCResponse) => {
-        expect(searchHCResponse).toBeDefined();
+      await addNewHCToFavourites('').then((botResponse) => {
+        expect(botResponse).toBeDefined();
 
-        if (searchHCResponse) {
-          const { message, choices } = searchHCResponse;
+        if (botResponse) {
+          const { message, choices } = botResponse;
 
           expect(message).toStrictEqual('No results found\\. Try again?');
           expect(choices).toBeUndefined();

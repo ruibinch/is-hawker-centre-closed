@@ -44,13 +44,15 @@ export const bot: APIGatewayProxyHandler = async (
     return callbackWrapper(204);
   }
 
+  // TODO: remove repetitions in this section
+
   if (isFavouritesCommand(textSanitised)) {
-    return manageFavourites(textSanitised).then((searchHCResponse) => {
-      if (searchHCResponse === null) {
+    return manageFavourites(textSanitised).then((botResponse) => {
+      if (botResponse === null) {
         return callbackWrapper(400);
       }
 
-      const { message, choices } = searchHCResponse;
+      const { message, choices } = botResponse;
 
       if (choices) {
         sendMessageWithChoices(chatId, message, choices);
@@ -61,12 +63,14 @@ export const bot: APIGatewayProxyHandler = async (
     });
   }
 
-  await runSearch(textSanitised).then((replyMessage) => {
-    if (replyMessage === null) {
+  await runSearch(textSanitised).then((botResponse) => {
+    if (botResponse === null) {
       return callbackWrapper(400);
     }
 
-    sendMessage(chatId, replyMessage);
+    const { message } = botResponse;
+
+    sendMessage(chatId, message);
     return callbackWrapper(204);
   });
 
