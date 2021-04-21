@@ -79,6 +79,9 @@ function sendMessage(chatId: number, message: string) {
       chat_id: chatId,
       text: message,
       parse_mode: 'MarkdownV2',
+      reply_markup: {
+        remove_keyboard: true,
+      },
     },
   });
 }
