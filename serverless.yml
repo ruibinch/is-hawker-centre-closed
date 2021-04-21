@@ -25,6 +25,14 @@ provider:
           Action:
             - dynamodb:Scan
           Resource: 'arn:aws:dynamodb:ap-southeast-1:*:table/ishawkercentreclosed'
+        - Effect: Allow
+          Action:
+            - dynamodb:Scan
+          Resource: 'arn:aws:dynamodb:ap-southeast-1:*:table/ihcc-hawkerCentres'
+        - Effect: Allow
+          Action:
+            - dynamodb:Scan
+          Resource: 'arn:aws:dynamodb:ap-southeast-1:*:table/ihcc-users'
 
 package:
   patterns:
