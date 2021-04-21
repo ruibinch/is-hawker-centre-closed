@@ -8,7 +8,7 @@ type TelegramResponseBase = {
 
 // Entities
 
-type User = {
+export type TelegramUser = {
   id: number;
   is_bot: boolean;
   first_name: string;
@@ -17,7 +17,7 @@ type User = {
   language_code?: string;
 };
 
-type Chat = {
+type TelegramChat = {
   id: number;
   type: string;
   title: string;
@@ -26,14 +26,14 @@ type Chat = {
   last_name: string;
 };
 
-export type Message = {
+export type TelegramMessage = {
   message_id: number;
-  from: User;
+  from: TelegramUser;
   date: number;
-  chat: Chat;
+  chat: TelegramChat;
   text: string;
-  sender_chat: Chat;
-  via_bot: User;
+  sender_chat: TelegramChat;
+  via_bot: TelegramUser;
 };
 
 // Methods

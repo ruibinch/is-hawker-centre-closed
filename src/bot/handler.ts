@@ -2,7 +2,7 @@ import { APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
 import axios from 'axios';
 
 import { makeCallbackWrapper } from '../common/lambda';
-import { makeTelegramApiBase, Message } from '../common/telegram';
+import { makeTelegramApiBase, TelegramMessage } from '../common/telegram';
 import { isFavouritesCommand, manageFavourites } from '../features/favourites';
 import { runSearch } from '../features/search';
 import { validateToken } from './auth';
@@ -25,7 +25,7 @@ export const bot: APIGatewayProxyHandler = async (
   }
 
   const reqBody = JSON.parse(event.body);
-  const inputMessage = reqBody.message as Message;
+  const inputMessage = reqBody.message as TelegramMessage;
   const {
     chat: { id: chatId },
     text,
