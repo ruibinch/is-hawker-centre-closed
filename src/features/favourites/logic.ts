@@ -1,18 +1,19 @@
 /* eslint-disable max-len */
 import { getAllHawkerCentres } from '../../common/dynamodb';
-import { BotResponse, HawkerCentreInfo } from '../../common/types';
+import { HawkerCentreInfo } from '../../common/types';
+import { MAX_CHOICES } from './constants';
+import { FindHCByKeywordResponse } from './types';
 
 const FAVOURITES_COMMANDS = ['/fav'];
-const MAX_CHOICES = 10;
 
 export function isFavouritesCommand(s: string): boolean {
   const [command] = s.split(' ');
   return FAVOURITES_COMMANDS.includes(command);
 }
 
-export async function addNewHCToFavourites(
+export async function findHCByKeyword(
   keyword: string,
-): Promise<BotResponse | null> {
+): Promise<FindHCByKeywordResponse | null> {
   return getAllHawkerCentres()
     .then((response) => {
       const items = response.Items as HawkerCentreInfo[];
@@ -22,38 +23,27 @@ export async function addNewHCToFavourites(
       // if there is only 1 result and the keyword is an exact match,
       // assume that this is after input selection, hence add to favourites
       if (hcFilteredByKeyword.length === 1) {
-        const hcName = hcFilteredByKeyword[0].name;
-        if (keyword === hcName) {
-          // TODO: add to some favourites list
-
+        if (keyword === hcFilteredByKeyword[0].name) {
           return {
-            message: `Great, adding *${hcName}* to your list of favourites\\!`,
+            isExactMatch: true,
+            hawkerCentres: hcFilteredByKeyword,
           };
         }
       }
 
-      if (hcFilteredByKeyword.length === 0) {
+      if (
+        hcFilteredByKeyword.length === 0 ||
+        hcFilteredByKeyword.length > MAX_CHOICES
+      ) {
         return {
-          message: `No results found${
-            keyword.length > 0 ? ` for keyword *${keyword}*` : ''
-          }\\. Try again?`,
-        };
-      }
-
-      if (hcFilteredByKeyword.length > MAX_CHOICES) {
-        return {
-          message:
-            'Too many results to be displayed, please further refine your search\\.',
+          isFindError: true,
+          hawkerCentres: [],
         };
       }
 
       return {
-        message:
-          hcFilteredByKeyword.length === 1
-            ? 'Confirm that this is the hawker centre to be added?'
-            : 'Choose your favourite hawker centre:',
-        // HACK: appending a /fav prefix so that this flow gets triggered again without needing to save any session state
-        choices: hcFilteredByKeyword.map((hc) => `/fav ${hc.name}`),
+        isFindError: false,
+        hawkerCentres: hcFilteredByKeyword,
       };
     })
     .catch((error) => {

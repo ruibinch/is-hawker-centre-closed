@@ -1,4 +1,4 @@
-import { addNewHCToFavourites } from '../../../src/features/favourites';
+import { findHCByKeyword } from '../../../src/features/favourites';
 import { mockHawkerCentres } from '../../__mocks__/db';
 
 // TODO: shift this to a __mocks__ folder
@@ -6,117 +6,102 @@ jest.mock('../../../src/common/dynamodb', () => ({
   getAllHawkerCentres: () => Promise.resolve({ Items: mockHawkerCentres }),
 }));
 
-describe('bot > favourites', () => {
-  describe('addNewHCToFavourites', () => {
-    it('["slateport"] returns a single choice', async () => {
-      await addNewHCToFavourites('slateport').then((botResponse) => {
-        expect(botResponse).toBeDefined();
+describe('bot > features > favourites', () => {
+  describe('findHCByKeyword', () => {
+    it('["slateport"] returns a single result', async () => {
+      await findHCByKeyword('slateport').then((response) => {
+        expect(response).toBeDefined();
 
-        if (botResponse) {
-          const { message, choices } = botResponse;
+        if (response) {
+          const { isExactMatch, isFindError, hawkerCentres } = response;
 
-          expect(message).toStrictEqual(
-            'Confirm that this is the hawker centre to be added?',
-          );
-          expect(choices).toHaveLength(1);
-          expect(choices).toContainEqual(
-            expect.stringMatching('/fav Slateport Market'),
-          );
+          expect(isExactMatch).toBeFalsy();
+          expect(isFindError).toBeFalsy();
+          expect(hawkerCentres).toHaveLength(1);
         }
       });
     });
 
     it('["fortree"] returns multiple choices for selection', async () => {
-      await addNewHCToFavourites('fortree').then((botResponse) => {
-        expect(botResponse).toBeDefined();
+      await findHCByKeyword('fortree').then((response) => {
+        expect(response).toBeDefined();
 
-        if (botResponse) {
-          const { message, choices } = botResponse;
+        if (response) {
+          const { isExactMatch, isFindError, hawkerCentres } = response;
 
-          expect(message).toStrictEqual(`Choose your favourite hawker centre:`);
-          expect(choices).toHaveLength(2);
-          expect(choices).toContainEqual(
-            expect.stringMatching('/fav Fortree Market'),
-          );
-          expect(choices).toContainEqual(
-            expect.stringMatching('/fav Fortree Gym'),
-          );
+          expect(isExactMatch).toBeFalsy();
+          expect(isFindError).toBeFalsy();
+          expect(hawkerCentres).toHaveLength(2);
         }
       });
     });
 
     it('["psychic"] searches on secondary name', async () => {
-      await addNewHCToFavourites('psychic').then((botResponse) => {
-        expect(botResponse).toBeDefined();
+      await findHCByKeyword('psychic').then((response) => {
+        expect(response).toBeDefined();
 
-        if (botResponse) {
-          const { message, choices } = botResponse;
+        if (response) {
+          const { isExactMatch, isFindError, hawkerCentres } = response;
 
-          expect(message).toStrictEqual(
-            'Confirm that this is the hawker centre to be added?',
-          );
-          expect(choices).toHaveLength(1);
-          expect(choices).toContainEqual(
-            expect.stringMatching('/fav Mossdeep Gym'),
-          );
+          expect(isExactMatch).toBeFalsy();
+          expect(isFindError).toBeFalsy();
+          expect(hawkerCentres).toHaveLength(1);
         }
       });
     });
 
     it('["Slateport Market"] an exact match will add it to the favourites list', async () => {
-      await addNewHCToFavourites('Slateport Market').then((botResponse) => {
-        expect(botResponse).toBeDefined();
+      await findHCByKeyword('Slateport Market').then((response) => {
+        expect(response).toBeDefined();
 
-        if (botResponse) {
-          const { message, choices } = botResponse;
+        if (response) {
+          const { isExactMatch, isFindError, hawkerCentres } = response;
 
-          expect(message).toStrictEqual(
-            `Great, adding *Slateport Market* to your list of favourites\\!`,
-          );
-          expect(choices).toBeUndefined();
+          expect(isExactMatch).toBeTruthy();
+          expect(isFindError).toBeFalsy();
+          expect(hawkerCentres).toHaveLength(1);
         }
       });
     });
 
     it('["oldale"] returns an error message when there are no results', async () => {
-      await addNewHCToFavourites('oldale').then((botResponse) => {
-        expect(botResponse).toBeDefined();
+      await findHCByKeyword('oldale').then((response) => {
+        expect(response).toBeDefined();
 
-        if (botResponse) {
-          const { message, choices } = botResponse;
+        if (response) {
+          const { isExactMatch, isFindError, hawkerCentres } = response;
 
-          expect(message).toStrictEqual(
-            'No results found for keyword *oldale*\\. Try again?',
-          );
-          expect(choices).toBeUndefined();
+          expect(isExactMatch).toBeFalsy();
+          expect(isFindError).toBeTruthy();
+          expect(hawkerCentres).toHaveLength(0);
         }
       });
     });
 
     it('["gym"] returns an error message when there are too many results', async () => {
-      await addNewHCToFavourites('gym').then((botResponse) => {
-        expect(botResponse).toBeDefined();
+      await findHCByKeyword('gym').then((response) => {
+        expect(response).toBeDefined();
 
-        if (botResponse) {
-          const { message, choices } = botResponse;
+        if (response) {
+          const { isExactMatch, isFindError, hawkerCentres } = response;
 
-          expect(message).toStrictEqual(
-            'Too many results to be displayed, please further refine your search\\.',
-          );
-          expect(choices).toBeUndefined();
+          expect(isExactMatch).toBeFalsy();
+          expect(isFindError).toBeTruthy();
+          expect(hawkerCentres).toHaveLength(0);
         }
       });
     });
 
     it('[""] empty keyword returns no results', async () => {
-      await addNewHCToFavourites('').then((botResponse) => {
-        expect(botResponse).toBeDefined();
+      await findHCByKeyword('').then((response) => {
+        expect(response).toBeDefined();
 
-        if (botResponse) {
-          const { message, choices } = botResponse;
+        if (response) {
+          const { isExactMatch, isFindError, hawkerCentres } = response;
 
-          expect(message).toStrictEqual('No results found\\. Try again?');
-          expect(choices).toBeUndefined();
+          expect(isExactMatch).toBeFalsy();
+          expect(isFindError).toBeTruthy();
+          expect(hawkerCentres).toHaveLength(0);
         }
       });
     });
