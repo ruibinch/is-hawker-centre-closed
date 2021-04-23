@@ -1,8 +1,14 @@
 /* eslint-disable max-len */
-import { getAllHawkerCentres } from '../../common/dynamodb';
-import { HawkerCentreInfo } from '../../common/types';
+import {
+  addUser,
+  getAllHawkerCentres,
+  getUserById,
+  updateUser,
+} from '../../common/dynamodb';
+import { TelegramUser } from '../../common/telegram';
+import { HawkerCentreInfo, User } from '../../common/types';
 import { MAX_CHOICES } from './constants';
-import { FindHCByKeywordResponse } from './types';
+import { AddHCResponse, FindHCResponse } from './types';
 
 const FAVOURITES_COMMANDS = ['/fav'];
 
@@ -13,7 +19,7 @@ export function isFavouritesCommand(s: string): boolean {
 
 export async function findHCByKeyword(
   keyword: string,
-): Promise<FindHCByKeywordResponse | null> {
+): Promise<FindHCResponse | null> {
   return getAllHawkerCentres()
     .then((response) => {
       const items = response.Items as HawkerCentreInfo[];
@@ -50,6 +56,69 @@ export async function findHCByKeyword(
       console.log(error);
       return null;
     });
+}
+
+/**
+ * Adds a hawker centre to the user's favourites list.
+ *
+ * If the user does not exist yet in the DB, create the user.
+ * If the user exists but the hawker centre already exists in the favourites list, return a duplicate error.
+ */
+export async function addHCToFavourites(props: {
+  hawkerCentre: HawkerCentreInfo;
+  user: TelegramUser;
+}): Promise<AddHCResponse | null> {
+  const {
+    hawkerCentre: { hawkerCentreId },
+    user: { id: userId, language_code: languageCode },
+  } = props;
+
+  return getUserById(userId).then((getUserResponse) => {
+    if (!getUserResponse.Item) {
+      // user does not exist yet in DB
+      const newUser: User = {
+        userId,
+        languageCode,
+        favourites: [hawkerCentreId],
+      };
+
+      return addUser(newUser)
+        .then(() => {
+          console.log(`Successfully added user: ${userId}`);
+          return {
+            success: true,
+          };
+        })
+        .catch((error) => {
+          console.log(error);
+          return null;
+        });
+    }
+
+    const user = getUserResponse.Item as User;
+
+    // Check if hawker centre already exists in the favourites list
+    if (user.favourites.includes(hawkerCentreId)) {
+      return {
+        success: false,
+        isDuplicate: true,
+      };
+    }
+
+    const favouritesUpdated = [...user.favourites, hawkerCentreId];
+
+    return updateUser(userId, favouritesUpdated)
+      .then(() => {
+        console.log(`Successfully updated user: ${userId}`);
+        return {
+          success: true,
+        };
+      })
+      .catch((error) => {
+        console.log(error);
+        return null;
+      });
+  });
 }
 
 /**

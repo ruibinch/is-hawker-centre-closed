@@ -1,7 +1,9 @@
+import { TelegramUser } from '../../src/common/telegram';
 import {
   ClosureReason,
   HawkerCentreInfo,
   Result,
+  User,
 } from '../../src/common/types';
 
 export const mockResults: Result[] = [
@@ -142,3 +144,18 @@ export const mockHawkerCentres: HawkerCentreInfo[] = [
     nameSecondary: 'Where the very best belong',
   },
 ];
+
+export const mockUser: User = {
+  userId: 1,
+  languageCode: 'en',
+  favourites: [],
+};
+
+export const mockTelegramUser: TelegramUser = {
+  id: 1,
+  is_bot: false,
+  first_name: 'Ash',
+  last_name: 'Ketchum',
+  username: 'ashketchum',
+  language_code: 'en',
+};

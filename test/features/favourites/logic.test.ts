@@ -1,12 +1,21 @@
-import { findHCByKeyword } from '../../../src/features/favourites';
-import { mockHawkerCentres } from '../../__mocks__/db';
+import {
+  addHCToFavourites,
+  findHCByKeyword,
+} from '../../../src/features/favourites';
+import {
+  mockHawkerCentres,
+  mockTelegramUser,
+  mockUser,
+} from '../../__mocks__/db';
 
-// TODO: shift this to a __mocks__ folder
+// TODO: shift this to a __mocks__ folder and rework mocks to be more specific
 jest.mock('../../../src/common/dynamodb', () => ({
   getAllHawkerCentres: () => Promise.resolve({ Items: mockHawkerCentres }),
+  getUserById: () => Promise.resolve({ Item: mockUser }),
+  updateUser: () => Promise.resolve(),
 }));
 
-describe('bot > features > favourites', () => {
+describe('bot > features > favourites > logic', () => {
   describe('findHCByKeyword', () => {
     it('["slateport"] returns a single result', async () => {
       await findHCByKeyword('slateport').then((response) => {
@@ -102,6 +111,26 @@ describe('bot > features > favourites', () => {
           expect(isExactMatch).toBeFalsy();
           expect(isFindError).toBeTruthy();
           expect(hawkerCentres).toHaveLength(0);
+        }
+      });
+    });
+  });
+
+  describe('addHCToFavourites', () => {
+    const mockHawkerCentre = mockHawkerCentres[0];
+
+    it('successfully adds the hawker centre to the favourites list', async () => {
+      await addHCToFavourites({
+        hawkerCentre: mockHawkerCentre,
+        user: mockTelegramUser,
+      }).then((addHCResponse) => {
+        expect(addHCResponse).toBeDefined();
+
+        if (addHCResponse) {
+          const { success, isDuplicate } = addHCResponse;
+
+          expect(success).toBeTruthy();
+          expect(isDuplicate).toBeFalsy();
         }
       });
     });

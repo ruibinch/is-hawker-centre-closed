@@ -1,10 +1,11 @@
 import * as AWS from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
 
-import { HawkerCentreInfo, Result } from './types';
+import { HawkerCentreInfo, Result, User } from './types';
 
 const TABLE_RESULTS = 'ishawkercentreclosed';
 const TABLE_HC = 'ihcc-hawkerCentres';
+const TABLE_USERS = 'ihcc-users';
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 // Results
@@ -55,4 +56,70 @@ export async function getAllHawkerCentres(): Promise<
   };
 
   return dynamoDb.scan(params).promise();
+}
+
+export async function getHawkerCentreById(
+  hawkerCentreId: number,
+): Promise<
+  PromiseResult<AWS.DynamoDB.DocumentClient.GetItemOutput, AWS.AWSError>
+> {
+  const params: AWS.DynamoDB.DocumentClient.GetItemInput = {
+    TableName: TABLE_USERS,
+    Key: {
+      hawkerCentreId,
+    },
+  };
+
+  return dynamoDb.get(params).promise();
+}
+
+// Users
+
+export async function addUser(
+  user: User,
+): Promise<
+  PromiseResult<AWS.DynamoDB.DocumentClient.PutItemOutput, AWS.AWSError>
+> {
+  const userInput: AWS.DynamoDB.DocumentClient.PutItemInput = {
+    TableName: TABLE_USERS,
+    Item: user,
+    ConditionExpression: 'attribute_not_exists(userId)',
+  };
+
+  return dynamoDb.put(userInput).promise();
+}
+
+export async function getUserById(
+  userId: number,
+): Promise<
+  PromiseResult<AWS.DynamoDB.DocumentClient.GetItemOutput, AWS.AWSError>
+> {
+  const params: AWS.DynamoDB.DocumentClient.GetItemInput = {
+    TableName: TABLE_USERS,
+    Key: {
+      userId,
+    },
+  };
+
+  return dynamoDb.get(params).promise();
+}
+
+export async function updateUser(
+  userId: number,
+  favouritesUpdated: number[],
+): Promise<
+  PromiseResult<AWS.DynamoDB.DocumentClient.UpdateItemOutput, AWS.AWSError>
+> {
+  const updateUserInput: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
+    TableName: TABLE_USERS,
+    Key: {
+      userId,
+    },
+    UpdateExpression: 'set favourites = :fav',
+    ExpressionAttributeValues: {
+      ':fav': favouritesUpdated,
+    },
+  };
+
+  return dynamoDb.update(updateUserInput).promise();
 }

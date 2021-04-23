@@ -27,6 +27,7 @@ export const bot: APIGatewayProxyHandler = async (
   const reqBody = JSON.parse(event.body);
   const inputMessage = reqBody.message as TelegramMessage;
   const {
+    from: fromUser,
     chat: { id: chatId },
     text,
   } = inputMessage;
@@ -47,7 +48,7 @@ export const bot: APIGatewayProxyHandler = async (
   // TODO: remove repetitions in this section
 
   if (isFavouritesCommand(textSanitised)) {
-    return manageFavourites(textSanitised).then((botResponse) => {
+    return manageFavourites(textSanitised, fromUser).then((botResponse) => {
       if (botResponse === null) {
         return callbackWrapper(400);
       }

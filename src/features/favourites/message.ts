@@ -32,3 +32,10 @@ export function makeSuccessfullyAddedMessage(
   const hcName = hawkerCentres[0].name;
   return `Great, adding *${hcName}* to your list of favourites\\!`;
 }
+
+export function makeDuplicateHCErrorMessage(
+  hawkerCentre: HawkerCentreInfo,
+): string {
+  const { name: hcName } = hawkerCentre;
+  return `*${hcName}* is already in your favourites list\\!`;
+}

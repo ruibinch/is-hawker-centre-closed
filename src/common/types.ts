@@ -23,3 +23,9 @@ export type HawkerCentreInfo = {
   name: string;
   nameSecondary?: string;
 };
+
+export type User = {
+  userId: number;
+  languageCode?: string;
+  favourites: number[];
+};
