@@ -103,7 +103,10 @@ export async function addHCToFavourites(props: {
     };
   }
 
-  const favouritesUpdated = [...user.favourites, addFavHC];
+  // Save list in ascending order of hawkerCentreId
+  const favouritesUpdated = [...user.favourites, addFavHC].sort(
+    (a, b) => a.hawkerCentreId - b.hawkerCentreId,
+  );
 
   updateUser(userId, favouritesUpdated);
 
