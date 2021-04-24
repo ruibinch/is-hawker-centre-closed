@@ -1,8 +1,13 @@
 /* eslint-disable max-len */
 const SUPPORTED_COMMANDS = ['/start', '/help', '/fav'];
+const NON_INFO_COMMANDS = ['/list'];
 
 export function isInfoCommand(s: string): boolean {
-  return s.startsWith('/') && s.split(' ').length === 1;
+  return (
+    s.startsWith('/') &&
+    s.split(' ').length === 1 &&
+    !NON_INFO_COMMANDS.includes(s)
+  );
 }
 
 function isSupportedInfoCommand(s: string): boolean {

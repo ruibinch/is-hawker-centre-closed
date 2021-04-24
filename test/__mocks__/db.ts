@@ -148,7 +148,7 @@ export const mockHawkerCentres: HawkerCentreInfo[] = [
 export const mockUser: User = {
   userId: 1,
   languageCode: 'en',
-  favourites: [],
+  favourites: [17, 13],
 };
 
 export const mockTelegramUser: TelegramUser = {

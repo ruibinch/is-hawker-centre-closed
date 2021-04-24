@@ -1,6 +1,7 @@
 import {
   addHCToFavourites,
   findHCByKeyword,
+  getUserFavourites,
 } from '../../../src/features/favourites';
 import {
   mockHawkerCentres,
@@ -122,7 +123,7 @@ describe('bot > features > favourites > logic', () => {
     it('successfully adds the hawker centre to the favourites list', async () => {
       await addHCToFavourites({
         hawkerCentre: mockHawkerCentre,
-        user: mockTelegramUser,
+        telegramUser: mockTelegramUser,
       }).then((addHCResponse) => {
         expect(addHCResponse).toBeDefined();
 
@@ -131,6 +132,28 @@ describe('bot > features > favourites > logic', () => {
 
           expect(success).toBeTruthy();
           expect(isDuplicate).toBeFalsy();
+        }
+      });
+    });
+  });
+
+  describe('getUserFavourites', () => {
+    it("correctly returns the user's favourite hawker centres", async () => {
+      await getUserFavourites(mockTelegramUser).then((getUserResponse) => {
+        expect(getUserResponse).toBeDefined();
+
+        if (getUserResponse) {
+          expect(getUserResponse).toHaveLength(2);
+          expect(getUserResponse).toContainEqual({
+            hawkerCentreId: 13,
+            name: 'Mauville Gym',
+            nameSecondary: "Nikola Tesla's descendants",
+          });
+          expect(getUserResponse).toContainEqual({
+            hawkerCentreId: 17,
+            name: 'Mossdeep Gym',
+            nameSecondary: 'Psychics in space',
+          });
         }
       });
     });

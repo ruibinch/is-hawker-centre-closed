@@ -1,11 +1,13 @@
 import {
-  makeMessage,
+  makeAddHCMessage,
+  makeDuplicateHCErrorMessage,
+  makeFavouritesListMessage,
   makeSuccessfullyAddedMessage,
 } from '../../../src/features/favourites';
 import { mockHawkerCentres } from '../../__mocks__/db';
 
 describe('bot > features > favourites', () => {
-  describe('makeMessage', () => {
+  describe('makeAddHCMessage', () => {
     it.each([
       [
         'no results found with an empty keyword',
@@ -94,7 +96,7 @@ describe('bot > features > favourites', () => {
           expected: { message: expectedMessage },
         },
       ) => {
-        const message = makeMessage({
+        const message = makeAddHCMessage({
           keyword,
           hawkerCentres,
         });
@@ -122,6 +124,54 @@ describe('bot > features > favourites', () => {
       expect(() => {
         makeSuccessfullyAddedMessage([]);
       }).toThrow();
+    });
+  });
+
+  describe('makeFavouritesListMessage', () => {
+    it('returns the list of favourites when it is defined', () => {
+      const message = makeFavouritesListMessage([
+        {
+          hawkerCentreId: 2,
+          name: 'Slateport Market',
+        },
+        {
+          hawkerCentreId: 3,
+          name: 'Fortree Market',
+        },
+        {
+          hawkerCentreId: 11,
+          name: 'Rustboro Gym',
+          nameSecondary: 'Rocky road ahead',
+        },
+      ]);
+
+      expect(message).toEqual(
+        `Your favourite hawker centres are:\n\n` +
+          `1\\. *Slateport Market*\n` +
+          `2\\. *Fortree Market*\n` +
+          `3\\. *Rustboro Gym*`,
+      );
+    });
+
+    it('returns a prompt to add some favourites when there are no favourites defined', () => {
+      const message = makeFavouritesListMessage([]);
+
+      expect(message).toEqual(
+        "You've not added any favourites yet\\. Try adding some using the /fav command\\.",
+      );
+    });
+  });
+
+  describe('makeDuplicateHCErrorMessage', () => {
+    it('returns the correct error message', () => {
+      const message = makeDuplicateHCErrorMessage({
+        hawkerCentreId: 2,
+        name: 'Slateport Market',
+      });
+
+      expect(message).toEqual(
+        `*Slateport Market* is already in your favourites list\\!`,
+      );
     });
   });
 });

@@ -1,7 +1,7 @@
 import { HawkerCentreInfo } from '../../common/types';
 import { MAX_CHOICES } from './constants';
 
-export function makeMessage(props: {
+export function makeAddHCMessage(props: {
   keyword: string;
   hawkerCentres: HawkerCentreInfo[];
 }): string {
@@ -31,6 +31,20 @@ export function makeSuccessfullyAddedMessage(
 
   const hcName = hawkerCentres[0].name;
   return `Great, adding *${hcName}* to your list of favourites\\!`;
+}
+
+export function makeFavouritesListMessage(
+  hawkerCentres: HawkerCentreInfo[],
+): string {
+  if (hawkerCentres.length === 0) {
+    return "You've not added any favourites yet\\. Try adding some using the /fav command\\.";
+  }
+
+  const hcOutput = hawkerCentres
+    .map((hc, idx) => `${idx + 1}\\. *${hc.name}*`)
+    .join('\n');
+
+  return `Your favourite hawker centres are:\n\n${hcOutput}`;
 }
 
 export function makeDuplicateHCErrorMessage(

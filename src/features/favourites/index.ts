@@ -1,11 +1,12 @@
 import { makeGenericErrorMessage } from '../../common/message';
 import { TelegramUser } from '../../common/telegram';
 import { BotResponse } from '../../common/types';
-import { addHCToFavourites, findHCByKeyword } from './logic';
+import { addHCToFavourites, findHCByKeyword, getUserFavourites } from './logic';
 import {
   makeDuplicateHCErrorMessage,
-  makeMessage,
+  makeAddHCMessage,
   makeSuccessfullyAddedMessage,
+  makeFavouritesListMessage,
 } from './message';
 
 export * from './logic';
@@ -13,7 +14,7 @@ export * from './message';
 
 export async function manageFavourites(
   text: string,
-  user: TelegramUser,
+  telegramUser: TelegramUser,
 ): Promise<BotResponse | null> {
   const [command, ...keywordSplit] = text.split(' ');
   const keyword = keywordSplit.join(' ');
@@ -30,7 +31,7 @@ export async function manageFavourites(
 
           return addHCToFavourites({
             hawkerCentre: addHawkerCentre,
-            user,
+            telegramUser,
           }).then((addHCResponse) => {
             if (addHCResponse === null) return null;
 
@@ -56,11 +57,20 @@ export async function manageFavourites(
         }
 
         return {
-          message: makeMessage({ keyword, hawkerCentres }),
+          message: makeAddHCMessage({ keyword, hawkerCentres }),
           choices: isFindError
             ? undefined
             : // HACK: appending a /fav prefix so that this flow gets triggered again without maintaining session state
               hawkerCentres.map((hc) => `/fav ${hc.name}`),
+        };
+      });
+    }
+    case '/list': {
+      return getUserFavourites(telegramUser).then((getFavResponse) => {
+        if (getFavResponse === null) return null;
+
+        return {
+          message: makeFavouritesListMessage(getFavResponse),
         };
       });
     }

@@ -10,7 +10,7 @@ import { HawkerCentreInfo, User } from '../../common/types';
 import { MAX_CHOICES } from './constants';
 import { AddHCResponse, FindHCResponse } from './types';
 
-const FAVOURITES_COMMANDS = ['/fav'];
+const FAVOURITES_COMMANDS = ['/fav', '/list'];
 
 export function isFavouritesCommand(s: string): boolean {
   const [command] = s.split(' ');
@@ -66,11 +66,11 @@ export async function findHCByKeyword(
  */
 export async function addHCToFavourites(props: {
   hawkerCentre: HawkerCentreInfo;
-  user: TelegramUser;
+  telegramUser: TelegramUser;
 }): Promise<AddHCResponse | null> {
   const {
     hawkerCentre: { hawkerCentreId },
-    user: { id: userId, language_code: languageCode },
+    telegramUser: { id: userId, language_code: languageCode },
   } = props;
 
   return getUserById(userId).then((getUserResponse) => {
@@ -113,6 +113,39 @@ export async function addHCToFavourites(props: {
         return {
           success: true,
         };
+      })
+      .catch((error) => {
+        console.log(error);
+        return null;
+      });
+  });
+}
+
+/**
+ * Returns the user's favourites list, or an empty list if the user does not exist.
+ * Implicitly sorted by hawkerCentreId field.
+ */
+export async function getUserFavourites(
+  telegramUser: TelegramUser,
+): Promise<HawkerCentreInfo[] | null> {
+  const { id: userId } = telegramUser;
+
+  return getUserById(userId).then((getUserResponse) => {
+    if (!getUserResponse.Item) {
+      // user does not exist in DB
+      return [];
+    }
+
+    const user = getUserResponse.Item as User;
+    const { favourites: userFavourites } = user;
+
+    return getAllHawkerCentres()
+      .then((getHCResponse) => {
+        const hawkerCentres = getHCResponse.Items as HawkerCentreInfo[];
+
+        return hawkerCentres.filter((hc) =>
+          userFavourites.includes(hc.hawkerCentreId),
+        );
       })
       .catch((error) => {
         console.log(error);
