@@ -116,7 +116,6 @@ export async function addHCToFavourites(props: {
 
 /**
  * Returns the user's favourites list, or an empty list if the user does not exist.
- * Implicitly sorted by hawkerCentreId field.
  */
 export async function getUserFavourites(
   telegramUser: TelegramUser,
@@ -131,14 +130,24 @@ export async function getUserFavourites(
   }
 
   const user = getUserResponse.Item as User;
-  const userFavourites = user.favourites.map((fav) => fav.hawkerCentreId);
+  const userFavHCIds = user.favourites.map((fav) => fav.hawkerCentreId);
 
   const getAllHCResponse = await getAllHawkerCentres();
-
   const hawkerCentres = getAllHCResponse.Items as HawkerCentreInfo[];
-  return hawkerCentres.filter((hc) =>
-    userFavourites.includes(hc.hawkerCentreId),
-  );
+
+  const userFavs = userFavHCIds.map((favHCId) => {
+    const hawkerCentre = hawkerCentres.find(
+      (hc) => hc.hawkerCentreId === favHCId,
+    );
+    if (!hawkerCentre) {
+      throw new Error(
+        `Missing hawker centre entry for hawkerCentreId ${favHCId}`,
+      );
+    }
+    return hawkerCentre;
+  });
+
+  return userFavs;
 }
 
 /**
