@@ -93,9 +93,10 @@ export async function addHCToFavourites(props: {
   }
 
   const user = getUserResponse.Item as User;
+  const userFavourites = user.favourites.map((fav) => fav.hawkerCentreId);
 
   // Check if hawker centre already exists in the favourites list
-  if (user.favourites.includes(addFavHC)) {
+  if (userFavourites.includes(addFavHC.hawkerCentreId)) {
     return {
       success: false,
       isDuplicate: true,
