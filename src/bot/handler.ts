@@ -46,9 +46,9 @@ export const bot: APIGatewayProxyHandler = async (
   }
 
   // TODO: remove repetitions in this section
-
-  if (isFavouritesCommand(textSanitised)) {
-    return manageFavourites(textSanitised, telegramUser).then((botResponse) => {
+  try {
+    if (isFavouritesCommand(textSanitised)) {
+      const botResponse = await manageFavourites(textSanitised, telegramUser);
       if (botResponse === null) {
         return callbackWrapper(400);
       }
@@ -61,10 +61,9 @@ export const bot: APIGatewayProxyHandler = async (
         sendMessage(chatId, message);
       }
       return callbackWrapper(204);
-    });
-  }
+    }
 
-  await runSearch(textSanitised).then((botResponse) => {
+    const botResponse = await runSearch(textSanitised);
     if (botResponse === null) {
       return callbackWrapper(400);
     }
@@ -73,9 +72,10 @@ export const bot: APIGatewayProxyHandler = async (
 
     sendMessage(chatId, message);
     return callbackWrapper(204);
-  });
-
-  return callbackWrapper(502);
+  } catch (error) {
+    console.log(error);
+    return callbackWrapper(502);
+  }
 };
 
 function sendMessage(chatId: number, message: string) {

@@ -10,18 +10,10 @@ export * from './types';
 export async function runSearch(
   textSanitised: string,
 ): Promise<BotResponse | null> {
-  return processSearch(textSanitised)
-    .then((searchResponse) => {
-      if (searchResponse === null) {
-        return null;
-      }
+  const searchResponse = await processSearch(textSanitised);
+  if (searchResponse === null) return null;
 
-      return {
-        message: makeMessage(searchResponse),
-      };
-    })
-    .catch((error) => {
-      console.log(error);
-      return null;
-    });
+  return {
+    message: makeMessage(searchResponse),
+  };
 }

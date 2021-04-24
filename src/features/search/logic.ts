@@ -21,39 +21,33 @@ export async function processSearch(
   const searchParams = parseSearchTerm(term);
   const { keyword, modifier } = searchParams;
 
-  return getAllResults()
-    .then((response) => {
-      const items = response.Items as Result[];
+  const getAllResultsResponse = await getAllResults();
+  const resultsAll = getAllResultsResponse.Items as Result[];
 
-      const isDataPresent = checkIsDataPresent(items, modifier);
-      if (!isDataPresent) {
-        return {
-          params: searchParams,
-          isDataPresent: false,
-          results: [],
-        };
-      }
+  const isDataPresent = checkIsDataPresent(resultsAll, modifier);
+  if (!isDataPresent) {
+    return {
+      params: searchParams,
+      isDataPresent: false,
+      results: [],
+    };
+  }
 
-      const resultsFilteredByKeyword = filterByKeyword(items, keyword);
+  const resultsFilteredByKeyword = filterByKeyword(resultsAll, keyword);
 
-      const resultsFilteredByKeywordAndDate = filterByDate(
-        resultsFilteredByKeyword,
-        modifier,
-      );
+  const resultsFilteredByKeywordAndDate = filterByDate(
+    resultsFilteredByKeyword,
+    modifier,
+  );
 
-      const results = sortInDateAscThenAlphabeticalOrder(
-        resultsFilteredByKeywordAndDate,
-      );
+  const results = sortInDateAscThenAlphabeticalOrder(
+    resultsFilteredByKeywordAndDate,
+  );
 
-      return {
-        params: searchParams,
-        results,
-      };
-    })
-    .catch((error) => {
-      console.log(error);
-      return null;
-    });
+  return {
+    params: searchParams,
+    results,
+  };
 }
 
 /**
@@ -81,12 +75,12 @@ function parseSearchTerm(term: string): SearchObject {
 /**
  * If modifier is "nextMonth", check if the data for that time period is present first.
  */
-function checkIsDataPresent(items: Result[], modifier: SearchModifier) {
+function checkIsDataPresent(results: Result[], modifier: SearchModifier) {
   if (modifier !== SearchModifier.nextMonth) return true;
 
   // extract the YYYY-MM portion of the dates and remove duplicates
   const timePeriods = [
-    ...new Set(items.map((item) => item.startDate.slice(0, 7))),
+    ...new Set(results.map((rseult) => rseult.startDate.slice(0, 7))),
   ];
   const nextPeriod = getNextPeriod();
 
@@ -94,26 +88,28 @@ function checkIsDataPresent(items: Result[], modifier: SearchModifier) {
 }
 
 /**
- * Filters the list of items by keyword matching the hawker centre name.
+ * Filters the list of results by keyword matching the hawker centre name.
  */
-function filterByKeyword(items: Result[], keyword: string) {
+function filterByKeyword(results: Result[], keyword: string) {
   if (keyword === '') {
-    return items;
+    return results;
   }
 
   const filterRegex = new RegExp(`\\b${keyword.toLowerCase()}`);
-  return items.filter((item) => filterRegex.test(item.name.toLowerCase()));
+  return results.filter((result) =>
+    filterRegex.test(result.name.toLowerCase()),
+  );
 }
 
 /**
- * Filters the list of items by date based on the search modifier.
+ * Filters the list of results by date based on the search modifier.
  */
-function filterByDate(items: Result[], modifier: SearchModifier) {
+function filterByDate(results: Result[], modifier: SearchModifier) {
   const currDate = currentDate();
 
-  return items.filter((item) => {
-    const startDate = parseISO(item.startDate);
-    const endDate = parseISO(item.endDate);
+  return results.filter((result) => {
+    const startDate = parseISO(result.startDate);
+    const endDate = parseISO(result.endDate);
 
     return (() => {
       if (modifier === SearchModifier.today) {
@@ -140,8 +136,8 @@ function filterByDate(items: Result[], modifier: SearchModifier) {
  * 2. By ascending order of end date, then
  * 3. Alphabetical order of hawker centre name
  */
-function sortInDateAscThenAlphabeticalOrder(items: Result[]) {
-  return [...items].sort((a, b) => {
+function sortInDateAscThenAlphabeticalOrder(results: Result[]) {
+  return [...results].sort((a, b) => {
     const aStartDate = parseISO(a.startDate);
     const aEndDate = parseISO(a.endDate);
     const bStartDate = parseISO(b.startDate);

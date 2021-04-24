@@ -20,42 +20,36 @@ export function isFavouritesCommand(s: string): boolean {
 export async function findHCByKeyword(
   keyword: string,
 ): Promise<FindHCResponse | null> {
-  return getAllHawkerCentres()
-    .then((response) => {
-      const items = response.Items as HawkerCentreInfo[];
+  const getAllHCResponse = await getAllHawkerCentres();
 
-      const hcFilteredByKeyword = filterByKeyword(items, keyword);
+  const hawkerCentres = getAllHCResponse.Items as HawkerCentreInfo[];
+  const hcFilteredByKeyword = filterByKeyword(hawkerCentres, keyword);
 
-      // if there is only 1 result and the keyword is an exact match,
-      // assume that this is after input selection, hence add to favourites
-      if (hcFilteredByKeyword.length === 1) {
-        if (keyword === hcFilteredByKeyword[0].name) {
-          return {
-            isExactMatch: true,
-            hawkerCentres: hcFilteredByKeyword,
-          };
-        }
-      }
-
-      if (
-        hcFilteredByKeyword.length === 0 ||
-        hcFilteredByKeyword.length > MAX_CHOICES
-      ) {
-        return {
-          isFindError: true,
-          hawkerCentres: [],
-        };
-      }
-
+  // if there is only 1 result and the keyword is an exact match,
+  // assume that this is after input selection, hence add to favourites
+  if (hcFilteredByKeyword.length === 1) {
+    if (keyword === hcFilteredByKeyword[0].name) {
       return {
-        isFindError: false,
+        isExactMatch: true,
         hawkerCentres: hcFilteredByKeyword,
       };
-    })
-    .catch((error) => {
-      console.log(error);
-      return null;
-    });
+    }
+  }
+
+  if (
+    hcFilteredByKeyword.length === 0 ||
+    hcFilteredByKeyword.length > MAX_CHOICES
+  ) {
+    return {
+      isFindError: true,
+      hawkerCentres: [],
+    };
+  }
+
+  return {
+    isFindError: false,
+    hawkerCentres: hcFilteredByKeyword,
+  };
 }
 
 /**
@@ -73,53 +67,39 @@ export async function addHCToFavourites(props: {
     telegramUser: { id: userId, username, language_code: languageCode },
   } = props;
 
-  return getUserById(userId).then((getUserResponse) => {
-    if (!getUserResponse.Item) {
-      // user does not exist yet in DB
-      const newUser: User = {
-        userId,
-        username,
-        languageCode,
-        favourites: [hawkerCentreId],
-      };
+  const getUserResponse = await getUserById(userId);
 
-      return addUser(newUser)
-        .then(() => {
-          console.log(`Successfully added user: ${userId}`);
-          return {
-            success: true,
-          };
-        })
-        .catch((error) => {
-          console.log(error);
-          return null;
-        });
-    }
+  if (!getUserResponse.Item) {
+    // user does not exist yet in DB
+    const newUser: User = {
+      userId,
+      username,
+      languageCode,
+      favourites: [hawkerCentreId],
+    };
 
-    const user = getUserResponse.Item as User;
+    addUser(newUser);
 
-    // Check if hawker centre already exists in the favourites list
-    if (user.favourites.includes(hawkerCentreId)) {
-      return {
-        success: false,
-        isDuplicate: true,
-      };
-    }
+    console.log(`Successfully added user: ${userId}`);
+    return { success: true };
+  }
 
-    const favouritesUpdated = [...user.favourites, hawkerCentreId];
+  const user = getUserResponse.Item as User;
 
-    return updateUser(userId, favouritesUpdated)
-      .then(() => {
-        console.log(`Successfully updated user: ${userId}`);
-        return {
-          success: true,
-        };
-      })
-      .catch((error) => {
-        console.log(error);
-        return null;
-      });
-  });
+  // Check if hawker centre already exists in the favourites list
+  if (user.favourites.includes(hawkerCentreId)) {
+    return {
+      success: false,
+      isDuplicate: true,
+    };
+  }
+
+  const favouritesUpdated = [...user.favourites, hawkerCentreId];
+
+  updateUser(userId, favouritesUpdated);
+
+  console.log(`Successfully updated user: ${userId}`);
+  return { success: true };
 }
 
 /**
@@ -131,35 +111,29 @@ export async function getUserFavourites(
 ): Promise<HawkerCentreInfo[] | null> {
   const { id: userId } = telegramUser;
 
-  return getUserById(userId).then((getUserResponse) => {
-    if (!getUserResponse.Item) {
-      // user does not exist in DB
-      return [];
-    }
+  const getUserResponse = await getUserById(userId);
 
-    const user = getUserResponse.Item as User;
-    const { favourites: userFavourites } = user;
+  if (!getUserResponse.Item) {
+    // user does not exist in DB
+    return [];
+  }
 
-    return getAllHawkerCentres()
-      .then((getHCResponse) => {
-        const hawkerCentres = getHCResponse.Items as HawkerCentreInfo[];
+  const user = getUserResponse.Item as User;
+  const { favourites: userFavourites } = user;
 
-        return hawkerCentres.filter((hc) =>
-          userFavourites.includes(hc.hawkerCentreId),
-        );
-      })
-      .catch((error) => {
-        console.log(error);
-        return null;
-      });
-  });
+  const getAllHCResponse = await getAllHawkerCentres();
+
+  const hawkerCentres = getAllHCResponse.Items as HawkerCentreInfo[];
+  return hawkerCentres.filter((hc) =>
+    userFavourites.includes(hc.hawkerCentreId),
+  );
 }
 
 /**
- * Filters the list of items by keyword matching the hawker centre name(s).
+ * Filters the list of hawker centres by keyword matching the hawker centre name(s).
  */
 function filterByKeyword(
-  items: HawkerCentreInfo[],
+  hawkerCentres: HawkerCentreInfo[],
   keyword: string,
 ): HawkerCentreInfo[] {
   if (keyword === '') {
@@ -167,10 +141,9 @@ function filterByKeyword(
   }
 
   const filterRegex = new RegExp(`\\b${keyword.toLowerCase()}`);
-  return items.filter(
-    (item) =>
-      filterRegex.test(item.name.toLowerCase()) ||
-      (item.nameSecondary &&
-        filterRegex.test(item.nameSecondary.toLowerCase())),
+  return hawkerCentres.filter(
+    (hc) =>
+      filterRegex.test(hc.name.toLowerCase()) ||
+      (hc.nameSecondary && filterRegex.test(hc.nameSecondary.toLowerCase())),
   );
 }
