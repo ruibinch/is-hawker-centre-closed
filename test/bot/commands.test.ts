@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { makeCommandMessage } from '../../src/bot/commands';
 
 describe('bot > commands', () => {
@@ -34,6 +35,17 @@ describe('bot > commands', () => {
         `e\\.g\\. _/fav `;
 
       const commandMessage = makeCommandMessage('/fav');
+      expect(commandMessage).toEqual(expect.stringContaining(expectedMessage));
+    });
+  });
+
+  describe('/del', () => {
+    it('returns the correct helper message', () => {
+      const expectedMessage =
+        'To delete a favourite hawker centre, specify an index number based on the favourites list displayed by the /list command\\.\n\n' +
+        `e\\.g\\. _/del 3_`;
+
+      const commandMessage = makeCommandMessage('/del');
       expect(commandMessage).toEqual(expect.stringContaining(expectedMessage));
     });
   });

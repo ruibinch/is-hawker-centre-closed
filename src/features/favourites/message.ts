@@ -26,11 +26,45 @@ export function makeSuccessfullyAddedMessage(
   hawkerCentres: HawkerCentreInfo[],
 ): string {
   if (hawkerCentres.length !== 1) {
-    throw new Error('There should only be 1 result to be added');
+    throw new Error('There should only be 1 hawker centre added');
   }
 
   const hcName = hawkerCentres[0].name;
   return `Great, adding *${hcName}* to your list of favourites\\!`;
+}
+
+export function makeDuplicateHCErrorMessage(
+  hawkerCentre: HawkerCentreInfo,
+): string {
+  const { name: hcName } = hawkerCentre;
+  return `*${hcName}* is already in your favourites list\\!`;
+}
+
+export function makeSuccessfullyDeletedMessage(
+  hawkerCentre: HawkerCentreInfo | undefined,
+): string {
+  if (!hawkerCentre) {
+    throw new Error('There should be 1 hawker centre deleted');
+  }
+
+  return `*${hawkerCentre.name}* has been deleted from your list of favourites\\.`;
+}
+
+export function makeDeleteOutOfBoundsMessage(
+  numFavourites: number | undefined,
+): string {
+  if (!numFavourites) {
+    throw new Error('The number of favourites is missing');
+  }
+
+  return (
+    `That is not a valid index number\\. ` +
+    `${
+      numFavourites === 1
+        ? 'The only valid value is 1\\.'
+        : `Try again with a value from 1 to ${numFavourites}\\.`
+    }`
+  );
 }
 
 export function makeFavouritesListMessage(
@@ -45,11 +79,4 @@ export function makeFavouritesListMessage(
     .join('\n');
 
   return `Your favourite hawker centres are:\n\n${hcOutput}`;
-}
-
-export function makeDuplicateHCErrorMessage(
-  hawkerCentre: HawkerCentreInfo,
-): string {
-  const { name: hcName } = hawkerCentre;
-  return `*${hcName}* is already in your favourites list\\!`;
 }

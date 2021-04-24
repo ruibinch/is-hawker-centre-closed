@@ -151,12 +151,12 @@ export const mockUser: User = {
   languageCode: 'en',
   favourites: [
     {
-      hawkerCentreId: 17,
-      dateAdded: '2021-01-01T15:00:00+08:00',
+      hawkerCentreId: 1,
+      dateAdded: '2021-01-15T17:30:52+08:00',
     },
     {
-      hawkerCentreId: 13,
-      dateAdded: '2021-01-15T17:30:52+08:00',
+      hawkerCentreId: 17,
+      dateAdded: '2021-01-01T15:00:00+08:00',
     },
   ],
 };

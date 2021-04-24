@@ -1,8 +1,10 @@
 import {
   makeAddHCMessage,
+  makeDeleteOutOfBoundsMessage,
   makeDuplicateHCErrorMessage,
   makeFavouritesListMessage,
   makeSuccessfullyAddedMessage,
+  makeSuccessfullyDeletedMessage,
 } from '../../../src/features/favourites';
 import { mockHawkerCentres } from '../../__mocks__/db';
 
@@ -127,6 +129,62 @@ describe('bot > features > favourites', () => {
     });
   });
 
+  describe('makeDuplicateHCErrorMessage', () => {
+    it('returns the correct error message', () => {
+      const message = makeDuplicateHCErrorMessage({
+        hawkerCentreId: 2,
+        name: 'Slateport Market',
+      });
+
+      expect(message).toEqual(
+        `*Slateport Market* is already in your favourites list\\!`,
+      );
+    });
+  });
+
+  describe('makeSuccessfullyDeletedMessage', () => {
+    it('returns the correct success message', () => {
+      const message = makeSuccessfullyDeletedMessage({
+        hawkerCentreId: 2,
+        name: 'Slateport Market',
+      });
+
+      expect(message).toEqual(
+        `*Slateport Market* has been deleted from your list of favourites\\.`,
+      );
+    });
+
+    it('throws an error when the input value is undefined', () => {
+      expect(() => {
+        makeSuccessfullyDeletedMessage(undefined);
+      }).toThrow();
+    });
+  });
+
+  describe('makeDeleteOutOfBoundsMessage', () => {
+    it('returns the correct success message, when the number of favourites is 1', () => {
+      const message = makeDeleteOutOfBoundsMessage(1);
+
+      expect(message).toEqual(
+        `That is not a valid index number\\. The only valid value is 1\\.`,
+      );
+    });
+
+    it('returns the correct success message, when the number of favourites is not 1', () => {
+      const message = makeDeleteOutOfBoundsMessage(5);
+
+      expect(message).toEqual(
+        `That is not a valid index number\\. Try again with a value from 1 to 5\\.`,
+      );
+    });
+
+    it('throws an error when the input value is undefined', () => {
+      expect(() => {
+        makeDeleteOutOfBoundsMessage(undefined);
+      }).toThrow();
+    });
+  });
+
   describe('makeFavouritesListMessage', () => {
     it('returns the list of favourites when it is defined', () => {
       const message = makeFavouritesListMessage([
@@ -158,19 +216,6 @@ describe('bot > features > favourites', () => {
 
       expect(message).toEqual(
         "You've not added any favourites yet\\. Try adding some using the /fav command\\.",
-      );
-    });
-  });
-
-  describe('makeDuplicateHCErrorMessage', () => {
-    it('returns the correct error message', () => {
-      const message = makeDuplicateHCErrorMessage({
-        hawkerCentreId: 2,
-        name: 'Slateport Market',
-      });
-
-      expect(message).toEqual(
-        `*Slateport Market* is already in your favourites list\\!`,
       );
     });
   });

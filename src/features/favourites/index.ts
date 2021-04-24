@@ -1,12 +1,19 @@
 import { makeGenericErrorMessage } from '../../common/message';
 import { TelegramUser } from '../../common/telegram';
 import { BotResponse } from '../../common/types';
-import { addHCToFavourites, findHCByKeyword, getUserFavourites } from './logic';
+import {
+  addHCToFavourites,
+  deleteHCFromFavourites,
+  findHCByKeyword,
+  getUserFavourites,
+} from './logic';
 import {
   makeDuplicateHCErrorMessage,
   makeAddHCMessage,
   makeSuccessfullyAddedMessage,
   makeFavouritesListMessage,
+  makeSuccessfullyDeletedMessage,
+  makeDeleteOutOfBoundsMessage,
 } from './message';
 
 export * from './logic';
@@ -61,6 +68,25 @@ export async function manageFavourites(
           ? undefined
           : // HACK: appending a /fav prefix so that this flow gets triggered again without maintaining session state
             hawkerCentres.map((hc) => `/fav ${hc.name}`),
+      };
+    }
+    case '/del': {
+      const deleteHCResponse = await deleteHCFromFavourites({
+        deleteIdx: Number(keyword) - 1,
+        telegramUser,
+      });
+      if (deleteHCResponse === null) return null;
+
+      const { success, hawkerCentre, numFavourites } = deleteHCResponse;
+
+      if (success) {
+        return {
+          message: makeSuccessfullyDeletedMessage(hawkerCentre),
+        };
+      }
+
+      return {
+        message: makeDeleteOutOfBoundsMessage(numFavourites),
       };
     }
     case '/list': {

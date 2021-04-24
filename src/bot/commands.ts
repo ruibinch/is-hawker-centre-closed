@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-const SUPPORTED_COMMANDS = ['/start', '/help', '/fav'];
+const SUPPORTED_COMMANDS = ['/start', '/help', '/fav', '/del'];
 const NON_INFO_COMMANDS = ['/list'];
 
 export function isInfoCommand(s: string): boolean {
@@ -47,6 +47,12 @@ export function makeCommandMessage(s: string): string {
       reply =
         `Please specify some keyword to filter the list of hawker centres for you to add to your favourites\\.\n\n` +
         `e\\.g\\. _/fav ${getRandomExampleKeyword()}_`;
+      break;
+    }
+    case '/del': {
+      reply =
+        'To delete a favourite hawker centre, specify an index number based on the favourites list displayed by the /list command\\.\n\n' +
+        `e\\.g\\. _/del 3_`;
       break;
     }
     /* istanbul ignore next */

@@ -1,5 +1,6 @@
 import {
   addHCToFavourites,
+  deleteHCFromFavourites,
   findHCByKeyword,
   getUserFavourites,
 } from '../../../src/features/favourites';
@@ -12,6 +13,7 @@ import {
 // TODO: shift this to a __mocks__ folder and rework mocks to be more specific
 jest.mock('../../../src/common/dynamodb', () => ({
   getAllHawkerCentres: () => Promise.resolve({ Items: mockHawkerCentres }),
+  getHawkerCentreById: () => Promise.resolve({ Item: mockHawkerCentres[0] }),
   getUserById: () => Promise.resolve({ Item: mockUser }),
   updateUser: () => Promise.resolve(),
 }));
@@ -118,9 +120,8 @@ describe('bot > features > favourites > logic', () => {
   });
 
   describe('addHCToFavourites', () => {
-    const mockHawkerCentre = mockHawkerCentres[0];
-
     it('successfully adds the hawker centre to the favourites list', async () => {
+      const mockHawkerCentre = mockHawkerCentres[1];
       await addHCToFavourites({
         hawkerCentre: mockHawkerCentre,
         telegramUser: mockTelegramUser,
@@ -135,6 +136,45 @@ describe('bot > features > favourites > logic', () => {
         }
       });
     });
+
+    it('returns a duplicate error message when hawker centre is already in the favourites list', async () => {
+      const mockHawkerCentre = mockHawkerCentres[0];
+      await addHCToFavourites({
+        hawkerCentre: mockHawkerCentre,
+        telegramUser: mockTelegramUser,
+      }).then((addHCResponse) => {
+        expect(addHCResponse).toBeDefined();
+
+        if (addHCResponse) {
+          const { success, isDuplicate } = addHCResponse;
+
+          expect(success).toBeFalsy();
+          expect(isDuplicate).toBeTruthy();
+        }
+      });
+    });
+  });
+
+  describe('deleteHCFromFavourites', () => {
+    it('successfully deletes the hawker centre from the favourites list', async () => {
+      await deleteHCFromFavourites({
+        deleteIdx: 1,
+        telegramUser: mockTelegramUser,
+      }).then((deleteHCResponse) => {
+        expect(deleteHCResponse).toBeDefined();
+
+        if (deleteHCResponse) {
+          const { success, hawkerCentre } = deleteHCResponse;
+
+          expect(success).toBeTruthy();
+          expect(hawkerCentre).toBeDefined();
+          expect(hawkerCentre).toStrictEqual({
+            hawkerCentreId: 1,
+            name: 'Devon Corporation',
+          });
+        }
+      });
+    });
   });
 
   describe('getUserFavourites', () => {
@@ -145,9 +185,8 @@ describe('bot > features > favourites > logic', () => {
         if (getUserResponse) {
           expect(getUserResponse).toHaveLength(2);
           expect(getUserResponse).toContainEqual({
-            hawkerCentreId: 13,
-            name: 'Mauville Gym',
-            nameSecondary: "Nikola Tesla's descendants",
+            hawkerCentreId: 1,
+            name: 'Devon Corporation',
           });
           expect(getUserResponse).toContainEqual({
             hawkerCentreId: 17,

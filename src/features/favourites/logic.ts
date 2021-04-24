@@ -5,15 +5,16 @@ import { currentDate } from '../../common/date';
 import {
   addUser,
   getAllHawkerCentres,
+  getHawkerCentreById,
   getUserById,
   updateUser,
 } from '../../common/dynamodb';
 import { TelegramUser } from '../../common/telegram';
 import { HawkerCentreInfo, User, UserFavourite } from '../../common/types';
 import { MAX_CHOICES } from './constants';
-import { AddHCResponse, FindHCResponse } from './types';
+import { AddHCResponse, DeleteHCResponse, FindHCResponse } from './types';
 
-const FAVOURITES_COMMANDS = ['/fav', '/list'];
+const FAVOURITES_COMMANDS = ['/fav', '/del', '/list'];
 
 export function isFavouritesCommand(s: string): boolean {
   const [command] = s.split(' ');
@@ -88,7 +89,6 @@ export async function addHCToFavourites(props: {
 
     addUser(newUser);
 
-    console.log(`Successfully added user: ${userId}`);
     return { success: true };
   }
 
@@ -109,9 +109,49 @@ export async function addHCToFavourites(props: {
   );
 
   updateUser(userId, favouritesUpdated);
-
-  console.log(`Successfully updated user: ${userId}`);
   return { success: true };
+}
+
+export async function deleteHCFromFavourites(props: {
+  deleteIdx: number;
+  telegramUser: TelegramUser;
+}): Promise<DeleteHCResponse | null> {
+  const {
+    deleteIdx,
+    telegramUser: { id: userId },
+  } = props;
+
+  const getUserResponse = await getUserById(userId);
+
+  if (!getUserResponse.Item) {
+    return null;
+  }
+
+  const user = getUserResponse.Item as User;
+
+  if (deleteIdx < 0 || deleteIdx >= user.favourites.length) {
+    // out of bounds
+    return {
+      success: false,
+      numFavourites: user.favourites.length,
+    };
+  }
+
+  // get details of HC to be deleted
+  const delHawkerCentreId = user.favourites[deleteIdx].hawkerCentreId;
+  const getHCByIdResponse = await getHawkerCentreById(delHawkerCentreId);
+  if (getHCByIdResponse === null) return null;
+
+  const delHawkerCentre = getHCByIdResponse.Item as HawkerCentreInfo;
+
+  const favouritesUpdated = [...user.favourites];
+  favouritesUpdated.splice(deleteIdx, 1);
+
+  updateUser(userId, favouritesUpdated);
+  return {
+    success: true,
+    hawkerCentre: delHawkerCentre,
+  };
 }
 
 /**

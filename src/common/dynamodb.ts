@@ -64,7 +64,7 @@ export async function getHawkerCentreById(
   PromiseResult<AWS.DynamoDB.DocumentClient.GetItemOutput, AWS.AWSError>
 > {
   const params: AWS.DynamoDB.DocumentClient.GetItemInput = {
-    TableName: TABLE_USERS,
+    TableName: TABLE_HC,
     Key: {
       hawkerCentreId,
     },
@@ -86,6 +86,7 @@ export async function addUser(
     ConditionExpression: 'attribute_not_exists(userId)',
   };
 
+  console.log(`Adding user: ${user.userId}`);
   return dynamoDb.put(userInput).promise();
 }
 
@@ -121,5 +122,6 @@ export async function updateUser(
     },
   };
 
+  console.log(`Updating user: ${userId}`);
   return dynamoDb.update(updateUserInput).promise();
 }
