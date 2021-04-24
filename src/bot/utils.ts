@@ -4,5 +4,5 @@
  */
 export function sanitiseInputText(text: string): string {
   const filterRegex = /[^a-zA-Z0-9/'()\s]/g;
-  return text.replace(filterRegex, '');
+  return text.replace(filterRegex, '').trim();
 }

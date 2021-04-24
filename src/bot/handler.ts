@@ -35,7 +35,7 @@ export const bot: APIGatewayProxyHandler = async (
 
   const textSanitised = sanitiseInputText(text);
 
-  if (!textSanitised || textSanitised.trim().length === 0) {
+  if (!textSanitised || textSanitised.length === 0) {
     sendMessage(chatId, 'Specify some keywords\\!');
     return callbackWrapper(204);
   }
