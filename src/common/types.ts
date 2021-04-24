@@ -26,6 +26,7 @@ export type HawkerCentreInfo = {
 
 export type User = {
   userId: number;
+  username?: string;
   languageCode?: string;
   favourites: number[];
 };

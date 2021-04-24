@@ -70,7 +70,7 @@ export async function addHCToFavourites(props: {
 }): Promise<AddHCResponse | null> {
   const {
     hawkerCentre: { hawkerCentreId },
-    telegramUser: { id: userId, language_code: languageCode },
+    telegramUser: { id: userId, username, language_code: languageCode },
   } = props;
 
   return getUserById(userId).then((getUserResponse) => {
@@ -78,6 +78,7 @@ export async function addHCToFavourites(props: {
       // user does not exist yet in DB
       const newUser: User = {
         userId,
+        username,
         languageCode,
         favourites: [hawkerCentreId],
       };

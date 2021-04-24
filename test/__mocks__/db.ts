@@ -147,6 +147,7 @@ export const mockHawkerCentres: HawkerCentreInfo[] = [
 
 export const mockUser: User = {
   userId: 1,
+  username: 'ashketchum',
   languageCode: 'en',
   favourites: [17, 13],
 };
