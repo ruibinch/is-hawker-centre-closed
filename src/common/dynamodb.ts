@@ -1,7 +1,7 @@
 import * as AWS from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
 
-import { HawkerCentreInfo, Result, User } from './types';
+import { HawkerCentreInfo, Result, User, UserFavourite } from './types';
 
 const TABLE_RESULTS = 'ishawkercentreclosed';
 const TABLE_HC = 'ihcc-hawkerCentres';
@@ -106,7 +106,7 @@ export async function getUserById(
 
 export async function updateUser(
   userId: number,
-  favouritesUpdated: number[],
+  favouritesUpdated: UserFavourite[],
 ): Promise<
   PromiseResult<AWS.DynamoDB.DocumentClient.UpdateItemOutput, AWS.AWSError>
 > {

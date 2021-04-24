@@ -1,4 +1,7 @@
 /* eslint-disable max-len */
+import { formatISO } from 'date-fns';
+
+import { currentDate } from '../../common/date';
 import {
   addUser,
   getAllHawkerCentres,
@@ -6,7 +9,7 @@ import {
   updateUser,
 } from '../../common/dynamodb';
 import { TelegramUser } from '../../common/telegram';
-import { HawkerCentreInfo, User } from '../../common/types';
+import { HawkerCentreInfo, User, UserFavourite } from '../../common/types';
 import { MAX_CHOICES } from './constants';
 import { AddHCResponse, FindHCResponse } from './types';
 
@@ -67,6 +70,11 @@ export async function addHCToFavourites(props: {
     telegramUser: { id: userId, username, language_code: languageCode },
   } = props;
 
+  const addFavHC: UserFavourite = {
+    hawkerCentreId,
+    dateAdded: formatISO(currentDate()),
+  };
+
   const getUserResponse = await getUserById(userId);
 
   if (!getUserResponse.Item) {
@@ -75,7 +83,7 @@ export async function addHCToFavourites(props: {
       userId,
       username,
       languageCode,
-      favourites: [hawkerCentreId],
+      favourites: [addFavHC],
     };
 
     addUser(newUser);
@@ -87,14 +95,14 @@ export async function addHCToFavourites(props: {
   const user = getUserResponse.Item as User;
 
   // Check if hawker centre already exists in the favourites list
-  if (user.favourites.includes(hawkerCentreId)) {
+  if (user.favourites.includes(addFavHC)) {
     return {
       success: false,
       isDuplicate: true,
     };
   }
 
-  const favouritesUpdated = [...user.favourites, hawkerCentreId];
+  const favouritesUpdated = [...user.favourites, addFavHC];
 
   updateUser(userId, favouritesUpdated);
 
@@ -119,7 +127,7 @@ export async function getUserFavourites(
   }
 
   const user = getUserResponse.Item as User;
-  const { favourites: userFavourites } = user;
+  const userFavourites = user.favourites.map((fav) => fav.hawkerCentreId);
 
   const getAllHCResponse = await getAllHawkerCentres();
 

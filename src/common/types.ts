@@ -24,9 +24,14 @@ export type HawkerCentreInfo = {
   nameSecondary?: string;
 };
 
+export type UserFavourite = {
+  hawkerCentreId: number;
+  dateAdded: string;
+};
+
 export type User = {
   userId: number;
   username?: string;
   languageCode?: string;
-  favourites: number[];
+  favourites: UserFavourite[];
 };

@@ -149,7 +149,16 @@ export const mockUser: User = {
   userId: 1,
   username: 'ashketchum',
   languageCode: 'en',
-  favourites: [17, 13],
+  favourites: [
+    {
+      hawkerCentreId: 17,
+      dateAdded: '2021-01-01T15:00:00+08:00',
+    },
+    {
+      hawkerCentreId: 13,
+      dateAdded: '2021-01-15T17:30:52+08:00',
+    },
+  ],
 };
 
 export const mockTelegramUser: TelegramUser = {
