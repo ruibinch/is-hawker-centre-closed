@@ -2,6 +2,7 @@ import { APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
 import axios from 'axios';
 
 import { makeCallbackWrapper } from '../common/lambda';
+import { makeGenericErrorMessage } from '../common/message';
 import { makeTelegramApiBase, TelegramMessage } from '../common/telegram';
 import { isFavouritesCommand, manageFavourites } from '../features/favourites';
 import { runSearch } from '../features/search';
@@ -49,9 +50,7 @@ export const bot: APIGatewayProxyHandler = async (
   try {
     if (isFavouritesCommand(textSanitised)) {
       const botResponse = await manageFavourites(textSanitised, telegramUser);
-      if (botResponse === null) {
-        return callbackWrapper(400);
-      }
+      if (botResponse === null) throw new Error();
 
       const { message, choices } = botResponse;
 
@@ -64,9 +63,7 @@ export const bot: APIGatewayProxyHandler = async (
     }
 
     const botResponse = await runSearch(textSanitised);
-    if (botResponse === null) {
-      return callbackWrapper(400);
-    }
+    if (botResponse === null) throw new Error();
 
     const { message } = botResponse;
 
@@ -74,7 +71,8 @@ export const bot: APIGatewayProxyHandler = async (
     return callbackWrapper(204);
   } catch (error) {
     console.log(error);
-    return callbackWrapper(502);
+    sendMessage(chatId, makeGenericErrorMessage());
+    return callbackWrapper(400);
   }
 };
 
