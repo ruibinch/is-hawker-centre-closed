@@ -20,8 +20,8 @@ jest.mock('../../../src/common/dynamodb', () => ({
 
 describe('bot > features > favourites > logic', () => {
   describe('findHCByKeyword', () => {
-    it('["slateport"] returns a single result', async () => {
-      await findHCByKeyword('slateport').then((response) => {
+    it('["oldale"] returns a single result', async () => {
+      await findHCByKeyword('oldale').then((response) => {
         expect(response).toBeDefined();
 
         if (response) {
@@ -76,8 +76,8 @@ describe('bot > features > favourites > logic', () => {
       });
     });
 
-    it('["oldale"] returns an error message when there are no results', async () => {
-      await findHCByKeyword('oldale').then((response) => {
+    it('["lilycove"] returns an error message when there are no results', async () => {
+      await findHCByKeyword('lilycove').then((response) => {
         expect(response).toBeDefined();
 
         if (response) {
@@ -170,7 +170,7 @@ describe('bot > features > favourites > logic', () => {
           expect(hawkerCentre).toBeDefined();
           expect(hawkerCentre).toStrictEqual({
             hawkerCentreId: 1,
-            name: 'Devon Corporation',
+            name: 'Littleroot Town',
           });
         }
       });
@@ -186,10 +186,10 @@ describe('bot > features > favourites > logic', () => {
           expect(getUserResponse).toHaveLength(2);
           expect(getUserResponse).toContainEqual({
             hawkerCentreId: 1,
-            name: 'Devon Corporation',
+            name: 'Littleroot Town',
           });
           expect(getUserResponse).toContainEqual({
-            hawkerCentreId: 17,
+            hawkerCentreId: 37,
             name: 'Mossdeep Gym',
             nameSecondary: 'Psychics in space',
           });

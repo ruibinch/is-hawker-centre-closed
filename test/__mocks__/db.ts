@@ -68,78 +68,102 @@ export const mockResults: Result[] = [
 export const mockHawkerCentres: HawkerCentreInfo[] = [
   {
     hawkerCentreId: 1,
-    name: 'Devon Corporation',
+    name: 'Littleroot Town',
   },
   {
     hawkerCentreId: 2,
-    name: 'Slateport Market',
+    name: 'Oldale Town',
   },
   {
     hawkerCentreId: 3,
-    name: 'Fortree Market',
+    name: 'Rustboro City',
+  },
+  {
+    hawkerCentreId: 4,
+    name: 'Slateport City',
+  },
+  {
+    hawkerCentreId: 5,
+    name: 'Melville City',
+  },
+  {
+    hawkerCentreId: 6,
+    name: 'Verdanturf Town',
   },
   {
     hawkerCentreId: 11,
+    name: 'Devon Corporation',
+  },
+  {
+    hawkerCentreId: 12,
+    name: 'Slateport Market',
+  },
+  {
+    hawkerCentreId: 13,
+    name: 'Fortree Market',
+  },
+  {
+    hawkerCentreId: 31,
     name: 'Rustboro Gym',
     nameSecondary: 'Rocky road ahead',
   },
   {
-    hawkerCentreId: 12,
+    hawkerCentreId: 32,
     name: 'Dewford Gym',
     nameSecondary: "Surfer's Paradise",
   },
   {
-    hawkerCentreId: 13,
+    hawkerCentreId: 33,
     name: 'Mauville Gym',
     nameSecondary: "Nikola Tesla's descendants",
   },
   {
-    hawkerCentreId: 14,
+    hawkerCentreId: 34,
     name: 'Lavaridge Gym',
     nameSecondary: 'Land of hot springs',
   },
   {
-    hawkerCentreId: 15,
+    hawkerCentreId: 35,
     name: 'Petalburg Gym',
     nameSecondary: 'Slaking the king',
   },
   {
-    hawkerCentreId: 16,
+    hawkerCentreId: 36,
     name: 'Fortree Gym',
     nameSecondary: 'Treehouse living',
   },
   {
-    hawkerCentreId: 17,
+    hawkerCentreId: 37,
     name: 'Mossdeep Gym',
     nameSecondary: 'Psychics in space',
   },
   {
-    hawkerCentreId: 18,
+    hawkerCentreId: 38,
     name: 'Sootopolis Gym',
     nameSecondary: 'A town in a crater',
   },
   {
-    hawkerCentreId: 19,
+    hawkerCentreId: 39,
     name: 'Sidney Gym',
     nameSecondary: 'Mightyena used Intimidate',
   },
   {
-    hawkerCentreId: 20,
+    hawkerCentreId: 40,
     name: 'Phoebe Gym',
     nameSecondary: 'Ghostly figures',
   },
   {
-    hawkerCentreId: 21,
+    hawkerCentreId: 41,
     name: 'Glacia Gym',
     nameSecondary: 'Ice cream heaven',
   },
   {
-    hawkerCentreId: 22,
+    hawkerCentreId: 42,
     name: 'Drake Gym',
     nameSecondary: 'How to train a dragon',
   },
   {
-    hawkerCentreId: 23,
+    hawkerCentreId: 43,
     name: 'Champion Gym',
     nameSecondary: 'Where the very best belong',
   },
@@ -155,7 +179,7 @@ export const mockUser: User = {
       dateAdded: '2021-01-15T17:30:52+08:00',
     },
     {
-      hawkerCentreId: 17,
+      hawkerCentreId: 37,
       dateAdded: '2021-01-01T15:00:00+08:00',
     },
   ],
