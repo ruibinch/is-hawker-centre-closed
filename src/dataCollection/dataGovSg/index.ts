@@ -1,4 +1,6 @@
-import { toDateISO8601 } from '../../common/date';
+import { format } from 'date-fns';
+
+import { currentDate, toDateISO8601 } from '../../common/date';
 import { uploadHawkerCentres, uploadResults } from '../../common/dynamodb';
 import { parseToEnum } from '../../common/enum';
 import { ClosureReason, HawkerCentreInfo, Result } from '../../common/types';
@@ -16,11 +18,10 @@ getRawRecords().then((recordsRaw) => {
 
   console.log(`${results.length} results found`);
   console.log(`${hawkerCentres.length} hawker centres found`);
-  writeFile(results, 'results.json');
-  writeFile(hawkerCentres, 'hawkerCentres.json');
+  writeFile(results, `results-${getDateInYYYYMMDD()}.json`);
+  writeFile(hawkerCentres, `hawkerCentres-${getDateInYYYYMMDD()}.json`);
 
   if (isUploadToAws === 'true') {
-    console.log(`Uploading to AWS`);
     uploadResults(results);
     uploadHawkerCentres(hawkerCentres);
   }
@@ -118,4 +119,8 @@ function getHawkerCentresList(results: Result[]) {
       self.findIndex((hc2) => hc.hawkerCentreId === hc2.hawkerCentreId) === idx,
   );
   return hawkerCentresDeduplicated;
+}
+
+function getDateInYYYYMMDD() {
+  return format(currentDate(), 'yyyyMMdd');
 }

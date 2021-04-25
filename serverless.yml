@@ -4,6 +4,10 @@ frameworkVersion: '2'
 
 custom:
   bot: src/bot
+  table:
+    results: ihcc-results
+    hc: ihcc-hawkerCentres
+    users: ihcc-users
   webpack:
     includeModules: true
 
@@ -14,29 +18,32 @@ plugins:
 provider:
   name: aws
   runtime: nodejs12.x
-  stage: dev
+  stage: ${opt:stage, 'dev'}
   region: ap-southeast-1
   lambdaHashingVersion: 20201221
+  environment:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+    TABLE_RESULTS: ${self:custom.table.results}-${self:provider.stage}
+    TABLE_HC: ${self:custom.table.hc}-${self:provider.stage}
+    TABLE_USERS: ${self:custom.table.users}-${self:provider.stage}
   iam:
     role:
       statements:
         - Effect: Allow
           Action:
             - dynamodb:Scan
-          Resource: 'arn:aws:dynamodb:ap-southeast-1:*:table/ishawkercentreclosed'
+          Resource: 'arn:aws:dynamodb:ap-southeast-1:*:table/${self:custom.table.results}-${self:provider.stage}'
         - Effect: Allow
           Action:
             - dynamodb:Scan
             - dynamodb:GetItem
-          Resource: 'arn:aws:dynamodb:ap-southeast-1:*:table/ihcc-hawkerCentres'
+          Resource: 'arn:aws:dynamodb:ap-southeast-1:*:table/${self:custom.table.hc}-${self:provider.stage}'
         - Effect: Allow
           Action:
-            - dynamodb:Scan
             - dynamodb:GetItem
             - dynamodb:PutItem
             - dynamodb:UpdateItem
-          Resource: 'arn:aws:dynamodb:ap-southeast-1:*:table/ihcc-users'
+          Resource: 'arn:aws:dynamodb:ap-southeast-1:*:table/${self:custom.table.users}-${self:provider.stage}'
 
 package:
   patterns:

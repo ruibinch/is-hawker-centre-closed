@@ -6,7 +6,10 @@ import { makeTelegramApiBase, WebhookInfoResponse } from '../common/telegram';
 dotenv.config();
 
 const token = process.env.BOT_TOKEN;
-const apiGatewayId = process.env.API_GATEWAY_ID;
+const [apiGatewayId, slsStage] = (() =>
+  process.env.NODE_ENV === 'production'
+    ? [process.env.API_GATEWAY_ID_PROD, 'prod']
+    : [process.env.API_GATEWAY_ID_DEV, 'dev'])();
 
 if (token === undefined) {
   throw new Error('BOT_TOKEN missing');
@@ -18,7 +21,7 @@ if (apiGatewayId === undefined) {
 axios
   .get(`${makeTelegramApiBase(token)}/setWebhook`, {
     params: {
-      url: `https://${apiGatewayId}.execute-api.ap-southeast-1.amazonaws.com/dev/bot?token=${token}`,
+      url: `https://${apiGatewayId}.execute-api.ap-southeast-1.amazonaws.com/${slsStage}/bot?token=${token}`,
     },
   })
   .then(() => {

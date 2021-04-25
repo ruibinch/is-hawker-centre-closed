@@ -2,15 +2,14 @@ import * as AWS from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
 
 import { HawkerCentreInfo, Result, User, UserFavourite } from './types';
+import { TABLE_RESULTS, TABLE_HC, TABLE_USERS } from './variables';
 
-const TABLE_RESULTS = 'ishawkercentreclosed';
-const TABLE_HC = 'ihcc-hawkerCentres';
-const TABLE_USERS = 'ihcc-users';
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 // Results
 
 export function uploadResults(results: Result[]): void {
+  console.log(`Uploading to table "${TABLE_RESULTS}"`);
   Promise.all(
     results.map((result) => {
       const resultInput: AWS.DynamoDB.DocumentClient.PutItemInput = {
@@ -36,6 +35,7 @@ export async function getAllResults(): Promise<
 // Hawker centres info
 
 export function uploadHawkerCentres(hawkerCentres: HawkerCentreInfo[]): void {
+  console.log(`Uploading to table "${TABLE_HC}"`);
   Promise.all(
     hawkerCentres.map((hawkerCentre) => {
       const hawkerCentreInput: AWS.DynamoDB.DocumentClient.PutItemInput = {
@@ -86,7 +86,7 @@ export async function addUser(
     ConditionExpression: 'attribute_not_exists(userId)',
   };
 
-  console.log(`Adding user: ${user.userId}`);
+  console.log(`Adding user ${user.userId} to "${TABLE_USERS}"`);
   return dynamoDb.put(userInput).promise();
 }
 
@@ -122,6 +122,6 @@ export async function updateUser(
     },
   };
 
-  console.log(`Updating user: ${userId}`);
+  console.log(`Updating user ${userId} to "${TABLE_USERS}"`);
   return dynamoDb.update(updateUserInput).promise();
 }
