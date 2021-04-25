@@ -6,6 +6,7 @@ import {
   deleteHCFromFavourites,
   findHCByKeyword,
   getUserFavourites,
+  getUserFavouritesWithResults,
 } from './logic';
 import {
   makeDuplicateHCErrorMessage,
@@ -14,6 +15,7 @@ import {
   makeFavouritesListMessage,
   makeSuccessfullyDeletedMessage,
   makeDeleteOutOfBoundsMessage,
+  makeFavouritesListWithResultsMessage,
 } from './message';
 
 export * from './logic';
@@ -95,6 +97,18 @@ export async function manageFavourites(
 
       return {
         message: makeFavouritesListMessage(getFavResponse),
+      };
+    }
+    case '/list_with_search': {
+      const getFavResponseWithResults = await getUserFavouritesWithResults(
+        telegramUser,
+      );
+      if (getFavResponseWithResults === null) return null;
+
+      return {
+        message: makeFavouritesListWithResultsMessage(
+          getFavResponseWithResults,
+        ),
       };
     }
     default:

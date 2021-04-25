@@ -1,4 +1,5 @@
-import { HawkerCentreInfo } from '../../common/types';
+import { HawkerCentreInfo, ResultPartial } from '../../common/types';
+import { formatDate } from '../search';
 import { MAX_CHOICES } from './constants';
 
 export function makeAddHCMessage(props: {
@@ -79,4 +80,27 @@ export function makeFavouritesListMessage(
     .join('\n');
 
   return `Your favourite hawker centres are:\n\n${hcOutput}`;
+}
+
+export function makeFavouritesListWithResultsMessage(
+  hawkerCentresWithResults: ResultPartial[],
+): string {
+  if (hawkerCentresWithResults.length === 0) {
+    return "You've not added any favourites yet\\. Try adding some using the /fav command\\.";
+  }
+
+  const hcOutput = hawkerCentresWithResults
+    .map((hc, idx) => {
+      const { startDate, endDate } = hc;
+
+      const nextClosureDetails =
+        startDate && endDate
+          ? `\n    \\(${formatDate(startDate)} to ${formatDate(endDate)}\\)`
+          : '';
+
+      return `${idx + 1}\\. *${hc.name}*${nextClosureDetails}`;
+    })
+    .join('\n');
+
+  return `Your favourite hawker centres and their next closure dates are:\n\n${hcOutput}`;
 }

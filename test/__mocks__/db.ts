@@ -179,6 +179,10 @@ export const mockUser: User = {
       dateAdded: '2021-01-15T17:30:52+08:00',
     },
     {
+      hawkerCentreId: 6,
+      dateAdded: '2021-01-10T08:22:20+08:00',
+    },
+    {
       hawkerCentreId: 37,
       dateAdded: '2021-01-01T15:00:00+08:00',
     },

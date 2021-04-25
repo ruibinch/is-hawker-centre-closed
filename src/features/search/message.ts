@@ -97,6 +97,6 @@ function makeNumResultsSnippet(results: Result[]) {
   return `*${results.length}*`;
 }
 
-function formatDate(date: string) {
+export function formatDate(date: string): string {
   return format(parseISO(date), 'dd\\-MMM');
 }

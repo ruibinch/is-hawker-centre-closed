@@ -1,17 +1,23 @@
+import { parseISO } from 'date-fns';
+
+import { ClosureReason } from '../../../src/common/types';
 import {
   addHCToFavourites,
   deleteHCFromFavourites,
   findHCByKeyword,
   getUserFavourites,
+  getUserFavouritesWithResults,
 } from '../../../src/features/favourites';
 import {
   mockHawkerCentres,
+  mockResults,
   mockTelegramUser,
   mockUser,
 } from '../../__mocks__/db';
 
 // TODO: shift this to a __mocks__ folder and rework mocks to be more specific
 jest.mock('../../../src/common/dynamodb', () => ({
+  getAllResults: () => Promise.resolve({ Items: mockResults }),
   getAllHawkerCentres: () => Promise.resolve({ Items: mockHawkerCentres }),
   getHawkerCentreById: () => Promise.resolve({ Item: mockHawkerCentres[0] }),
   getUserById: () => Promise.resolve({ Item: mockUser }),
@@ -19,6 +25,18 @@ jest.mock('../../../src/common/dynamodb', () => ({
 }));
 
 describe('bot > features > favourites > logic', () => {
+  let dateSpy: jest.SpyInstance;
+
+  beforeAll(() => {
+    dateSpy = jest
+      .spyOn(Date, 'now')
+      .mockImplementation(() => parseISO('2021-01-05').valueOf());
+  });
+
+  afterAll(() => {
+    dateSpy.mockRestore();
+  });
+
   describe('findHCByKeyword', () => {
     it('["oldale"] returns a single result', async () => {
       await findHCByKeyword('oldale').then((response) => {
@@ -183,10 +201,14 @@ describe('bot > features > favourites > logic', () => {
         expect(getUserResponse).toBeDefined();
 
         if (getUserResponse) {
-          expect(getUserResponse).toHaveLength(2);
+          expect(getUserResponse).toHaveLength(3);
           expect(getUserResponse).toContainEqual({
             hawkerCentreId: 1,
             name: 'Littleroot Town',
+          });
+          expect(getUserResponse).toContainEqual({
+            hawkerCentreId: 6,
+            name: 'Verdanturf Town',
           });
           expect(getUserResponse).toContainEqual({
             hawkerCentreId: 37,
@@ -195,6 +217,37 @@ describe('bot > features > favourites > logic', () => {
           });
         }
       });
+    });
+  });
+
+  describe('getUserFavouritesWithResults', () => {
+    it("correctly returns the user's favourite hawker centres with results", async () => {
+      await getUserFavouritesWithResults(mockTelegramUser).then(
+        (getUserResponse) => {
+          expect(getUserResponse).toBeDefined();
+
+          if (getUserResponse) {
+            expect(getUserResponse).toHaveLength(3);
+            expect(getUserResponse).toContainEqual({
+              hawkerCentreId: 1,
+              name: 'Littleroot Town',
+            });
+            expect(getUserResponse).toContainEqual({
+              id: '111',
+              hawkerCentreId: 6,
+              name: 'Verdanturf Town',
+              reason: ClosureReason.cleaning,
+              startDate: '2021-02-08',
+              endDate: '2021-02-09',
+            });
+            expect(getUserResponse).toContainEqual({
+              hawkerCentreId: 37,
+              name: 'Mossdeep Gym',
+              nameSecondary: 'Psychics in space',
+            });
+          }
+        },
+      );
     });
   });
 });

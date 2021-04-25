@@ -9,7 +9,7 @@ describe('bot > utils', () => {
       ["people's park", "people's park"],
       ['(ang mo kio)', '(ang mo kio)'],
       ['clementi!@#$%^&*', 'clementi'],
-      ['telok blangah{}[]<>,.?\\|:;"-_+=', 'telok blangah'],
+      ['telok blangah{}[]<>,.?\\|:;"-+=', 'telok blangah'],
     ])('%s -> %s', (input, expected) => {
       const result = sanitiseInputText(input);
       expect(result).toEqual(expected);

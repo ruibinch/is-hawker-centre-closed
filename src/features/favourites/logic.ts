@@ -1,11 +1,12 @@
 /* eslint-disable max-len */
-import { formatISO } from 'date-fns';
+import { formatISO, parseISO } from 'date-fns';
 
 import { COMMANDS } from '../../bot/commands';
 import { currentDate } from '../../common/date';
 import {
   addUser,
   getAllHawkerCentres,
+  getAllResults,
   getHawkerCentreById,
   getUserById,
   updateUser,
@@ -16,7 +17,10 @@ import {
   HawkerCentreInfo,
   User,
   UserFavourite,
+  Result,
+  ResultPartial,
 } from '../../common/types';
+import { sortInDateAscThenAlphabeticalOrder } from '../search';
 import { MAX_CHOICES } from './constants';
 import { AddHCResponse, DeleteHCResponse, FindHCResponse } from './types';
 
@@ -198,6 +202,56 @@ export async function getUserFavourites(
 }
 
 /**
+ * Returns the user's favourites list, along with the results of their next closure times.
+ */
+export async function getUserFavouritesWithResults(
+  telegramUser: TelegramUser,
+): Promise<ResultPartial[] | null> {
+  const { id: userId } = telegramUser;
+
+  const getUserResponse = await getUserById(userId);
+
+  if (!getUserResponse.Item) {
+    // user does not exist in DB
+    return [];
+  }
+
+  const user = getUserResponse.Item as User;
+  const userFavHCIds = user.favourites.map((fav) => fav.hawkerCentreId);
+
+  const getAllResultsResponse = await getAllResults();
+  const resultsAll = getAllResultsResponse.Items as Result[];
+
+  const getAllHCResponse = await getAllHawkerCentres();
+  const hawkerCentres = getAllHCResponse.Items as HawkerCentreInfo[];
+
+  const userFavsWithResults = userFavHCIds.map((favHCId) => {
+    const resultsForHawkerCentre = resultsAll.filter(
+      (result) => result.hawkerCentreId === favHCId,
+    );
+
+    const nextOccurringResult = getNextOccurringResult(resultsForHawkerCentre);
+
+    // if there is no next occurring result, fallback to returning the basic info
+    if (!nextOccurringResult) {
+      const hawkerCentre = hawkerCentres.find(
+        (hc) => hc.hawkerCentreId === favHCId,
+      );
+      if (!hawkerCentre) {
+        throw new Error(
+          `Missing hawker centre entry for hawkerCentreId ${favHCId}`,
+        );
+      }
+      return hawkerCentre;
+    }
+
+    return nextOccurringResult;
+  });
+
+  return userFavsWithResults;
+}
+
+/**
  * Filters the list of hawker centres by keyword matching the hawker centre name(s).
  */
 function filterByKeyword(
@@ -214,4 +268,18 @@ function filterByKeyword(
       filterRegex.test(hc.name.toLowerCase()) ||
       (hc.nameSecondary && filterRegex.test(hc.nameSecondary.toLowerCase())),
   );
+}
+
+/**
+ * Returns the result entry that is the next to occur w.r.t. the current date.
+ */
+function getNextOccurringResult(results: Result[]): Result | undefined {
+  const resultsSorted = sortInDateAscThenAlphabeticalOrder(results);
+
+  const currDate = currentDate();
+  const resultsSortedAndFiltered = resultsSorted.filter(
+    (result) => parseISO(result.startDate) > currDate,
+  );
+
+  return resultsSortedAndFiltered[0];
 }

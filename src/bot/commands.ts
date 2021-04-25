@@ -29,6 +29,12 @@ export const COMMANDS: Command[] = [
   },
   {
     module: Module.favourites,
+    endpoint: '/list_with_search',
+    hasExplanation: false,
+    description: 'View your favourites and their next closure time',
+  },
+  {
+    module: Module.favourites,
     endpoint: '/del',
     hasExplanation: true,
     description: 'Delete from your favourites',
@@ -78,7 +84,9 @@ export function makeCommandMessage(s: string): string | undefined {
     reply =
       `Woops, that isn't a supported command\\.\n\n` +
       `Please try again with one of the following:\n` +
-      `${COMMANDS.map((cmd) => cmd.endpoint).join(', ')}`;
+      `${COMMANDS.map((cmd) => formatEndpointForDisplay(cmd.endpoint)).join(
+        ', ',
+      )}`;
     return reply;
   }
 
@@ -118,6 +126,10 @@ export function makeCommandMessage(s: string): string | undefined {
   }
 
   return reply;
+}
+
+function formatEndpointForDisplay(endpoint: string) {
+  return endpoint.replace(/_/g, '\\_');
 }
 
 const examples = [

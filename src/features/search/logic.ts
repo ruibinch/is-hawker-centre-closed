@@ -136,7 +136,9 @@ function filterByDate(results: Result[], modifier: SearchModifier) {
  * 2. By ascending order of end date, then
  * 3. Alphabetical order of hawker centre name
  */
-function sortInDateAscThenAlphabeticalOrder(results: Result[]) {
+export function sortInDateAscThenAlphabeticalOrder(
+  results: Result[],
+): Result[] {
   return [...results].sort((a, b) => {
     const aStartDate = parseISO(a.startDate);
     const aEndDate = parseISO(a.endDate);

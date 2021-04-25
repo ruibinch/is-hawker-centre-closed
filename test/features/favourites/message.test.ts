@@ -1,14 +1,16 @@
+import { ClosureReason } from '../../../src/common/types';
 import {
   makeAddHCMessage,
   makeDeleteOutOfBoundsMessage,
   makeDuplicateHCErrorMessage,
   makeFavouritesListMessage,
+  makeFavouritesListWithResultsMessage,
   makeSuccessfullyAddedMessage,
   makeSuccessfullyDeletedMessage,
 } from '../../../src/features/favourites';
 import { mockHawkerCentres } from '../../__mocks__/db';
 
-describe('bot > features > favourites', () => {
+describe('bot > features > favourites > message', () => {
   describe('makeAddHCMessage', () => {
     it.each([
       [
@@ -213,6 +215,42 @@ describe('bot > features > favourites', () => {
 
     it('returns a prompt to add some favourites when there are no favourites defined', () => {
       const message = makeFavouritesListMessage([]);
+
+      expect(message).toEqual(
+        "You've not added any favourites yet\\. Try adding some using the /fav command\\.",
+      );
+    });
+  });
+
+  describe('makeFavouritesListWithResultsMessage', () => {
+    it('returns the list of favourites with results when it is defined', () => {
+      const message = makeFavouritesListWithResultsMessage([
+        {
+          hawkerCentreId: 2,
+          name: 'Slateport Market',
+          reason: ClosureReason.cleaning,
+          startDate: '2021-06-14',
+          endDate: '2021-06-15',
+        },
+        {
+          hawkerCentreId: 11,
+          name: 'Rustboro Gym',
+          nameSecondary: 'Rocky road ahead',
+          reason: ClosureReason.cleaning,
+          startDate: '2021-03-02',
+          endDate: '2021-03-02',
+        },
+      ]);
+
+      expect(message).toEqual(
+        `Your favourite hawker centres and their next closure dates are:\n\n` +
+          `1\\. *Slateport Market*\n    \\(14\\-Jun to 15\\-Jun\\)\n` +
+          `2\\. *Rustboro Gym*\n    \\(02\\-Mar to 02\\-Mar\\)`,
+      );
+    });
+
+    it('returns a prompt to add some favourites when there are no favourites defined', () => {
+      const message = makeFavouritesListWithResultsMessage([]);
 
       expect(message).toEqual(
         "You've not added any favourites yet\\. Try adding some using the /fav command\\.",
