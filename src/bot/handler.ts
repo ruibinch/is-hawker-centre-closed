@@ -7,7 +7,7 @@ import { makeTelegramApiBase, TelegramMessage } from '../common/telegram';
 import { isFavouritesCommand, manageFavourites } from '../features/favourites';
 import { runSearch } from '../features/search';
 import { validateToken } from './auth';
-import { isInfoCommand, makeCommandMessage } from './commands';
+import { isCommand, makeCommandMessage } from './commands';
 import { sanitiseInputText } from './utils';
 import { BOT_TOKEN } from './variables';
 
@@ -40,10 +40,12 @@ export const bot: APIGatewayProxyHandler = async (
     return callbackWrapper(204);
   }
 
-  if (isInfoCommand(textSanitised)) {
+  if (isCommand(textSanitised)) {
     const commandMessage = makeCommandMessage(textSanitised);
-    sendMessage(chatId, commandMessage);
-    return callbackWrapper(204);
+    if (commandMessage) {
+      sendMessage(chatId, commandMessage);
+      return callbackWrapper(204);
+    }
   }
 
   // TODO: remove repetitions in this section

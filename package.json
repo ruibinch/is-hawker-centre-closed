@@ -18,6 +18,7 @@
     "deploy:prod:all": "sls deploy -s prod",
     "remove:dev": "sls remove -s dev",
     "remove:prod": "sls remove -s prod",
+    "print:bot-commands": "ts-node src/bot/commands.ts",
     "lint": "eslint . --ext .ts",
     "test": "TZ=UTC jest"
   },

@@ -1,27 +1,84 @@
 /* eslint-disable max-len */
-const SUPPORTED_COMMANDS = ['/start', '/help', '/fav', '/del'];
-const NON_INFO_COMMANDS = ['/list'];
+import { Module } from '../common/types';
+import { Command } from './types';
 
-export function isInfoCommand(s: string): boolean {
-  return (
-    s.startsWith('/') &&
-    s.split(' ').length === 1 &&
-    !NON_INFO_COMMANDS.includes(s)
+export const COMMANDS: Command[] = [
+  {
+    module: Module.general,
+    endpoint: '/start',
+    hasExplanation: true,
+    description: 'Welcome message',
+  },
+  {
+    module: Module.general,
+    endpoint: '/help',
+    hasExplanation: true,
+    description: 'Bot usage guide',
+  },
+  {
+    module: Module.favourites,
+    endpoint: '/fav',
+    hasExplanation: true,
+    description: 'Add to your favourites',
+  },
+  {
+    module: Module.favourites,
+    endpoint: '/list',
+    hasExplanation: false,
+    description: 'View your favourites',
+  },
+  {
+    module: Module.favourites,
+    endpoint: '/del',
+    hasExplanation: true,
+    description: 'Delete from your favourites',
+  },
+];
+
+// If this file is run as a script, print the list of commands with associated descriptions for feeding into Telegram BotFather.
+if (require.main === module) {
+  console.log(
+    COMMANDS.map(
+      (cmd) => `${cmd.endpoint.replace('/', '')} - ${cmd.description}`,
+    ).join('\n'),
   );
 }
 
-function isSupportedInfoCommand(s: string): boolean {
-  return SUPPORTED_COMMANDS.includes(s);
+/**
+ * Returns if a keyword is in the structure of a command, i.e. starting with a slash and containing only one word.
+ */
+export function isCommand(s: string): boolean {
+  return s.startsWith('/') && s.split(' ').length === 1;
 }
 
-export function makeCommandMessage(s: string): string {
+/**
+ * Returns if a command does not have an associated explanation, i.e. it should not be handled as a generic command but via custom handling.
+ */
+function isCommandWithoutExplanation(s: string): boolean {
+  return COMMANDS.filter((cmd) => !cmd.hasExplanation)
+    .map((cmd) => cmd.endpoint)
+    .includes(s);
+}
+
+/**
+ * Returns if a command is supported.
+ */
+function isCommandSupported(s: string): boolean {
+  return COMMANDS.map((cmd) => cmd.endpoint).includes(s);
+}
+
+export function makeCommandMessage(s: string): string | undefined {
+  if (isCommandWithoutExplanation(s)) {
+    return undefined;
+  }
+
   let reply = '';
 
-  if (!isSupportedInfoCommand(s)) {
+  if (!isCommandSupported(s)) {
     reply =
       `Woops, that isn't a supported command\\.\n\n` +
       `Please try again with one of the following:\n` +
-      `${SUPPORTED_COMMANDS.join(', ')}`;
+      `${COMMANDS.map((cmd) => cmd.endpoint).join(', ')}`;
     return reply;
   }
 

@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import { formatISO } from 'date-fns';
 
+import { COMMANDS } from '../../bot/commands';
 import { currentDate } from '../../common/date';
 import {
   addUser,
@@ -10,15 +11,21 @@ import {
   updateUser,
 } from '../../common/dynamodb';
 import { TelegramUser } from '../../common/telegram';
-import { HawkerCentreInfo, User, UserFavourite } from '../../common/types';
+import {
+  Module,
+  HawkerCentreInfo,
+  User,
+  UserFavourite,
+} from '../../common/types';
 import { MAX_CHOICES } from './constants';
 import { AddHCResponse, DeleteHCResponse, FindHCResponse } from './types';
 
-const FAVOURITES_COMMANDS = ['/fav', '/del', '/list'];
-
 export function isFavouritesCommand(s: string): boolean {
   const [command] = s.split(' ');
-  return FAVOURITES_COMMANDS.includes(command);
+
+  return COMMANDS.filter((cmd) => cmd.module === Module.favourites)
+    .map((cmd) => cmd.endpoint)
+    .includes(command);
 }
 
 export async function findHCByKeyword(

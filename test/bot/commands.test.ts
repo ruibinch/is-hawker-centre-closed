@@ -50,6 +50,13 @@ describe('bot > commands', () => {
     });
   });
 
+  describe('/list', () => {
+    it('returns null as /list should be handled by the favourites module', () => {
+      const commandMessage = makeCommandMessage('/list');
+      expect(commandMessage).toBeUndefined();
+    });
+  });
+
   describe('an unsupported command', () => {
     it('returns the correct message', () => {
       const expectedMessage =
