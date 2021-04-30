@@ -4,7 +4,6 @@ import {
   makeDeleteOutOfBoundsMessage,
   makeDuplicateHCErrorMessage,
   makeFavouritesListMessage,
-  makeFavouritesListWithResultsMessage,
   makeSuccessfullyAddedMessage,
   makeSuccessfullyDeletedMessage,
 } from '../../../src/features/favourites';
@@ -188,43 +187,8 @@ describe('bot > features > favourites > message', () => {
   });
 
   describe('makeFavouritesListMessage', () => {
-    it('returns the list of favourites when it is defined', () => {
-      const message = makeFavouritesListMessage([
-        {
-          hawkerCentreId: 2,
-          name: 'Slateport Market',
-        },
-        {
-          hawkerCentreId: 3,
-          name: 'Fortree Market',
-        },
-        {
-          hawkerCentreId: 11,
-          name: 'Rustboro Gym',
-          nameSecondary: 'Rocky road ahead',
-        },
-      ]);
-
-      expect(message).toEqual(
-        `Your favourite hawker centres are:\n\n` +
-          `1\\. *Slateport Market*\n` +
-          `2\\. *Fortree Market*\n` +
-          `3\\. *Rustboro Gym*`,
-      );
-    });
-
-    it('returns a prompt to add some favourites when there are no favourites defined', () => {
-      const message = makeFavouritesListMessage([]);
-
-      expect(message).toEqual(
-        "You've not added any favourites yet\\. Try adding some using the /fav command\\.",
-      );
-    });
-  });
-
-  describe('makeFavouritesListWithResultsMessage', () => {
     it('returns the list of favourites with results when it is defined', () => {
-      const message = makeFavouritesListWithResultsMessage([
+      const message = makeFavouritesListMessage([
         {
           hawkerCentreId: 2,
           name: 'Slateport Market',
@@ -244,13 +208,13 @@ describe('bot > features > favourites > message', () => {
 
       expect(message).toEqual(
         `Your favourite hawker centres and their next closure dates are:\n\n` +
-          `1\\. *Slateport Market*\n    \\(14\\-Jun to 15\\-Jun\\)\n` +
-          `2\\. *Rustboro Gym*\n    \\(02\\-Mar to 02\\-Mar\\)`,
+          `1\\. *Slateport Market*\n    _\\(14\\-Jun to 15\\-Jun\\)_\n` +
+          `2\\. *Rustboro Gym*\n    _\\(02\\-Mar to 02\\-Mar\\)_`,
       );
     });
 
     it('returns a prompt to add some favourites when there are no favourites defined', () => {
-      const message = makeFavouritesListWithResultsMessage([]);
+      const message = makeFavouritesListMessage([]);
 
       expect(message).toEqual(
         "You've not added any favourites yet\\. Try adding some using the /fav command\\.",

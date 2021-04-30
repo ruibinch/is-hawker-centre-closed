@@ -166,42 +166,6 @@ export async function deleteHCFromFavourites(props: {
 }
 
 /**
- * Returns the user's favourites list, or an empty list if the user does not exist.
- */
-export async function getUserFavourites(
-  telegramUser: TelegramUser,
-): Promise<HawkerCentreInfo[] | null> {
-  const { id: userId } = telegramUser;
-
-  const getUserResponse = await getUserById(userId);
-
-  if (!getUserResponse.Item) {
-    // user does not exist in DB
-    return [];
-  }
-
-  const user = getUserResponse.Item as User;
-  const userFavHCIds = user.favourites.map((fav) => fav.hawkerCentreId);
-
-  const getAllHCResponse = await getAllHawkerCentres();
-  const hawkerCentres = getAllHCResponse.Items as HawkerCentreInfo[];
-
-  const userFavs = userFavHCIds.map((favHCId) => {
-    const hawkerCentre = hawkerCentres.find(
-      (hc) => hc.hawkerCentreId === favHCId,
-    );
-    if (!hawkerCentre) {
-      throw new Error(
-        `Missing hawker centre entry for hawkerCentreId ${favHCId}`,
-      );
-    }
-    return hawkerCentre;
-  });
-
-  return userFavs;
-}
-
-/**
  * Returns the user's favourites list, along with the results of their next closure times.
  */
 export async function getUserFavouritesWithResults(

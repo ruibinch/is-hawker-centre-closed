@@ -69,20 +69,6 @@ export function makeDeleteOutOfBoundsMessage(
 }
 
 export function makeFavouritesListMessage(
-  hawkerCentres: HawkerCentreInfo[],
-): string {
-  if (hawkerCentres.length === 0) {
-    return "You've not added any favourites yet\\. Try adding some using the /fav command\\.";
-  }
-
-  const hcOutput = hawkerCentres
-    .map((hc, idx) => `${idx + 1}\\. *${hc.name}*`)
-    .join('\n');
-
-  return `Your favourite hawker centres are:\n\n${hcOutput}`;
-}
-
-export function makeFavouritesListWithResultsMessage(
   hawkerCentresWithResults: ResultPartial[],
 ): string {
   if (hawkerCentresWithResults.length === 0) {
@@ -95,7 +81,7 @@ export function makeFavouritesListWithResultsMessage(
 
       const nextClosureDetails =
         startDate && endDate
-          ? `\n    \\(${formatDate(startDate)} to ${formatDate(endDate)}\\)`
+          ? `\n    _\\(${formatDate(startDate)} to ${formatDate(endDate)}\\)_`
           : '';
 
       return `${idx + 1}\\. *${hc.name}*${nextClosureDetails}`;

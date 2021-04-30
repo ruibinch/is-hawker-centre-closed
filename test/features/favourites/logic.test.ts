@@ -5,7 +5,6 @@ import {
   addHCToFavourites,
   deleteHCFromFavourites,
   findHCByKeyword,
-  getUserFavourites,
   getUserFavouritesWithResults,
 } from '../../../src/features/favourites';
 import {
@@ -189,31 +188,6 @@ describe('bot > features > favourites > logic', () => {
           expect(hawkerCentre).toStrictEqual({
             hawkerCentreId: 1,
             name: 'Littleroot Town',
-          });
-        }
-      });
-    });
-  });
-
-  describe('getUserFavourites', () => {
-    it("correctly returns the user's favourite hawker centres", async () => {
-      await getUserFavourites(mockTelegramUser).then((getUserResponse) => {
-        expect(getUserResponse).toBeDefined();
-
-        if (getUserResponse) {
-          expect(getUserResponse).toHaveLength(3);
-          expect(getUserResponse).toContainEqual({
-            hawkerCentreId: 1,
-            name: 'Littleroot Town',
-          });
-          expect(getUserResponse).toContainEqual({
-            hawkerCentreId: 6,
-            name: 'Verdanturf Town',
-          });
-          expect(getUserResponse).toContainEqual({
-            hawkerCentreId: 37,
-            name: 'Mossdeep Gym',
-            nameSecondary: 'Psychics in space',
           });
         }
       });

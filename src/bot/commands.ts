@@ -25,13 +25,7 @@ export const COMMANDS: Command[] = [
     module: Module.favourites,
     endpoint: '/list',
     hasExplanation: false,
-    description: 'View your favourites',
-  },
-  {
-    module: Module.favourites,
-    endpoint: '/list_with_search',
-    hasExplanation: false,
-    description: 'View your favourites and their next closure time',
+    description: 'View your favourites and their next closure dates',
   },
   {
     module: Module.favourites,
