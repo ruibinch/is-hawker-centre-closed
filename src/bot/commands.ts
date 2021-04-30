@@ -88,18 +88,26 @@ export function makeCommandMessage(s: string): string | undefined {
     case '/start': {
       reply =
         `An easy way to check if your favourite hawker centre is closed today\\! \u{1F35C}\u{1F35B}\u{1F367}\n\n` +
-        `Simply send the bot some *subset of the hawker centre name*, e\\.g\\. _toa payoh_\n\n` +
-        `For more options\\, type in /help to see how you can customise your query further\\.`;
+        `Simply send the bot some *subset of the hawker centre name*, e\\.g\\. _toa payoh_\\.\n\n` +
+        `Type in /help to see how you can customise your query further, as well as other features of the bot\\.`;
       break;
     }
     case '/help': {
+      // Search section
       reply =
+        `\u{1F50D} *Search*\n\n` +
         `The search query follows the structure:\n\n` +
         '          `\\[keyword\\] \\[timeframe\\]`\n\n' +
         `Supported timeframes are:\n` +
-        `_today_, _tmr_, _tomorrow_, _month_, _next month_\n\n` +
-        `When no timeframe is specified, it is default to _today_\\.\n\n`;
+        `_today_, _tmr_, _tomorrow_, _month_, _next month_\n` +
+        `\\(default is _today_\\)\n\n`;
       reply += makeRandomExample();
+      reply += '\n\n';
+      // Favourites section
+      reply +=
+        '\u{1F31F} *Favourites*\n\n' +
+        'You can manage your favourite hawker centres via the /fav and /del commands\\.\n\n' +
+        'Typing /list will show you all your favourites as well as their next closure dates, making for an even easier way for you to check on their closure status\\!';
       break;
     }
     case '/fav': {
