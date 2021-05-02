@@ -5,11 +5,11 @@ import {
   makeFavouritesListMessage,
   makeSuccessfullyAddedMessage,
   makeSuccessfullyDeletedMessage,
-} from '../../../src/features/favourites';
-import { ClosureReason } from '../../../src/models/types';
-import { mockHawkerCentres } from '../../__mocks__/db';
+} from '..';
+import { mockHawkerCentres } from '../../../models/__mocks__/db';
+import { ClosureReason } from '../../../models/types';
 
-describe('bot > features > favourites > message', () => {
+describe('features > favourites > message', () => {
   describe('makeAddHCMessage', () => {
     it.each([
       [

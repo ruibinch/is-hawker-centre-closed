@@ -5,29 +5,29 @@ import {
   deleteHCFromFavourites,
   findHCByKeyword,
   getUserFavouritesWithResults,
-} from '../../../src/features/favourites';
-import { ClosureReason } from '../../../src/models/types';
+} from '..';
 import {
   mockHawkerCentres,
   mockResults,
   mockTelegramUser,
   mockUser,
-} from '../../__mocks__/db';
+} from '../../../models/__mocks__/db';
+import { ClosureReason } from '../../../models/types';
 
 // TODO: shift this to a __mocks__ folder and rework mocks to be more specific
-jest.mock('../../../src/models/HawkerCentre', () => ({
+jest.mock('../../../models/HawkerCentre', () => ({
   getAllHawkerCentres: () => Promise.resolve({ Items: mockHawkerCentres }),
   getHawkerCentreById: () => Promise.resolve({ Item: mockHawkerCentres[0] }),
 }));
-jest.mock('../../../src/models/Result', () => ({
+jest.mock('../../../models/Result', () => ({
   getAllResults: () => Promise.resolve({ Items: mockResults }),
 }));
-jest.mock('../../../src/models/User', () => ({
+jest.mock('../../../models/User', () => ({
   getUserById: () => Promise.resolve({ Item: mockUser }),
   updateUser: () => Promise.resolve(),
 }));
 
-describe('bot > features > favourites > logic', () => {
+describe('features > favourites > logic', () => {
   let dateSpy: jest.SpyInstance;
 
   beforeAll(() => {

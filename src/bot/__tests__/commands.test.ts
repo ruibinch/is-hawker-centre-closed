@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { makeCommandMessage } from '../../src/bot/commands';
+import { makeCommandMessage } from '../commands';
 
 describe('bot > commands', () => {
   describe('/start', () => {

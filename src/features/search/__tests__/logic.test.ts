@@ -1,15 +1,15 @@
 /* eslint-disable max-len */
 import { parseISO } from 'date-fns';
 
-import { processSearch } from '../../../src/features/search';
-import { mockResults } from '../../__mocks__/db';
+import { processSearch } from '..';
+import { mockResults } from '../../../models/__mocks__/db';
 
 // TODO: shift this to a __mocks__ folder
-jest.mock('../../../src/models/Result', () => ({
+jest.mock('../../../models/Result', () => ({
   getAllResults: () => Promise.resolve({ Items: mockResults }),
 }));
 
-describe('reader > search', () => {
+describe('features > search > logic', () => {
   describe('data exists in DB', () => {
     let dateSpy: jest.SpyInstance;
 

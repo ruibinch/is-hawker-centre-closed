@@ -1,6 +1,6 @@
-import { validateToken } from '../../src/bot/auth';
+import { validateToken } from '../auth';
 
-jest.mock('../../src/bot/variables', () => ({
+jest.mock('../variables', () => ({
   BOT_TOKEN: 'pokemongottacatchthemall',
 }));
 

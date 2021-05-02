@@ -3,10 +3,10 @@ import { formatISO } from 'date-fns';
 import { COMMANDS } from '../../bot/commands';
 import { currentDate } from '../../common/date';
 import { TelegramUser } from '../../common/telegram';
-import { BotResponse, Module } from '../../common/types';
+import { Module } from '../../common/types';
 import { addFeedbackToDB } from '../../models/Feedback';
 import { Feedback } from '../../models/types';
-import { makeFeedbackAddedMessage } from './message';
+import { AddFeedbackResponse } from './types';
 
 // TODO: refactor to isInModule curried function
 export function isFeedbackCommand(s: string): boolean {
@@ -17,26 +17,24 @@ export function isFeedbackCommand(s: string): boolean {
     .includes(command);
 }
 
-export async function addFeedback(
-  text: string,
-  telegramUser: TelegramUser,
-): Promise<BotResponse | null> {
-  const { id: userId, username } = telegramUser;
-
-  const [, ...textSplit] = text.split(' ');
-  const feedbackText = textSplit.join(' ');
+export async function addFeedback(props: {
+  text: string;
+  telegramUser: TelegramUser;
+}): Promise<AddFeedbackResponse> {
+  const {
+    text,
+    telegramUser: { id: userId, username },
+  } = props;
 
   const feedback: Feedback = {
     feedbackId: `${userId}-${currentDate().getTime()}`,
     userId,
     username,
-    text: feedbackText,
+    text,
     dateSubmitted: formatISO(currentDate()),
   };
 
   addFeedbackToDB(feedback);
 
-  return {
-    message: makeFeedbackAddedMessage(),
-  };
+  return { success: true };
 }

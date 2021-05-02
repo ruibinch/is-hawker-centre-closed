@@ -1,4 +1,4 @@
-import { sanitiseInputText } from '../../src/bot/utils';
+import { sanitiseInputText } from '../utils';
 
 describe('bot > utils', () => {
   describe('sanitiseInputText', () => {

@@ -1,12 +1,11 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  roots: ['<rootDir>/test'],
+  roots: ['<rootDir>'],
   coveragePathIgnorePatterns: ['/node_modules/'],
   collectCoverageFrom: [
-    '<rootDir>/src/**/*.ts',
-    '!<rootDir>/src/common/*.ts',
-    '!<rootDir>/src/dataCollection/*.ts',
+    '<rootDir>/src/bot/*.ts',
+    '<rootDir>/src/features/**/*.ts',
   ],
   collectCoverage: true,
   coverageReporters: ['text', 'text-summary'],

@@ -1,10 +1,5 @@
-import { TelegramUser } from '../../src/common/telegram';
-import {
-  ClosureReason,
-  HawkerCentreInfo,
-  Result,
-  User,
-} from '../../src/models/types';
+import { TelegramUser } from '../../common/telegram';
+import { ClosureReason, HawkerCentreInfo, Result, User } from '../types';
 
 export const mockResults: Result[] = [
   {
