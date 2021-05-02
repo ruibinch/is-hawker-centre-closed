@@ -3,23 +3,21 @@ import { formatISO, parseISO } from 'date-fns';
 
 import { COMMANDS } from '../../bot/commands';
 import { currentDate } from '../../common/date';
-import {
-  addUser,
-  getAllHawkerCentres,
-  getAllResults,
-  getHawkerCentreById,
-  getUserById,
-  updateUser,
-} from '../../common/dynamodb';
 import { TelegramUser } from '../../common/telegram';
+import { Module } from '../../common/types';
 import {
-  Module,
+  getAllHawkerCentres,
+  getHawkerCentreById,
+} from '../../models/HawkerCentre';
+import { getAllResults } from '../../models/Result';
+import {
   HawkerCentreInfo,
-  User,
-  UserFavourite,
   Result,
   ResultPartial,
-} from '../../common/types';
+  User,
+  UserFavourite,
+} from '../../models/types';
+import { getUserById, addUser, updateUser } from '../../models/User';
 import { sortInDateAscThenAlphabeticalOrder } from '../search';
 import { MAX_CHOICES } from './constants';
 import { AddHCResponse, DeleteHCResponse, FindHCResponse } from './types';

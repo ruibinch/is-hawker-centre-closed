@@ -1,12 +1,12 @@
 import { parseISO } from 'date-fns';
 
-import { ClosureReason } from '../../../src/common/types';
 import {
   addHCToFavourites,
   deleteHCFromFavourites,
   findHCByKeyword,
   getUserFavouritesWithResults,
 } from '../../../src/features/favourites';
+import { ClosureReason } from '../../../src/models/types';
 import {
   mockHawkerCentres,
   mockResults,
@@ -15,10 +15,14 @@ import {
 } from '../../__mocks__/db';
 
 // TODO: shift this to a __mocks__ folder and rework mocks to be more specific
-jest.mock('../../../src/common/dynamodb', () => ({
-  getAllResults: () => Promise.resolve({ Items: mockResults }),
+jest.mock('../../../src/models/HawkerCentre', () => ({
   getAllHawkerCentres: () => Promise.resolve({ Items: mockHawkerCentres }),
   getHawkerCentreById: () => Promise.resolve({ Item: mockHawkerCentres[0] }),
+}));
+jest.mock('../../../src/models/Result', () => ({
+  getAllResults: () => Promise.resolve({ Items: mockResults }),
+}));
+jest.mock('../../../src/models/User', () => ({
   getUserById: () => Promise.resolve({ Item: mockUser }),
   updateUser: () => Promise.resolve(),
 }));

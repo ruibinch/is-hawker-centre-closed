@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
-import { ClosureReason, Result } from '../../../src/common/types';
 import { makeMessage, SearchModifier } from '../../../src/features/search';
+import { ClosureReason, Result } from '../../../src/models/types';
 
 describe('bot > message', () => {
   describe('returns an empty results array', () => {

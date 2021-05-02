@@ -4,7 +4,7 @@ import {
   HawkerCentreInfo,
   Result,
   User,
-} from '../../src/common/types';
+} from '../../src/models/types';
 
 export const mockResults: Result[] = [
   {

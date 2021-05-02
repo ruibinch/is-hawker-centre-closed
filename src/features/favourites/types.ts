@@ -1,4 +1,4 @@
-import { HawkerCentreInfo } from '../../common/types';
+import { HawkerCentreInfo } from '../../models/types';
 
 export type FindHCResponse = {
   isExactMatch?: boolean;

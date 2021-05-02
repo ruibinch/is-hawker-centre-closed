@@ -1,4 +1,3 @@
-import { ClosureReason } from '../../../src/common/types';
 import {
   makeAddHCMessage,
   makeDeleteOutOfBoundsMessage,
@@ -7,6 +6,7 @@ import {
   makeSuccessfullyAddedMessage,
   makeSuccessfullyDeletedMessage,
 } from '../../../src/features/favourites';
+import { ClosureReason } from '../../../src/models/types';
 import { mockHawkerCentres } from '../../__mocks__/db';
 
 describe('bot > features > favourites > message', () => {

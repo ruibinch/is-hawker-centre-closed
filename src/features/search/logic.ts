@@ -10,8 +10,8 @@ import {
   getNextPeriod,
   isWithinDateBounds,
 } from '../../common/date';
-import { getAllResults } from '../../common/dynamodb';
-import { Result } from '../../common/types';
+import { getAllResults } from '../../models/Result';
+import { Result } from '../../models/types';
 import { extractSearchModifier } from './searchModifier';
 import { SearchModifier, SearchObject, SearchResponse } from './types';
 

@@ -1,4 +1,4 @@
-import { Result } from '../../common/types';
+import { Result } from '../../models/types';
 
 export type SearchQuery = {
   term: string;

@@ -1,4 +1,4 @@
-import { HawkerCentreInfo, ResultPartial } from '../../common/types';
+import { HawkerCentreInfo, ResultPartial } from '../../models/types';
 import { formatDate } from '../search';
 import { MAX_CHOICES } from './constants';
 

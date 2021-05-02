@@ -5,7 +5,7 @@ import { processSearch } from '../../../src/features/search';
 import { mockResults } from '../../__mocks__/db';
 
 // TODO: shift this to a __mocks__ folder
-jest.mock('../../../src/common/dynamodb', () => ({
+jest.mock('../../../src/models/Result', () => ({
   getAllResults: () => Promise.resolve({ Items: mockResults }),
 }));
 
