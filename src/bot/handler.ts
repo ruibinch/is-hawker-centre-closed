@@ -5,6 +5,7 @@ import { makeCallbackWrapper } from '../common/lambda';
 import { makeGenericErrorMessage } from '../common/message';
 import { makeTelegramApiBase, TelegramMessage } from '../common/telegram';
 import { isFavouritesCommand, manageFavourites } from '../features/favourites';
+import { addFeedback, isFeedbackCommand } from '../features/feedback';
 import { runSearch } from '../features/search';
 import { validateToken } from './auth';
 import { isCommand, makeCommandMessage } from './commands';
@@ -61,6 +62,16 @@ export const bot: APIGatewayProxyHandler = async (
       } else {
         sendMessage(chatId, message);
       }
+      return callbackWrapper(204);
+    }
+
+    if (isFeedbackCommand(textSanitised)) {
+      const botResponse = await addFeedback(textSanitised, telegramUser);
+      if (botResponse === null) throw new Error();
+
+      const { message } = botResponse;
+
+      sendMessage(chatId, message);
       return callbackWrapper(204);
     }
 

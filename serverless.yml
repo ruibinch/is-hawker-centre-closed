@@ -8,6 +8,7 @@ custom:
     results: ihcc-results
     hc: ihcc-hawkerCentres
     users: ihcc-users
+    feedback: ihcc-feedback
   webpack:
     includeModules: true
 
@@ -26,6 +27,7 @@ provider:
     TABLE_RESULTS: ${self:custom.table.results}-${self:provider.stage}
     TABLE_HC: ${self:custom.table.hc}-${self:provider.stage}
     TABLE_USERS: ${self:custom.table.users}-${self:provider.stage}
+    TABLE_FEEDBACK: ${self:custom.table.feedback}-${self:provider.stage}
   iam:
     role:
       statements:
@@ -44,6 +46,10 @@ provider:
             - dynamodb:PutItem
             - dynamodb:UpdateItem
           Resource: 'arn:aws:dynamodb:ap-southeast-1:*:table/${self:custom.table.users}-${self:provider.stage}'
+        - Effect: Allow
+          Action:
+            - dynamodb:PutItem
+          Resource: 'arn:aws:dynamodb:ap-southeast-1:*:table/${self:custom.table.feedback}-${self:provider.stage}'
 
 package:
   patterns:

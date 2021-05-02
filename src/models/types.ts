@@ -1,3 +1,11 @@
+export type Feedback = {
+  feedbackId: string;
+  userId: number;
+  username?: string;
+  text: string;
+  dateSubmitted: string;
+};
+
 export type HawkerCentreInfo = {
   hawkerCentreId: number;
   name: string;

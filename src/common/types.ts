@@ -1,6 +1,7 @@
 export enum Module {
   search = 'search',
   favourites = 'favourites',
+  feedback = 'feedback',
   general = 'general',
 }
 

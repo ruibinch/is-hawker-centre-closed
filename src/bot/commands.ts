@@ -33,6 +33,12 @@ export const COMMANDS: Command[] = [
     hasExplanation: true,
     description: 'Delete from your favourites',
   },
+  {
+    module: Module.feedback,
+    endpoint: '/feedback',
+    hasExplanation: true,
+    description: 'Submit your feedback!',
+  },
 ];
 
 // If this file is run as a script, print the list of commands with associated descriptions for feeding into Telegram BotFather.
@@ -101,7 +107,7 @@ export function makeCommandMessage(s: string): string | undefined {
         `Supported timeframes are:\n` +
         `_today_, _tmr_, _tomorrow_, _month_, _next month_\n` +
         `\\(default is _today_\\)\n\n`;
-      reply += makeRandomExample();
+      reply += makeRandomSearchExample();
       reply += '\n\n';
       // Favourites section
       reply +=
@@ -113,13 +119,19 @@ export function makeCommandMessage(s: string): string | undefined {
     case '/fav': {
       reply =
         `Please specify some keyword to filter the list of hawker centres for you to add to your favourites\\.\n\n` +
-        `e\\.g\\. _/fav ${getRandomExampleKeyword()}_`;
+        `e\\.g\\. _/fav ${getRandomSearchExampleKeyword()}_`;
       break;
     }
     case '/del': {
       reply =
         'To delete a favourite hawker centre, specify an index number based on the favourites list displayed by the /list command\\.\n\n' +
         `e\\.g\\. _/del 3_`;
+      break;
+    }
+    case '/feedback': {
+      reply =
+        'Type in your feedback after a /feedback command\\.\n\n' +
+        `e\\.g\\. _/feedback ${makeRandomFeedbackExample()}_`;
       break;
     }
     /* istanbul ignore next */
@@ -134,7 +146,7 @@ function formatEndpointForDisplay(endpoint: string) {
   return endpoint.replace(/_/g, '\\_');
 }
 
-const examples = [
+const searchExamples = [
   ['bedok', 'bedok', 'today'],
   ['holland', 'holland', 'today'],
   ['clementi today', 'clementi', 'today'],
@@ -149,15 +161,31 @@ const examples = [
   ['telok next month', 'telok', 'next month'],
 ];
 
-function makeRandomExample(): string {
-  const example = examples[generateRandomInt(0, examples.length)];
-  const [searchTerm, keyword, modifier] = example;
+function makeRandomSearchExample(): string {
+  const searchExample =
+    searchExamples[generateRandomInt(0, searchExamples.length)];
+  const [searchTerm, keyword, modifier] = searchExample;
   return `e\\.g\\. _${searchTerm}_ will display the hawker centres containing the keyword __${keyword}__ that are closed __${modifier}__\\.`;
 }
 
-function getRandomExampleKeyword(): string {
-  const example = examples[generateRandomInt(0, examples.length)];
-  return example[1];
+function getRandomSearchExampleKeyword(): string {
+  const searchExample =
+    searchExamples[generateRandomInt(0, searchExamples.length)];
+  return searchExample[1];
+}
+
+const feedbackExamples = [
+  'Bot icon is ugly',
+  'Commands are confusing',
+  'Brilliant bot!',
+  'Improve the help messages',
+  'More emojis needed',
+  'Change the bot name',
+  'Can it include the individual stalls in the hawker centre too?',
+];
+
+function makeRandomFeedbackExample(): string {
+  return feedbackExamples[generateRandomInt(0, feedbackExamples.length)];
 }
 
 // Returns a number in the range [min, max)
