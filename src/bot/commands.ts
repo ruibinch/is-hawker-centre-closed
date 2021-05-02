@@ -58,6 +58,17 @@ export function isCommand(s: string): boolean {
 }
 
 /**
+ * Returns if a command is belongs to the input specified module.
+ */
+export function isCommandInModule(s: string, module: Module): boolean {
+  const [command] = s.split(' ');
+
+  return COMMANDS.filter((cmd) => cmd.module === module)
+    .map((cmd) => cmd.endpoint)
+    .includes(command);
+}
+
+/**
  * Returns if a command does not have an associated explanation, i.e. it should not be handled as a generic command but via custom handling.
  */
 function isCommandWithoutExplanation(s: string): boolean {

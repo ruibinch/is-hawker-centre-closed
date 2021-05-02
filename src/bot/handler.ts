@@ -4,11 +4,12 @@ import axios from 'axios';
 import { makeCallbackWrapper } from '../common/lambda';
 import { makeGenericErrorMessage } from '../common/message';
 import { makeTelegramApiBase, TelegramMessage } from '../common/telegram';
-import { isFavouritesCommand, manageFavourites } from '../features/favourites';
-import { addFeedback, isFeedbackCommand } from '../features/feedback';
+import { Module } from '../common/types';
+import { manageFavourites } from '../features/favourites';
+import { manageFeedback } from '../features/feedback';
 import { runSearch } from '../features/search';
 import { validateToken } from './auth';
-import { isCommand, makeCommandMessage } from './commands';
+import { isCommand, isCommandInModule, makeCommandMessage } from './commands';
 import { sanitiseInputText } from './utils';
 import { BOT_TOKEN } from './variables';
 
@@ -51,7 +52,7 @@ export const bot: APIGatewayProxyHandler = async (
 
   // TODO: remove repetitions in this section
   try {
-    if (isFavouritesCommand(textSanitised)) {
+    if (isCommandInModule(textSanitised, Module.favourites)) {
       const botResponse = await manageFavourites(textSanitised, telegramUser);
       if (botResponse === null) throw new Error();
 
@@ -65,8 +66,8 @@ export const bot: APIGatewayProxyHandler = async (
       return callbackWrapper(204);
     }
 
-    if (isFeedbackCommand(textSanitised)) {
-      const botResponse = await addFeedback(textSanitised, telegramUser);
+    if (isCommandInModule(textSanitised, Module.feedback)) {
+      const botResponse = await manageFeedback(textSanitised, telegramUser);
       if (botResponse === null) throw new Error();
 
       const { message } = botResponse;

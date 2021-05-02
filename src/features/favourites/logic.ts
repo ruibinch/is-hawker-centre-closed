@@ -1,10 +1,8 @@
 /* eslint-disable max-len */
 import { formatISO, parseISO } from 'date-fns';
 
-import { COMMANDS } from '../../bot/commands';
 import { currentDate } from '../../common/date';
 import { TelegramUser } from '../../common/telegram';
-import { Module } from '../../common/types';
 import {
   getAllHawkerCentres,
   getHawkerCentreById,
@@ -21,14 +19,6 @@ import { getUserById, addUser, updateUser } from '../../models/User';
 import { sortInDateAscThenAlphabeticalOrder } from '../search';
 import { MAX_CHOICES } from './constants';
 import { AddHCResponse, DeleteHCResponse, FindHCResponse } from './types';
-
-export function isFavouritesCommand(s: string): boolean {
-  const [command] = s.split(' ');
-
-  return COMMANDS.filter((cmd) => cmd.module === Module.favourites)
-    .map((cmd) => cmd.endpoint)
-    .includes(command);
-}
 
 export async function findHCByKeyword(
   keyword: string,
