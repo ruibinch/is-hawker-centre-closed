@@ -1,5 +1,10 @@
-import { TelegramUser } from '../../common/telegram';
-import { ClosureReason, HawkerCentreInfo, Result, User } from '../types';
+import { TelegramUser } from '../../src/common/telegram';
+import {
+  ClosureReason,
+  HawkerCentreInfo,
+  Result,
+  User,
+} from '../../src/models/types';
 
 export const mockResults: Result[] = [
   {
@@ -57,6 +62,14 @@ export const mockResults: Result[] = [
     name: 'Verdanturf Town',
     startDate: '2021-02-08',
     endDate: '2021-02-09',
+  },
+  {
+    id: '111',
+    hawkerCentreId: 5,
+    reason: ClosureReason.renovation,
+    name: 'Melville City',
+    startDate: '2021-02-01',
+    endDate: '2021-02-28',
   },
 ];
 
@@ -182,6 +195,25 @@ export const mockUser: User = {
       dateAdded: '2021-01-01T15:00:00+08:00',
     },
   ],
+};
+
+export const mockUserWithOneFav: User = {
+  userId: 2,
+  username: 'misty',
+  languageCode: 'en',
+  favourites: [
+    {
+      hawkerCentreId: 6,
+      dateAdded: '2021-01-15T17:30:52+08:00',
+    },
+  ],
+};
+
+export const mockUserWithNoFavs: User = {
+  userId: 3,
+  username: 'brock',
+  languageCode: 'en',
+  favourites: [],
 };
 
 export const mockTelegramUser: TelegramUser = {

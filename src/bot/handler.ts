@@ -1,17 +1,16 @@
 import { APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
-import axios from 'axios';
 
 import { makeCallbackWrapper } from '../common/lambda';
 import { makeGenericErrorMessage } from '../common/message';
-import { makeTelegramApiBase, TelegramMessage } from '../common/telegram';
+import { TelegramMessage } from '../common/telegram';
 import { Module } from '../common/types';
 import { manageFavourites } from '../features/favourites';
 import { manageFeedback } from '../features/feedback';
 import { runSearch } from '../features/search';
 import { validateToken } from './auth';
 import { isCommand, isCommandInModule, makeCommandMessage } from './commands';
+import { sendMessage, sendMessageWithChoices } from './sender';
 import { sanitiseInputText } from './utils';
-import { BOT_TOKEN } from './variables';
 
 export const bot: APIGatewayProxyHandler = async (
   event,
@@ -38,14 +37,14 @@ export const bot: APIGatewayProxyHandler = async (
   const textSanitised = sanitiseInputText(text);
 
   if (!textSanitised || textSanitised.length === 0) {
-    sendMessage(chatId, 'Specify some keywords\\!');
+    sendMessage({ chatId, message: 'Specify some keywords\\!' });
     return callbackWrapper(204);
   }
 
   if (isCommand(textSanitised)) {
     const commandMessage = makeCommandMessage(textSanitised);
     if (commandMessage) {
-      sendMessage(chatId, commandMessage);
+      sendMessage({ chatId, message: commandMessage });
       return callbackWrapper(204);
     }
   }
@@ -59,9 +58,9 @@ export const bot: APIGatewayProxyHandler = async (
       const { message, choices } = botResponse;
 
       if (choices) {
-        sendMessageWithChoices(chatId, message, choices);
+        sendMessageWithChoices({ chatId, message, choices });
       } else {
-        sendMessage(chatId, message);
+        sendMessage({ chatId, message });
       }
       return callbackWrapper(204);
     }
@@ -72,7 +71,7 @@ export const bot: APIGatewayProxyHandler = async (
 
       const { message } = botResponse;
 
-      sendMessage(chatId, message);
+      sendMessage({ chatId, message });
       return callbackWrapper(204);
     }
 
@@ -81,41 +80,11 @@ export const bot: APIGatewayProxyHandler = async (
 
     const { message } = botResponse;
 
-    sendMessage(chatId, message);
+    sendMessage({ chatId, message });
     return callbackWrapper(204);
   } catch (error) {
     console.log(error);
-    sendMessage(chatId, makeGenericErrorMessage());
+    sendMessage({ chatId, message: makeGenericErrorMessage() });
     return callbackWrapper(400);
   }
 };
-
-function sendMessage(chatId: number, message: string) {
-  axios.get(`${makeTelegramApiBase(BOT_TOKEN)}/sendMessage`, {
-    params: {
-      chat_id: chatId,
-      text: message,
-      parse_mode: 'MarkdownV2',
-      reply_markup: {
-        remove_keyboard: true,
-      },
-    },
-  });
-}
-
-function sendMessageWithChoices(
-  chatId: number,
-  message: string,
-  choices: string[],
-) {
-  axios.get(`${makeTelegramApiBase(BOT_TOKEN)}/sendMessage`, {
-    params: {
-      chat_id: chatId,
-      text: message,
-      reply_markup: {
-        keyboard: choices.map((choice) => [{ text: choice }]),
-        one_time_keyboard: true,
-      },
-    },
-  });
-}

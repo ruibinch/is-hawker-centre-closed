@@ -105,7 +105,7 @@ export function makeCommandMessage(s: string): string | undefined {
     case '/start': {
       reply =
         `An easy way to check if your favourite hawker centre is closed today\\! \u{1F35C}\u{1F35B}\u{1F367}\n\n` +
-        `Simply send the bot some *subset of the hawker centre name*, e\\.g\\. _${getRandomSearchKeywordExample()}_\\.\n\n` +
+        `Simply send the bot some *subset of the hawker centre name*, e\\.g\\. _${makeRandomSearchKeywordExample()}_\\.\n\n` +
         `Type in /help to see how you can customise your query further, as well as other features of the bot\\.`;
       break;
     }
@@ -130,7 +130,7 @@ export function makeCommandMessage(s: string): string | undefined {
     case '/fav': {
       reply =
         `Please specify some keyword to filter the list of hawker centres for you to add to your favourites\\.\n\n` +
-        `e\\.g\\. _/fav ${getRandomSearchKeywordExample()}_`;
+        `e\\.g\\. _/fav ${makeRandomSearchKeywordExample()}_`;
       break;
     }
     case '/del': {
@@ -179,7 +179,7 @@ function makeRandomSearchExample(): string {
   return `e\\.g\\. _${searchTerm}_ will display the hawker centres containing the keyword __${keyword}__ that are closed __${modifier}__\\.`;
 }
 
-function getRandomSearchKeywordExample(): string {
+function makeRandomSearchKeywordExample(): string {
   const searchExample =
     searchExamples[generateRandomInt(0, searchExamples.length)];
   return searchExample[1];
@@ -201,5 +201,8 @@ function makeRandomFeedbackExample(): string {
 
 // Returns a number in the range [min, max)
 function generateRandomInt(min: number, max: number) {
+  // for cleaner testing instead of relying on numerous mocks
+  if (process.env.NODE_ENV === 'test') return min;
+
   return Math.floor(Math.random() * (max - min) + min);
 }

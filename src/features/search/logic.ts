@@ -15,9 +15,7 @@ import { Result } from '../../models/types';
 import { extractSearchModifier } from './searchModifier';
 import { SearchModifier, SearchObject, SearchResponse } from './types';
 
-export async function processSearch(
-  term: string,
-): Promise<SearchResponse | null> {
+export async function processSearch(term: string): Promise<SearchResponse> {
   const searchParams = parseSearchTerm(term);
   const { keyword, modifier } = searchParams;
 
@@ -75,6 +73,7 @@ function parseSearchTerm(term: string): SearchObject {
 /**
  * If modifier is "nextMonth", check if the data for that time period is present first.
  */
+// TODO: relook at the necessity of this function
 function checkIsDataPresent(results: Result[], modifier: SearchModifier) {
   if (modifier !== SearchModifier.nextMonth) return true;
 
@@ -125,6 +124,7 @@ function filterByDate(results: Result[], modifier: SearchModifier) {
       if (modifier === SearchModifier.nextMonth) {
         return differenceInCalendarMonths(startDate, currDate) === 1;
       }
+      /* istanbul ignore next */
       return false;
     })();
   });

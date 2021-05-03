@@ -17,13 +17,13 @@ export type TelegramUser = {
   language_code?: string;
 };
 
-type TelegramChat = {
+export type TelegramChat = {
   id: number;
-  type: string;
-  title: string;
-  username: string;
-  first_name: string;
-  last_name: string;
+  type: 'private' | 'group' | 'supergroup' | 'channel';
+  title?: string;
+  username?: string;
+  first_name?: string;
+  last_name?: string;
 };
 
 export type TelegramMessage = {
@@ -32,8 +32,8 @@ export type TelegramMessage = {
   date: number;
   chat: TelegramChat;
   text: string;
-  sender_chat: TelegramChat;
-  via_bot: TelegramUser;
+  sender_chat?: TelegramChat;
+  via_bot?: TelegramUser;
 };
 
 // Methods

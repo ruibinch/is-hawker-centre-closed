@@ -5,6 +5,7 @@ module.exports = {
   coveragePathIgnorePatterns: ['/node_modules/'],
   collectCoverageFrom: [
     '<rootDir>/src/bot/*.ts',
+    '!<rootDir>/src/bot/(init|sender|variables).ts',
     '<rootDir>/src/features/**/*.ts',
   ],
   collectCoverage: true,

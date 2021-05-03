@@ -39,18 +39,12 @@ export async function findHCByKeyword(
     }
   }
 
-  if (
+  const isFindError =
     hcFilteredByKeyword.length === 0 ||
-    hcFilteredByKeyword.length > MAX_CHOICES
-  ) {
-    return {
-      isFindError: true,
-      hawkerCentres: [],
-    };
-  }
+    hcFilteredByKeyword.length > MAX_CHOICES;
 
   return {
-    isFindError: false,
+    isFindError,
     hawkerCentres: hcFilteredByKeyword,
   };
 }
@@ -123,12 +117,20 @@ export async function deleteHCFromFavourites(props: {
   const getUserResponse = await getUserById(userId);
 
   if (!getUserResponse.Item) {
-    return null;
+    // user does not exist
+    return {
+      success: false,
+      numFavourites: 0,
+    };
   }
 
   const user = getUserResponse.Item as User;
 
-  if (deleteIdx < 0 || deleteIdx >= user.favourites.length) {
+  if (
+    Number.isNaN(deleteIdx) ||
+    deleteIdx < 0 ||
+    deleteIdx >= user.favourites.length
+  ) {
     // out of bounds
     return {
       success: false,

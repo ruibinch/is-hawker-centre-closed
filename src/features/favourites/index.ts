@@ -13,7 +13,7 @@ import {
   makeSuccessfullyAddedMessage,
   makeFavouritesListMessage,
   makeSuccessfullyDeletedMessage,
-  makeDeleteOutOfBoundsMessage,
+  makeDeleteErrorMessage,
 } from './message';
 
 export * from './logic';
@@ -46,7 +46,7 @@ export async function manageFavourites(
 
         if (success) {
           return {
-            message: makeSuccessfullyAddedMessage(hawkerCentres),
+            message: makeSuccessfullyAddedMessage(addHawkerCentre),
           };
         }
 
@@ -57,6 +57,7 @@ export async function manageFavourites(
         }
 
         // should never reach here
+        /* istanbul ignore next */
         return {
           message: makeGenericErrorMessage(),
         };
@@ -86,7 +87,7 @@ export async function manageFavourites(
       }
 
       return {
-        message: makeDeleteOutOfBoundsMessage(numFavourites),
+        message: makeDeleteErrorMessage(numFavourites),
       };
     }
     case '/list': {
@@ -99,6 +100,7 @@ export async function manageFavourites(
         message: makeFavouritesListMessage(getFavResponseWithResults),
       };
     }
+    /* istanbul ignore next */
     default:
       return null;
   }

@@ -24,13 +24,9 @@ export function makeAddHCMessage(props: {
 }
 
 export function makeSuccessfullyAddedMessage(
-  hawkerCentres: HawkerCentreInfo[],
+  hawkerCentre: HawkerCentreInfo,
 ): string {
-  if (hawkerCentres.length !== 1) {
-    throw new Error('There should only be 1 hawker centre added');
-  }
-
-  const hcName = hawkerCentres[0].name;
+  const { name: hcName } = hawkerCentre;
   return `Great, adding *${hcName}* to your list of favourites\\!`;
 }
 
@@ -51,11 +47,15 @@ export function makeSuccessfullyDeletedMessage(
   return `*${hawkerCentre.name}* has been deleted from your list of favourites\\.`;
 }
 
-export function makeDeleteOutOfBoundsMessage(
+export function makeDeleteErrorMessage(
   numFavourites: number | undefined,
 ): string {
-  if (!numFavourites) {
+  if (numFavourites === undefined) {
     throw new Error('The number of favourites is missing');
+  }
+
+  if (numFavourites === 0) {
+    return makeNoSavedFavouritesMessage();
   }
 
   return (
@@ -72,7 +72,7 @@ export function makeFavouritesListMessage(
   hawkerCentresWithResults: ResultPartial[],
 ): string {
   if (hawkerCentresWithResults.length === 0) {
-    return "You've not added any favourites yet\\. Try adding some using the /fav command\\.";
+    return makeNoSavedFavouritesMessage();
   }
 
   const hcOutput = hawkerCentresWithResults
@@ -89,4 +89,8 @@ export function makeFavouritesListMessage(
     .join('\n');
 
   return `Your favourite hawker centres and their next closure dates are:\n\n${hcOutput}`;
+}
+
+function makeNoSavedFavouritesMessage() {
+  return "You've not added any favourites yet\\. Try adding some using the /fav command\\.";
 }

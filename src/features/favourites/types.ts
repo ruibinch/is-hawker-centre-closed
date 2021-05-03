@@ -11,6 +11,7 @@ export type AddHCResponse = {
   isDuplicate?: boolean;
 };
 
+// TODO: use discriminated union type
 export type DeleteHCResponse = {
   success: boolean;
   hawkerCentre?: HawkerCentreInfo;
