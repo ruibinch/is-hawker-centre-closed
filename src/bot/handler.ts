@@ -49,42 +49,34 @@ export const bot: APIGatewayProxyHandler = async (
     }
   }
 
-  // TODO: remove repetitions in this section
   try {
-    if (isCommandInModule(textSanitised, Module.favourites)) {
-      const botResponse = await manageFavourites(textSanitised, telegramUser);
-      if (botResponse === null) throw new Error();
+    const executionFn = makeExecutionFn(textSanitised);
 
-      const { message, choices } = botResponse;
-
-      if (choices) {
-        sendMessageWithChoices({ chatId, message, choices });
-      } else {
-        sendMessage({ chatId, message });
-      }
-      return callbackWrapper(204);
-    }
-
-    if (isCommandInModule(textSanitised, Module.feedback)) {
-      const botResponse = await manageFeedback(textSanitised, telegramUser);
-      if (botResponse === null) throw new Error();
-
-      const { message } = botResponse;
-
-      sendMessage({ chatId, message });
-      return callbackWrapper(204);
-    }
-
-    const botResponse = await runSearch(textSanitised);
+    const botResponse = await executionFn(textSanitised, telegramUser);
     if (botResponse === null) throw new Error();
 
-    const { message } = botResponse;
+    const { message, choices } = botResponse;
 
-    sendMessage({ chatId, message });
+    if (choices) {
+      sendMessageWithChoices({ chatId, message, choices });
+    } else {
+      sendMessage({ chatId, message });
+    }
     return callbackWrapper(204);
   } catch (error) {
     console.log(error);
     sendMessage({ chatId, message: makeGenericErrorMessage() });
     return callbackWrapper(400);
   }
+};
+
+const makeExecutionFn = (textSanitised: string) => {
+  if (isCommandInModule(textSanitised, Module.favourites)) {
+    return manageFavourites;
+  }
+  if (isCommandInModule(textSanitised, Module.feedback)) {
+    return manageFeedback;
+  }
+
+  return runSearch;
 };
