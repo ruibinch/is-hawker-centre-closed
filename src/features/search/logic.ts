@@ -88,15 +88,20 @@ function checkIsDataPresent(results: Result[], modifier: SearchModifier) {
 
 /**
  * Filters the list of results by keyword matching the hawker centre name.
+ * Searches across the individual words in the input keyword.
  */
 function filterByKeyword(results: Result[], keyword: string) {
   if (keyword === '') {
     return results;
   }
 
-  const filterRegex = new RegExp(`\\b${keyword.toLowerCase()}`);
+  const searchKeywords = keyword.split(' ');
+
   return results.filter((result) =>
-    filterRegex.test(result.name.toLowerCase()),
+    searchKeywords.every((searchKeyword) => {
+      const filterRegex = new RegExp(`\\b${searchKeyword.toLowerCase()}`);
+      return filterRegex.test(result.name.toLowerCase());
+    }),
   );
 }
 

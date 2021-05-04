@@ -71,6 +71,14 @@ export const mockResults: Result[] = [
     startDate: '2021-02-01',
     endDate: '2021-02-28',
   },
+  {
+    id: '111',
+    hawkerCentreId: 7,
+    reason: ClosureReason.cleaning,
+    name: 'Route 118 near Melville City',
+    startDate: '2021-01-21',
+    endDate: '2021-01-24',
+  },
 ];
 
 export const mockHawkerCentres: HawkerCentreInfo[] = [
@@ -97,6 +105,10 @@ export const mockHawkerCentres: HawkerCentreInfo[] = [
   {
     hawkerCentreId: 6,
     name: 'Verdanturf Town',
+  },
+  {
+    hawkerCentreId: 7,
+    name: 'Route 118 near Melville City',
   },
   {
     hawkerCentreId: 11,
