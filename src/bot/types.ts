@@ -6,3 +6,13 @@ export type Command = {
   hasExplanation: boolean;
   description: string;
 };
+
+export type ValidateInputMessageResponse =
+  | {
+      success: true;
+      textSanitised: string;
+    }
+  | {
+      success: false;
+      errorMessage: string;
+    };

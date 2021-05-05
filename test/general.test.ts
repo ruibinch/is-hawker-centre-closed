@@ -57,7 +57,8 @@ describe('General module', () => {
 
   describe('empty input', () => {
     it('returns the correct message', async () => {
-      const expectedMessage = 'Specify some keywords\\!';
+      const expectedMessage =
+        '\u{2757} No text found\\.\n\nPlease try again with a text message\\.';
 
       await callBot('');
       assertBotResponse(sendMessageSpy, expectedMessage);

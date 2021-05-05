@@ -31,9 +31,18 @@ export type TelegramMessage = {
   from: TelegramUser;
   date: number;
   chat: TelegramChat;
-  text: string;
+  text?: string;
   sender_chat?: TelegramChat;
   via_bot?: TelegramUser;
+  animation?: unknown;
+  audio?: unknown;
+  contact?: unknown;
+  document?: unknown;
+  location?: unknown;
+  photo?: unknown;
+  sticker?: unknown;
+  video?: unknown;
+  voice?: unknown;
 };
 
 // Methods

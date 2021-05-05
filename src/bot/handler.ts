@@ -10,7 +10,7 @@ import { runSearch } from '../features/search';
 import { validateToken } from './auth';
 import { isCommand, isCommandInModule, makeCommandMessage } from './commands';
 import { sendMessage, sendMessageWithChoices } from './sender';
-import { sanitiseInputText } from './utils';
+import { sanitiseInputText, validateInputMessage } from './utils';
 
 export const bot: APIGatewayProxyHandler = async (
   event,
@@ -31,15 +31,17 @@ export const bot: APIGatewayProxyHandler = async (
   const {
     from: telegramUser,
     chat: { id: chatId },
-    text,
   } = inputMessage;
 
-  const textSanitised = sanitiseInputText(text);
+  const validationResponse = validateInputMessage(inputMessage);
 
-  if (!textSanitised || textSanitised.length === 0) {
-    sendMessage({ chatId, message: 'Specify some keywords\\!' });
+  if (!validationResponse.success) {
+    const { errorMessage } = validationResponse;
+    sendMessage({ chatId, message: errorMessage });
     return callbackWrapper(204);
   }
+
+  const { textSanitised } = validationResponse;
 
   if (isCommand(textSanitised)) {
     const commandMessage = makeCommandMessage(textSanitised);
