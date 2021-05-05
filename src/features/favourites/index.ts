@@ -78,16 +78,16 @@ export async function manageFavourites(
       });
       if (deleteHCResponse === null) return null;
 
-      const { success, hawkerCentre, numFavourites } = deleteHCResponse;
-
-      if (success) {
+      if (deleteHCResponse.success) {
         return {
-          message: makeSuccessfullyDeletedMessage(hawkerCentre),
+          message: makeSuccessfullyDeletedMessage(
+            deleteHCResponse.hawkerCentre,
+          ),
         };
       }
 
       return {
-        message: makeDeleteErrorMessage(numFavourites),
+        message: makeDeleteErrorMessage(deleteHCResponse.numFavourites),
       };
     }
     case '/list': {

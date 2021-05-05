@@ -38,22 +38,12 @@ export function makeDuplicateHCErrorMessage(
 }
 
 export function makeSuccessfullyDeletedMessage(
-  hawkerCentre: HawkerCentreInfo | undefined,
+  hawkerCentre: HawkerCentreInfo,
 ): string {
-  if (!hawkerCentre) {
-    throw new Error('There should be 1 hawker centre deleted');
-  }
-
   return `*${hawkerCentre.name}* has been deleted from your list of favourites\\.`;
 }
 
-export function makeDeleteErrorMessage(
-  numFavourites: number | undefined,
-): string {
-  if (numFavourites === undefined) {
-    throw new Error('The number of favourites is missing');
-  }
-
+export function makeDeleteErrorMessage(numFavourites: number): string {
   if (numFavourites === 0) {
     return makeNoSavedFavouritesMessage();
   }

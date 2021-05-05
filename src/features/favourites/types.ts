@@ -11,9 +11,12 @@ export type AddHCResponse = {
   isDuplicate?: boolean;
 };
 
-// TODO: use discriminated union type
-export type DeleteHCResponse = {
-  success: boolean;
-  hawkerCentre?: HawkerCentreInfo;
-  numFavourites?: number;
-};
+export type DeleteHCResponse =
+  | {
+      success: true;
+      hawkerCentre: HawkerCentreInfo;
+    }
+  | {
+      success: false;
+      numFavourites: number;
+    };
