@@ -51,6 +51,7 @@
     "axios": "^0.21.1",
     "date-fns": "^2.20.1",
     "dotenv": "^8.2.0",
+    "emoji-regex": "^9.2.2",
     "jshashes": "^1.0.8",
     "pdf-parse": "^1.1.1"
   }
