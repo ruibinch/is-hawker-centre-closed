@@ -3,6 +3,10 @@ import emojiRegexFactory from 'emoji-regex/RGI_Emoji';
 import { TelegramMessage } from '../common/telegram';
 import { ValidateInputMessageResponse } from './types';
 
+function isDefined(...variables: unknown[]) {
+  return variables.every(Boolean);
+}
+
 export function validateInputMessage(
   message: TelegramMessage,
 ): ValidateInputMessageResponse {
@@ -11,38 +15,38 @@ export function validateInputMessage(
 
   if (message.text === undefined) {
     switch (true) {
-      case message.animation && message.document:
-        errorMessage = 'Gifs are not allowed\\.';
+      case isDefined(message.animation, message.document):
+        errorMessage = 'Not sure how to interpret this gif\\.\\.\\.';
         break;
-      case message.animation:
-        errorMessage = 'Animations are not allowed\\.';
+      case isDefined(message.animation):
+        errorMessage = 'Not sure how to interpret this animation\\.\\.\\.';
         break;
-      case message.audio:
-        errorMessage = 'Audio messages are not allowed\\.';
+      case isDefined(message.audio):
+      case isDefined(message.voice):
+        errorMessage =
+          'Speech\\-to\\-text technology is too advanced for this bot\\.';
         break;
-      case message.contact:
-        errorMessage = 'Contacts are not allowed\\.';
+      case isDefined(message.document):
+        errorMessage =
+          'This is just a humble bot, do you think it can understand a whole document?\\!';
         break;
-      case message.document:
-        errorMessage = 'Documents are not allowed\\.';
+      case isDefined(message.location):
+        errorMessage =
+          'Searching by coordinates is too advanced for this bot\\.';
         break;
-      case message.location:
-        errorMessage = 'Locations are not allowed\\.';
+      case isDefined(message.photo):
+        errorMessage =
+          'Image\\-to\\-text technology is too advanced for this bot\\.';
         break;
-      case message.photo:
-        errorMessage = 'Photos are not allowed\\.';
+      case isDefined(message.sticker):
+        errorMessage = 'Not sure how to interpret this sticker\\.\\.\\.';
         break;
-      case message.sticker:
-        errorMessage = 'Stickers are not allowed\\.';
-        break;
-      case message.video:
-        errorMessage = 'Videos are not allowed\\.';
-        break;
-      case message.voice:
-        errorMessage = 'Voice messages are not allowed\\.';
+      case isDefined(message.video):
+        errorMessage =
+          'If images are too advanced for this bot, videos are definitely out of the question\\.';
         break;
       default:
-        errorMessage = 'Invalid message type\\.';
+        errorMessage = 'No idea what this message is about\\!';
         break;
     }
   } else {
@@ -51,7 +55,8 @@ export function validateInputMessage(
     const emojiMatch = emojiRegex.exec(message.text);
 
     if (emojiMatch) {
-      errorMessage = 'Emojis are not allowed\\.';
+      errorMessage =
+        "That's a cute emoji but this bot has no idea which hawker centre that could refer to\\.";
     } else {
       textSanitised = sanitiseInputText(message.text);
       if (textSanitised.length === 0) {

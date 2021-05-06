@@ -1,14 +1,18 @@
 import { APIGatewayProxyEvent, Context } from 'aws-lambda';
 
 import { bot } from '../../src/bot/handler';
+import { TelegramMessage } from '../../src/common/telegram';
 import { makeTelegramMessage } from '../__mocks__/telegram';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const makeBotWrapper = (mockCallback: jest.Mock<any, any>) => async (
-  inputMessage: string,
+  inputText?: string,
+  otherMessageParams: Partial<TelegramMessage> = {},
 ): Promise<void> => {
   const event: APIGatewayProxyEvent = ({
-    body: JSON.stringify(makeTelegramMessage({ text: inputMessage })),
+    body: JSON.stringify(
+      makeTelegramMessage({ text: inputText, ...otherMessageParams }),
+    ),
     queryStringParameters: {
       token: 'pokemongottacatchthemall',
     },

@@ -10,7 +10,7 @@ import { runSearch } from '../features/search';
 import { validateToken } from './auth';
 import { isCommand, isCommandInModule, makeCommandMessage } from './commands';
 import { sendMessage, sendMessageWithChoices } from './sender';
-import { sanitiseInputText, validateInputMessage } from './utils';
+import { validateInputMessage } from './utils';
 
 export const bot: APIGatewayProxyHandler = async (
   event,
