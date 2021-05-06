@@ -66,7 +66,7 @@ export const bot: APIGatewayProxyHandler = async (
     }
     return callbackWrapper(204);
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     sendMessage({ chatId, message: makeGenericErrorMessage() });
     return callbackWrapper(400);
   }
