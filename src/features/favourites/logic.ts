@@ -24,6 +24,7 @@ export async function findHCByKeyword(
   keyword: string,
 ): Promise<FindHCResponse | null> {
   const getAllHCResponse = await getAllHawkerCentres();
+  if (!getAllHCResponse.Items) return null;
 
   const hawkerCentres = getAllHCResponse.Items as HawkerCentreInfo[];
   const hcFilteredByKeyword = filterByKeyword(hawkerCentres, keyword);
@@ -70,7 +71,6 @@ export async function addHCToFavourites(props: {
   };
 
   const getUserResponse = await getUserById(userId);
-
   if (!getUserResponse.Item) {
     // user does not exist yet in DB
     const newUser: User = {
@@ -80,8 +80,7 @@ export async function addHCToFavourites(props: {
       favourites: [addFavHC],
     };
 
-    addUser(newUser);
-
+    await addUser(newUser);
     return { success: true };
   }
 
@@ -101,7 +100,7 @@ export async function addHCToFavourites(props: {
     (a, b) => a.hawkerCentreId - b.hawkerCentreId,
   );
 
-  updateUserFavourites(userId, favouritesUpdated);
+  await updateUserFavourites(userId, favouritesUpdated);
   return { success: true };
 }
 
@@ -115,7 +114,6 @@ export async function deleteHCFromFavourites(props: {
   } = props;
 
   const getUserResponse = await getUserById(userId);
-
   if (!getUserResponse.Item) {
     // user does not exist
     return {
@@ -148,7 +146,7 @@ export async function deleteHCFromFavourites(props: {
   const favouritesUpdated = [...user.favourites];
   favouritesUpdated.splice(deleteIdx, 1);
 
-  updateUserFavourites(userId, favouritesUpdated);
+  await updateUserFavourites(userId, favouritesUpdated);
   return {
     success: true,
     hawkerCentre: delHawkerCentre,
@@ -164,7 +162,6 @@ export async function getUserFavouritesWithResults(
   const { id: userId } = telegramUser;
 
   const getUserResponse = await getUserById(userId);
-
   if (!getUserResponse.Item) {
     // user does not exist in DB
     return [];

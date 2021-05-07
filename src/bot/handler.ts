@@ -51,6 +51,7 @@ export const bot: APIGatewayProxyHandler = async (
     }
   }
 
+  // this try-catch loop will catch all the errors that have bubbled up from the child functions
   try {
     const executionFn = makeExecutionFn(textSanitised);
 

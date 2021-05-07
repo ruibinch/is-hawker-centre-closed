@@ -23,7 +23,6 @@ export async function addFeedback(props: {
     dateSubmitted: formatISO(currentDate()),
   };
 
-  addFeedbackToDB(feedback);
-
+  await addFeedbackToDB(feedback);
   return { success: true };
 }

@@ -3,5 +3,5 @@ export function makeFeedbackAddedMessage(): string {
 }
 
 export function makeErrorAddingFeedbackMessage(): string {
-  return "Woops, couldn't handle saving your feedback for some unexpected reason. Try again?";
+  return "Woops, couldn't handle saving your feedback for some unexpected reason\\. Try again?";
 }
