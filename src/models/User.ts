@@ -56,3 +56,23 @@ export async function updateUserFavourites(
   console.log(`Updating user ${userId} to "${TABLE_USERS}"`);
   return dynamoDb.update(updateUserInput).promise();
 }
+
+export async function updateUserInFavouritesMode(
+  userId: number,
+  isInFavouritesMode: boolean,
+): Promise<
+  PromiseResult<AWS.DynamoDB.DocumentClient.UpdateItemOutput, AWS.AWSError>
+> {
+  const updateUserInput: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
+    TableName: TABLE_USERS,
+    Key: {
+      userId,
+    },
+    UpdateExpression: 'set isInFavouritesMode = :favMode',
+    ExpressionAttributeValues: {
+      ':favMode': isInFavouritesMode,
+    },
+  };
+
+  return dynamoDb.update(updateUserInput).promise();
+}

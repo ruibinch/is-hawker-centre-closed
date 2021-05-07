@@ -207,6 +207,7 @@ export const mockUser: User = {
       dateAdded: '2021-01-01T15:00:00+08:00',
     },
   ],
+  isInFavouritesMode: false,
 };
 
 export const mockUserWithOneFav: User = {
@@ -219,6 +220,7 @@ export const mockUserWithOneFav: User = {
       dateAdded: '2021-01-15T17:30:52+08:00',
     },
   ],
+  isInFavouritesMode: false,
 };
 
 export const mockUserWithNoFavs: User = {
@@ -226,6 +228,15 @@ export const mockUserWithNoFavs: User = {
   username: 'brock',
   languageCode: 'en',
   favourites: [],
+  isInFavouritesMode: false,
+};
+
+export const mockUserInFavMode: User = {
+  userId: 4,
+  username: 'nursejoy',
+  languageCode: 'en',
+  favourites: [],
+  isInFavouritesMode: true,
 };
 
 export const mockTelegramUser: TelegramUser = {

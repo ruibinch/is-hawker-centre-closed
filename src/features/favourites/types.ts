@@ -1,3 +1,4 @@
+import { BotResponse } from '../../common/types';
 import { HawkerCentreInfo } from '../../models/types';
 
 export type FindHCResponse = {
@@ -20,3 +21,21 @@ export type DeleteHCResponse =
       success: false;
       numFavourites: number;
     };
+
+export type HandleFavouriteSelectionResponse =
+  | {
+      success: true;
+      response: BotResponse;
+    }
+  | {
+      success: false;
+    };
+
+export type IsUserInFavModeResponse = {
+  success: boolean;
+  isInFavouritesMode?: boolean;
+};
+
+export type ToggleUserInFavModeResponse = {
+  success: true;
+};

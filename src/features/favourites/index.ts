@@ -1,11 +1,15 @@
+import { isCommand } from '../../bot/commands';
 import { makeGenericErrorMessage } from '../../common/message';
 import { TelegramUser } from '../../common/telegram';
 import { BotResponse } from '../../common/types';
+import { HawkerCentreInfo } from '../../models/types';
 import {
   addHCToFavourites,
   deleteHCFromFavourites,
   findHCByKeyword,
   getUserFavouritesWithResults,
+  isUserInFavouritesMode,
+  toggleUserInFavouritesMode,
 } from './logic';
 import {
   makeDuplicateHCErrorMessage,
@@ -15,6 +19,7 @@ import {
   makeSuccessfullyDeletedMessage,
   makeDeleteErrorMessage,
 } from './message';
+import { HandleFavouriteSelectionResponse } from './types';
 
 export * from './logic';
 export * from './message';
@@ -40,12 +45,16 @@ export async function manageFavourites(
         });
       }
 
+      let choices: string[] | undefined;
+      if (!isFindError) {
+        choices = hawkerCentres.map((hc) => hc.name);
+        // only toggle fav mode when user is presented with the choices screen
+        await toggleUserInFavouritesMode(telegramUser, true);
+      }
+
       return {
         message: makeAddHCMessage({ keyword, hawkerCentres }),
-        choices: isFindError
-          ? undefined
-          : // HACK: appending a /fav prefix so that this flow gets triggered again without maintaining session state
-            hawkerCentres.map((hc) => `/fav ${hc.name}`),
+        choices,
       };
     }
     case '/del': {
@@ -82,6 +91,67 @@ export async function manageFavourites(
       return null;
   }
 }
+
+/**
+ * Checks if the user is in favourites mode and executes handleFavouriteSelection flow if so.
+ */
+export async function maybeHandleFavouriteSelection(
+  text: string,
+  telegramUser: TelegramUser,
+): Promise<HandleFavouriteSelectionResponse> {
+  const isUserInFavouritesModeResponse = await isUserInFavouritesMode(
+    telegramUser,
+  );
+
+  if (
+    !isUserInFavouritesModeResponse.success ||
+    !isUserInFavouritesModeResponse.isInFavouritesMode
+  ) {
+    return { success: false };
+  }
+
+  return handleFavouriteSelection(text, telegramUser);
+}
+
+/**
+ * Handles the flow when a user is in favourites mode.
+ *
+ * If the keyword is a command or  not an exact match of any hawker centre name, then fallback to normal handling.
+ * e.g. if user is presented with the choices keyboard but opts to ignore it in favour of a normal keyword search
+ */
+async function handleFavouriteSelection(
+  keyword: string,
+  telegramUser: TelegramUser,
+): Promise<HandleFavouriteSelectionResponse> {
+  // set isInFavouritesMode back to false upon handling
+  await toggleUserInFavouritesMode(telegramUser, false);
+
+  if (isCommand(keyword)) return { success: false };
+
+  const findHCResponse = await findHCByKeyword(keyword);
+  if (findHCResponse === null) return { success: false };
+
+  const { isExactMatch, hawkerCentres } = findHCResponse;
+
+  if (isExactMatch) {
+    const addHCToFavouritesResponse = await executeAddHCToFavourites({
+      hawkerCentre: hawkerCentres[0],
+      telegramUser,
+    });
+
+    if (addHCToFavouritesResponse === null) {
+      return { success: false };
+    }
+
+    return {
+      success: true,
+      response: addHCToFavouritesResponse,
+    };
+  }
+
+  return { success: false };
+}
+
 /**
  * Wrapper function to handle the process of adding a hawker centre to the favourites list
  * and returning the correct message.

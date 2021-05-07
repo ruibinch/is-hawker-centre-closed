@@ -35,5 +35,5 @@ export const assertBotResponse = (
     delete expectedObject.choices;
   }
 
-  expect(spy).toBeCalledWith(expect.objectContaining(expectedObject));
+  expect(spy).toHaveBeenCalledWith(expect.objectContaining(expectedObject));
 };

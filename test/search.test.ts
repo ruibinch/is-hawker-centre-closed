@@ -4,6 +4,7 @@ import { PromiseResult } from 'aws-sdk/lib/request';
 import { parseISO } from 'date-fns';
 
 import * as sender from '../src/bot/sender';
+import * as favouritesIndex from '../src/features/favourites/index';
 import * as Result from '../src/models/Result';
 import { mockResults } from './__mocks__/db';
 import { assertBotResponse, makeBotWrapper } from './helpers/bot';
@@ -18,10 +19,16 @@ describe('Search module', () => {
 
   let dateSpy: jest.SpyInstance;
   let sendMessageSpy: jest.SpyInstance;
+  let maybeHandleFavouriteSelectionSpy: jest.SpyInstance;
   let getAllResultsSpy: jest.SpyInstance;
 
   beforeAll(() => {
     const results = { Items: mockResults } as unknown;
+
+    maybeHandleFavouriteSelectionSpy = jest
+      .spyOn(favouritesIndex, 'maybeHandleFavouriteSelection')
+      .mockImplementation(() => Promise.resolve({ success: false }));
+
     getAllResultsSpy = jest
       .spyOn(Result, 'getAllResults')
       .mockImplementation(
@@ -43,6 +50,7 @@ describe('Search module', () => {
   afterAll(() => {
     mockCallback.mockRestore();
     dateSpy.mockRestore();
+    maybeHandleFavouriteSelectionSpy.mockRestore();
     getAllResultsSpy.mockRestore();
   });
 

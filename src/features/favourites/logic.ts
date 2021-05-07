@@ -15,10 +15,21 @@ import {
   User,
   UserFavourite,
 } from '../../models/types';
-import { getUserById, addUser, updateUserFavourites } from '../../models/User';
+import {
+  getUserById,
+  addUser,
+  updateUserFavourites,
+  updateUserInFavouritesMode,
+} from '../../models/User';
 import { sortInDateAscThenAlphabeticalOrder } from '../search';
 import { MAX_CHOICES } from './constants';
-import { AddHCResponse, DeleteHCResponse, FindHCResponse } from './types';
+import {
+  AddHCResponse,
+  DeleteHCResponse,
+  FindHCResponse,
+  IsUserInFavModeResponse,
+  ToggleUserInFavModeResponse,
+} from './types';
 
 export async function findHCByKeyword(
   keyword: string,
@@ -29,8 +40,7 @@ export async function findHCByKeyword(
   const hawkerCentres = getAllHCResponse.Items as HawkerCentreInfo[];
   const hcFilteredByKeyword = filterByKeyword(hawkerCentres, keyword);
 
-  // if there is only 1 result and the keyword is an exact match,
-  // assume that this is after input selection, hence add to favourites
+  // if there is only 1 result and the keyword is an exact match, return `isExactMatch` set to true
   if (hcFilteredByKeyword.length === 1) {
     if (keyword === hcFilteredByKeyword[0].name) {
       return {
@@ -78,6 +88,7 @@ export async function addHCToFavourites(props: {
       username,
       languageCode,
       favourites: [addFavHC],
+      isInFavouritesMode: false,
     };
 
     await addUser(newUser);
@@ -200,6 +211,43 @@ export async function getUserFavouritesWithResults(
   });
 
   return userFavsWithResults;
+}
+
+/**
+ * Returns the `isInFavouritesMode` value of the associated user.
+ */
+export async function isUserInFavouritesMode(
+  telegramUser: TelegramUser,
+): Promise<IsUserInFavModeResponse> {
+  const { id: userId } = telegramUser;
+
+  const getUserResponse = await getUserById(userId);
+
+  if (!getUserResponse.Item) {
+    // user does not exist in DB
+    return {
+      success: false,
+    };
+  }
+
+  const user = getUserResponse.Item as User;
+  return {
+    success: true,
+    isInFavouritesMode: user.isInFavouritesMode,
+  };
+}
+
+/**
+ * Toggles the `isInFavouritesMode` value of the associated user.
+ */
+export async function toggleUserInFavouritesMode(
+  telegramUser: TelegramUser,
+  isInFavouritesMode: boolean,
+): Promise<ToggleUserInFavModeResponse> {
+  const { id: userId } = telegramUser;
+
+  await updateUserInFavouritesMode(userId, isInFavouritesMode);
+  return { success: true };
 }
 
 /**

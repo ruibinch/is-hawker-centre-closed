@@ -1,6 +1,7 @@
 import { parseISO } from 'date-fns';
 
 import * as sender from '../src/bot/sender';
+import * as favouritesIndex from '../src/features/favourites/index';
 import * as Feedback from '../src/models/Feedback';
 import { assertBotResponse, makeBotWrapper } from './helpers/bot';
 
@@ -14,12 +15,17 @@ describe('Feedback module', () => {
 
   let dateSpy: jest.SpyInstance;
   let sendMessageSpy: jest.SpyInstance;
+  let maybeHandleFavouriteSelectionSpy: jest.SpyInstance;
   let addFeedbackToDBSpy: jest.SpyInstance;
 
   beforeAll(() => {
     dateSpy = jest
       .spyOn(Date, 'now')
       .mockImplementation(() => parseISO('2021-01-05').valueOf());
+
+    maybeHandleFavouriteSelectionSpy = jest
+      .spyOn(favouritesIndex, 'maybeHandleFavouriteSelection')
+      .mockImplementation(() => Promise.resolve({ success: false }));
   });
 
   beforeEach(() => {
@@ -36,6 +42,7 @@ describe('Feedback module', () => {
   afterAll(() => {
     mockCallback.mockRestore();
     dateSpy.mockRestore();
+    maybeHandleFavouriteSelectionSpy.mockRestore();
   });
 
   it('["/feedback"] returns the explanatory message', async () => {

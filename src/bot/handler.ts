@@ -3,8 +3,11 @@ import { APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
 import { makeCallbackWrapper } from '../common/lambda';
 import { makeGenericErrorMessage } from '../common/message';
 import { TelegramMessage } from '../common/telegram';
-import { Module } from '../common/types';
-import { manageFavourites } from '../features/favourites';
+import { BotResponse, Module } from '../common/types';
+import {
+  maybeHandleFavouriteSelection,
+  manageFavourites,
+} from '../features/favourites';
 import { manageFeedback } from '../features/feedback';
 import { runSearch } from '../features/search';
 import { validateToken } from './auth';
@@ -53,11 +56,25 @@ export const bot: APIGatewayProxyHandler = async (
 
   // this try-catch loop will catch all the errors that have bubbled up from the child functions
   try {
-    const executionFn = makeExecutionFn(textSanitised);
+    let botResponse: BotResponse | null;
 
-    const botResponse = await executionFn(textSanitised, telegramUser);
+    // eslint-disable-next-line max-len
+    // must always first check if the user is in favourites mode so that isInFavouritesMode can be toggled back to false if applicable
+    const maybeHandleFavouriteSelectionResult = await maybeHandleFavouriteSelection(
+      textSanitised,
+      telegramUser,
+    );
+
+    // If favourites flow is not applicable, perform customary handling
+    if (maybeHandleFavouriteSelectionResult.success) {
+      const { response } = maybeHandleFavouriteSelectionResult;
+      botResponse = response;
+    } else {
+      const executionFn = makeExecutionFn(textSanitised);
+      botResponse = await executionFn(textSanitised, telegramUser);
+    }
+
     if (botResponse === null) throw new Error();
-
     const { message, choices } = botResponse;
 
     if (choices) {
@@ -65,6 +82,7 @@ export const bot: APIGatewayProxyHandler = async (
     } else {
       sendMessage({ chatId, message });
     }
+
     return callbackWrapper(204);
   } catch (error) {
     // console.log(error);

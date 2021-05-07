@@ -4,6 +4,9 @@ import { PromiseResult } from 'aws-sdk/lib/request';
 import { parseISO } from 'date-fns';
 
 import * as sender from '../src/bot/sender';
+import * as favouritesIndex from '../src/features/favourites/index';
+import * as feedbackIndex from '../src/features/feedback/index';
+import * as searchIndex from '../src/features/search/index';
 import * as HawkerCentre from '../src/models/HawkerCentre';
 import * as Result from '../src/models/Result';
 import * as User from '../src/models/User';
@@ -11,6 +14,7 @@ import {
   mockHawkerCentres,
   mockResults,
   mockUser,
+  mockUserInFavMode,
   mockUserWithNoFavs,
   mockUserWithOneFav,
 } from './__mocks__/db';
@@ -33,6 +37,7 @@ describe('Favourites module', () => {
   let getHawkerCentreByIdSpy: jest.SpyInstance;
   let getUserByIdSpy: jest.SpyInstance;
   let updateUserFavouritesSpy: jest.SpyInstance;
+  let updateUserInFavouritesModeSpy: jest.SpyInstance;
   let getAllResultsSpy: jest.SpyInstance;
 
   beforeAll(() => {
@@ -63,6 +68,19 @@ describe('Favourites module', () => {
           >,
       );
 
+    const user = { Item: mockUser } as unknown;
+    getUserByIdSpy = jest
+      .spyOn(User, 'getUserById')
+      .mockImplementation(
+        () =>
+          Promise.resolve(user) as Promise<
+            PromiseResult<
+              AWS.DynamoDB.DocumentClient.GetItemOutput,
+              AWS.AWSError
+            >
+          >,
+      );
+
     const results = { Items: mockResults } as unknown;
     getAllResultsSpy = jest
       .spyOn(Result, 'getAllResults')
@@ -83,6 +101,9 @@ describe('Favourites module', () => {
     updateUserFavouritesSpy = jest
       .spyOn(User, 'updateUserFavourites')
       .mockImplementation();
+    updateUserInFavouritesModeSpy = jest
+      .spyOn(User, 'updateUserInFavouritesMode')
+      .mockImplementation();
   });
 
   afterEach(() => {
@@ -90,6 +111,7 @@ describe('Favourites module', () => {
     sendMessageWithChoicesSpy.mockRestore();
 
     updateUserFavouritesSpy.mockRestore();
+    updateUserInFavouritesModeSpy.mockRestore();
   });
 
   afterAll(() => {
@@ -98,6 +120,7 @@ describe('Favourites module', () => {
 
     getAllHawkerCentresSpy.mockRestore();
     getHawkerCentreByIdSpy.mockRestore();
+    getUserByIdSpy.mockRestore();
     getAllResultsSpy.mockRestore();
   });
 
@@ -122,10 +145,10 @@ describe('Favourites module', () => {
   });
 
   describe('searching for a favourite hawker centre', () => {
-    it('["/fav oldale"] returns a single result', async () => {
+    it('["/fav oldale"] returns a single result, and sets isInFavouritesMode to true', async () => {
       const expectedMessage =
         'Confirm that this is the hawker centre to be added?';
-      const expectedChoices = ['/fav Oldale Town'];
+      const expectedChoices = ['Oldale Town'];
 
       await callBot('/fav oldale');
       assertBotResponse(
@@ -133,11 +156,13 @@ describe('Favourites module', () => {
         expectedMessage,
         expectedChoices,
       );
+
+      expect(updateUserInFavouritesModeSpy).toHaveBeenCalledWith(1, true);
     });
 
-    it('["/fav fortree"] returns multiple choices for selection', async () => {
+    it('["/fav fortree"] returns multiple choices for selection, and sets isInFavouritesMode to true', async () => {
       const expectedMessage = 'Choose your favourite hawker centre:';
-      const expectedChoices = ['/fav Fortree Market', '/fav Fortree Gym'];
+      const expectedChoices = ['Fortree Market', 'Fortree Gym'];
 
       await callBot('/fav fortree');
       assertBotResponse(
@@ -145,12 +170,14 @@ describe('Favourites module', () => {
         expectedMessage,
         expectedChoices,
       );
+
+      expect(updateUserInFavouritesModeSpy).toHaveBeenCalledWith(1, true);
     });
 
-    it('["/fav psychic"] searches on secondary name', async () => {
+    it('["/fav psychic"] searches on secondary name, and sets isInFavouritesMode to true', async () => {
       const expectedMessage =
         'Confirm that this is the hawker centre to be added?';
-      const expectedChoices = ['/fav Mossdeep Gym'];
+      const expectedChoices = ['Mossdeep Gym'];
 
       await callBot('/fav psychic');
       assertBotResponse(
@@ -158,6 +185,8 @@ describe('Favourites module', () => {
         expectedMessage,
         expectedChoices,
       );
+
+      expect(updateUserInFavouritesModeSpy).toHaveBeenCalledWith(1, true);
     });
 
     it('["/fav lilycove"] returns an error message when there are no results', async () => {
@@ -166,6 +195,8 @@ describe('Favourites module', () => {
 
       await callBot('/fav lilycove');
       assertBotResponse(sendMessageSpy, expectedMessage);
+
+      expect(updateUserInFavouritesModeSpy).not.toHaveBeenCalled();
     });
 
     it('["/fav gym"] returns an error message when there are too many results', async () => {
@@ -174,6 +205,8 @@ describe('Favourites module', () => {
 
       await callBot('/fav gym');
       assertBotResponse(sendMessageSpy, expectedMessage);
+
+      expect(updateUserInFavouritesModeSpy).not.toHaveBeenCalled();
     });
   });
 
@@ -205,6 +238,7 @@ describe('Favourites module', () => {
         await callBot('/fav Slateport Market');
         assertBotResponse(sendMessageSpy, expectedMessage);
 
+        expect(updateUserInFavouritesModeSpy).not.toHaveBeenCalled();
         expect(updateUserFavouritesSpy).toHaveBeenCalledWith(
           1,
           expect.arrayContaining([
@@ -223,6 +257,7 @@ describe('Favourites module', () => {
         await callBot('/fav Verdanturf Town');
         assertBotResponse(sendMessageSpy, expectedMessage);
 
+        expect(updateUserInFavouritesModeSpy).not.toHaveBeenCalled();
         expect(updateUserFavouritesSpy).not.toHaveBeenCalled();
       });
     });
@@ -404,6 +439,7 @@ describe('Favourites module', () => {
         await callBot('/fav Slateport Market');
         assertBotResponse(sendMessageSpy, expectedMessage);
 
+        expect(updateUserInFavouritesModeSpy).not.toHaveBeenCalled();
         expect(addUserSpy).toHaveBeenCalledWith({
           userId: 1,
           username: 'ashketchum',
@@ -414,6 +450,7 @@ describe('Favourites module', () => {
               dateAdded: '2021-01-05T00:00:00Z',
             },
           ],
+          isInFavouritesMode: false,
         });
       });
     });
@@ -437,6 +474,107 @@ describe('Favourites module', () => {
         assertBotResponse(sendMessageSpy, expectedMessage);
 
         expect(updateUserFavouritesSpy).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('user in favourites mode', () => {
+    beforeAll(() => {
+      const user = { Item: mockUserInFavMode } as unknown;
+      getUserByIdSpy = jest
+        .spyOn(User, 'getUserById')
+        .mockImplementation(
+          () =>
+            Promise.resolve(user) as Promise<
+              PromiseResult<
+                AWS.DynamoDB.DocumentClient.GetItemOutput,
+                AWS.AWSError
+              >
+            >,
+        );
+    });
+
+    afterAll(() => {
+      getUserByIdSpy.mockRestore();
+    });
+
+    describe('user selects one of the displayed choices', () => {
+      it('["Sootopolis Gym"] adds to the favourites list', async () => {
+        const expectedMessage =
+          'Great, adding *Sootopolis Gym* to your list of favourites\\!';
+
+        await callBot('Sootopolis Gym');
+        assertBotResponse(sendMessageSpy, expectedMessage);
+
+        expect(updateUserInFavouritesModeSpy).toHaveBeenCalledWith(1, false);
+        expect(updateUserFavouritesSpy).toHaveBeenCalledWith(
+          1,
+          expect.arrayContaining([
+            {
+              hawkerCentreId: 38,
+              dateAdded: '2021-01-05T00:00:00Z',
+            },
+          ]),
+        );
+      });
+    });
+
+    describe('user ignores the choices screen and executes another flow', () => {
+      let manageFavouritesSpy: jest.SpyInstance;
+      let manageFeedbackSpy: jest.SpyInstance;
+      let runSearchSpy: jest.SpyInstance;
+
+      beforeEach(() => {
+        manageFavouritesSpy = jest
+          .spyOn(favouritesIndex, 'manageFavourites')
+          .mockImplementation();
+        manageFeedbackSpy = jest
+          .spyOn(feedbackIndex, 'manageFeedback')
+          .mockImplementation();
+        runSearchSpy = jest
+          .spyOn(searchIndex, 'runSearch')
+          .mockImplementation();
+      });
+
+      afterEach(() => {
+        manageFavouritesSpy.mockRestore();
+        manageFeedbackSpy.mockRestore();
+        runSearchSpy.mockRestore();
+      });
+
+      it('["sootopolis"] performs a normal search query', async () => {
+        await callBot('sootopolis');
+
+        expect(updateUserInFavouritesModeSpy).toHaveBeenCalledWith(1, false);
+        expect(runSearchSpy).toHaveBeenCalled();
+      });
+
+      it('["/fav lavaridge"] performs a normal /fav command', async () => {
+        await callBot('/fav lavaridge');
+
+        expect(updateUserInFavouritesModeSpy).toHaveBeenCalledWith(1, false);
+        expect(manageFavouritesSpy).toHaveBeenCalled();
+      });
+
+      it('["/del 1"] performs a normal /del command', async () => {
+        await callBot('/del 2');
+
+        expect(updateUserInFavouritesModeSpy).toHaveBeenCalledWith(1, false);
+        expect(manageFavouritesSpy).toHaveBeenCalled();
+      });
+
+      it('["/list"] performs a normal /list command', async () => {
+        await callBot('/list');
+
+        expect(updateUserInFavouritesModeSpy).toHaveBeenCalledWith(1, false);
+        expect(manageFavouritesSpy).toHaveBeenCalled();
+      });
+
+      it('["/feedback great job"] performs a normal /feedback command', async () => {
+        await callBot('/feedback great job');
+
+        expect(updateUserInFavouritesModeSpy).toHaveBeenCalledWith(1, false);
+        expect(manageFeedbackSpy).toHaveBeenCalled();
       });
     });
   });
