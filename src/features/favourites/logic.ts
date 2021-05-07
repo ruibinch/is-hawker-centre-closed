@@ -15,7 +15,7 @@ import {
   User,
   UserFavourite,
 } from '../../models/types';
-import { getUserById, addUser, updateUser } from '../../models/User';
+import { getUserById, addUser, updateUserFavourites } from '../../models/User';
 import { sortInDateAscThenAlphabeticalOrder } from '../search';
 import { MAX_CHOICES } from './constants';
 import { AddHCResponse, DeleteHCResponse, FindHCResponse } from './types';
@@ -101,7 +101,7 @@ export async function addHCToFavourites(props: {
     (a, b) => a.hawkerCentreId - b.hawkerCentreId,
   );
 
-  updateUser(userId, favouritesUpdated);
+  updateUserFavourites(userId, favouritesUpdated);
   return { success: true };
 }
 
@@ -148,7 +148,7 @@ export async function deleteHCFromFavourites(props: {
   const favouritesUpdated = [...user.favourites];
   favouritesUpdated.splice(deleteIdx, 1);
 
-  updateUser(userId, favouritesUpdated);
+  updateUserFavourites(userId, favouritesUpdated);
   return {
     success: true,
     hawkerCentre: delHawkerCentre,

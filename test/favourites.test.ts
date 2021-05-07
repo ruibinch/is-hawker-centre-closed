@@ -32,7 +32,7 @@ describe('Favourites module', () => {
   let getAllHawkerCentresSpy: jest.SpyInstance;
   let getHawkerCentreByIdSpy: jest.SpyInstance;
   let getUserByIdSpy: jest.SpyInstance;
-  let updateUserSpy: jest.SpyInstance;
+  let updateUserFavouritesSpy: jest.SpyInstance;
   let getAllResultsSpy: jest.SpyInstance;
 
   beforeAll(() => {
@@ -80,14 +80,16 @@ describe('Favourites module', () => {
       .spyOn(sender, 'sendMessageWithChoices')
       .mockImplementation();
 
-    updateUserSpy = jest.spyOn(User, 'updateUser').mockImplementation();
+    updateUserFavouritesSpy = jest
+      .spyOn(User, 'updateUserFavourites')
+      .mockImplementation();
   });
 
   afterEach(() => {
     sendMessageSpy.mockRestore();
     sendMessageWithChoicesSpy.mockRestore();
 
-    updateUserSpy.mockRestore();
+    updateUserFavouritesSpy.mockRestore();
   });
 
   afterAll(() => {
@@ -203,7 +205,7 @@ describe('Favourites module', () => {
         await callBot('/fav Slateport Market');
         assertBotResponse(sendMessageSpy, expectedMessage);
 
-        expect(updateUserSpy).toHaveBeenCalledWith(
+        expect(updateUserFavouritesSpy).toHaveBeenCalledWith(
           1,
           expect.arrayContaining([
             {
@@ -221,7 +223,7 @@ describe('Favourites module', () => {
         await callBot('/fav Verdanturf Town');
         assertBotResponse(sendMessageSpy, expectedMessage);
 
-        expect(updateUserSpy).not.toHaveBeenCalled();
+        expect(updateUserFavouritesSpy).not.toHaveBeenCalled();
       });
     });
 
@@ -233,7 +235,7 @@ describe('Favourites module', () => {
         await callBot('/del 1');
         assertBotResponse(sendMessageSpy, expectedMessage);
 
-        expect(updateUserSpy).toHaveBeenCalledWith(
+        expect(updateUserFavouritesSpy).toHaveBeenCalledWith(
           1,
           expect.not.arrayContaining([
             {
@@ -251,7 +253,7 @@ describe('Favourites module', () => {
         await callBot('/del 0');
         assertBotResponse(sendMessageSpy, expectedMessage);
 
-        expect(updateUserSpy).not.toHaveBeenCalled();
+        expect(updateUserFavouritesSpy).not.toHaveBeenCalled();
       });
 
       it('["/del 5"] (invalid) returns an error message when index number is out of bounds', async () => {
@@ -261,7 +263,7 @@ describe('Favourites module', () => {
         await callBot('/del 5');
         assertBotResponse(sendMessageSpy, expectedMessage);
 
-        expect(updateUserSpy).not.toHaveBeenCalled();
+        expect(updateUserFavouritesSpy).not.toHaveBeenCalled();
       });
 
       it('["/del invalidValue"] (invalid) returns an error message when index number is not a valid number', async () => {
@@ -271,7 +273,7 @@ describe('Favourites module', () => {
         await callBot('/del invalidValue');
         assertBotResponse(sendMessageSpy, expectedMessage);
 
-        expect(updateUserSpy).not.toHaveBeenCalled();
+        expect(updateUserFavouritesSpy).not.toHaveBeenCalled();
       });
     });
 
@@ -317,7 +319,7 @@ describe('Favourites module', () => {
         await callBot('/del 0');
         assertBotResponse(sendMessageSpy, expectedMessage);
 
-        expect(updateUserSpy).not.toHaveBeenCalled();
+        expect(updateUserFavouritesSpy).not.toHaveBeenCalled();
       });
     });
   });
@@ -360,7 +362,7 @@ describe('Favourites module', () => {
         await callBot('/del 0');
         assertBotResponse(sendMessageSpy, expectedMessage);
 
-        expect(updateUserSpy).not.toHaveBeenCalled();
+        expect(updateUserFavouritesSpy).not.toHaveBeenCalled();
       });
     });
   });
@@ -434,7 +436,7 @@ describe('Favourites module', () => {
         await callBot('/del 0');
         assertBotResponse(sendMessageSpy, expectedMessage);
 
-        expect(updateUserSpy).not.toHaveBeenCalled();
+        expect(updateUserFavouritesSpy).not.toHaveBeenCalled();
       });
     });
   });

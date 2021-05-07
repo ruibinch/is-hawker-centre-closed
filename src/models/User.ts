@@ -36,7 +36,7 @@ export async function getUserById(
   return dynamoDb.get(params).promise();
 }
 
-export async function updateUser(
+export async function updateUserFavourites(
   userId: number,
   favouritesUpdated: UserFavourite[],
 ): Promise<
