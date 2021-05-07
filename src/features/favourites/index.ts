@@ -34,33 +34,10 @@ export async function manageFavourites(
       const { isExactMatch, isFindError, hawkerCentres } = findHCResponse;
 
       if (isExactMatch) {
-        const addHawkerCentre = hawkerCentres[0];
-
-        const addHCResponse = await addHCToFavourites({
-          hawkerCentre: addHawkerCentre,
+        return executeAddHCToFavourites({
+          hawkerCentre: hawkerCentres[0],
           telegramUser,
         });
-        if (addHCResponse === null) return null;
-
-        const { success, isDuplicate } = addHCResponse;
-
-        if (success) {
-          return {
-            message: makeSuccessfullyAddedMessage(addHawkerCentre),
-          };
-        }
-
-        if (isDuplicate) {
-          return {
-            message: makeDuplicateHCErrorMessage(addHawkerCentre),
-          };
-        }
-
-        // should never reach here
-        /* istanbul ignore next */
-        return {
-          message: makeGenericErrorMessage(),
-        };
       }
 
       return {
@@ -104,4 +81,40 @@ export async function manageFavourites(
     default:
       return null;
   }
+}
+/**
+ * Wrapper function to handle the process of adding a hawker centre to the favourites list
+ * and returning the correct message.
+ */
+async function executeAddHCToFavourites(props: {
+  hawkerCentre: HawkerCentreInfo;
+  telegramUser: TelegramUser;
+}): Promise<BotResponse | null> {
+  const { hawkerCentre, telegramUser } = props;
+
+  const addHCResponse = await addHCToFavourites({
+    hawkerCentre,
+    telegramUser,
+  });
+  if (addHCResponse === null) return null;
+
+  const { success, isDuplicate } = addHCResponse;
+
+  if (success) {
+    return {
+      message: makeSuccessfullyAddedMessage(hawkerCentre),
+    };
+  }
+
+  if (isDuplicate) {
+    return {
+      message: makeDuplicateHCErrorMessage(hawkerCentre),
+    };
+  }
+
+  // should never reach here
+  /* istanbul ignore next */
+  return {
+    message: makeGenericErrorMessage(),
+  };
 }
