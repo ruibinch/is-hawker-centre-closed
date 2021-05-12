@@ -10,6 +10,7 @@ import {
 } from '../features/favourites';
 import { manageFeedback } from '../features/feedback';
 import { runSearch } from '../features/search';
+import { initDictionary } from '../lang';
 import { validateToken } from './auth';
 import { isCommand, isCommandInModule, makeCommandMessage } from './commands';
 import { sendMessage, sendMessageWithChoices } from './sender';
@@ -28,6 +29,8 @@ export const bot: APIGatewayProxyHandler = async (
   if (!event.body) {
     return callbackWrapper(400);
   }
+
+  initDictionary();
 
   const reqBody = JSON.parse(event.body);
   const inputMessage = reqBody.message as TelegramMessage;

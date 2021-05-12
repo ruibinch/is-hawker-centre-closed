@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 import { Module } from '../common/types';
+import { t } from '../lang';
 import { Command } from './types';
 
 export const COMMANDS: Command[] = [
@@ -92,57 +93,68 @@ export function makeCommandMessage(s: string): string | undefined {
   let reply = '';
 
   if (!isCommandSupported(s)) {
-    reply =
-      `Woops, that isn't a supported command\\.\n\n` +
-      `Please try again with one of the following:\n` +
-      `${COMMANDS.map((cmd) => formatEndpointForDisplay(cmd.endpoint)).join(
-        ', ',
-      )}`;
-    return reply;
+    return (
+      t('general.error.unsupported-command.first') +
+      t('general.error.unsupported-command.second', {
+        commands: COMMANDS.map((cmd) =>
+          formatEndpointForDisplay(cmd.endpoint),
+        ).join(', '),
+      })
+    );
   }
 
   switch (s) {
     case '/start': {
       reply =
-        `An easy way to check if your favourite hawker centre is closed today\\! \u{1F35C}\u{1F35B}\u{1F367}\n\n` +
-        `Simply send the bot some *subset of the hawker centre name*, e\\.g\\. _${makeRandomSearchKeywordExample()}_\\.\n\n` +
-        `Type in /help to see how you can customise your query further, as well as other features of the bot\\.`;
+        t('general.command-start.explanation.first', {
+          emojis: '\u{1F35C}\u{1F35B}\u{1F367}',
+        }) +
+        t('general.command-start.explanation.second', {
+          example: makeRandomSearchKeywordExample(),
+        }) +
+        t('general.command-start.explanation.third');
       break;
     }
     case '/help': {
-      // Search section
       reply =
-        `\u{1F50D} *Search*\n\n` +
-        `The search query follows the structure:\n\n` +
-        '          `\\[keyword\\] \\[timeframe\\]`\n\n' +
-        `Supported timeframes are:\n` +
-        `_today_, _tmr_, _tomorrow_, _month_, _next month_\n` +
-        `\\(default is _today_\\)\n\n`;
-      reply += makeRandomSearchExample();
-      reply += '\n\n';
-      // Favourites section
-      reply +=
-        '\u{1F31F} *Favourites*\n\n' +
-        'You can manage your favourite hawker centres via the /fav and /del commands\\.\n\n' +
-        'Typing /list will show you all your favourites as well as their next closure dates, making for an even easier way for you to check on their closure status\\!';
+        t('general.command-help.explanation.search-section.first', {
+          emoji: '\u{1F50D}',
+        }) +
+        t('general.command-help.explanation.search-section.second') +
+        t('general.command-help.explanation.search-section.third') +
+        t('general.command-help.explanation.search-section.fourth') +
+        t('general.command-help.explanation.search-section.fifth') +
+        t('general.command-help.explanation.search-section.sixth') +
+        t('general.command-help.explanation.search-section.seventh', {
+          example: makeRandomSearchExample(),
+        }) +
+        t('general.command-help.explanation.favourites-section.first', {
+          emoji: '\u{1F31F}',
+        }) +
+        t('general.command-help.explanation.favourites-section.second') +
+        t('general.command-help.explanation.favourites-section.third');
       break;
     }
     case '/fav': {
       reply =
-        `Please specify some keyword to filter the list of hawker centres for you to add to your favourites\\.\n\n` +
-        `e\\.g\\. _/fav ${makeRandomSearchKeywordExample()}_`;
+        t('favourites.command-fav.explanation.first') +
+        t('favourites.command-fav.explanation.second', {
+          example: makeRandomSearchKeywordExample(),
+        });
       break;
     }
     case '/del': {
       reply =
-        'To delete a favourite hawker centre, specify an index number based on the favourites list displayed by the /list command\\.\n\n' +
-        `e\\.g\\. _/del 3_`;
+        t('favourites.command-del.explanation.first') +
+        t('favourites.command-del.explanation.second');
       break;
     }
     case '/feedback': {
       reply =
-        'Type in your feedback after a /feedback command\\.\n\n' +
-        `e\\.g\\. _/feedback ${makeRandomFeedbackExample()}_`;
+        t('feedback.command-feedback.explanation.first') +
+        t('feedback.command-feedback.explanation.second', {
+          example: makeRandomFeedbackExample(),
+        });
       break;
     }
     /* istanbul ignore next */
@@ -176,7 +188,12 @@ function makeRandomSearchExample(): string {
   const searchExample =
     searchExamples[generateRandomInt(0, searchExamples.length)];
   const [searchTerm, keyword, modifier] = searchExample;
-  return `e\\.g\\. _${searchTerm}_ will display the hawker centres containing the keyword __${keyword}__ that are closed __${modifier}__\\.`;
+
+  return t('search.example-format', {
+    searchTerm,
+    keyword,
+    modifier,
+  });
 }
 
 function makeRandomSearchKeywordExample(): string {

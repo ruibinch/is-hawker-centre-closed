@@ -1,3 +1,4 @@
+import { t } from '../../lang';
 import { HawkerCentreInfo, ResultPartial } from '../../models/types';
 import { formatDate } from '../search';
 import { MAX_CHOICES } from './constants';
@@ -9,38 +10,38 @@ export function makeAddHCMessage(props: {
   const { keyword, hawkerCentres } = props;
 
   if (hawkerCentres.length === 0) {
-    return `No results found${
-      keyword.length > 0 ? ` for keyword *${keyword}*` : ''
-    }\\. Try again?`;
+    return t('favourites.error.no-results-found', {
+      keywordSnippet: keyword.length > 0 ? ` for keyword *${keyword}*` : '',
+    });
   }
 
   if (hawkerCentres.length > MAX_CHOICES) {
-    return 'Too many results to be displayed, please further refine your search\\.';
+    return t('favourites.error.too-many-results');
   }
 
   return hawkerCentres.length === 1
-    ? 'Confirm that this is the hawker centre to be added?'
-    : 'Choose your favourite hawker centre:';
+    ? t('favourites.confirm-hawker-centre')
+    : t('favourites.choose-favourite-hawker-centre');
 }
 
 export function makeSuccessfullyAddedMessage(
   hawkerCentre: HawkerCentreInfo,
 ): string {
   const { name: hcName } = hawkerCentre;
-  return `Great, adding *${hcName}* to your list of favourites\\!`;
+  return t('favourites.hawker-centre-added', { hcName });
 }
 
 export function makeDuplicateHCErrorMessage(
   hawkerCentre: HawkerCentreInfo,
 ): string {
   const { name: hcName } = hawkerCentre;
-  return `*${hcName}* is already in your favourites list\\!`;
+  return t('favourites.error.duplicate-hawker-centres', { hcName });
 }
 
 export function makeSuccessfullyDeletedMessage(
   hawkerCentre: HawkerCentreInfo,
 ): string {
-  return `*${hawkerCentre.name}* has been deleted from your list of favourites\\.`;
+  return t('favourites.hawker-centre-removed', { hcName: hawkerCentre.name });
 }
 
 export function makeDeleteErrorMessage(numFavourites: number): string {
@@ -49,12 +50,12 @@ export function makeDeleteErrorMessage(numFavourites: number): string {
   }
 
   return (
-    `That is not a valid index number\\. ` +
-    `${
-      numFavourites === 1
-        ? 'The only valid value is 1\\.'
-        : `Try again with a value from 1 to ${numFavourites}\\.`
-    }`
+    t('favourites.error.invalid-delete-index.first') +
+    (numFavourites === 1
+      ? t('favourites.error.invalid-delete-index.second.one-fav')
+      : t('favourites.error.invalid-delete-index.second.multiple-favs', {
+          numFavourites,
+        }))
   );
 }
 
@@ -69,18 +70,25 @@ export function makeFavouritesListMessage(
     .map((hc, idx) => {
       const { startDate, endDate } = hc;
 
-      const nextClosureDetails =
-        startDate && endDate
-          ? `\n    _\\(${formatDate(startDate)} to ${formatDate(endDate)}\\)_`
-          : '';
-
-      return `${idx + 1}\\. *${hc.name}*${nextClosureDetails}`;
+      return t('favourites.item', {
+        index: idx + 1,
+        hcName: hc.name,
+        nextClosureDetails:
+          startDate && endDate
+            ? t('favourites.item.closure-details', {
+                startDate: formatDate(startDate),
+                endDate: formatDate(endDate),
+              })
+            : '',
+      });
     })
     .join('\n');
 
-  return `Your favourite hawker centres and their next closure dates are:\n\n${hcOutput}`;
+  return t('favourites.list', {
+    hcOutput,
+  });
 }
 
 function makeNoSavedFavouritesMessage() {
-  return "You've not added any favourites yet\\. Try adding some using the /fav command\\.";
+  return t('favourites.error.no-saved-favourites');
 }

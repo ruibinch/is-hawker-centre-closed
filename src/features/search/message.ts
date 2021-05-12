@@ -1,5 +1,6 @@
 import { format, parseISO } from 'date-fns';
 
+import { t } from '../../lang';
 import { ClosureReason, Result } from '../../models/types';
 import { SearchModifier, SearchResponse } from './types';
 
@@ -13,37 +14,36 @@ export function makeMessage(searchResponse: SearchResponse): string {
 
   if (results.length === 0) {
     if (isDataPresent === false && modifier === SearchModifier.nextMonth) {
-      reply =
-        'No data is available for next month yet, check back again in a while\\!';
+      reply = t('search.error.next-month-data-unavailable');
     } else {
-      reply = `All good\\! No hawker centres ${makeKeywordSnippet(
-        keyword,
-      )}${makeTemporalVerbSnippet(
-        modifier,
-      )} undergoing cleaning ${makeTimePeriodSnippet(modifier)}\\.`;
+      reply = t('search.no-hawker-centres-closed', {
+        keywordSnippet: makeKeywordSnippet(keyword),
+        temporalVerbSnippet: makeTemporalVerbSnippet(modifier),
+        timePeriodSnippet: makeTimePeriodSnippet(modifier),
+      });
     }
   } else {
     if (keyword === '') {
-      reply = `There are ${makeNumResultsSnippet(
-        results,
-      )} hawker centres that ${makeTemporalVerbSnippet(
-        modifier,
-      )} closed ${makeTimePeriodSnippet(modifier)}:`;
+      reply = t('search.hawker-centres-closed.without-keyword', {
+        numResultsSnippet: makeNumResultsSnippet(results),
+        temporalVerbSnippet: makeTemporalVerbSnippet(modifier),
+        timePeriodSnippet: makeTimePeriodSnippet(modifier),
+      });
     } else {
-      reply = `Here are the hawker centres ${makeKeywordSnippet(
-        keyword,
-      )}that ${makeTemporalVerbSnippet(
-        modifier,
-      )} closed ${makeTimePeriodSnippet(modifier)}:`;
+      reply = t('search.hawker-centres-closed.with-keyword', {
+        keywordSnippet: makeKeywordSnippet(keyword),
+        temporalVerbSnippet: makeTemporalVerbSnippet(modifier),
+        timePeriodSnippet: makeTimePeriodSnippet(modifier),
+      });
     }
-    reply += '\n\n';
 
     results.forEach((result) => {
-      reply +=
-        `*${result.name}*\n` +
-        `${formatDate(result.startDate)} to ${formatDate(
-          result.endDate,
-        )}${makeClosureReasonSnippet(result.reason)}\n\n`;
+      reply += t('search.item', {
+        hcName: result.name,
+        startDate: formatDate(result.startDate),
+        endDate: formatDate(result.endDate),
+        closureReasonSnippet: makeClosureReasonSnippet(result.reason),
+      });
     });
   }
 
@@ -51,19 +51,19 @@ export function makeMessage(searchResponse: SearchResponse): string {
 }
 
 function makeKeywordSnippet(keyword: string) {
-  return keyword.length > 0 ? `containing the keyword *${keyword}* ` : '';
+  return keyword.length > 0 ? t('search.snippet.keyword', { keyword }) : '';
 }
 
 function makeTimePeriodSnippet(modifier: SearchModifier) {
   switch (modifier) {
     case SearchModifier.today:
-      return 'today';
+      return t('search.snippet.time-period.today');
     case SearchModifier.tomorrow:
-      return 'tomorrow';
+      return t('search.snippet.time-period.tomorrow');
     case SearchModifier.month:
-      return 'this month';
+      return t('search.snippet.time-period.this-month');
     case SearchModifier.nextMonth:
-      return 'next month';
+      return t('search.snippet.time-period.next-month');
     /* istanbul ignore next */
     default:
       return '';
@@ -74,10 +74,10 @@ function makeTemporalVerbSnippet(modifier: SearchModifier) {
   switch (modifier) {
     case SearchModifier.today:
     case SearchModifier.month:
-      return 'are';
+      return t('search.snippet.temporal.are');
     case SearchModifier.tomorrow:
     case SearchModifier.nextMonth:
-      return 'will be';
+      return t('search.snippet.temporal.will-be');
     /* istanbul ignore next */
     default:
       return '';
@@ -87,14 +87,16 @@ function makeTemporalVerbSnippet(modifier: SearchModifier) {
 function makeClosureReasonSnippet(reason: ClosureReason) {
   switch (reason) {
     case ClosureReason.renovation:
-      return ' _\\(long\\-term renovation works\\)_';
+      return t('search.snippet.closure-reason.long-term-renovation-works');
     default:
       return '';
   }
 }
 
 function makeNumResultsSnippet(results: Result[]) {
-  return `*${results.length}*`;
+  return t('search.snippet.num-results', {
+    numResults: results.length,
+  });
 }
 
 export function formatDate(date: string): string {
