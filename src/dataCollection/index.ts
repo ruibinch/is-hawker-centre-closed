@@ -1,13 +1,17 @@
 import { format } from 'date-fns';
 
-import { currentDate, toDateISO8601 } from '../../common/date';
-import { parseToEnum } from '../../common/enum';
-import { uploadHawkerCentres } from '../../models/HawkerCentre';
-import { uploadResults } from '../../models/Result';
-import { ClosureReason, HawkerCentreInfo, Result } from '../../models/types';
-import { generateHash } from '../utils';
+import { currentDate, toDateISO8601 } from '../common/date';
+import { parseToEnum } from '../common/enum';
+import { uploadHawkerCentres } from '../models/HawkerCentre';
+import { uploadResults } from '../models/Result';
+import { ClosureReason, HawkerCentreInfo, Result } from '../models/types';
 import { HawkerCentreClosureRecord } from './types';
-import { getRawRecords, parseHawkerCentreName, writeFile } from './utils';
+import {
+  generateHash,
+  getRawRecords,
+  parseHawkerCentreName,
+  writeFile,
+} from './utils';
 
 const args = process.argv.slice(2);
 const [isUploadToAws] = args;

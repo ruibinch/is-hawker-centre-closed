@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "sls offline start",
     "run:datagov": "yarn run:datagov:dev",
-    "run:datagov:dev": "ts-node src/dataCollection/dataGovSg/index.ts",
+    "run:datagov:dev": "ts-node src/dataCollection/index.ts",
     "run:datagov:prod": "NODE_ENV=production yarn run:datagov:dev",
     "init:bot": "yarn init:bot:prod",
     "init:bot:dev": "ts-node src/bot/init.ts",

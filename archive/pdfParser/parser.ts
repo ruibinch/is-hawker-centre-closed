@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { padValueTo2Digits } from '../../common/date';
+import { padValueTo2Digits } from '../../src/common/date';
 import {
   ColHeader,
   Dimensions,
