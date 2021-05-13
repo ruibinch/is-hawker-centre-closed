@@ -1,15 +1,20 @@
 import * as AWS from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
 
-import { getProvisionedThroughput } from '../common/dynamodb';
-import { Stage } from '../common/types';
-import { TABLE_HC } from '../common/variables';
+import {
+  getProvisionedThroughput,
+  initAWSConfig,
+  TABLE_HC,
+  TABLE_NAME_HC,
+} from '../common/awsConfig';
+import { getStage, Stage } from '../common/types';
 import { HawkerCentreInfo } from './types';
 
+initAWSConfig();
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 export const makeHawkerCentreTableName = (stage: Stage): string =>
-  `ihcc-hawkerCentres-${stage}`;
+  `${TABLE_NAME_HC}-${stage}`;
 
 export const makeHawkerCentreSchema = (
   stage: Stage,
@@ -28,11 +33,13 @@ export const makeHawkerCentreSchema = (
 });
 
 export function uploadHawkerCentres(hawkerCentres: HawkerCentreInfo[]): void {
-  console.log(`Uploading to table "${TABLE_HC}"`);
+  const hcTable = makeHawkerCentreTableName(getStage());
+  console.log(`Uploading to table "${hcTable}"`);
+
   Promise.all(
     hawkerCentres.map((hawkerCentre) => {
       const hawkerCentreInput: AWS.DynamoDB.DocumentClient.PutItemInput = {
-        TableName: TABLE_HC,
+        TableName: hcTable,
         Item: hawkerCentre,
         ConditionExpression: 'attribute_not_exists(hawkerCentreId)',
       };

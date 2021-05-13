@@ -1,15 +1,20 @@
 import * as AWS from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
 
-import { getProvisionedThroughput } from '../common/dynamodb';
+import {
+  getProvisionedThroughput,
+  initAWSConfig,
+  TABLE_NAME_USERS,
+  TABLE_USERS,
+} from '../common/awsConfig';
 import { Stage } from '../common/types';
-import { TABLE_USERS } from '../common/variables';
 import { UserFavourite, User } from './types';
 
+initAWSConfig();
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 export const makeUserTableName = (stage: Stage): string =>
-  `ihcc-users-${stage}`;
+  `${TABLE_NAME_USERS}-${stage}`;
 
 export const makeUserSchema = (
   stage: Stage,

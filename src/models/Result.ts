@@ -1,15 +1,20 @@
 import * as AWS from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
 
-import { getProvisionedThroughput } from '../common/dynamodb';
-import { Stage } from '../common/types';
-import { TABLE_RESULTS } from '../common/variables';
+import {
+  getProvisionedThroughput,
+  initAWSConfig,
+  TABLE_NAME_RESULTS,
+  TABLE_RESULTS,
+} from '../common/awsConfig';
+import { getStage, Stage } from '../common/types';
 import { Result } from './types';
 
+initAWSConfig();
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 export const makeResultsTableName = (stage: Stage): string =>
-  `ihcc-results-${stage}`;
+  `${TABLE_NAME_RESULTS}-${stage}`;
 
 export const makeResultsSchema = (
   stage: Stage,
@@ -33,11 +38,13 @@ export const makeResultsSchema = (
 });
 
 export function uploadResults(results: Result[]): void {
-  console.log(`Uploading to table "${TABLE_RESULTS}"`);
+  const resultsTable = makeResultsTableName(getStage());
+  console.log(`Uploading to table "${resultsTable}"`);
+
   Promise.all(
     results.map((result) => {
       const resultInput: AWS.DynamoDB.DocumentClient.PutItemInput = {
-        TableName: TABLE_RESULTS,
+        TableName: resultsTable,
         Item: result,
         ConditionExpression: 'attribute_not_exists(id)',
       };

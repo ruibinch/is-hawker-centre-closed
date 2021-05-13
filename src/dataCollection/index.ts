@@ -26,7 +26,7 @@ getRawRecords().then((recordsRaw) => {
   writeFile(results, `results-${getDateInYYYYMMDD()}.json`);
   writeFile(hawkerCentres, `hawkerCentres-${getDateInYYYYMMDD()}.json`);
 
-  if (isUploadToAws === 'true') {
+  if (isUploadToAws !== 'false') {
     uploadResults(results);
     uploadHawkerCentres(hawkerCentres);
   }

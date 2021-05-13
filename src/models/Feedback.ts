@@ -1,15 +1,20 @@
 import * as AWS from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
 
-import { getProvisionedThroughput } from '../common/dynamodb';
+import {
+  getProvisionedThroughput,
+  initAWSConfig,
+  TABLE_FEEDBACK,
+  TABLE_NAME_FEEDBACK,
+} from '../common/awsConfig';
 import { Stage } from '../common/types';
-import { TABLE_FEEDBACK } from '../common/variables';
 import { Feedback } from './types';
 
+initAWSConfig();
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 export const makeFeedbackTableName = (stage: Stage): string =>
-  `ihcc-feedback-${stage}`;
+  `${TABLE_NAME_FEEDBACK}-${stage}`;
 
 export const makeFeedbackSchema = (
   stage: Stage,

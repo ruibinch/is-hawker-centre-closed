@@ -1,6 +1,6 @@
 import * as AWS from 'aws-sdk';
 
-import { initAWSConfig } from '../common/aws';
+import { initAWSConfig } from '../common/awsConfig';
 import { Stage } from '../common/types';
 import { makeFeedbackSchema, makeFeedbackTableName } from './Feedback';
 import {
