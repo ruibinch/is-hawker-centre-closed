@@ -1,10 +1,29 @@
 import * as AWS from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
 
+import { getProvisionedThroughput } from '../common/dynamodb';
+import { Stage } from '../common/types';
 import { TABLE_USERS } from '../common/variables';
 import { UserFavourite, User } from './types';
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
+
+export const makeUserTableName = (stage: Stage): string =>
+  `ihcc-users-${stage}`;
+
+export const makeUserSchema = (
+  stage: Stage,
+): AWS.DynamoDB.CreateTableInput => ({
+  TableName: makeUserTableName(stage),
+  KeySchema: [
+    {
+      AttributeName: 'userId',
+      KeyType: 'HASH',
+    },
+  ],
+  AttributeDefinitions: [{ AttributeName: 'userId', AttributeType: 'N' }],
+  ProvisionedThroughput: getProvisionedThroughput(),
+});
 
 export async function addUser(
   user: User,

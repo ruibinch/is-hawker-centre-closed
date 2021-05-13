@@ -1,3 +1,8 @@
+export enum Stage {
+  dev = 'dev',
+  prod = 'prod',
+}
+
 export enum Module {
   search = 'search',
   favourites = 'favourites',

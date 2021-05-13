@@ -11,6 +11,8 @@
     "init:bot": "yarn init:bot:prod",
     "init:bot:dev": "ts-node src/bot/init.ts",
     "init:bot:prod": "NODE_ENV=production yarn init:bot:dev",
+    "db:create": "ts-node src/models/init.ts create",
+    "db:delete": "ts-node src/models/init.ts delete",
     "deploy": "yarn deploy:dev",
     "deploy:dev": "sls deploy -s dev -f",
     "deploy:dev:all": "sls deploy -s dev",
