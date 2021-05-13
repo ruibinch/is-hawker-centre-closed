@@ -38,7 +38,7 @@ TABLE_NAME_FEEDBACK=feedback
 yarn init:db
 
 # 2. Deploy Lambda functions
-yarn deploy:dev:all && yarn deploy:prod:all
+yarn deploy:all
 
 # 3. Update API_GATEWAY_ID_* values in .env
 
