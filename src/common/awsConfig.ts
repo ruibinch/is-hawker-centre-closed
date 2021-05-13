@@ -14,8 +14,8 @@ export const getProvisionedThroughput = (): {
   ReadCapacityUnits: number;
   WriteCapacityUnits: number;
 } => ({
-  ReadCapacityUnits: 2,
-  WriteCapacityUnits: 2,
+  ReadCapacityUnits: 5,
+  WriteCapacityUnits: 5,
 });
 
 // reads from .env file
