@@ -453,6 +453,27 @@ describe('Favourites module', () => {
           isInFavouritesMode: false,
         });
       });
+
+      it('["/fav oldale"] returns a single result, and creates a new user with isInFavouritesMode set to true', async () => {
+        const expectedMessage =
+          'Confirm that this is the hawker centre to be added?';
+        const expectedChoices = ['Oldale Town'];
+
+        await callBot('/fav oldale');
+        assertBotResponse(
+          sendMessageWithChoicesSpy,
+          expectedMessage,
+          expectedChoices,
+        );
+
+        expect(addUserSpy).toHaveBeenCalledWith({
+          userId: 1,
+          username: 'ashketchum',
+          languageCode: 'en',
+          favourites: [],
+          isInFavouritesMode: true,
+        });
+      });
     });
 
     describe("getting list of user's favourites", () => {

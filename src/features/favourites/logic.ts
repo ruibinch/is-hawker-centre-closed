@@ -244,7 +244,23 @@ export async function toggleUserInFavouritesMode(
   telegramUser: TelegramUser,
   isInFavouritesMode: boolean,
 ): Promise<ToggleUserInFavModeResponse> {
-  const { id: userId } = telegramUser;
+  const { id: userId, username, language_code: languageCode } = telegramUser;
+
+  // TODO: potentially improve this flow
+  const getUserResponse = await getUserById(userId);
+  if (!getUserResponse.Item) {
+    // user does not exist yet in DB
+    const newUser: User = {
+      userId,
+      username,
+      languageCode,
+      favourites: [],
+      isInFavouritesMode,
+    };
+
+    await addUser(newUser);
+    return { success: true };
+  }
 
   await updateUserInFavouritesMode(userId, isInFavouritesMode);
   return { success: true };
