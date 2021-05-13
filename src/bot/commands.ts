@@ -18,15 +18,15 @@ export const COMMANDS: Command[] = [
   },
   {
     module: Module.favourites,
-    endpoint: '/fav',
-    hasExplanation: true,
-    description: 'Add to your favourites',
-  },
-  {
-    module: Module.favourites,
     endpoint: '/list',
     hasExplanation: false,
     description: 'View your favourites and their next closure dates',
+  },
+  {
+    module: Module.favourites,
+    endpoint: '/fav',
+    hasExplanation: true,
+    description: 'Add to your favourites',
   },
   {
     module: Module.favourites,

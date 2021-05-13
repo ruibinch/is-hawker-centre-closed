@@ -70,7 +70,7 @@ describe('General module', () => {
       const expectedMessage =
         "Woops, that isn't a supported command\\.\n\n" +
         'Please try again with one of the following:\n' +
-        '/start, /help, /fav, /list, /del, /feedback';
+        '/start, /help, /list, /fav, /del, /feedback';
 
       await callBot('/invalid');
       assertBotResponse(sendMessageSpy, expectedMessage);
