@@ -148,6 +148,18 @@ describe('Search module', () => {
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
+    it('["psychic month"] searches on secondary name', async () => {
+      const expectedMessage =
+        'Here are the hawker centres containing the keyword *psychic* that are closed this month:\n' +
+        '\n' +
+        '*Mossdeep Gym*\n' +
+        '21\\-Jan to 24\\-Jan\n' +
+        '\n';
+
+      await callBot('psychic month');
+      assertBotResponse(sendMessageSpy, expectedMessage);
+    });
+
     it('["verdanturf next month"] returns results occurring in the next month', async () => {
       const expectedMessage =
         'Here are the hawker centres containing the keyword *verdanturf* that will be closed next month:\n' +
@@ -219,7 +231,7 @@ describe('Search module', () => {
 
     it('["Month"] returns all results occurring in the current month', async () => {
       const expectedMessage =
-        'There are *6* hawker centres that are closed this month:\n' +
+        'There are *7* hawker centres that are closed this month:\n' +
         '\n' +
         '*Melville City*\n' +
         '01\\-Jan to 01\\-Jan\n' +
@@ -232,6 +244,9 @@ describe('Search module', () => {
         '\n' +
         '*Oldale Town*\n' +
         '15\\-Jan to 18\\-Jan\n' +
+        '\n' +
+        '*Mossdeep Gym*\n' +
+        '21\\-Jan to 24\\-Jan\n' +
         '\n' +
         '*Route 118 near Melville City*\n' +
         '21\\-Jan to 24\\-Jan\n' +

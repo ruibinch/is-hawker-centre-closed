@@ -79,6 +79,15 @@ export const mockResults: Result[] = [
     startDate: '2021-01-21',
     endDate: '2021-01-24',
   },
+  {
+    id: '111',
+    hawkerCentreId: 37,
+    reason: ClosureReason.cleaning,
+    name: 'Mossdeep Gym',
+    nameSecondary: 'Psychics in space',
+    startDate: '2021-01-21',
+    endDate: '2021-01-24',
+  },
 ];
 
 export const mockHawkerCentres: HawkerCentreInfo[] = [

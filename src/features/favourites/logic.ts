@@ -267,7 +267,7 @@ export async function toggleUserInFavouritesMode(
 }
 
 /**
- * Filters the list of hawker centres by keyword matching the hawker centre name(s).
+ * Filters the list of hawker centres by keyword matching the hawker centre name or secondary name.
  */
 function filterByKeyword(
   hawkerCentres: HawkerCentreInfo[],
@@ -277,11 +277,16 @@ function filterByKeyword(
     return [];
   }
 
-  const filterRegex = new RegExp(`\\b${keyword.toLowerCase()}`);
-  return hawkerCentres.filter(
-    (hc) =>
-      filterRegex.test(hc.name.toLowerCase()) ||
-      (hc.nameSecondary && filterRegex.test(hc.nameSecondary.toLowerCase())),
+  const searchKeywords = keyword.split(' ');
+
+  return hawkerCentres.filter((hc) =>
+    searchKeywords.every((searchKeyword) => {
+      const filterRegex = new RegExp(`\\b${searchKeyword.toLowerCase()}`);
+      return (
+        filterRegex.test(hc.name.toLowerCase()) ||
+        (hc.nameSecondary && filterRegex.test(hc.nameSecondary.toLowerCase()))
+      );
+    }),
   );
 }
 

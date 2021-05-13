@@ -189,6 +189,21 @@ describe('Favourites module', () => {
       expect(updateUserInFavouritesModeSpy).toHaveBeenCalledWith(1, true);
     });
 
+    it('["/fav melville 118"] searches across multiple words, and sets isInFavouritesMode to true', async () => {
+      const expectedMessage =
+        'Confirm that this is the hawker centre to be added?';
+      const expectedChoices = ['Route 118 near Melville City'];
+
+      await callBot('/fav melville 118');
+      assertBotResponse(
+        sendMessageWithChoicesSpy,
+        expectedMessage,
+        expectedChoices,
+      );
+
+      expect(updateUserInFavouritesModeSpy).toHaveBeenCalledWith(1, true);
+    });
+
     it('["/fav lilycove"] returns an error message when there are no results', async () => {
       const expectedMessage =
         'No results found for keyword *lilycove*\\. Try again?';
@@ -318,7 +333,7 @@ describe('Favourites module', () => {
           'Your favourite hawker centres and their next closure dates are:\n\n' +
           '1\\. *Littleroot Town*\n' +
           '2\\. *Verdanturf Town*\n    _\\(08\\-Feb to 09\\-Feb\\)_\n' +
-          '3\\. *Mossdeep Gym*';
+          '3\\. *Mossdeep Gym*\n    _\\(21\\-Jan to 24\\-Jan\\)_';
 
         await callBot('/list');
         assertBotResponse(sendMessageSpy, expectedMessage);
