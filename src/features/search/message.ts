@@ -1,5 +1,4 @@
-import { format, parseISO } from 'date-fns';
-
+import { formatDateDisplay } from '../../common/date';
 import { t } from '../../lang';
 import { ClosureReason, Result } from '../../models/types';
 import { SearchModifier, SearchResponse } from './types';
@@ -40,8 +39,8 @@ export function makeMessage(searchResponse: SearchResponse): string {
     results.forEach((result) => {
       reply += t('search.item', {
         hcName: result.name,
-        startDate: formatDate(result.startDate),
-        endDate: formatDate(result.endDate),
+        startDate: formatDateDisplay(result.startDate),
+        endDate: formatDateDisplay(result.endDate),
         closureReasonSnippet: makeClosureReasonSnippet(result.reason),
       });
     });
@@ -97,8 +96,4 @@ function makeNumResultsSnippet(results: Result[]) {
   return t('search.snippet.num-results', {
     numResults: results.length,
   });
-}
-
-export function formatDate(date: string): string {
-  return format(parseISO(date), 'dd\\-MMM');
 }

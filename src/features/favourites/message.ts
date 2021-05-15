@@ -1,6 +1,6 @@
+import { formatDateDisplay } from '../../common/date';
 import { t } from '../../lang';
 import { HawkerCentreInfo, ResultPartial } from '../../models/types';
-import { formatDate } from '../search';
 import { MAX_CHOICES } from './constants';
 
 export function makeAddHCMessage(props: {
@@ -76,8 +76,8 @@ export function makeFavouritesListMessage(
         nextClosureDetails:
           startDate && endDate
             ? t('favourites.item.closure-details', {
-                startDate: formatDate(startDate),
-                endDate: formatDate(endDate),
+                startDate: formatDateDisplay(startDate),
+                endDate: formatDateDisplay(endDate),
               })
             : '',
       });

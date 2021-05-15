@@ -1,4 +1,4 @@
-import { addMonths } from 'date-fns';
+import { addMonths, format, parseISO } from 'date-fns';
 
 export function currentDate(): Date {
   return new Date(Date.now());
@@ -13,6 +13,13 @@ export function isWithinDateBounds(
     dateToCompare.getTime() >= startDate.getTime() &&
     dateToCompare.getTime() <= endDate.getTime()
   );
+}
+
+/**
+ * Formats the input date in YYYY-MM-DD format to dd-MMM format.
+ */
+export function formatDateDisplay(date: string): string {
+  return format(parseISO(date), 'dd\\-MMM');
 }
 
 // Returns in YYYY-MM format
