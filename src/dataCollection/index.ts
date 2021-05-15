@@ -1,9 +1,7 @@
-import { format } from 'date-fns';
-
 import { uploadHawkerCentres } from '../models/HawkerCentre';
 import { uploadResults } from '../models/Result';
 import { ClosureReason, HawkerCentreInfo, Result } from '../models/types';
-import { currentDate, toDateISO8601 } from '../utils/date';
+import { currentDateInYYYYMMDD, toDateISO8601 } from '../utils/date';
 import { parseToEnum } from '../utils/enum';
 import { HawkerCentreClosureRecord } from './types';
 import {
@@ -23,8 +21,8 @@ getRawRecords().then((recordsRaw) => {
 
   console.log(`${results.length} results found`);
   console.log(`${hawkerCentres.length} hawker centres found`);
-  writeFile(results, `results-${getDateInYYYYMMDD()}.json`);
-  writeFile(hawkerCentres, `hawkerCentres-${getDateInYYYYMMDD()}.json`);
+  writeFile(results, `results-${currentDateInYYYYMMDD()}.json`);
+  writeFile(hawkerCentres, `hawkerCentres-${currentDateInYYYYMMDD()}.json`);
 
   if (isUploadToAws !== 'false') {
     uploadResults(results);
@@ -124,8 +122,4 @@ function getHawkerCentresList(results: Result[]) {
       self.findIndex((hc2) => hc.hawkerCentreId === hc2.hawkerCentreId) === idx,
   );
   return hawkerCentresDeduplicated;
-}
-
-function getDateInYYYYMMDD() {
-  return format(currentDate(), 'yyyyMMdd');
 }

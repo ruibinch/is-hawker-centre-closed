@@ -6,6 +6,10 @@ export function currentDate(): Date {
   return new Date(Date.now());
 }
 
+export function currentDateInYYYYMMDD(): string {
+  return format(currentDate(), 'yyyyMMdd');
+}
+
 export function isWithinDateBounds(
   dateToCompare: Date,
   startDate: Date,
