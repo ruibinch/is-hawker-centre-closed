@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { formatISO, parseISO } from 'date-fns';
+import { formatISO, isPast, parseISO } from 'date-fns';
 
 import { currentDate } from '../../common/date';
 import { TelegramUser } from '../../common/telegram';
@@ -291,14 +291,13 @@ function filterByKeyword(
 }
 
 /**
- * Returns the result entry that is the next to occur w.r.t. the current date.
+ * Returns the result entry that is the next to occur w.r.t. the current date (includes results occurring today).
  */
 function getNextOccurringResult(results: Result[]): Result | undefined {
   const resultsSorted = sortInDateAscThenAlphabeticalOrder(results);
 
-  const currDate = currentDate();
   const resultsSortedAndFiltered = resultsSorted.filter(
-    (result) => parseISO(result.startDate) > currDate,
+    (result) => !isPast(parseISO(result.startDate)),
   );
 
   return resultsSortedAndFiltered[0];

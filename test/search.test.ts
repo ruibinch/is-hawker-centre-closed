@@ -153,7 +153,7 @@ describe('Search module', () => {
         'Here are the hawker centres containing the keyword *psychic* that are closed this month:\n' +
         '\n' +
         '*Mossdeep Gym*\n' +
-        '21\\-Jan to 24\\-Jan\n' +
+        '05\\-Jan to 06\\-Jan\n' +
         '\n';
 
       await callBot('psychic month');
@@ -242,11 +242,11 @@ describe('Search module', () => {
         '*Slateport City*\n' +
         '02\\-Jan to 02\\-Jan\n' +
         '\n' +
+        '*Mossdeep Gym*\n' +
+        '05\\-Jan to 06\\-Jan\n' +
+        '\n' +
         '*Oldale Town*\n' +
         '15\\-Jan to 18\\-Jan\n' +
-        '\n' +
-        '*Mossdeep Gym*\n' +
-        '21\\-Jan to 24\\-Jan\n' +
         '\n' +
         '*Route 118 near Melville City*\n' +
         '21\\-Jan to 24\\-Jan\n' +

@@ -333,7 +333,7 @@ describe('Favourites module', () => {
           'Your favourite hawker centres and their next closure dates are:\n\n' +
           '1\\. *Littleroot Town*\n' +
           '2\\. *Verdanturf Town*\n    _\\(08\\-Feb to 09\\-Feb\\)_\n' +
-          '3\\. *Mossdeep Gym*\n    _\\(21\\-Jan to 24\\-Jan\\)_';
+          '3\\. *Mossdeep Gym*\n    _\\(05\\-Jan to 06\\-Jan\\)_';
 
         await callBot('/list');
         assertBotResponse(sendMessageSpy, expectedMessage);
