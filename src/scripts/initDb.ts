@@ -1,14 +1,14 @@
 import * as AWS from 'aws-sdk';
 
 import { initAWSConfig } from '../aws/config';
-import { Stage } from '../utils/types';
-import { makeFeedbackSchema, makeFeedbackTableName } from './Feedback';
+import { makeFeedbackSchema, makeFeedbackTableName } from '../models/Feedback';
 import {
   makeHawkerCentreSchema,
   makeHawkerCentreTableName,
-} from './HawkerCentre';
-import { makeResultsSchema, makeResultsTableName } from './Result';
-import { makeUserSchema, makeUserTableName } from './User';
+} from '../models/HawkerCentre';
+import { makeResultsSchema, makeResultsTableName } from '../models/Result';
+import { makeUserSchema, makeUserTableName } from '../models/User';
+import { Stage } from '../utils/types';
 
 const args = process.argv.slice(2);
 const [operation] = args;
