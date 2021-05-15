@@ -1,8 +1,8 @@
 import { isCommand } from '../../bot/commands';
-import { makeGenericErrorMessage } from '../../common/message';
-import { TelegramUser } from '../../common/telegram';
-import { BotResponse } from '../../common/types';
 import { HawkerCentreInfo } from '../../models/types';
+import { makeGenericErrorMessage } from '../../utils/message';
+import { TelegramUser } from '../../utils/telegram';
+import { BotResponse } from '../../utils/types';
 import {
   addHCToFavourites,
   deleteHCFromFavourites,

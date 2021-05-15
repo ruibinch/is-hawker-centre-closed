@@ -1,4 +1,4 @@
-import { Module } from '../common/types';
+import { Module } from '../utils/types';
 
 export type Command = {
   module: Module;

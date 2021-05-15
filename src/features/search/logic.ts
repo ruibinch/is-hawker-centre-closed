@@ -5,13 +5,13 @@ import {
   parseISO,
 } from 'date-fns';
 
+import { getAllResults } from '../../models/Result';
+import { Result } from '../../models/types';
 import {
   currentDate,
   getNextPeriod,
   isWithinDateBounds,
-} from '../../common/date';
-import { getAllResults } from '../../models/Result';
-import { Result } from '../../models/types';
+} from '../../utils/date';
 import { extractSearchModifier } from './searchModifier';
 import { SearchModifier, SearchObject, SearchResponse } from './types';
 

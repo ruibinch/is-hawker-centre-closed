@@ -1,13 +1,9 @@
 import * as AWS from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
 
-import {
-  getProvisionedThroughput,
-  initAWSConfig,
-  TABLE_NAME_USERS,
-  TABLE_USERS,
-} from '../common/awsConfig';
-import { Stage } from '../common/types';
+import { initAWSConfig, TABLE_NAME_USERS, TABLE_USERS } from '../aws/config';
+import { getProvisionedThroughput } from '../aws/dynamodb';
+import { Stage } from '../utils/types';
 import { UserFavourite, User } from './types';
 
 initAWSConfig();

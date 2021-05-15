@@ -1,9 +1,6 @@
 import { APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
 
-import { makeCallbackWrapper } from '../common/lambda';
-import { makeGenericErrorMessage } from '../common/message';
-import { TelegramMessage } from '../common/telegram';
-import { BotResponse, Module } from '../common/types';
+import { makeCallbackWrapper } from '../aws/lambda';
 import {
   maybeHandleFavouriteSelection,
   manageFavourites,
@@ -11,6 +8,9 @@ import {
 import { manageFeedback } from '../features/feedback';
 import { runSearch } from '../features/search';
 import { initDictionary } from '../lang';
+import { makeGenericErrorMessage } from '../utils/message';
+import { TelegramMessage } from '../utils/telegram';
+import { BotResponse, Module } from '../utils/types';
 import { validateToken } from './auth';
 import { isCommand, isCommandInModule, makeCommandMessage } from './commands';
 import { sendMessage, sendMessageWithChoices } from './sender';

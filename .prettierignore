@@ -1,2 +1,2 @@
 .webpack
-src/common/awsConfig.ts
+src/aws/config.ts

@@ -1,7 +1,7 @@
 import { APIGatewayProxyEvent, Context } from 'aws-lambda';
 
 import { bot } from '../../src/bot/handler';
-import { TelegramMessage } from '../../src/common/telegram';
+import { TelegramMessage } from '../../src/utils/telegram';
 import { makeTelegramMessage } from '../__mocks__/telegram';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

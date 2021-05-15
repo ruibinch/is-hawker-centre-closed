@@ -1,5 +1,5 @@
-import { TelegramUser } from '../../common/telegram';
-import { BotResponse } from '../../common/types';
+import { TelegramUser } from '../../utils/telegram';
+import { BotResponse } from '../../utils/types';
 import { addFeedback } from './logic';
 import {
   makeErrorAddingFeedbackMessage,

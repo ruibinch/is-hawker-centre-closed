@@ -1,8 +1,6 @@
 /* eslint-disable max-len */
 import { formatISO, isPast, parseISO } from 'date-fns';
 
-import { currentDate } from '../../common/date';
-import { TelegramUser } from '../../common/telegram';
 import {
   getAllHawkerCentres,
   getHawkerCentreById,
@@ -21,6 +19,8 @@ import {
   updateUserFavourites,
   updateUserInFavouritesMode,
 } from '../../models/User';
+import { currentDate } from '../../utils/date';
+import { TelegramUser } from '../../utils/telegram';
 import { sortInDateAscThenAlphabeticalOrder } from '../search';
 import { MAX_CHOICES } from './constants';
 import {

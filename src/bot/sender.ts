@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { makeTelegramApiBase } from '../common/telegram';
+import { makeTelegramApiBase } from '../utils/telegram';
 import { BOT_TOKEN } from './variables';
 
 export function sendMessage(props: { chatId: number; message: string }): void {

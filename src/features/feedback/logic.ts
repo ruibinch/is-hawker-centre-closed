@@ -1,9 +1,9 @@
 import { formatISO } from 'date-fns';
 
-import { currentDate } from '../../common/date';
-import { TelegramUser } from '../../common/telegram';
 import { addFeedbackToDB } from '../../models/Feedback';
 import { Feedback } from '../../models/types';
+import { currentDate } from '../../utils/date';
+import { TelegramUser } from '../../utils/telegram';
 import { AddFeedbackResponse } from './types';
 
 export async function addFeedback(props: {

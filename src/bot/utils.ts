@@ -1,7 +1,7 @@
 import emojiRegexFactory from 'emoji-regex/RGI_Emoji';
 
-import { TelegramMessage } from '../common/telegram';
 import { t } from '../lang';
+import { TelegramMessage } from '../utils/telegram';
 import { ValidateInputMessageResponse } from './types';
 
 function isDefined(...variables: unknown[]) {

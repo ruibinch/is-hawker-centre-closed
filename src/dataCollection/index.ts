@@ -1,10 +1,10 @@
 import { format } from 'date-fns';
 
-import { currentDate, toDateISO8601 } from '../common/date';
-import { parseToEnum } from '../common/enum';
 import { uploadHawkerCentres } from '../models/HawkerCentre';
 import { uploadResults } from '../models/Result';
 import { ClosureReason, HawkerCentreInfo, Result } from '../models/types';
+import { currentDate, toDateISO8601 } from '../utils/date';
+import { parseToEnum } from '../utils/enum';
 import { HawkerCentreClosureRecord } from './types';
 import {
   generateHash,

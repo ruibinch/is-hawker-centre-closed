@@ -1,8 +1,8 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
 
-import { makeTelegramApiBase, WebhookInfoResponse } from '../common/telegram';
-import { Stage } from '../common/types';
+import { makeTelegramApiBase, WebhookInfoResponse } from '../utils/telegram';
+import { Stage } from '../utils/types';
 
 dotenv.config();
 

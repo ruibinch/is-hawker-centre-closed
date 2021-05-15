@@ -10,14 +10,6 @@ export const initAWSConfig = (): void => {
   });
 };
 
-export const getProvisionedThroughput = (): {
-  ReadCapacityUnits: number;
-  WriteCapacityUnits: number;
-} => ({
-  ReadCapacityUnits: 5,
-  WriteCapacityUnits: 5,
-});
-
 // reads from .env file
 export const TABLE_NAME_RESULTS = process.env.TABLE_NAME_RESULTS ?? '';
 export const TABLE_NAME_HC = process.env.TABLE_NAME_HC ?? '';

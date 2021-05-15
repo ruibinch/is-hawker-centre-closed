@@ -2,12 +2,12 @@ import * as AWS from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
 
 import {
-  getProvisionedThroughput,
   initAWSConfig,
   TABLE_FEEDBACK,
   TABLE_NAME_FEEDBACK,
-} from '../common/awsConfig';
-import { Stage } from '../common/types';
+} from '../aws/config';
+import { getProvisionedThroughput } from '../aws/dynamodb';
+import { Stage } from '../utils/types';
 import { Feedback } from './types';
 
 initAWSConfig();

@@ -1,6 +1,6 @@
-import { formatDateDisplay } from '../../common/date';
 import { t } from '../../lang';
 import { HawkerCentreInfo, ResultPartial } from '../../models/types';
+import { formatDateDisplay } from '../../utils/date';
 import { MAX_CHOICES } from './constants';
 
 export function makeAddHCMessage(props: {

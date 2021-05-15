@@ -1,4 +1,4 @@
-import { parseToEnum } from '../../common/enum';
+import { parseToEnum } from '../../utils/enum';
 import { ExtractSearchModifierResult, SearchModifier } from './types';
 
 const SEARCH_MODIFIERS = ['today', 'month', 'next month', 'tmr', 'tomorrow'];

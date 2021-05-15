@@ -1,4 +1,4 @@
-import { BotResponse } from '../../common/types';
+import { BotResponse } from '../../utils/types';
 import { processSearch } from './logic';
 import { makeMessage } from './message';
 

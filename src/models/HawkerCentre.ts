@@ -1,13 +1,9 @@
 import * as AWS from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
 
-import {
-  getProvisionedThroughput,
-  initAWSConfig,
-  TABLE_HC,
-  TABLE_NAME_HC,
-} from '../common/awsConfig';
-import { getStage, Stage } from '../common/types';
+import { initAWSConfig, TABLE_HC, TABLE_NAME_HC } from '../aws/config';
+import { getProvisionedThroughput } from '../aws/dynamodb';
+import { getStage, Stage } from '../utils/types';
 import { HawkerCentreInfo } from './types';
 
 initAWSConfig();

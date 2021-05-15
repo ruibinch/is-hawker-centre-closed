@@ -1,6 +1,6 @@
-import { formatDateDisplay } from '../../common/date';
 import { t } from '../../lang';
 import { ClosureReason, Result } from '../../models/types';
+import { formatDateDisplay } from '../../utils/date';
 import { SearchModifier, SearchResponse } from './types';
 
 export function makeMessage(searchResponse: SearchResponse): string {

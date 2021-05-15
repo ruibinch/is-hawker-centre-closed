@@ -1,5 +1,5 @@
-import { BotResponse } from '../../common/types';
 import { HawkerCentreInfo } from '../../models/types';
+import { BotResponse } from '../../utils/types';
 
 export type FindHCResponse = {
   isExactMatch?: boolean;
