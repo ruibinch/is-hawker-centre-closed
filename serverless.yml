@@ -23,6 +23,7 @@ provider:
   region: eu-central-1
   lambdaHashingVersion: 20201221
   environment:
+    TZ: Asia/Singapore
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
     TABLE_RESULTS: ${self:custom.table.results}-${self:provider.stage}
     TABLE_HC: ${self:custom.table.hc}-${self:provider.stage}
