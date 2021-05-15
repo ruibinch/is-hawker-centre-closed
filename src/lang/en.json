@@ -63,5 +63,7 @@
   "feedback.command-feedback.explanation.first": "Type in your feedback after a /feedback command\\.\n\n",
   "feedback.command-feedback.explanation.second": "e\\.g\\. _/feedback {{example}}_",
   "feedback.feedback-added": "Got it, thanks for your feedback\\!",
-  "feedback.error-adding-feedback": "Woops, couldn't handle saving your feedback for some unexpected reason\\. Try again?"
+  "feedback.error-adding-feedback": "Woops, couldn't handle saving your feedback for some unexpected reason\\. Try again?",
+  "date.today": "today",
+  "date.tomorrow": "tomorrow"
 }

@@ -76,8 +76,8 @@ export function makeFavouritesListMessage(
         nextClosureDetails:
           startDate && endDate
             ? t('favourites.item.closure-details', {
-                startDate: formatDateDisplay(startDate),
-                endDate: formatDateDisplay(endDate),
+                startDate: formatDateDisplay(startDate, true),
+                endDate: formatDateDisplay(endDate, true),
               })
             : '',
       });

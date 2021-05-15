@@ -1,4 +1,6 @@
-import { addMonths, format, parseISO } from 'date-fns';
+import { addMonths, format, isToday, isTomorrow, parseISO } from 'date-fns';
+
+import { t } from '../lang';
 
 export function currentDate(): Date {
   return new Date(Date.now());
@@ -17,9 +19,23 @@ export function isWithinDateBounds(
 
 /**
  * Formats the input date in YYYY-MM-DD format to dd-MMM format.
+ * If displayTemporalPronoun is set to true, then return "today" or "tomorrow" whenever applicable.
  */
-export function formatDateDisplay(date: string): string {
-  return format(parseISO(date), 'dd\\-MMM');
+export function formatDateDisplay(
+  dateString: string,
+  displayTemporalPronoun = false,
+): string {
+  const date = parseISO(dateString);
+  if (displayTemporalPronoun) {
+    if (isToday(date)) {
+      return t('date.today');
+    }
+    if (isTomorrow(date)) {
+      return t('date.tomorrow');
+    }
+  }
+
+  return format(date, 'dd\\-MMM');
 }
 
 // Returns in YYYY-MM format
