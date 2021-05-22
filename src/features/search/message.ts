@@ -36,14 +36,16 @@ export function makeMessage(searchResponse: SearchResponse): string {
       });
     }
 
-    results.forEach((result) => {
-      reply += t('search.item', {
-        hcName: result.name,
-        startDate: formatDateDisplay(result.startDate),
-        endDate: formatDateDisplay(result.endDate),
-        closureReasonSnippet: makeClosureReasonSnippet(result.reason),
-      });
-    });
+    reply += results
+      .map((result) =>
+        t('search.item', {
+          hcName: result.name,
+          startDate: formatDateDisplay(result.startDate),
+          endDate: formatDateDisplay(result.endDate),
+          closureReasonSnippet: makeClosureReasonSnippet(result.reason),
+        }),
+      )
+      .join('\n\n');
   }
 
   return reply;

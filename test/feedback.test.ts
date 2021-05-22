@@ -2,6 +2,7 @@ import { parseISO } from 'date-fns';
 
 import * as sender from '../src/bot/sender';
 import * as favouritesIndex from '../src/features/favourites/index';
+import { initDictionary, t } from '../src/lang';
 import * as Feedback from '../src/models/Feedback';
 import { assertBotResponse, makeBotWrapper } from './helpers/bot';
 
@@ -19,6 +20,8 @@ describe('Feedback module', () => {
   let addFeedbackToDBSpy: jest.SpyInstance;
 
   beforeAll(() => {
+    initDictionary();
+
     dateSpy = jest
       .spyOn(Date, 'now')
       .mockImplementation(() => parseISO('2021-01-05').valueOf());
@@ -47,15 +50,17 @@ describe('Feedback module', () => {
 
   it('["/feedback"] returns the explanatory message', async () => {
     const expectedMessage =
-      'Type in your feedback after a /feedback command\\.\n\n' +
-      'e\\.g\\. _/feedback Bot icon is ugly_';
+      t('feedback.command-feedback.explanation.first') +
+      t('feedback.command-feedback.explanation.second', {
+        example: 'Bot icon is ugly',
+      });
 
     await callBot('/feedback');
     assertBotResponse(sendMessageSpy, expectedMessage);
   });
 
   it('["/feedback great bot"] successfully adds a feedback entry', async () => {
-    const expectedMessage = 'Got it, thanks for your feedback\\!';
+    const expectedMessage = t('feedback.feedback-added');
 
     await callBot('/feedback great bot');
     assertBotResponse(sendMessageSpy, expectedMessage);

@@ -3,16 +3,21 @@ import { APIGatewayProxyEvent, Context } from 'aws-lambda';
 import { bot } from '../src/bot/handler';
 import * as sender from '../src/bot/sender';
 import * as searchFeature from '../src/features/search';
+import { initDictionary, t } from '../src/lang';
 import { assertBotResponse, makeBotWrapper } from './helpers/bot';
 
 jest.mock('../src/bot/variables', () => ({
   BOT_TOKEN: 'pokemongottacatchthemall',
 }));
 
-describe('Misc tests', () => {
+describe('Validation module', () => {
   const mockCallback = jest.fn();
   const callBot = makeBotWrapper(mockCallback);
   let sendMessageSpy: jest.SpyInstance;
+
+  beforeAll(() => {
+    initDictionary();
+  });
 
   afterAll(() => {
     mockCallback.mockRestore();
@@ -28,27 +33,30 @@ describe('Misc tests', () => {
 
   describe('non-text messages', () => {
     it('sends an emoji', async () => {
-      const expectedMessage =
-        "\u{2757} That's a cute emoji but this bot has no idea which hawker centre that could refer to\\.\n\n" +
-        'Please try again with a text message\\.';
+      const expectedMessage = t('validation.error.base-message-format', {
+        emoji: '\u{2757}',
+        errorMessage: t('validation.error.message-type-emoji'),
+      });
 
       await callBot('😊');
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
     it('sends a bunch of gibberish that will be removed after sanitisation', async () => {
-      const expectedMessage =
-        '\u{2757} No text found\\.\n\n' +
-        'Please try again with a text message\\.';
+      const expectedMessage = t('validation.error.base-message-format', {
+        emoji: '\u{2757}',
+        errorMessage: t('validation.error.message-empty'),
+      });
 
       await callBot('!@#$%^&*{}[]<>,.?\\|:;"-+=');
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
     it('sends a gif', async () => {
-      const expectedMessage =
-        '\u{2757} Not sure how to interpret this gif\\.\\.\\.\n\n' +
-        'Please try again with a text message\\.';
+      const expectedMessage = t('validation.error.base-message-format', {
+        emoji: '\u{2757}',
+        errorMessage: t('validation.error.message-type-gif'),
+      });
 
       await callBot(undefined, {
         animation: { file: 'value' },
@@ -58,9 +66,10 @@ describe('Misc tests', () => {
     });
 
     it('sends an animation', async () => {
-      const expectedMessage =
-        '\u{2757} Not sure how to interpret this animation\\.\\.\\.\n\n' +
-        'Please try again with a text message\\.';
+      const expectedMessage = t('validation.error.base-message-format', {
+        emoji: '\u{2757}',
+        errorMessage: t('validation.error.message-type-animation'),
+      });
 
       await callBot(undefined, {
         animation: { file: 'value' },
@@ -69,9 +78,10 @@ describe('Misc tests', () => {
     });
 
     it('sends an audio message', async () => {
-      const expectedMessage =
-        '\u{2757} Speech\\-to\\-text technology is too advanced for this bot\\.\n\n' +
-        'Please try again with a text message\\.';
+      const expectedMessage = t('validation.error.base-message-format', {
+        emoji: '\u{2757}',
+        errorMessage: t('validation.error.message-type-audio'),
+      });
 
       await callBot(undefined, {
         audio: { file: 'value' },
@@ -80,9 +90,10 @@ describe('Misc tests', () => {
     });
 
     it('sends a voice message', async () => {
-      const expectedMessage =
-        '\u{2757} Speech\\-to\\-text technology is too advanced for this bot\\.\n\n' +
-        'Please try again with a text message\\.';
+      const expectedMessage = t('validation.error.base-message-format', {
+        emoji: '\u{2757}',
+        errorMessage: t('validation.error.message-type-audio'),
+      });
 
       await callBot(undefined, {
         voice: { file: 'value' },
@@ -91,9 +102,10 @@ describe('Misc tests', () => {
     });
 
     it('sends a document', async () => {
-      const expectedMessage =
-        '\u{2757} This is just a humble bot, do you think it can understand a whole document?\\!\n\n' +
-        'Please try again with a text message\\.';
+      const expectedMessage = t('validation.error.base-message-format', {
+        emoji: '\u{2757}',
+        errorMessage: t('validation.error.message-type-document'),
+      });
 
       await callBot(undefined, {
         document: { file: 'value' },
@@ -102,9 +114,10 @@ describe('Misc tests', () => {
     });
 
     it('sends a location', async () => {
-      const expectedMessage =
-        '\u{2757} Searching by coordinates is too advanced for this bot\\.\n\n' +
-        'Please try again with a text message\\.';
+      const expectedMessage = t('validation.error.base-message-format', {
+        emoji: '\u{2757}',
+        errorMessage: t('validation.error.message-type-location'),
+      });
 
       await callBot(undefined, {
         location: { file: 'value' },
@@ -113,9 +126,10 @@ describe('Misc tests', () => {
     });
 
     it('sends a photo', async () => {
-      const expectedMessage =
-        '\u{2757} Image\\-to\\-text technology is too advanced for this bot\\.\n\n' +
-        'Please try again with a text message\\.';
+      const expectedMessage = t('validation.error.base-message-format', {
+        emoji: '\u{2757}',
+        errorMessage: t('validation.error.message-type-photo'),
+      });
 
       await callBot(undefined, {
         photo: { file: 'value' },
@@ -124,9 +138,10 @@ describe('Misc tests', () => {
     });
 
     it('sends a sticker', async () => {
-      const expectedMessage =
-        '\u{2757} Not sure how to interpret this sticker\\.\\.\\.\n\n' +
-        'Please try again with a text message\\.';
+      const expectedMessage = t('validation.error.base-message-format', {
+        emoji: '\u{2757}',
+        errorMessage: t('validation.error.message-type-sticker'),
+      });
 
       await callBot(undefined, {
         sticker: { file: 'value' },
@@ -135,9 +150,10 @@ describe('Misc tests', () => {
     });
 
     it('sends a video', async () => {
-      const expectedMessage =
-        '\u{2757} If images are too advanced for this bot, videos are definitely out of the question\\.\n\n' +
-        'Please try again with a text message\\.';
+      const expectedMessage = t('validation.error.base-message-format', {
+        emoji: '\u{2757}',
+        errorMessage: t('validation.error.message-type-video'),
+      });
 
       await callBot(undefined, {
         video: { file: 'value' },
@@ -146,9 +162,10 @@ describe('Misc tests', () => {
     });
 
     it('sends any other message type', async () => {
-      const expectedMessage =
-        '\u{2757} No idea what this message is about\\!\n\n' +
-        'Please try again with a text message\\.';
+      const expectedMessage = t('validation.error.base-message-format', {
+        emoji: '\u{2757}',
+        errorMessage: t('validation.error.message-type-unknown'),
+      });
 
       await callBot(undefined, {
         contact: { file: 'value' },
@@ -201,8 +218,7 @@ describe('Misc tests', () => {
     });
 
     it('returns the defined generic error message', async () => {
-      const expectedMessage =
-        'Woops, an unexpected error occurred\\. You can report this issue using the /feedback command\\.';
+      const expectedMessage = t('validation.error.generic');
 
       await callBot('any input');
       assertBotResponse(sendMessageSpy, expectedMessage);
