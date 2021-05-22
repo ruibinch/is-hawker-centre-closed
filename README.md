@@ -38,7 +38,7 @@ TABLE_NAME_FEEDBACK=feedback
 yarn init:db
 
 # 2. Deploy Lambda functions
-yarn deploy:all
+yarn deploy:both:all
 
 # 3. Update API_GATEWAY_ID_* values in .env
 
@@ -53,6 +53,8 @@ Setting up from scratch consists of 3 steps:
 1. Initialising bot webhook
 
 ### Initialising DynamoDB
+
+First, we create the DB and populate it with values.
 
 > :notebook:  Uses REGION and TABLE_NAME\_\* values from `.env`
 
@@ -74,6 +76,8 @@ This script executes 2 other scripts:
 
 ### Deploying Lambda functions
 
+There is only 1 Lambda function to be deployed - the `bot` function.
+
 > :orange_book:  Uses values specified in `serverless.yml` - verify that the `provider.region` value is similar to the value in `.env`
 >
 > :blue_book:  Also references the BOT_TOKEN value in `src/bot/variables.ts` - this is needed for bot auth to work correctly due to issues with reading from `.env` file in Lambda (to be improved)
@@ -85,9 +89,11 @@ To install a fresh deployment,
 
 To update an existing deployment,
 
-1. Run `yarn deploy:dev` or `yarn deploy:prod`
+1. Run `yarn deploy:dev:bot` or `yarn deploy:prod:bot`
 
 ### Initialising bot webhook
+
+Finally, we set up the webhook on our Telegram bot so that all messages sent to the bot will be immediately forwarded to our API gateway endpoint.
 
 > :notebook:  Uses BOT_TOKEN, REGION and API_GATEWAY_ID\_\* values from `.env`
 
