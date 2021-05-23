@@ -10,7 +10,7 @@ Update this bot token in the `.env` file (see [Setup](#setup) section below).
 
 ## `.env` file
 
-An `.env` file with the following keys specified is required (the values for `API_GATEWAY_ID_*` can be populated later on during the setup).
+An `.env` file with the following keys specified is required (the values for `APIG_*` can be populated later on during the setup).
 
 ```
 # Telegram
@@ -18,15 +18,14 @@ BOT_TOKEN=11111111:abcdefghijkl
 
 # AWS
 REGION=eu-central-1
-API_GATEWAY_ID_DEV=12345678
-API_GATEWAY_ID_PROD=87654321
+APIG_DEV=12345678
+APIG_PROD=87654321
 
-# DynamoDB table names - these are only referenced when running node scripts
-# during runtime, the values specified in serverless.yml will be used instead
-TABLE_NAME_RESULTS=results
-TABLE_NAME_HC=hawkerCentres
-TABLE_NAME_USERS=users
-TABLE_NAME_FEEDBACK=feedback
+# DynamoDB table names
+TABLE_NAME_RESULTS=ihcc-results
+TABLE_NAME_HC=ihcc-hawkerCentres
+TABLE_NAME_USERS=ihcc-users
+TABLE_NAME_FEEDBACK=ihcc-feedback
 ```
 
 ## Setup
@@ -40,7 +39,7 @@ yarn init:db
 # 2. Deploy Lambda functions
 yarn deploy:both:all
 
-# 3. Update API_GATEWAY_ID_* values in .env
+# 3. Update APIG_* values in .env
 
 # 4. Initialise bot webhook
 yarn init:bot:prod
@@ -83,7 +82,7 @@ There is only 1 Lambda function to be deployed - the `bot` function.
 To install a fresh deployment,
 
 1. Run `yarn deploy:dev:all` or `yarn deploy:prod:all`
-1. Note the new API Gateway ID(s) and update the `API_GATEWAY_ID_*` value(s) in `.env`
+1. Note the new API Gateway ID(s) and update the `APIG_*` value(s) in `.env`
 
 To update an existing deployment,
 
@@ -93,7 +92,7 @@ To update an existing deployment,
 
 Finally, we set up the webhook on our Telegram bot so that all messages sent to the bot will be immediately forwarded to our API gateway endpoint.
 
-> :notebook:  Uses BOT_TOKEN, REGION and API_GATEWAY_ID\_\* values from `.env`
+> :notebook:  Uses BOT_TOKEN, REGION and APIG\_\* values from `.env`
 
 Run `yarn init:bot:dev` or `yarn init:bot:prod`.
 

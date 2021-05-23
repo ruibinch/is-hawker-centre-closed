@@ -4,21 +4,20 @@ frameworkVersion: '2'
 
 custom:
   dotenv:
-    include:
-      - BOT_TOKEN
+    exclude:
+      - APIG_DEV
+      - APIG_PROD
     required:
       env:
         - BOT_TOKEN
+        - REGION
+        - TABLE_NAME_RESULTS
+        - TABLE_NAME_HC
+        - TABLE_NAME_USERS
+        - TABLE_NAME_FEEDBACK
   webpack:
     includeModules: true
-  bot: src/bot
-  table:
-    results: ihcc-results
-    hc: ihcc-hawkerCentres
-    users: ihcc-users
-    feedback: ihcc-feedback
-  webpack:
-    includeModules: true
+  botFolder: src/bot
 
 plugins:
   - serverless-dotenv-plugin
@@ -29,38 +28,38 @@ provider:
   name: aws
   runtime: nodejs12.x
   stage: ${opt:stage, 'dev'}
-  region: eu-central-1
+  region: ${env:REGION}
   lambdaHashingVersion: 20201221
   environment:
     TZ: Asia/Singapore
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
     BOT_TOKEN: ${env:BOT_TOKEN}
-    TABLE_RESULTS: ${self:custom.table.results}-${self:provider.stage}
-    TABLE_HC: ${self:custom.table.hc}-${self:provider.stage}
-    TABLE_USERS: ${self:custom.table.users}-${self:provider.stage}
-    TABLE_FEEDBACK: ${self:custom.table.feedback}-${self:provider.stage}
+    TABLE_RESULTS: ${env:TABLE_NAME_RESULTS}-${self:provider.stage}
+    TABLE_HC: ${env:TABLE_NAME_HC}-${self:provider.stage}
+    TABLE_USERS: ${env:TABLE_NAME_USERS}-${self:provider.stage}
+    TABLE_FEEDBACK: ${env:TABLE_NAME_FEEDBACK}-${self:provider.stage}
   iam:
     role:
       statements:
         - Effect: Allow
           Action:
             - dynamodb:Scan
-          Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.table.results}-${self:provider.stage}'
+          Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_NAME_RESULTS}-${self:provider.stage}'
         - Effect: Allow
           Action:
             - dynamodb:Scan
             - dynamodb:GetItem
-          Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.table.hc}-${self:provider.stage}'
+          Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_NAME_HC}-${self:provider.stage}'
         - Effect: Allow
           Action:
             - dynamodb:GetItem
             - dynamodb:PutItem
             - dynamodb:UpdateItem
-          Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.table.users}-${self:provider.stage}'
+          Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_NAME_USERS}-${self:provider.stage}'
         - Effect: Allow
           Action:
             - dynamodb:PutItem
-          Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.table.feedback}-${self:provider.stage}'
+          Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_NAME_FEEDBACK}-${self:provider.stage}'
 
 package:
   patterns:
@@ -69,7 +68,7 @@ package:
 
 functions:
   bot:
-    handler: ${self:custom.bot}/handler.bot
+    handler: ${self:custom.botFolder}/handler.bot
     events:
       - http:
           method: post
