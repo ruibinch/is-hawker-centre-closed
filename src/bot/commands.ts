@@ -35,6 +35,12 @@ export const COMMANDS: Command[] = [
     description: 'Delete from your favourites',
   },
   {
+    module: Module.favourites,
+    endpoint: '/notify',
+    hasExplanation: false,
+    description: 'Toggle your notification setting',
+  },
+  {
     module: Module.feedback,
     endpoint: '/feedback',
     hasExplanation: true,
@@ -132,7 +138,8 @@ export function makeCommandMessage(s: string): string | undefined {
           emoji: '\u{1F31F}',
         }) +
         t('general.command-help.explanation.favourites-section.second') +
-        t('general.command-help.explanation.favourites-section.third');
+        t('general.command-help.explanation.favourites-section.third') +
+        t('general.command-help.explanation.favourites-section.fourth');
       break;
     }
     case '/fav': {

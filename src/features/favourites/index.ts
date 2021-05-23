@@ -9,6 +9,7 @@ import {
   findHCByKeyword,
   getUserFavouritesWithResults,
   isUserInFavouritesMode,
+  manageNotifications,
   toggleUserInFavouritesMode,
 } from './logic';
 import {
@@ -18,6 +19,8 @@ import {
   makeFavouritesListMessage,
   makeSuccessfullyDeletedMessage,
   makeDeleteErrorMessage,
+  makeWriteNotificationsSettingMessage,
+  makeReadNotificationsSettingMessage,
 } from './message';
 import { HandleFavouriteSelectionResponse } from './types';
 
@@ -84,6 +87,26 @@ export async function manageFavourites(
 
       return {
         message: makeFavouritesListMessage(getFavResponseWithResults),
+      };
+    }
+    case '/notify': {
+      const manageNotificationsResponse = await manageNotifications({
+        keyword,
+        telegramUser,
+      });
+
+      if (manageNotificationsResponse.operation === 'read') {
+        return {
+          message: makeReadNotificationsSettingMessage(
+            manageNotificationsResponse.currentValue,
+          ),
+        };
+      }
+
+      return {
+        message: makeWriteNotificationsSettingMessage(
+          manageNotificationsResponse.newValue,
+        ),
       };
     }
     /* istanbul ignore next */

@@ -39,3 +39,13 @@ export type IsUserInFavModeResponse = {
 export type ToggleUserInFavModeResponse = {
   success: true;
 };
+
+export type ManageNotificationsResponse =
+  | {
+      operation: 'read';
+      currentValue: boolean | undefined;
+    }
+  | {
+      operation: 'write';
+      newValue: boolean | undefined;
+    };

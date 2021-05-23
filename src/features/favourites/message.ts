@@ -92,3 +92,36 @@ export function makeFavouritesListMessage(
 function makeNoSavedFavouritesMessage() {
   return t('favourites.error.no-saved-favourites');
 }
+
+export function makeReadNotificationsSettingMessage(
+  currentValue: boolean | undefined,
+): string {
+  if (currentValue === undefined) {
+    return (
+      t('favourites.notifications.not-specified.first') +
+      t('favourites.notifications.not-specified.second') +
+      t('favourites.notifications.not-specified.third')
+    );
+  }
+
+  return (
+    t('favourites.notifications.current', {
+      currentNotificationsValue: currentValue ? 'on' : 'off',
+    }) +
+    t('favourites.notifications.toggle-prompt', {
+      desiredNotificationsValue: currentValue ? 'off' : 'on',
+    })
+  );
+}
+
+export function makeWriteNotificationsSettingMessage(
+  newValue: boolean | undefined,
+): string {
+  if (newValue === undefined) {
+    return t('favourites.notifications.unrecognised-keyword');
+  }
+
+  return newValue
+    ? t('favourites.notifications.turned-on')
+    : t('favourites.notifications.turned-off');
+}

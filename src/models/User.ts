@@ -96,3 +96,23 @@ export async function updateUserInFavouritesMode(
 
   return dynamoDb.update(updateUserInput).promise();
 }
+
+export async function updateUserNotifications(
+  userId: number,
+  notifications: boolean,
+): Promise<
+  PromiseResult<AWS.DynamoDB.DocumentClient.UpdateItemOutput, AWS.AWSError>
+> {
+  const updateUserInput: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
+    TableName: TABLE_USERS,
+    Key: {
+      userId,
+    },
+    UpdateExpression: 'set notifications = :notif',
+    ExpressionAttributeValues: {
+      ':notif': notifications,
+    },
+  };
+
+  return dynamoDb.update(updateUserInput).promise();
+}

@@ -39,6 +39,7 @@ describe('Favourites module', () => {
   let getUserByIdSpy: jest.SpyInstance;
   let updateUserFavouritesSpy: jest.SpyInstance;
   let updateUserInFavouritesModeSpy: jest.SpyInstance;
+  let updateUserNotificationsSpy: jest.SpyInstance;
   let getAllResultsSpy: jest.SpyInstance;
 
   beforeAll(() => {
@@ -107,6 +108,9 @@ describe('Favourites module', () => {
     updateUserInFavouritesModeSpy = jest
       .spyOn(User, 'updateUserInFavouritesMode')
       .mockImplementation();
+    updateUserNotificationsSpy = jest
+      .spyOn(User, 'updateUserNotifications')
+      .mockImplementation();
   });
 
   afterEach(() => {
@@ -115,6 +119,7 @@ describe('Favourites module', () => {
 
     updateUserFavouritesSpy.mockRestore();
     updateUserInFavouritesModeSpy.mockRestore();
+    updateUserNotificationsSpy.mockRestore();
   });
 
   afterAll(() => {
@@ -373,6 +378,50 @@ describe('Favourites module', () => {
         assertBotResponse(sendMessageSpy, expectedMessage);
       });
     });
+
+    describe('viewing/toggling the notification setting', () => {
+      it('["/notify"] returns the user\'s current notification setting', async () => {
+        const expectedMessage =
+          t('favourites.notifications.current', {
+            currentNotificationsValue: 'on',
+          }) +
+          t('favourites.notifications.toggle-prompt', {
+            desiredNotificationsValue: 'off',
+          });
+
+        await callBot('/notify');
+        assertBotResponse(sendMessageSpy, expectedMessage);
+      });
+
+      it('["/notify on"] sets the user\'s notification setting to on', async () => {
+        const expectedMessage = t('favourites.notifications.turned-on');
+
+        await callBot('/notify on');
+        assertBotResponse(sendMessageSpy, expectedMessage);
+
+        expect(updateUserNotificationsSpy).toHaveBeenCalledWith(1, true);
+      });
+
+      it('["/notify off"] sets the user\'s notification setting to off', async () => {
+        const expectedMessage = t('favourites.notifications.turned-off');
+
+        await callBot('/notify off');
+        assertBotResponse(sendMessageSpy, expectedMessage);
+
+        expect(updateUserNotificationsSpy).toHaveBeenCalledWith(1, false);
+      });
+
+      it('["/notify invalidValue"] returns an error message when notification keyword is invalid', async () => {
+        const expectedMessage = t(
+          'favourites.notifications.unrecognised-keyword',
+        );
+
+        await callBot('/notify invalidValue');
+        assertBotResponse(sendMessageSpy, expectedMessage);
+
+        expect(updateUserNotificationsSpy).not.toHaveBeenCalledWith();
+      });
+    });
   });
 
   describe('existing user with one saved favourite', () => {
@@ -448,6 +497,21 @@ describe('Favourites module', () => {
         expect(updateUserFavouritesSpy).not.toHaveBeenCalled();
       });
     });
+
+    describe('viewing the notification setting', () => {
+      it('["/notify"] returns the user\'s current notification setting', async () => {
+        const expectedMessage =
+          t('favourites.notifications.current', {
+            currentNotificationsValue: 'off',
+          }) +
+          t('favourites.notifications.toggle-prompt', {
+            desiredNotificationsValue: 'on',
+          });
+
+        await callBot('/notify');
+        assertBotResponse(sendMessageSpy, expectedMessage);
+      });
+    });
   });
 
   describe('new user', () => {
@@ -500,6 +564,7 @@ describe('Favourites module', () => {
             },
           ],
           isInFavouritesMode: false,
+          notifications: true,
         });
       });
 
@@ -514,12 +579,14 @@ describe('Favourites module', () => {
           expectedChoices,
         );
 
+        expect(updateUserInFavouritesModeSpy).not.toHaveBeenCalled();
         expect(addUserSpy).toHaveBeenCalledWith({
           userId: 1,
           username: 'ashketchum',
           languageCode: 'en',
           favourites: [],
           isInFavouritesMode: true,
+          notifications: true,
         });
       });
     });
@@ -541,6 +608,52 @@ describe('Favourites module', () => {
         assertBotResponse(sendMessageSpy, expectedMessage);
 
         expect(updateUserFavouritesSpy).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('viewing/toggling the notification setting', () => {
+      it('["/notify"] returns an error message when no notification setting is specified', async () => {
+        const expectedMessage =
+          t('favourites.notifications.not-specified.first') +
+          t('favourites.notifications.not-specified.second') +
+          t('favourites.notifications.not-specified.third');
+
+        await callBot('/notify');
+        assertBotResponse(sendMessageSpy, expectedMessage);
+      });
+
+      it('["/notify on"] creates a new user with notification setting set to on', async () => {
+        const expectedMessage = t('favourites.notifications.turned-on');
+
+        await callBot('/notify on');
+        assertBotResponse(sendMessageSpy, expectedMessage);
+
+        expect(updateUserNotificationsSpy).not.toHaveBeenCalledWith();
+        expect(addUserSpy).toHaveBeenCalledWith({
+          userId: 1,
+          username: 'ashketchum',
+          languageCode: 'en',
+          favourites: [],
+          isInFavouritesMode: false,
+          notifications: true,
+        });
+      });
+
+      it('["/notify off"] creates a new user with notification setting set to off', async () => {
+        const expectedMessage = t('favourites.notifications.turned-off');
+
+        await callBot('/notify off');
+        assertBotResponse(sendMessageSpy, expectedMessage);
+
+        expect(updateUserNotificationsSpy).not.toHaveBeenCalledWith();
+        expect(addUserSpy).toHaveBeenCalledWith({
+          userId: 1,
+          username: 'ashketchum',
+          languageCode: 'en',
+          favourites: [],
+          isInFavouritesMode: false,
+          notifications: false,
+        });
       });
     });
   });
@@ -633,6 +746,13 @@ describe('Favourites module', () => {
 
       it('["/list"] performs a normal /list command', async () => {
         await callBot('/list');
+
+        expect(updateUserInFavouritesModeSpy).toHaveBeenCalledWith(1, false);
+        expect(manageFavouritesSpy).toHaveBeenCalled();
+      });
+
+      it('["/notify"] performs a normal /notify command', async () => {
+        await callBot('/notify');
 
         expect(updateUserInFavouritesModeSpy).toHaveBeenCalledWith(1, false);
         expect(manageFavouritesSpy).toHaveBeenCalled();

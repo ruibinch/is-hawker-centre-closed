@@ -217,6 +217,7 @@ export const mockUser: User = {
     },
   ],
   isInFavouritesMode: false,
+  notifications: true,
 };
 
 export const mockUserWithOneFav: User = {
@@ -230,6 +231,7 @@ export const mockUserWithOneFav: User = {
     },
   ],
   isInFavouritesMode: false,
+  notifications: true,
 };
 
 export const mockUserWithNoFavs: User = {
@@ -238,6 +240,7 @@ export const mockUserWithNoFavs: User = {
   languageCode: 'en',
   favourites: [],
   isInFavouritesMode: false,
+  notifications: false,
 };
 
 export const mockUserInFavMode: User = {
@@ -246,6 +249,7 @@ export const mockUserInFavMode: User = {
   languageCode: 'en',
   favourites: [],
   isInFavouritesMode: true,
+  notifications: true,
 };
 
 export const mockTelegramUser: TelegramUser = {

@@ -18,16 +18,22 @@ import {
   addUser,
   updateUserFavourites,
   updateUserInFavouritesMode,
+  updateUserNotifications,
 } from '../../models/User';
 import { currentDate } from '../../utils/date';
 import { TelegramUser } from '../../utils/telegram';
 import { sortInDateAscThenAlphabeticalOrder } from '../search';
-import { MAX_CHOICES } from './constants';
+import {
+  MAX_CHOICES,
+  NOTIFICATION_OFF_KEYWORDS,
+  NOTIFICATION_ON_KEYWORDS,
+} from './constants';
 import {
   AddHCResponse,
   DeleteHCResponse,
   FindHCResponse,
   IsUserInFavModeResponse,
+  ManageNotificationsResponse,
   ToggleUserInFavModeResponse,
 } from './types';
 
@@ -89,6 +95,7 @@ export async function addHCToFavourites(props: {
       languageCode,
       favourites: [addFavHC],
       isInFavouritesMode: false,
+      notifications: true,
     };
 
     await addUser(newUser);
@@ -256,14 +263,81 @@ export async function toggleUserInFavouritesMode(
       languageCode,
       favourites: [],
       isInFavouritesMode,
+      notifications: true,
     };
 
     await addUser(newUser);
-    return { success: true };
+  } else {
+    await updateUserInFavouritesMode(userId, isInFavouritesMode);
   }
 
-  await updateUserInFavouritesMode(userId, isInFavouritesMode);
   return { success: true };
+}
+
+/**
+ * Toggles the `notifications` value of the associated user, if an appropriate keyword is specified.
+ *
+ * Else, it returns the current notification setting of the user.
+ */
+export async function manageNotifications(props: {
+  keyword: string;
+  telegramUser: TelegramUser;
+}): Promise<ManageNotificationsResponse> {
+  const {
+    keyword,
+    telegramUser: { id: userId, username, language_code: languageCode },
+  } = props;
+
+  // TODO: potentially improve this flow
+  const getUserResponse = await getUserById(userId);
+
+  // empty keyword is equivalent to only reading the current notifications value
+  if (keyword === '') {
+    let currentValue: boolean | undefined;
+
+    if (getUserResponse.Item) {
+      const user = getUserResponse.Item as User;
+      currentValue = user.notifications;
+    }
+
+    return {
+      operation: 'read',
+      currentValue,
+    };
+  }
+
+  const newNotificationsValue = (() => {
+    if (NOTIFICATION_ON_KEYWORDS.includes(keyword.toLowerCase())) {
+      return true;
+    }
+    if (NOTIFICATION_OFF_KEYWORDS.includes(keyword.toLowerCase())) {
+      return false;
+    }
+    return undefined;
+  })();
+
+  if (newNotificationsValue !== undefined) {
+    if (!getUserResponse.Item) {
+      // user does not exist yet in DB
+      const newUser: User = {
+        userId,
+        username,
+        languageCode,
+        favourites: [],
+        isInFavouritesMode: false,
+        notifications: newNotificationsValue,
+      };
+
+      await addUser(newUser);
+    } else {
+      await updateUserNotifications(userId, newNotificationsValue);
+    }
+  }
+
+  return {
+    operation: 'write',
+    newValue: newNotificationsValue,
+  };
 }
 
 /**

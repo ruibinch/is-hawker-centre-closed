@@ -43,4 +43,5 @@ export type User = {
   languageCode?: string;
   favourites: UserFavourite[];
   isInFavouritesMode: boolean;
+  notifications: boolean;
 };
