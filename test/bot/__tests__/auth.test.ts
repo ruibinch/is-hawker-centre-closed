@@ -1,9 +1,5 @@
 import { validateToken } from '../../../src/bot/auth';
 
-jest.mock('../../../src/bot/variables', () => ({
-  BOT_TOKEN: 'pokemongottacatchthemall',
-}));
-
 describe('bot > auth', () => {
   it('returns true when the input token matches the bot token', () => {
     const queryStringParams = {

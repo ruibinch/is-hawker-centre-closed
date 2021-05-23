@@ -78,9 +78,7 @@ This script executes 2 other scripts:
 
 There is only 1 Lambda function to be deployed - the `bot` function.
 
-> :orange_book:  Uses values specified in `serverless.yml` - verify that the `provider.region` value is similar to the value in `.env`
->
-> :blue_book:  Also references the BOT_TOKEN value in `src/bot/variables.ts` - this is needed for bot auth to work correctly due to issues with reading from `.env` file in Lambda (to be improved)
+> :orange_book:  Uses values specified in `serverless.yml`
 
 To install a fresh deployment,
 

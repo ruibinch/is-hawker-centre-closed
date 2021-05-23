@@ -6,10 +6,6 @@ import * as searchFeature from '../src/features/search';
 import { initDictionary, t } from '../src/lang';
 import { assertBotResponse, makeBotWrapper } from './helpers/bot';
 
-jest.mock('../src/bot/variables', () => ({
-  BOT_TOKEN: 'pokemongottacatchthemall',
-}));
-
 describe('Validation module', () => {
   const mockCallback = jest.fn();
   const callBot = makeBotWrapper(mockCallback);

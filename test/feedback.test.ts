@@ -6,10 +6,6 @@ import { initDictionary, t } from '../src/lang';
 import * as Feedback from '../src/models/Feedback';
 import { assertBotResponse, makeBotWrapper } from './helpers/bot';
 
-jest.mock('../src/bot/variables', () => ({
-  BOT_TOKEN: 'pokemongottacatchthemall',
-}));
-
 describe('Feedback module', () => {
   const mockCallback = jest.fn();
   const callBot = makeBotWrapper(mockCallback);

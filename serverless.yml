@@ -3,6 +3,14 @@ service: ishawkercentreclosed
 frameworkVersion: '2'
 
 custom:
+  dotenv:
+    include:
+      - BOT_TOKEN
+    required:
+      env:
+        - BOT_TOKEN
+  webpack:
+    includeModules: true
   bot: src/bot
   table:
     results: ihcc-results
@@ -13,6 +21,7 @@ custom:
     includeModules: true
 
 plugins:
+  - serverless-dotenv-plugin
   - serverless-webpack
   - serverless-offline
 
@@ -25,6 +34,7 @@ provider:
   environment:
     TZ: Asia/Singapore
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+    BOT_TOKEN: ${env:BOT_TOKEN}
     TABLE_RESULTS: ${self:custom.table.results}-${self:provider.stage}
     TABLE_HC: ${self:custom.table.hc}-${self:provider.stage}
     TABLE_USERS: ${self:custom.table.users}-${self:provider.stage}

@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 import { makeTelegramApiBase } from '../utils/telegram';
-import { BOT_TOKEN } from './variables';
+
+const BOT_TOKEN = process.env.BOT_TOKEN || '';
 
 export function sendMessage(props: { chatId: number; message: string }): void {
   const { chatId, message } = props;

@@ -10,10 +10,6 @@ import * as Result from '../src/models/Result';
 import { mockResults } from './__mocks__/db';
 import { assertBotResponse, makeBotWrapper } from './helpers/bot';
 
-jest.mock('../src/bot/variables', () => ({
-  BOT_TOKEN: 'pokemongottacatchthemall',
-}));
-
 describe('Search module', () => {
   const mockCallback = jest.fn();
   const callBot = makeBotWrapper(mockCallback);

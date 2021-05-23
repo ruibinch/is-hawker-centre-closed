@@ -3,10 +3,6 @@ import * as sender from '../src/bot/sender';
 import { initDictionary, t } from '../src/lang';
 import { assertBotResponse, makeBotWrapper } from './helpers/bot';
 
-jest.mock('../src/bot/variables', () => ({
-  BOT_TOKEN: 'pokemongottacatchthemall',
-}));
-
 describe('General module', () => {
   const mockCallback = jest.fn();
   const callBot = makeBotWrapper(mockCallback);
