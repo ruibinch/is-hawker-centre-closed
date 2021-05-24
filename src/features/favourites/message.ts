@@ -1,5 +1,9 @@
 import { t } from '../../lang';
-import { HawkerCentreInfo, ResultPartial } from '../../models/types';
+import {
+  ClosureReason,
+  HawkerCentreInfo,
+  ResultPartial,
+} from '../../models/types';
 import { formatDateDisplay } from '../../utils/date';
 import { MAX_CHOICES } from './constants';
 
@@ -68,7 +72,7 @@ export function makeFavouritesListMessage(
 
   const hcOutput = hawkerCentresWithResults
     .map((hc, idx) => {
-      const { startDate, endDate } = hc;
+      const { startDate, endDate, reason } = hc;
 
       return t('favourites.item', {
         index: idx + 1,
@@ -78,6 +82,12 @@ export function makeFavouritesListMessage(
             ? t('favourites.item.closure-details', {
                 startDate: formatDateDisplay(startDate, true),
                 endDate: formatDateDisplay(endDate, true),
+                closureReasonSnippet:
+                  reason === ClosureReason.renovation
+                    ? t(
+                        'favourites.item.closure-reason.long-term-renovation-works',
+                      )
+                    : '',
               })
             : '',
       });
