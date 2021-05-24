@@ -371,7 +371,7 @@ function getNextOccurringResult(results: Result[]): Result | undefined {
   const resultsSorted = sortInDateAscThenAlphabeticalOrder(results);
 
   const resultsSortedAndFiltered = resultsSorted.filter(
-    (result) => !isPast(parseISO(result.startDate)),
+    (result) => !isPast(parseISO(result.endDate)),
   );
 
   return resultsSortedAndFiltered[0];
