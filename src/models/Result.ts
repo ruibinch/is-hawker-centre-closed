@@ -6,7 +6,7 @@ import {
   TABLE_NAME_RESULTS,
   TABLE_RESULTS,
 } from '../aws/config';
-import { getProvisionedThroughput } from '../aws/dynamodb';
+import { getDynamoDBBillingDetails } from '../aws/dynamodb';
 import { getStage, Stage } from '../utils/types';
 import { Result } from './types';
 
@@ -19,6 +19,7 @@ export const makeResultsTableName = (stage: Stage): string =>
 export const makeResultsSchema = (
   stage: Stage,
 ): AWS.DynamoDB.CreateTableInput => ({
+  ...getDynamoDBBillingDetails(),
   TableName: makeResultsTableName(stage),
   KeySchema: [
     {
@@ -34,7 +35,6 @@ export const makeResultsSchema = (
     { AttributeName: 'id', AttributeType: 'S' },
     { AttributeName: 'hawkerCentreId', AttributeType: 'N' },
   ],
-  ProvisionedThroughput: getProvisionedThroughput(),
 });
 
 export function uploadResults(results: Result[]): void {

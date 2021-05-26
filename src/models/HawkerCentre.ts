@@ -2,7 +2,7 @@ import * as AWS from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
 
 import { initAWSConfig, TABLE_HC, TABLE_NAME_HC } from '../aws/config';
-import { getProvisionedThroughput } from '../aws/dynamodb';
+import { getDynamoDBBillingDetails } from '../aws/dynamodb';
 import { getStage, Stage } from '../utils/types';
 import { HawkerCentreInfo } from './types';
 
@@ -15,6 +15,7 @@ export const makeHawkerCentreTableName = (stage: Stage): string =>
 export const makeHawkerCentreSchema = (
   stage: Stage,
 ): AWS.DynamoDB.CreateTableInput => ({
+  ...getDynamoDBBillingDetails(),
   TableName: makeHawkerCentreTableName(stage),
   KeySchema: [
     {
@@ -25,7 +26,6 @@ export const makeHawkerCentreSchema = (
   AttributeDefinitions: [
     { AttributeName: 'hawkerCentreId', AttributeType: 'N' },
   ],
-  ProvisionedThroughput: getProvisionedThroughput(),
 });
 
 export function uploadHawkerCentres(hawkerCentres: HawkerCentreInfo[]): void {

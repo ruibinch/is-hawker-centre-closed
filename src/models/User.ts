@@ -3,7 +3,7 @@ import { PromiseResult } from 'aws-sdk/lib/request';
 import { formatISO } from 'date-fns';
 
 import { initAWSConfig, TABLE_NAME_USERS, TABLE_USERS } from '../aws/config';
-import { getProvisionedThroughput } from '../aws/dynamodb';
+import { getDynamoDBBillingDetails } from '../aws/dynamodb';
 import { currentDate } from '../utils/date';
 import { Stage } from '../utils/types';
 import { UserFavourite, User } from './types';
@@ -17,6 +17,7 @@ export const makeUserTableName = (stage: Stage): string =>
 export const makeUserSchema = (
   stage: Stage,
 ): AWS.DynamoDB.CreateTableInput => ({
+  ...getDynamoDBBillingDetails(),
   TableName: makeUserTableName(stage),
   KeySchema: [
     {
@@ -25,7 +26,6 @@ export const makeUserSchema = (
     },
   ],
   AttributeDefinitions: [{ AttributeName: 'userId', AttributeType: 'N' }],
-  ProvisionedThroughput: getProvisionedThroughput(),
 });
 
 export async function addUser(

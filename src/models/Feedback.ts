@@ -7,7 +7,7 @@ import {
   TABLE_FEEDBACK,
   TABLE_NAME_FEEDBACK,
 } from '../aws/config';
-import { getProvisionedThroughput } from '../aws/dynamodb';
+import { getDynamoDBBillingDetails } from '../aws/dynamodb';
 import { currentDate } from '../utils/date';
 import { Stage } from '../utils/types';
 import { Feedback } from './types';
@@ -21,6 +21,7 @@ export const makeFeedbackTableName = (stage: Stage): string =>
 export const makeFeedbackSchema = (
   stage: Stage,
 ): AWS.DynamoDB.CreateTableInput => ({
+  ...getDynamoDBBillingDetails(),
   TableName: makeFeedbackTableName(stage),
   KeySchema: [
     {
@@ -29,7 +30,6 @@ export const makeFeedbackSchema = (
     },
   ],
   AttributeDefinitions: [{ AttributeName: 'feedbackId', AttributeType: 'S' }],
-  ProvisionedThroughput: getProvisionedThroughput(),
 });
 
 export async function addFeedbackToDB(
