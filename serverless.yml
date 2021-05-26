@@ -22,6 +22,7 @@ custom:
 plugins:
   - serverless-dotenv-plugin
   - serverless-webpack
+  - serverless-offline-scheduler
   - serverless-offline
 
 provider:
@@ -77,6 +78,5 @@ functions:
   notifications:
     handler: ${self:custom.botFolder}/handler.notifications
     events:
-      - http:
-          method: get
-          path: /notifications
+      # runs at 22:00 UTC, or 6am SGT
+      - schedule: cron(0 22 * * ? *)

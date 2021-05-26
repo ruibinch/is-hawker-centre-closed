@@ -45,6 +45,7 @@
     "prettier": "^2.2.1",
     "serverless-dotenv-plugin": "^3.9.0",
     "serverless-offline": "^6.9.0",
+    "serverless-offline-scheduler": "^0.4.2",
     "serverless-webpack": "^5.4.1",
     "ts-jest": "^26.4.1",
     "ts-loader": "^8.1.0",
