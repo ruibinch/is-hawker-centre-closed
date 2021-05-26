@@ -357,6 +357,7 @@ describe('Favourites module', () => {
               nextClosureDetails: t('favourites.item.closure-details', {
                 startDate: '08\\-Feb',
                 endDate: '09\\-Feb',
+                closureReasonSnippet: '',
               }),
             }),
             t('favourites.item', {
@@ -365,6 +366,7 @@ describe('Favourites module', () => {
               nextClosureDetails: t('favourites.item.closure-details', {
                 startDate: 'today',
                 endDate: 'tomorrow',
+                closureReasonSnippet: '',
               }),
             }),
           ].join('\n'),
