@@ -30,7 +30,6 @@ export const makeHawkerCentreSchema = (
 
 export function uploadHawkerCentres(hawkerCentres: HawkerCentreInfo[]): void {
   const hcTable = makeHawkerCentreTableName(getStage());
-  console.log(`Uploading to table "${hcTable}"`);
 
   Promise.all(
     hawkerCentres.map((hawkerCentre) => {

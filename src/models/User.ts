@@ -37,7 +37,6 @@ export async function addUser(
     ConditionExpression: 'attribute_not_exists(userId)',
   };
 
-  console.log(`Adding user ${user.userId} to "${TABLE_USERS}"`);
   return dynamoDb.put(userInput).promise();
 }
 
@@ -83,7 +82,6 @@ export async function updateUserFavourites(
     },
   };
 
-  console.log(`Updating user ${userId} to "${TABLE_USERS}"`);
   return dynamoDb.update(updateUserInput).promise();
 }
 

@@ -39,7 +39,6 @@ export const makeResultsSchema = (
 
 export function uploadResults(results: Result[]): void {
   const resultsTable = makeResultsTableName(getStage());
-  console.log(`Uploading to table "${resultsTable}"`);
 
   Promise.all(
     results.map((result) => {
