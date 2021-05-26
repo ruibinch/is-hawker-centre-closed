@@ -9,7 +9,8 @@ custom:
       - APIG_PROD
     required:
       env:
-        - BOT_TOKEN
+        - BOT_TOKEN_dev
+        - BOT_TOKEN_prod
         - REGION
         - TABLE_NAME_RESULTS
         - TABLE_NAME_HC
@@ -34,7 +35,7 @@ provider:
   environment:
     TZ: Asia/Singapore
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
-    BOT_TOKEN: ${env:BOT_TOKEN}
+    BOT_TOKEN: ${env:BOT_TOKEN_${self:provider.stage}}
     TABLE_RESULTS: ${env:TABLE_NAME_RESULTS}-${self:provider.stage}
     TABLE_HC: ${env:TABLE_NAME_HC}-${self:provider.stage}
     TABLE_USERS: ${env:TABLE_NAME_USERS}-${self:provider.stage}

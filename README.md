@@ -8,13 +8,17 @@ Create a bot with the [BotFather](https://t.me/botfather) and note down the retu
 
 Update this bot token in the `.env` file (see [Setup](#setup) section below).
 
+> Typically, 2 bots are used - 1 for dev environment and 1 for prod environment.
+> If you only want to have 1 bot, update `serverless.yml` accordingly to read the desired BOT_TOKEN value.
+
 ## `.env` file
 
 An `.env` file with the following keys specified is required (the values for `APIG_*` can be populated later on during the setup).
 
 ```
 # Telegram
-BOT_TOKEN=11111111:abcdefghijkl
+BOT_TOKEN_dev=11111111:abcdefghijkl
+BOT_TOKEN_prod=22222222:abcdefghijkl
 
 # AWS
 REGION=eu-central-1
