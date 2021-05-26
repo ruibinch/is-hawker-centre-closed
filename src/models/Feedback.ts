@@ -1,5 +1,6 @@
 import * as AWS from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
+import { formatISO } from 'date-fns';
 
 import {
   initAWSConfig,
@@ -7,6 +8,7 @@ import {
   TABLE_NAME_FEEDBACK,
 } from '../aws/config';
 import { getProvisionedThroughput } from '../aws/dynamodb';
+import { currentDate } from '../utils/date';
 import { Stage } from '../utils/types';
 import { Feedback } from './types';
 
@@ -37,7 +39,10 @@ export async function addFeedbackToDB(
 > {
   const feedbackInput: AWS.DynamoDB.DocumentClient.PutItemInput = {
     TableName: TABLE_FEEDBACK,
-    Item: feedback,
+    Item: {
+      ...feedback,
+      createdAt: formatISO(currentDate()),
+    },
     ConditionExpression: 'attribute_not_exists(feedbackId)',
   };
 

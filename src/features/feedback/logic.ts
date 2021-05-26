@@ -1,5 +1,3 @@
-import { formatISO } from 'date-fns';
-
 import { addFeedbackToDB } from '../../models/Feedback';
 import { Feedback } from '../../models/types';
 import { currentDate } from '../../utils/date';
@@ -20,7 +18,6 @@ export async function addFeedback(props: {
     userId,
     username,
     text,
-    dateSubmitted: formatISO(currentDate()),
   };
 
   await addFeedbackToDB(feedback);

@@ -1,8 +1,10 @@
 import * as AWS from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
+import { formatISO } from 'date-fns';
 
 import { initAWSConfig, TABLE_NAME_USERS, TABLE_USERS } from '../aws/config';
 import { getProvisionedThroughput } from '../aws/dynamodb';
+import { currentDate } from '../utils/date';
 import { Stage } from '../utils/types';
 import { UserFavourite, User } from './types';
 
@@ -33,7 +35,10 @@ export async function addUser(
 > {
   const userInput: AWS.DynamoDB.DocumentClient.PutItemInput = {
     TableName: TABLE_USERS,
-    Item: user,
+    Item: {
+      ...user,
+      createdAt: formatISO(currentDate()),
+    },
     ConditionExpression: 'attribute_not_exists(userId)',
   };
 
@@ -76,9 +81,10 @@ export async function updateUserFavourites(
     Key: {
       userId,
     },
-    UpdateExpression: 'set favourites = :fav',
+    UpdateExpression: 'set favourites = :fav, lastUpdated = :timestamp',
     ExpressionAttributeValues: {
       ':fav': favouritesUpdated,
+      ':timestamp': formatISO(currentDate()),
     },
   };
 
@@ -96,9 +102,11 @@ export async function updateUserInFavouritesMode(
     Key: {
       userId,
     },
-    UpdateExpression: 'set isInFavouritesMode = :favMode',
+    UpdateExpression:
+      'set isInFavouritesMode = :favMode, lastUpdated = :timestamp',
     ExpressionAttributeValues: {
       ':favMode': isInFavouritesMode,
+      ':timestamp': formatISO(currentDate()),
     },
   };
 
@@ -116,9 +124,10 @@ export async function updateUserNotifications(
     Key: {
       userId,
     },
-    UpdateExpression: 'set notifications = :notif',
+    UpdateExpression: 'set notifications = :notif, lastUpdated = :timestamp',
     ExpressionAttributeValues: {
       ':notif': notifications,
+      ':timestamp': formatISO(currentDate()),
     },
   };
 

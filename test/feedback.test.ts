@@ -66,7 +66,6 @@ describe('Feedback module', () => {
       userId: 1,
       username: 'ashketchum',
       text: 'great bot',
-      dateSubmitted: '2021-01-05T00:00:00Z',
     });
   });
 });

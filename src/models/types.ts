@@ -3,7 +3,6 @@ export type Feedback = {
   userId: number;
   username?: string;
   text: string;
-  dateSubmitted: string;
 };
 
 export type HawkerCentreInfo = {
