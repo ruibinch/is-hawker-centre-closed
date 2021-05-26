@@ -2,8 +2,8 @@ import { APIGatewayProxyEvent, Context } from 'aws-lambda';
 
 import { bot } from '../src/bot/handler';
 import * as sender from '../src/bot/sender';
-import * as searchFeature from '../src/features/search';
 import { initDictionary, t } from '../src/lang';
+import * as searchFeature from '../src/services/search';
 import { assertBotResponse, makeBotWrapper } from './helpers/bot';
 
 describe('Validation module', () => {

@@ -4,13 +4,13 @@ import { PromiseResult } from 'aws-sdk/lib/request';
 import { parseISO } from 'date-fns';
 
 import * as sender from '../src/bot/sender';
-import * as favouritesIndex from '../src/features/favourites/index';
-import * as feedbackIndex from '../src/features/feedback/index';
-import * as searchIndex from '../src/features/search/index';
 import { initDictionary, t } from '../src/lang';
 import * as HawkerCentre from '../src/models/HawkerCentre';
 import * as Result from '../src/models/Result';
 import * as User from '../src/models/User';
+import * as favouritesIndex from '../src/services/favourites/index';
+import * as feedbackIndex from '../src/services/feedback/index';
+import * as searchIndex from '../src/services/search/index';
 import {
   mockHawkerCentres,
   mockResults,

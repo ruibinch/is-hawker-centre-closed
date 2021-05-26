@@ -1,14 +1,14 @@
 import { APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
 
 import { makeCallbackWrapper } from '../aws/lambda';
+import { initDictionary } from '../lang';
 import {
   maybeHandleFavouriteSelection,
   manageFavourites,
-} from '../features/favourites';
-import { manageFeedback } from '../features/feedback';
-import { constructNotifications } from '../features/notifications';
-import { runSearch } from '../features/search';
-import { initDictionary } from '../lang';
+} from '../services/favourites';
+import { manageFeedback } from '../services/feedback';
+import { constructNotifications } from '../services/notifications';
+import { runSearch } from '../services/search';
 import { makeGenericErrorMessage } from '../utils/message';
 import { TelegramMessage } from '../utils/telegram';
 import { BotResponse, Module } from '../utils/types';

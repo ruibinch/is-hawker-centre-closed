@@ -4,9 +4,9 @@ import { PromiseResult } from 'aws-sdk/lib/request';
 import { parseISO } from 'date-fns';
 
 import * as sender from '../src/bot/sender';
-import * as favouritesIndex from '../src/features/favourites/index';
 import { initDictionary, t } from '../src/lang';
 import * as Result from '../src/models/Result';
+import * as favouritesIndex from '../src/services/favourites/index';
 import { mockResults } from './__mocks__/db';
 import { assertBotResponse, makeBotWrapper } from './helpers/bot';
 

@@ -7,7 +7,7 @@ module.exports = {
   collectCoverageFrom: [
     '<rootDir>/src/bot/*.ts',
     '!<rootDir>/src/bot/sender.ts',
-    '<rootDir>/src/features/**/*.ts',
+    '<rootDir>/src/services/**/*.ts',
   ],
   collectCoverage: true,
   coverageReporters: ['text', 'text-summary'],

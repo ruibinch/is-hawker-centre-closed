@@ -1,9 +1,9 @@
 import { parseISO } from 'date-fns';
 
 import * as sender from '../src/bot/sender';
-import * as favouritesIndex from '../src/features/favourites/index';
 import { initDictionary, t } from '../src/lang';
 import * as Feedback from '../src/models/Feedback';
+import * as favouritesIndex from '../src/services/favourites/index';
 import { assertBotResponse, makeBotWrapper } from './helpers/bot';
 
 describe('Feedback module', () => {
