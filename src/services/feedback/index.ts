@@ -1,5 +1,5 @@
 import { TelegramUser } from '../../utils/telegram';
-import { BotResponse } from '../../utils/types';
+import { ServiceResponse } from '../../utils/types';
 import { addFeedback } from './logic';
 import {
   makeErrorAddingFeedbackMessage,
@@ -12,7 +12,7 @@ export * from './message';
 export async function manageFeedback(
   text: string,
   telegramUser: TelegramUser,
-): Promise<BotResponse | null> {
+): ServiceResponse {
   const [, ...textSplit] = text.split(' ');
   const feedbackText = textSplit.join(' ');
 

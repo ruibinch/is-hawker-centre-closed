@@ -18,3 +18,5 @@ export type BotResponse = {
   message: string;
   choices?: string[];
 };
+
+export type ServiceResponse = Promise<BotResponse | null>;

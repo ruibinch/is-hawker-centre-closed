@@ -1,4 +1,4 @@
-import { BotResponse } from '../../utils/types';
+import { ServiceResponse } from '../../utils/types';
 import { processSearch } from './logic';
 import { makeMessage } from './message';
 
@@ -7,9 +7,7 @@ export * from './message';
 export * from './searchModifier';
 export * from './types';
 
-export async function runSearch(
-  textSanitised: string,
-): Promise<BotResponse | null> {
+export async function runSearch(textSanitised: string): ServiceResponse {
   const searchResponse = await processSearch(textSanitised);
 
   return {

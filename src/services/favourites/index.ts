@@ -2,7 +2,7 @@ import { isCommand } from '../../bot/commands';
 import { HawkerCentreInfo } from '../../models/types';
 import { makeGenericErrorMessage } from '../../utils/message';
 import { TelegramUser } from '../../utils/telegram';
-import { BotResponse } from '../../utils/types';
+import { ServiceResponse } from '../../utils/types';
 import {
   addHCToFavourites,
   deleteHCFromFavourites,
@@ -30,7 +30,7 @@ export * from './message';
 export async function manageFavourites(
   text: string,
   telegramUser: TelegramUser,
-): Promise<BotResponse | null> {
+): ServiceResponse {
   const [command, ...keywordSplit] = text.split(' ');
   const keyword = keywordSplit.join(' ');
 
@@ -182,7 +182,7 @@ async function handleFavouriteSelection(
 async function executeAddHCToFavourites(props: {
   hawkerCentre: HawkerCentreInfo;
   telegramUser: TelegramUser;
-}): Promise<BotResponse | null> {
+}): ServiceResponse {
   const { hawkerCentre, telegramUser } = props;
 
   const addHCResponse = await addHCToFavourites({
