@@ -41,6 +41,16 @@ export async function addUser(
   return dynamoDb.put(userInput).promise();
 }
 
+export async function getAllUsers(): Promise<
+  PromiseResult<AWS.DynamoDB.DocumentClient.ScanOutput, AWS.AWSError>
+> {
+  const params: AWS.DynamoDB.DocumentClient.ScanInput = {
+    TableName: TABLE_USERS,
+  };
+
+  return dynamoDb.scan(params).promise();
+}
+
 export async function getUserById(
   userId: number,
 ): Promise<

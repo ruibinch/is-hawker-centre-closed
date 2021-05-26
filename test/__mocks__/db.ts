@@ -50,6 +50,14 @@ export const mockResults: Result[] = [
   },
   {
     id: '111',
+    hawkerCentreId: 7,
+    reason: ClosureReason.cleaning,
+    name: 'Route 118 near Melville City',
+    startDate: '2021-01-21',
+    endDate: '2021-01-24',
+  },
+  {
+    id: '111',
     hawkerCentreId: 2,
     reason: ClosureReason.cleaning,
     name: 'Oldale Town',
@@ -79,14 +87,6 @@ export const mockResults: Result[] = [
     name: 'Melville City',
     startDate: '2021-02-01',
     endDate: '2021-02-28',
-  },
-  {
-    id: '111',
-    hawkerCentreId: 7,
-    reason: ClosureReason.cleaning,
-    name: 'Route 118 near Melville City',
-    startDate: '2021-01-21',
-    endDate: '2021-01-24',
   },
 ];
 
@@ -251,6 +251,23 @@ export const mockUserInFavMode: User = {
   isInFavouritesMode: true,
   notifications: true,
 };
+
+export const mockUsers: User[] = [
+  mockUser,
+  {
+    userId: 5,
+    username: 'meowth',
+    languageCode: 'en',
+    favourites: [
+      {
+        hawkerCentreId: 5,
+        dateAdded: '2021-01-08T09:05:12+08:00',
+      },
+    ],
+    isInFavouritesMode: false,
+    notifications: true,
+  },
+];
 
 export const mockTelegramUser: TelegramUser = {
   id: 1,

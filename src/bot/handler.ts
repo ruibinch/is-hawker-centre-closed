@@ -6,6 +6,7 @@ import {
   manageFavourites,
 } from '../features/favourites';
 import { manageFeedback } from '../features/feedback';
+import { constructNotifications } from '../features/notifications';
 import { runSearch } from '../features/search';
 import { initDictionary } from '../lang';
 import { makeGenericErrorMessage } from '../utils/message';
@@ -57,6 +58,17 @@ export const bot: APIGatewayProxyHandler = async (
     }
   }
 
+  const makeExecutionFn = (_textSanitised: string) => {
+    if (isCommandInModule(_textSanitised, Module.favourites)) {
+      return manageFavourites;
+    }
+    if (isCommandInModule(_textSanitised, Module.feedback)) {
+      return manageFeedback;
+    }
+
+    return runSearch;
+  };
+
   // this try-catch loop will catch all the errors that have bubbled up from the child functions
   try {
     let botResponse: BotResponse | null;
@@ -94,13 +106,20 @@ export const bot: APIGatewayProxyHandler = async (
   }
 };
 
-const makeExecutionFn = (textSanitised: string) => {
-  if (isCommandInModule(textSanitised, Module.favourites)) {
-    return manageFavourites;
-  }
-  if (isCommandInModule(textSanitised, Module.feedback)) {
-    return manageFeedback;
-  }
+export const notifications: APIGatewayProxyHandler = async (
+  _event,
+  _context,
+  callback,
+): Promise<APIGatewayProxyResult> => {
+  const callbackWrapper = makeCallbackWrapper(callback);
 
-  return runSearch;
+  initDictionary();
+
+  const notificationsOutput = await constructNotifications();
+  notificationsOutput.forEach((notification) => {
+    const { userId: chatId, message } = notification;
+    sendMessage({ chatId, message });
+  });
+
+  return callbackWrapper(204);
 };

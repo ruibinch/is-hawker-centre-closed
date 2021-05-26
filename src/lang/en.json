@@ -75,6 +75,10 @@
   "feedback.command-feedback.explanation.second": "e\\.g\\. _/feedback {{example}}_",
   "feedback.feedback-added": "Got it, thanks for your feedback\\!",
   "feedback.error-adding-feedback": "Woops, couldn't handle saving your feedback for some unexpected reason\\. Try again?",
+  "notifications.overview.singular": "{{emoji}} Heads up\\! {{numHC}} of your favourite hawker centres will be closed today\\.\n\n",
+  "notifications.overview.plural": "{{emoji}} Heads up\\! {{numHC}} of your favourite hawker centres will be closed today\\.\n\n",
+  "notifications.item": "*{{hcName}}*\n{{startDate}} to {{endDate}}{{closureReasonSnippet}}",
+  "notifications.snippet.closure-reason.long-term-renovation-works": " _\\(long\\-term renovation works\\)_",
   "date.today": "today",
   "date.tomorrow": "tomorrow"
 }

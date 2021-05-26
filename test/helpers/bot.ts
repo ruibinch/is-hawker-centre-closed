@@ -1,6 +1,6 @@
 import { APIGatewayProxyEvent, Context } from 'aws-lambda';
 
-import { bot } from '../../src/bot/handler';
+import { bot, notifications } from '../../src/bot/handler';
 import { TelegramMessage } from '../../src/utils/telegram';
 import { makeTelegramMessage } from '../__mocks__/telegram';
 
@@ -19,6 +19,13 @@ export const makeBotWrapper = (mockCallback: jest.Mock<any, any>) => async (
   } as unknown) as APIGatewayProxyEvent;
 
   await bot(event, {} as Context, mockCallback);
+};
+
+export const makeNotificationsWrapper = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  mockCallback: jest.Mock<any, any>,
+) => async (): Promise<void> => {
+  await notifications({} as APIGatewayProxyEvent, {} as Context, mockCallback);
 };
 
 export const assertBotResponse = (

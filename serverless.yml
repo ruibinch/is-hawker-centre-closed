@@ -52,6 +52,7 @@ provider:
           Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_NAME_HC}-${self:provider.stage}'
         - Effect: Allow
           Action:
+            - dynamodb:Scan
             - dynamodb:GetItem
             - dynamodb:PutItem
             - dynamodb:UpdateItem
@@ -73,3 +74,9 @@ functions:
       - http:
           method: post
           path: /bot
+  notifications:
+    handler: ${self:custom.botFolder}/handler.notifications
+    events:
+      - http:
+          method: get
+          path: /notifications
