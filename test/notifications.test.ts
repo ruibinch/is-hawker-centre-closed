@@ -65,7 +65,7 @@ describe('Notifications module', () => {
           hcName: 'Verdanturf Town',
           startDate: 'today',
           endDate: 'tomorrow',
-          closureReasonSnippet: '',
+          closureReason: '',
         }),
       t('notifications.overview.singular', {
         emoji: '\u{1F4A1}',
@@ -75,7 +75,7 @@ describe('Notifications module', () => {
           hcName: 'Melville City',
           startDate: '01\\-Feb',
           endDate: '28\\-Feb',
-          closureReasonSnippet: ' _\\(long\\-term renovation works\\)_',
+          closureReason: ' _\\(long\\-term renovation works\\)_',
         }),
     ];
 

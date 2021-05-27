@@ -32,10 +32,10 @@ export function formatDateDisplay(
   const date = parseISO(dateString);
   if (displayTemporalPronoun) {
     if (isToday(date)) {
-      return t('date.today');
+      return t('common.time.today');
     }
     if (isTomorrow(date)) {
-      return t('date.tomorrow');
+      return t('common.time.tomorrow');
     }
   }
 

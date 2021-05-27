@@ -200,7 +200,7 @@ describe('Favourites module', () => {
 
     it('["/fav lilycove"] returns an error message when there are no results', async () => {
       const expectedMessage = t('favourites.error.no-results-found', {
-        keywordSnippet: ' for keyword *lilycove*',
+        keyword: ' for keyword *lilycove*',
       });
 
       await callBot('/fav lilycove');
@@ -340,7 +340,7 @@ describe('Favourites module', () => {
               nextClosureDetails: t('favourites.item.closure-details', {
                 startDate: '08\\-Feb',
                 endDate: '09\\-Feb',
-                closureReasonSnippet: '',
+                closureReason: '',
               }),
             }),
             t('favourites.item', {
@@ -349,7 +349,7 @@ describe('Favourites module', () => {
               nextClosureDetails: t('favourites.item.closure-details', {
                 startDate: 'today',
                 endDate: 'tomorrow',
-                closureReasonSnippet: '',
+                closureReason: '',
               }),
             }),
           ].join('\n'),
@@ -364,10 +364,10 @@ describe('Favourites module', () => {
       it('["/notify"] returns the user\'s current notification setting', async () => {
         const expectedMessage =
           t('favourites.notifications.current', {
-            currentNotificationsValue: 'on',
+            currentValue: 'on',
           }) +
           t('favourites.notifications.toggle-prompt', {
-            desiredNotificationsValue: 'off',
+            desiredValue: 'off',
           });
 
         await callBot('/notify');
@@ -467,10 +467,10 @@ describe('Favourites module', () => {
       it('["/notify"] returns the user\'s current notification setting', async () => {
         const expectedMessage =
           t('favourites.notifications.current', {
-            currentNotificationsValue: 'off',
+            currentValue: 'off',
           }) +
           t('favourites.notifications.toggle-prompt', {
-            desiredNotificationsValue: 'on',
+            desiredValue: 'on',
           });
 
         await callBot('/notify');

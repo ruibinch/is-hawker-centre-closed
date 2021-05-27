@@ -18,7 +18,7 @@ export function makeNotificationMessage(results: Result[]): string {
       hcName: result.name,
       startDate: formatDateDisplay(result.startDate, true),
       endDate: formatDateDisplay(result.endDate, true),
-      closureReasonSnippet: makeClosureReasonSnippet(result.reason),
+      closureReason: makeClosureReasonSnippet(result.reason),
     }),
   );
 
@@ -29,9 +29,9 @@ export function makeNotificationMessage(results: Result[]): string {
 function makeClosureReasonSnippet(reason: ClosureReason) {
   switch (reason) {
     case 'renovation':
-      return t(
-        'notifications.snippet.closure-reason.long-term-renovation-works',
-      );
+      return t('notifications.snippet.closure-reason', {
+        reason: t('common.closure-reason.renovation'),
+      });
     default:
       return '';
   }

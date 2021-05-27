@@ -11,7 +11,7 @@ export function makeAddHCMessage(props: {
 
   if (hawkerCentres.length === 0) {
     return t('favourites.error.no-results-found', {
-      keywordSnippet: keyword.length > 0 ? ` for keyword *${keyword}*` : '',
+      keyword: keyword.length > 0 ? ` for keyword *${keyword}*` : '',
     });
   }
 
@@ -78,11 +78,11 @@ export function makeFavouritesListMessage(
             ? t('favourites.item.closure-details', {
                 startDate: formatDateDisplay(startDate, true),
                 endDate: formatDateDisplay(endDate, true),
-                closureReasonSnippet:
+                closureReason:
                   reason === 'renovation'
-                    ? t(
-                        'favourites.item.closure-reason.long-term-renovation-works',
-                      )
+                    ? t('favourites.item.closure-reason', {
+                        reason: t('common.closure-reason.renovation'),
+                      })
                     : '',
               })
             : '',
@@ -112,10 +112,10 @@ export function makeReadNotificationsSettingMessage(
 
   return (
     t('favourites.notifications.current', {
-      currentNotificationsValue: currentValue ? 'on' : 'off',
+      currentValue: currentValue ? 'on' : 'off',
     }) +
     t('favourites.notifications.toggle-prompt', {
-      desiredNotificationsValue: currentValue ? 'off' : 'on',
+      desiredValue: currentValue ? 'off' : 'on',
     })
   );
 }
