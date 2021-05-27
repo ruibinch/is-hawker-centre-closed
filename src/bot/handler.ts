@@ -11,7 +11,7 @@ import { constructNotifications } from '../services/notifications';
 import { runSearch } from '../services/search';
 import { makeGenericErrorMessage } from '../utils/message';
 import { TelegramMessage } from '../utils/telegram';
-import { BotResponse, Module } from '../utils/types';
+import { BotResponse } from '../utils/types';
 import { validateToken } from './auth';
 import { isCommand, isCommandInModule, makeCommandMessage } from './commands';
 import { sendMessage, sendMessageWithChoices } from './sender';
@@ -59,10 +59,10 @@ export const bot: APIGatewayProxyHandler = async (
   }
 
   const makeExecutionFn = (_textSanitised: string) => {
-    if (isCommandInModule(_textSanitised, Module.favourites)) {
+    if (isCommandInModule(_textSanitised, 'favourites')) {
       return manageFavourites;
     }
-    if (isCommandInModule(_textSanitised, Module.feedback)) {
+    if (isCommandInModule(_textSanitised, 'feedback')) {
       return manageFeedback;
     }
 

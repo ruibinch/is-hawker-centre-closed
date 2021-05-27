@@ -11,10 +11,7 @@ export type HawkerCentre = {
   nameSecondary?: string;
 };
 
-export enum ClosureReason {
-  cleaning = 'cleaning',
-  renovation = 'renovation',
-}
+export type ClosureReason = 'cleaning' | 'renovation';
 
 export type Result = HawkerCentre & {
   id: string;

@@ -5,43 +5,43 @@ import { Command } from './types';
 
 export const COMMANDS: Command[] = [
   {
-    module: Module.general,
+    module: 'general',
     endpoint: '/start',
     hasExplanation: true,
     description: 'Welcome message',
   },
   {
-    module: Module.general,
+    module: 'general',
     endpoint: '/help',
     hasExplanation: true,
     description: 'Bot usage guide',
   },
   {
-    module: Module.favourites,
+    module: 'favourites',
     endpoint: '/list',
     hasExplanation: false,
     description: 'View your favourites and their next closure dates',
   },
   {
-    module: Module.favourites,
+    module: 'favourites',
     endpoint: '/fav',
     hasExplanation: true,
     description: 'Add to your favourites',
   },
   {
-    module: Module.favourites,
+    module: 'favourites',
     endpoint: '/del',
     hasExplanation: true,
     description: 'Delete from your favourites',
   },
   {
-    module: Module.favourites,
+    module: 'favourites',
     endpoint: '/notify',
     hasExplanation: false,
     description: 'Toggle your notification setting',
   },
   {
-    module: Module.feedback,
+    module: 'feedback',
     endpoint: '/feedback',
     hasExplanation: true,
     description: 'Submit your feedback!',

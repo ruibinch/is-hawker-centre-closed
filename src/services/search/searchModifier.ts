@@ -1,6 +1,6 @@
-import { parseToEnum } from '../../utils/enum';
 import { ExtractSearchModifierResult, SearchModifier } from './types';
 
+// List of accepted search modifiers
 const SEARCH_MODIFIERS = ['today', 'month', 'next month', 'tmr', 'tomorrow'];
 
 export function extractSearchModifier(
@@ -12,8 +12,7 @@ export function extractSearchModifier(
   const matches = modifierRegex.exec(term.toLowerCase());
   if (matches === null) return undefined;
 
-  const modifier = parseModifier(matches[0]);
-  const searchModifier = parseToEnum(SearchModifier, modifier);
+  const searchModifier = parseSearchModifier(matches[0]);
   if (!searchModifier) return undefined;
 
   const result: ExtractSearchModifierResult = {
@@ -24,9 +23,10 @@ export function extractSearchModifier(
 }
 
 /**
- * Parses the modifier into an appropriate format for parsing to the SearchModifier enum type.
+ * Parses the modifier into a string of type SearchModifier.
+ * Returns undefined if the input string is invalid.
  */
-function parseModifier(s: string): string {
+function parseSearchModifier(s: string): SearchModifier | undefined {
   const str = s.trim();
 
   switch (str) {
@@ -34,7 +34,11 @@ function parseModifier(s: string): string {
       return 'nextMonth';
     case 'tmr':
       return 'tomorrow';
-    default:
+    case 'today':
+    case 'tomorrow':
+    case 'month':
       return str;
+    default:
+      return undefined;
   }
 }

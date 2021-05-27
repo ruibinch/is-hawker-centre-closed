@@ -1,18 +1,10 @@
-export enum Stage {
-  dev = 'dev',
-  prod = 'prod',
-}
+export type Stage = 'dev' | 'prod';
 
 export function getStage(): Stage {
-  return process.env.NODE_ENV === 'production' ? Stage.prod : Stage.dev;
+  return process.env.NODE_ENV === 'production' ? 'prod' : 'dev';
 }
 
-export enum Module {
-  search = 'search',
-  favourites = 'favourites',
-  feedback = 'feedback',
-  general = 'general',
-}
+export type Module = 'search' | 'favourites' | 'feedback' | 'general';
 
 /**
  * Response types

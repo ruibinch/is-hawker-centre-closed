@@ -1,16 +1,11 @@
-import {
-  ClosureReason,
-  HawkerCentre,
-  Result,
-  User,
-} from '../../src/models/types';
+import { HawkerCentre, Result, User } from '../../src/models/types';
 import { TelegramUser } from '../../src/utils/telegram';
 
 export const mockResults: Result[] = [
   {
     id: '111',
     hawkerCentreId: 1,
-    reason: ClosureReason.cleaning,
+    reason: 'cleaning',
     name: 'Littleroot Town',
     startDate: '2021-01-01',
     endDate: '2021-01-02',
@@ -18,7 +13,7 @@ export const mockResults: Result[] = [
   {
     id: '111',
     hawkerCentreId: 5,
-    reason: ClosureReason.cleaning,
+    reason: 'cleaning',
     name: 'Melville City',
     startDate: '2021-01-01',
     endDate: '2021-01-01',
@@ -26,7 +21,7 @@ export const mockResults: Result[] = [
   {
     id: '111',
     hawkerCentreId: 4,
-    reason: ClosureReason.cleaning,
+    reason: 'cleaning',
     name: 'Slateport City',
     startDate: '2021-01-02',
     endDate: '2021-01-02',
@@ -34,7 +29,7 @@ export const mockResults: Result[] = [
   {
     id: '111',
     hawkerCentreId: 37,
-    reason: ClosureReason.cleaning,
+    reason: 'cleaning',
     name: 'Mossdeep Gym',
     nameSecondary: 'Psychics in space',
     startDate: '2021-01-05',
@@ -43,7 +38,7 @@ export const mockResults: Result[] = [
   {
     id: '111',
     hawkerCentreId: 2,
-    reason: ClosureReason.cleaning,
+    reason: 'cleaning',
     name: 'Oldale Town',
     startDate: '2021-01-15',
     endDate: '2021-01-18',
@@ -51,7 +46,7 @@ export const mockResults: Result[] = [
   {
     id: '111',
     hawkerCentreId: 7,
-    reason: ClosureReason.cleaning,
+    reason: 'cleaning',
     name: 'Route 118 near Melville City',
     startDate: '2021-01-21',
     endDate: '2021-01-24',
@@ -59,7 +54,7 @@ export const mockResults: Result[] = [
   {
     id: '111',
     hawkerCentreId: 2,
-    reason: ClosureReason.cleaning,
+    reason: 'cleaning',
     name: 'Oldale Town',
     startDate: '2021-01-30',
     endDate: '2021-01-31',
@@ -67,7 +62,7 @@ export const mockResults: Result[] = [
   {
     id: '111',
     hawkerCentreId: 3,
-    reason: ClosureReason.cleaning,
+    reason: 'cleaning',
     name: 'Rustboro City',
     startDate: '2021-02-02',
     endDate: '2021-02-05',
@@ -75,7 +70,7 @@ export const mockResults: Result[] = [
   {
     id: '111',
     hawkerCentreId: 6,
-    reason: ClosureReason.cleaning,
+    reason: 'cleaning',
     name: 'Verdanturf Town',
     startDate: '2021-02-08',
     endDate: '2021-02-09',
@@ -83,7 +78,7 @@ export const mockResults: Result[] = [
   {
     id: '111',
     hawkerCentreId: 5,
-    reason: ClosureReason.renovation,
+    reason: 'renovation',
     name: 'Melville City',
     startDate: '2021-02-01',
     endDate: '2021-02-28',

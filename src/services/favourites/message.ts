@@ -1,9 +1,5 @@
 import { t } from '../../lang';
-import {
-  ClosureReason,
-  HawkerCentre,
-  ResultPartial,
-} from '../../models/types';
+import { ClosureReason, HawkerCentre, ResultPartial } from '../../models/types';
 import { formatDateDisplay } from '../../utils/date';
 import { MAX_CHOICES } from './constants';
 
@@ -83,7 +79,7 @@ export function makeFavouritesListMessage(
                 startDate: formatDateDisplay(startDate, true),
                 endDate: formatDateDisplay(endDate, true),
                 closureReasonSnippet:
-                  reason === ClosureReason.renovation
+                  reason === 'renovation'
                     ? t(
                         'favourites.item.closure-reason.long-term-renovation-works',
                       )

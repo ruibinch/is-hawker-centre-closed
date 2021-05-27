@@ -2,7 +2,6 @@ import { uploadHawkerCentres } from '../models/HawkerCentre';
 import { uploadResults } from '../models/Result';
 import { ClosureReason, HawkerCentre, Result } from '../models/types';
 import { currentDateInYYYYMMDD, toDateISO8601 } from '../utils/date';
-import { parseToEnum } from '../utils/enum';
 import { HawkerCentreClosureRecord } from './types';
 import {
   generateHash,
@@ -59,24 +58,19 @@ function generateResults(recordsRaw: HawkerCentreClosureRecord[]): Result[] {
     const otherWorksEndDate = toDateISO8601(other_works_enddate);
 
     [
-      [q1CleaningStartDate, q1CleaningEndDate, ClosureReason.cleaning],
-      [q2CleaningStartDate, q2CleaningEndDate, ClosureReason.cleaning],
-      [q3CleaningStartDate, q3CleaningEndDate, ClosureReason.cleaning],
-      [q4CleaningStartDate, q4CleaningEndDate, ClosureReason.cleaning],
-      [otherWorksStartDate, otherWorksEndDate, ClosureReason.renovation],
+      [q1CleaningStartDate, q1CleaningEndDate, 'cleaning'],
+      [q2CleaningStartDate, q2CleaningEndDate, 'cleaning'],
+      [q3CleaningStartDate, q3CleaningEndDate, 'cleaning'],
+      [q4CleaningStartDate, q4CleaningEndDate, 'cleaning'],
+      [otherWorksStartDate, otherWorksEndDate, 'renovation'],
     ].forEach(([startDate, endDate, reason]) => {
       if (startDate && endDate && reason) {
-        const closureReason = parseToEnum(ClosureReason, reason);
-        if (!closureReason) {
-          throw new Error(`${reason} is not a valid ClosureReason enum value.`);
-        }
-
         const result = generateResult({
           hawkerCentreId,
           name,
           startDate,
           endDate,
-          reason: closureReason,
+          reason: reason as ClosureReason,
         });
         _results.push(result);
       }

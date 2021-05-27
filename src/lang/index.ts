@@ -2,13 +2,13 @@ import i18n, { TranslateOptions } from 'i18n-js';
 
 import enDict from './en.json';
 
+// FIXME: figure out how to best utilise this type in Dictionary
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type Language = 'en';
+
 type Dictionary = {
   [lang: string]: Record<string, string>;
 };
-
-enum Language {
-  en = 'en',
-}
 
 const normaliseKey = (key: string) => key.replace(/\./g, '-');
 const normaliseDictionary = (dictionary: Dictionary) =>
@@ -27,7 +27,7 @@ const normaliseDictionary = (dictionary: Dictionary) =>
   );
 
 const dictionary: Dictionary = {
-  [Language.en]: enDict,
+  en: enDict,
 };
 
 export const initDictionary = (): void => {

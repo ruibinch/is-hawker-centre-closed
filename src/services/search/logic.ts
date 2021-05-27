@@ -62,7 +62,7 @@ function parseSearchTerm(term: string): SearchObject {
   if (!modifierResult) {
     return {
       keyword: term,
-      modifier: SearchModifier.today, // defaults to today if no modifier
+      modifier: 'today', // defaults to today if no modifier
     };
   }
 
@@ -78,7 +78,7 @@ function parseSearchTerm(term: string): SearchObject {
  */
 // TODO: relook at the necessity of this function
 function checkIsDataPresent(results: Result[], modifier: SearchModifier) {
-  if (modifier !== SearchModifier.nextMonth) return true;
+  if (modifier !== 'nextMonth') return true;
 
   // extract the YYYY-MM portion of the dates and remove duplicates
   const timePeriods = [
@@ -123,17 +123,17 @@ function filterByDate(results: Result[], modifier: SearchModifier) {
     const endDate = parseISO(result.endDate);
 
     return (() => {
-      if (modifier === SearchModifier.today) {
+      if (modifier === 'today') {
         return isWithinDateBounds(currDate, startDate, endDate);
       }
-      if (modifier === SearchModifier.tomorrow) {
+      if (modifier === 'tomorrow') {
         const tomorrowDate = addDays(currDate, 1);
         return isWithinDateBounds(tomorrowDate, startDate, endDate);
       }
-      if (modifier === SearchModifier.month) {
+      if (modifier === 'month') {
         return isSameMonth(currDate, startDate);
       }
-      if (modifier === SearchModifier.nextMonth) {
+      if (modifier === 'nextMonth') {
         return differenceInCalendarMonths(startDate, currDate) === 1;
       }
       /* istanbul ignore next */

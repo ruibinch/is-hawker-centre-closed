@@ -10,12 +10,7 @@ export type SearchResponse = {
   results: Result[];
 };
 
-export enum SearchModifier {
-  today = 'today',
-  tomorrow = 'tomorrow',
-  month = 'month',
-  nextMonth = 'nextMonth',
-}
+export type SearchModifier = 'today' | 'tomorrow' | 'month' | 'nextMonth';
 
 export type ExtractSearchModifierResult =
   | {

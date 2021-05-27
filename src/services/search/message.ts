@@ -12,7 +12,7 @@ export function makeMessage(searchResponse: SearchResponse): string {
   let reply = '';
 
   if (results.length === 0) {
-    if (isDataPresent === false && modifier === SearchModifier.nextMonth) {
+    if (isDataPresent === false && modifier === 'nextMonth') {
       reply = t('search.error.next-month-data-unavailable');
     } else {
       reply = t('search.no-hawker-centres-closed', {
@@ -57,13 +57,13 @@ function makeKeywordSnippet(keyword: string) {
 
 function makeTimePeriodSnippet(modifier: SearchModifier) {
   switch (modifier) {
-    case SearchModifier.today:
+    case 'today':
       return t('search.snippet.time-period.today');
-    case SearchModifier.tomorrow:
+    case 'tomorrow':
       return t('search.snippet.time-period.tomorrow');
-    case SearchModifier.month:
+    case 'month':
       return t('search.snippet.time-period.this-month');
-    case SearchModifier.nextMonth:
+    case 'nextMonth':
       return t('search.snippet.time-period.next-month');
     /* istanbul ignore next */
     default:
@@ -73,11 +73,11 @@ function makeTimePeriodSnippet(modifier: SearchModifier) {
 
 function makeTemporalVerbSnippet(modifier: SearchModifier) {
   switch (modifier) {
-    case SearchModifier.today:
-    case SearchModifier.month:
+    case 'today':
+    case 'month':
       return t('search.snippet.temporal.are');
-    case SearchModifier.tomorrow:
-    case SearchModifier.nextMonth:
+    case 'tomorrow':
+    case 'nextMonth':
       return t('search.snippet.temporal.will-be');
     /* istanbul ignore next */
     default:
@@ -87,7 +87,7 @@ function makeTemporalVerbSnippet(modifier: SearchModifier) {
 
 function makeClosureReasonSnippet(reason: ClosureReason) {
   switch (reason) {
-    case ClosureReason.renovation:
+    case 'renovation':
       return t('search.snippet.closure-reason.long-term-renovation-works');
     default:
       return '';

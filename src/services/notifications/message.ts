@@ -28,7 +28,7 @@ export function makeNotificationMessage(results: Result[]): string {
 
 function makeClosureReasonSnippet(reason: ClosureReason) {
   switch (reason) {
-    case ClosureReason.renovation:
+    case 'renovation':
       return t(
         'notifications.snippet.closure-reason.long-term-renovation-works',
       );
