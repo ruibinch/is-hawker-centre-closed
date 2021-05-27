@@ -6,13 +6,7 @@ import {
   getHawkerCentreById,
 } from '../../models/HawkerCentre';
 import { getAllResults } from '../../models/Result';
-import {
-  HawkerCentre,
-  Result,
-  ResultPartial,
-  User,
-  UserFavourite,
-} from '../../models/types';
+import { HawkerCentre, Result, User, UserFavourite } from '../../models/types';
 import {
   getUserById,
   addUser,
@@ -32,6 +26,7 @@ import {
   AddHCResponse,
   DeleteHCResponse,
   FindHCResponse,
+  GetUserFavsWithResultsResponse,
   IsUserInFavModeResponse,
   ManageNotificationsResponse,
   ToggleUserInFavModeResponse,
@@ -39,9 +34,9 @@ import {
 
 export async function findHCByKeyword(
   keyword: string,
-): Promise<FindHCResponse | null> {
+): Promise<FindHCResponse> {
   const getAllHCResponse = await getAllHawkerCentres();
-  if (!getAllHCResponse.success) return null;
+  if (!getAllHCResponse.success) return { success: false };
 
   const hawkerCentres = getAllHCResponse.output as HawkerCentre[];
   const hcFilteredByKeyword = filterByKeyword(hawkerCentres, keyword);
@@ -50,6 +45,7 @@ export async function findHCByKeyword(
   if (hcFilteredByKeyword.length === 1) {
     if (keyword === hcFilteredByKeyword[0].name) {
       return {
+        success: true,
         isExactMatch: true,
         hawkerCentres: hcFilteredByKeyword,
       };
@@ -61,6 +57,7 @@ export async function findHCByKeyword(
     hcFilteredByKeyword.length > MAX_CHOICES;
 
   return {
+    success: true,
     isFindError,
     hawkerCentres: hcFilteredByKeyword,
   };
@@ -75,7 +72,7 @@ export async function findHCByKeyword(
 export async function addHCToFavourites(props: {
   hawkerCentre: HawkerCentre;
   telegramUser: TelegramUser;
-}): Promise<AddHCResponse | null> {
+}): Promise<AddHCResponse> {
   const {
     hawkerCentre: { hawkerCentreId },
     telegramUser: { id: userId, username, language_code: languageCode },
@@ -125,7 +122,7 @@ export async function addHCToFavourites(props: {
 export async function deleteHCFromFavourites(props: {
   deleteIdx: number;
   telegramUser: TelegramUser;
-}): Promise<DeleteHCResponse | null> {
+}): Promise<DeleteHCResponse> {
   const {
     deleteIdx,
     telegramUser: { id: userId },
@@ -136,6 +133,7 @@ export async function deleteHCFromFavourites(props: {
     // user does not exist
     return {
       success: false,
+      isError: false,
       numFavourites: 0,
     };
   }
@@ -150,6 +148,7 @@ export async function deleteHCFromFavourites(props: {
     // out of bounds
     return {
       success: false,
+      isError: false,
       numFavourites: user.favourites.length,
     };
   }
@@ -157,7 +156,7 @@ export async function deleteHCFromFavourites(props: {
   // get details of HC to be deleted
   const delHawkerCentreId = user.favourites[deleteIdx].hawkerCentreId;
   const getHCByIdResponse = await getHawkerCentreById(delHawkerCentreId);
-  if (!getHCByIdResponse.success) return null;
+  if (!getHCByIdResponse.success) return { success: false, isError: true };
 
   const delHawkerCentre = getHCByIdResponse.output as HawkerCentre;
 
@@ -176,24 +175,27 @@ export async function deleteHCFromFavourites(props: {
  */
 export async function getUserFavouritesWithResults(
   telegramUser: TelegramUser,
-): Promise<ResultPartial[] | null> {
+): Promise<GetUserFavsWithResultsResponse> {
   const { id: userId } = telegramUser;
 
   const getUserResponse = await getUserById(userId);
   if (!getUserResponse.success) {
     // user does not exist in DB
-    return [];
+    return {
+      success: true,
+      results: [],
+    };
   }
 
   const user = getUserResponse.output as User;
   const userFavHCIds = user.favourites.map((fav) => fav.hawkerCentreId);
 
   const getAllResultsResponse = await getAllResults();
-  if (!getAllResultsResponse.success) return null;
+  if (!getAllResultsResponse.success) return { success: false };
   const resultsAll = getAllResultsResponse.output as Result[];
 
   const getAllHCResponse = await getAllHawkerCentres();
-  if (!getAllHCResponse.success) return null;
+  if (!getAllHCResponse.success) return { success: false };
   const hawkerCentres = getAllHCResponse.output as HawkerCentre[];
 
   const userFavsWithResults = userFavHCIds.map((favHCId) => {
@@ -219,7 +221,10 @@ export async function getUserFavouritesWithResults(
     return nextOccurringResult;
   });
 
-  return userFavsWithResults;
+  return {
+    success: true,
+    results: userFavsWithResults,
+  };
 }
 
 /**

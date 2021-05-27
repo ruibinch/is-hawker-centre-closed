@@ -27,10 +27,12 @@ export const makeHawkerCentreSchema = (
   ],
 });
 
-export function uploadHawkerCentres(hawkerCentres: HawkerCentre[]): void {
+export async function uploadHawkerCentres(
+  hawkerCentres: HawkerCentre[],
+): Promise<void> {
   const hcTable = makeHawkerCentreTableName(getStage());
 
-  Promise.all(
+  await Promise.all(
     hawkerCentres.map((hawkerCentre) => {
       const hawkerCentreInput: AWS.DynamoDB.DocumentClient.PutItemInput = {
         TableName: hcTable,

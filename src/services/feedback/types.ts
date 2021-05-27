@@ -1,3 +1,3 @@
-export type AddFeedbackResponse = {
-  success: boolean;
-};
+import { BaseResponse } from '../../utils/types';
+
+export type AddFeedbackResponse = BaseResponse;

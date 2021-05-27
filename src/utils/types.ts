@@ -10,6 +10,10 @@ export type Module = 'search' | 'favourites' | 'feedback' | 'general';
  * Response types
  */
 
+export type BaseResponse = {
+  success: boolean;
+};
+
 export type BotResponse = {
   message: string;
   choices?: string[];
@@ -18,7 +22,6 @@ export type BotResponse = {
 export type ServiceResponse = Promise<BotResponse | null>;
 
 // TODO: consider extending from this to allow `output` to be accurately typed
-export type DBResponse = {
-  success: boolean;
+export type DBResponse = BaseResponse & {
   output?: unknown;
 };

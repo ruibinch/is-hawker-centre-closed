@@ -36,10 +36,10 @@ export const makeResultsSchema = (
   ],
 });
 
-export function uploadResults(results: Result[]): void {
+export async function uploadResults(results: Result[]): Promise<void> {
   const resultsTable = makeResultsTableName(getStage());
 
-  Promise.all(
+  await Promise.all(
     results.map((result) => {
       const resultInput: AWS.DynamoDB.DocumentClient.PutItemInput = {
         TableName: resultsTable,

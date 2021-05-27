@@ -13,7 +13,7 @@ import {
 const args = process.argv.slice(2);
 const [isUploadToAws] = args;
 
-getRawRecords().then((recordsRaw) => {
+getRawRecords().then(async (recordsRaw) => {
   const results = generateResults(recordsRaw);
 
   const hawkerCentres: HawkerCentre[] = getHawkerCentresList(results);
@@ -24,8 +24,8 @@ getRawRecords().then((recordsRaw) => {
   writeFile(hawkerCentres, `hawkerCentres-${currentDateInYYYYMMDD()}.json`);
 
   if (isUploadToAws !== 'false') {
-    uploadResults(results);
-    uploadHawkerCentres(hawkerCentres);
+    await uploadResults(results);
+    await uploadHawkerCentres(hawkerCentres);
   }
 });
 

@@ -1,14 +1,22 @@
 import { Result } from '../../models/types';
+import { BaseResponse } from '../../utils/types';
 
 export type SearchQuery = {
   term: string;
 };
 
-export type SearchResponse = {
-  params: SearchObject;
-  isDataPresent?: boolean;
-  results: Result[];
-};
+export type SearchResponse = BaseResponse &
+  (
+    | {
+        success: true;
+        params: SearchObject;
+        isDataPresent?: boolean;
+        results: Result[];
+      }
+    | {
+        success: false;
+      }
+  );
 
 export type SearchModifier = 'today' | 'tomorrow' | 'month' | 'nextMonth';
 

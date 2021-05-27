@@ -1,44 +1,69 @@
-import { HawkerCentre } from '../../models/types';
-import { BotResponse } from '../../utils/types';
+import { HawkerCentre, ResultPartial } from '../../models/types';
+import { BaseResponse, BotResponse } from '../../utils/types';
 
-export type FindHCResponse = {
-  isExactMatch?: boolean;
-  isFindError?: boolean;
-  hawkerCentres: HawkerCentre[];
-};
+export type FindHCResponse = BaseResponse &
+  (
+    | {
+        success: true;
+        isExactMatch?: boolean;
+        isFindError?: boolean;
+        hawkerCentres: HawkerCentre[];
+      }
+    | {
+        success: false;
+      }
+  );
 
-export type AddHCResponse = {
-  success: boolean;
+export type AddHCResponse = BaseResponse & {
   isDuplicate?: boolean;
 };
 
-export type DeleteHCResponse =
-  | {
-      success: true;
-      hawkerCentre: HawkerCentre;
-    }
-  | {
-      success: false;
-      numFavourites: number;
-    };
+export type DeleteHCResponse = BaseResponse &
+  (
+    | {
+        success: true;
+        hawkerCentre: HawkerCentre;
+      }
+    | ({
+        success: false;
+      } & (
+        | {
+            isError: false;
+            numFavourites: number;
+          }
+        | {
+            isError: true;
+          }
+      ))
+  );
 
-export type HandleFavouriteSelectionResponse =
-  | {
-      success: true;
-      response: BotResponse;
-    }
-  | {
-      success: false;
-    };
+export type GetUserFavsWithResultsResponse = BaseResponse &
+  (
+    | {
+        success: true;
+        results: ResultPartial[];
+      }
+    | {
+        success: false;
+      }
+  );
 
-export type IsUserInFavModeResponse = {
-  success: boolean;
+export type HandleFavouriteSelectionResponse = BaseResponse &
+  (
+    | {
+        success: true;
+        response: BotResponse;
+      }
+    | {
+        success: false;
+      }
+  );
+
+export type IsUserInFavModeResponse = BaseResponse & {
   isInFavouritesMode?: boolean;
 };
 
-export type ToggleUserInFavModeResponse = {
-  success: true;
-};
+export type ToggleUserInFavModeResponse = BaseResponse;
 
 export type ManageNotificationsResponse =
   | {

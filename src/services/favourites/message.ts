@@ -1,5 +1,5 @@
 import { t } from '../../lang';
-import { ClosureReason, HawkerCentre, ResultPartial } from '../../models/types';
+import { HawkerCentre, ResultPartial } from '../../models/types';
 import { formatDateDisplay } from '../../utils/date';
 import { MAX_CHOICES } from './constants';
 

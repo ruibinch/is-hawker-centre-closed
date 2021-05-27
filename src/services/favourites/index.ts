@@ -37,7 +37,7 @@ export async function manageFavourites(
   switch (command) {
     case '/fav': {
       const findHCResponse = await findHCByKeyword(keyword);
-      if (findHCResponse === null) return null;
+      if (!findHCResponse.success) return null;
 
       const { isExactMatch, isFindError, hawkerCentres } = findHCResponse;
 
@@ -65,7 +65,7 @@ export async function manageFavourites(
         deleteIdx: Number(keyword) - 1,
         telegramUser,
       });
-      if (deleteHCResponse === null) return null;
+      if (!deleteHCResponse.success && deleteHCResponse.isError) return null;
 
       if (deleteHCResponse.success) {
         return {
@@ -83,10 +83,10 @@ export async function manageFavourites(
       const getFavResponseWithResults = await getUserFavouritesWithResults(
         telegramUser,
       );
-      if (getFavResponseWithResults === null) return null;
+      if (!getFavResponseWithResults.success) return null;
 
       return {
-        message: makeFavouritesListMessage(getFavResponseWithResults),
+        message: makeFavouritesListMessage(getFavResponseWithResults.results),
       };
     }
     case '/notify': {
@@ -152,7 +152,7 @@ async function handleFavouriteSelection(
   if (isCommand(keyword)) return { success: false };
 
   const findHCResponse = await findHCByKeyword(keyword);
-  if (findHCResponse === null) return { success: false };
+  if (!findHCResponse.success) return { success: false };
 
   const { isExactMatch, hawkerCentres } = findHCResponse;
 

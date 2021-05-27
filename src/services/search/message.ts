@@ -4,6 +4,8 @@ import { formatDateDisplay } from '../../utils/date';
 import { SearchModifier, SearchResponse } from './types';
 
 export function makeMessage(searchResponse: SearchResponse): string {
+  if (!searchResponse.success) return '';
+
   const {
     params: { keyword, modifier },
     isDataPresent,
