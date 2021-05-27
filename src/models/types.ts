@@ -13,20 +13,16 @@ export type HawkerCentre = {
 
 export type ClosureReason = 'cleaning' | 'renovation';
 
-export type Result = HawkerCentre & {
+type HawkerCentreClosure = {
   id: string;
   reason: ClosureReason;
   startDate: string;
   endDate: string;
 };
 
-export type ResultPartial = HawkerCentre &
-  Partial<{
-    id: string;
-    reason: ClosureReason;
-    startDate: string;
-    endDate: string;
-  }>;
+export type Result = HawkerCentre & HawkerCentreClosure;
+
+export type ResultPartial = HawkerCentre & Partial<HawkerCentreClosure>;
 
 export type UserFavourite = {
   hawkerCentreId: number;
