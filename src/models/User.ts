@@ -1,5 +1,6 @@
 import * as AWS from 'aws-sdk';
 import { formatISO } from 'date-fns';
+import NodeCache from 'node-cache';
 
 import { initAWSConfig, TABLE_NAME_USERS, TABLE_USERS } from '../aws/config';
 import { getDynamoDBBillingDetails } from '../aws/dynamodb';
@@ -9,6 +10,11 @@ import { UserFavourite, User } from './types';
 
 initAWSConfig();
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
+
+const userCache = new NodeCache({
+  stdTTL: 30,
+  useClones: false,
+});
 
 export const makeUserTableName = (stage: Stage): string =>
   `${TABLE_NAME_USERS}-${stage}`;
@@ -79,22 +85,28 @@ export type GetUserByIdResponse = BaseResponse &
 export async function getUserById(
   userId: number,
 ): Promise<GetUserByIdResponse> {
-  const params: AWS.DynamoDB.DocumentClient.GetItemInput = {
-    TableName: TABLE_USERS,
-    Key: {
-      userId,
-    },
-  };
+  let user = userCache.get(userId);
 
-  const getResponse = await dynamoDb.get(params).promise();
+  if (user === undefined) {
+    const params: AWS.DynamoDB.DocumentClient.GetItemInput = {
+      TableName: TABLE_USERS,
+      Key: {
+        userId,
+      },
+    };
 
-  if (!getResponse.Item) {
-    return { success: false };
+    const getResponse = await dynamoDb.get(params).promise();
+
+    if (!getResponse.Item) {
+      return { success: false };
+    }
+
+    user = getResponse.Item;
   }
 
   return {
     success: true,
-    output: getResponse.Item as User,
+    output: user as User,
   };
 }
 
