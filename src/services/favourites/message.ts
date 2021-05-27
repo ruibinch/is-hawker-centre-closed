@@ -1,7 +1,7 @@
 import { t } from '../../lang';
 import {
   ClosureReason,
-  HawkerCentreInfo,
+  HawkerCentre,
   ResultPartial,
 } from '../../models/types';
 import { formatDateDisplay } from '../../utils/date';
@@ -9,7 +9,7 @@ import { MAX_CHOICES } from './constants';
 
 export function makeAddHCMessage(props: {
   keyword: string;
-  hawkerCentres: HawkerCentreInfo[];
+  hawkerCentres: HawkerCentre[];
 }): string {
   const { keyword, hawkerCentres } = props;
 
@@ -29,21 +29,21 @@ export function makeAddHCMessage(props: {
 }
 
 export function makeSuccessfullyAddedMessage(
-  hawkerCentre: HawkerCentreInfo,
+  hawkerCentre: HawkerCentre,
 ): string {
   const { name: hcName } = hawkerCentre;
   return t('favourites.hawker-centre-added', { hcName });
 }
 
 export function makeDuplicateHCErrorMessage(
-  hawkerCentre: HawkerCentreInfo,
+  hawkerCentre: HawkerCentre,
 ): string {
   const { name: hcName } = hawkerCentre;
   return t('favourites.error.duplicate-hawker-centres', { hcName });
 }
 
 export function makeSuccessfullyDeletedMessage(
-  hawkerCentre: HawkerCentreInfo,
+  hawkerCentre: HawkerCentre,
 ): string {
   return t('favourites.hawker-centre-removed', { hcName: hawkerCentre.name });
 }

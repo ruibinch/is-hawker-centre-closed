@@ -5,7 +5,7 @@ export type Feedback = {
   text: string;
 };
 
-export type HawkerCentreInfo = {
+export type HawkerCentre = {
   hawkerCentreId: number;
   name: string;
   nameSecondary?: string;
@@ -16,14 +16,14 @@ export enum ClosureReason {
   renovation = 'renovation',
 }
 
-export type Result = HawkerCentreInfo & {
+export type Result = HawkerCentre & {
   id: string;
   reason: ClosureReason;
   startDate: string;
   endDate: string;
 };
 
-export type ResultPartial = HawkerCentreInfo &
+export type ResultPartial = HawkerCentre &
   Partial<{
     id: string;
     reason: ClosureReason;

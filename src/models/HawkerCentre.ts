@@ -3,7 +3,7 @@ import * as AWS from 'aws-sdk';
 import { initAWSConfig, TABLE_HC, TABLE_NAME_HC } from '../aws/config';
 import { getDynamoDBBillingDetails } from '../aws/dynamodb';
 import { DBResponse, getStage, Stage } from '../utils/types';
-import { HawkerCentreInfo } from './types';
+import { HawkerCentre } from './types';
 
 initAWSConfig();
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
@@ -27,7 +27,7 @@ export const makeHawkerCentreSchema = (
   ],
 });
 
-export function uploadHawkerCentres(hawkerCentres: HawkerCentreInfo[]): void {
+export function uploadHawkerCentres(hawkerCentres: HawkerCentre[]): void {
   const hcTable = makeHawkerCentreTableName(getStage());
 
   Promise.all(

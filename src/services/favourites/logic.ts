@@ -7,7 +7,7 @@ import {
 } from '../../models/HawkerCentre';
 import { getAllResults } from '../../models/Result';
 import {
-  HawkerCentreInfo,
+  HawkerCentre,
   Result,
   ResultPartial,
   User,
@@ -43,7 +43,7 @@ export async function findHCByKeyword(
   const getAllHCResponse = await getAllHawkerCentres();
   if (!getAllHCResponse.success) return null;
 
-  const hawkerCentres = getAllHCResponse.output as HawkerCentreInfo[];
+  const hawkerCentres = getAllHCResponse.output as HawkerCentre[];
   const hcFilteredByKeyword = filterByKeyword(hawkerCentres, keyword);
 
   // if there is only 1 result and the keyword is an exact match, return `isExactMatch` set to true
@@ -73,7 +73,7 @@ export async function findHCByKeyword(
  * If the user exists but the hawker centre already exists in the favourites list, return a duplicate error.
  */
 export async function addHCToFavourites(props: {
-  hawkerCentre: HawkerCentreInfo;
+  hawkerCentre: HawkerCentre;
   telegramUser: TelegramUser;
 }): Promise<AddHCResponse | null> {
   const {
@@ -159,7 +159,7 @@ export async function deleteHCFromFavourites(props: {
   const getHCByIdResponse = await getHawkerCentreById(delHawkerCentreId);
   if (!getHCByIdResponse.success) return null;
 
-  const delHawkerCentre = getHCByIdResponse.output as HawkerCentreInfo;
+  const delHawkerCentre = getHCByIdResponse.output as HawkerCentre;
 
   const favouritesUpdated = [...user.favourites];
   favouritesUpdated.splice(deleteIdx, 1);
@@ -194,7 +194,7 @@ export async function getUserFavouritesWithResults(
 
   const getAllHCResponse = await getAllHawkerCentres();
   if (!getAllHCResponse.success) return null;
-  const hawkerCentres = getAllHCResponse.output as HawkerCentreInfo[];
+  const hawkerCentres = getAllHCResponse.output as HawkerCentre[];
 
   const userFavsWithResults = userFavHCIds.map((favHCId) => {
     const resultsForHawkerCentre = resultsAll.filter(
@@ -346,9 +346,9 @@ export async function manageNotifications(props: {
  * Filters the list of hawker centres by keyword matching the hawker centre name or secondary name.
  */
 function filterByKeyword(
-  hawkerCentres: HawkerCentreInfo[],
+  hawkerCentres: HawkerCentre[],
   keyword: string,
-): HawkerCentreInfo[] {
+): HawkerCentre[] {
   if (keyword === '') {
     return [];
   }

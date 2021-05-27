@@ -1,10 +1,10 @@
-import { HawkerCentreInfo } from '../../models/types';
+import { HawkerCentre } from '../../models/types';
 import { BotResponse } from '../../utils/types';
 
 export type FindHCResponse = {
   isExactMatch?: boolean;
   isFindError?: boolean;
-  hawkerCentres: HawkerCentreInfo[];
+  hawkerCentres: HawkerCentre[];
 };
 
 export type AddHCResponse = {
@@ -15,7 +15,7 @@ export type AddHCResponse = {
 export type DeleteHCResponse =
   | {
       success: true;
-      hawkerCentre: HawkerCentreInfo;
+      hawkerCentre: HawkerCentre;
     }
   | {
       success: false;

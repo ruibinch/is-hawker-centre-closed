@@ -1,6 +1,6 @@
 import {
   ClosureReason,
-  HawkerCentreInfo,
+  HawkerCentre,
   Result,
   User,
 } from '../../src/models/types';
@@ -90,7 +90,7 @@ export const mockResults: Result[] = [
   },
 ];
 
-export const mockHawkerCentres: HawkerCentreInfo[] = [
+export const mockHawkerCentres: HawkerCentre[] = [
   {
     hawkerCentreId: 1,
     name: 'Littleroot Town',

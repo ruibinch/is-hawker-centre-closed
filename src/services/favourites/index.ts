@@ -1,5 +1,5 @@
 import { isCommand } from '../../bot/commands';
-import { HawkerCentreInfo } from '../../models/types';
+import { HawkerCentre } from '../../models/types';
 import { makeGenericErrorMessage } from '../../utils/message';
 import { TelegramUser } from '../../utils/telegram';
 import { ServiceResponse } from '../../utils/types';
@@ -180,7 +180,7 @@ async function handleFavouriteSelection(
  * and returning the correct message.
  */
 async function executeAddHCToFavourites(props: {
-  hawkerCentre: HawkerCentreInfo;
+  hawkerCentre: HawkerCentre;
   telegramUser: TelegramUser;
 }): ServiceResponse {
   const { hawkerCentre, telegramUser } = props;

@@ -1,6 +1,6 @@
 import { uploadHawkerCentres } from '../models/HawkerCentre';
 import { uploadResults } from '../models/Result';
-import { ClosureReason, HawkerCentreInfo, Result } from '../models/types';
+import { ClosureReason, HawkerCentre, Result } from '../models/types';
 import { currentDateInYYYYMMDD, toDateISO8601 } from '../utils/date';
 import { parseToEnum } from '../utils/enum';
 import { HawkerCentreClosureRecord } from './types';
@@ -17,7 +17,7 @@ const [isUploadToAws] = args;
 getRawRecords().then((recordsRaw) => {
   const results = generateResults(recordsRaw);
 
-  const hawkerCentres: HawkerCentreInfo[] = getHawkerCentresList(results);
+  const hawkerCentres: HawkerCentre[] = getHawkerCentresList(results);
 
   console.log(`${results.length} results found`);
   console.log(`${hawkerCentres.length} hawker centres found`);
