@@ -6,7 +6,7 @@ import {
   TABLE_RESULTS,
 } from '../aws/config';
 import { getDynamoDBBillingDetails } from '../aws/dynamodb';
-import { DBResponse, getStage, Stage } from '../utils/types';
+import { BaseResponse, getStage, Stage } from '../utils/types';
 import { Result } from './types';
 
 initAWSConfig();
@@ -51,7 +51,16 @@ export async function uploadResults(results: Result[]): Promise<void> {
   );
 }
 
-export async function getAllResults(): Promise<DBResponse> {
+export type GetAllResultsResponse = BaseResponse &
+  (
+    | {
+        success: true;
+        output: Result[];
+      }
+    | { success: false }
+  );
+
+export async function getAllResults(): Promise<GetAllResultsResponse> {
   const params: AWS.DynamoDB.DocumentClient.ScanInput = {
     TableName: TABLE_RESULTS,
   };
@@ -64,6 +73,6 @@ export async function getAllResults(): Promise<DBResponse> {
 
   return {
     success: true,
-    output: scanOutput.Items,
+    output: scanOutput.Items as Result[],
   };
 }

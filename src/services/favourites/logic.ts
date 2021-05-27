@@ -38,7 +38,7 @@ export async function findHCByKeyword(
   const getAllHCResponse = await getAllHawkerCentres();
   if (!getAllHCResponse.success) return { success: false };
 
-  const hawkerCentres = getAllHCResponse.output as HawkerCentre[];
+  const hawkerCentres = getAllHCResponse.output;
   const hcFilteredByKeyword = filterByKeyword(hawkerCentres, keyword);
 
   // if there is only 1 result and the keyword is an exact match, return `isExactMatch` set to true
@@ -95,11 +95,11 @@ export async function addHCToFavourites(props: {
       notifications: true,
     };
 
-    const dbResponse = await addUser(newUser);
-    return { success: dbResponse.success };
+    const addUserResponse = await addUser(newUser);
+    return { success: addUserResponse.success };
   }
 
-  const user = getUserResponse.output as User;
+  const user = getUserResponse.output;
   const userFavourites = user.favourites.map((fav) => fav.hawkerCentreId);
 
   // Check if hawker centre already exists in the favourites list
@@ -115,8 +115,11 @@ export async function addHCToFavourites(props: {
     (a, b) => a.hawkerCentreId - b.hawkerCentreId,
   );
 
-  const dbResponse = await updateUserFavourites(userId, favouritesUpdated);
-  return { success: dbResponse.success };
+  const updateUserFavsResponse = await updateUserFavourites(
+    userId,
+    favouritesUpdated,
+  );
+  return { success: updateUserFavsResponse.success };
 }
 
 export async function deleteHCFromFavourites(props: {
@@ -138,7 +141,7 @@ export async function deleteHCFromFavourites(props: {
     };
   }
 
-  const user = getUserResponse.output as User;
+  const user = getUserResponse.output;
 
   if (
     Number.isNaN(deleteIdx) ||
@@ -158,7 +161,7 @@ export async function deleteHCFromFavourites(props: {
   const getHCByIdResponse = await getHawkerCentreById(delHawkerCentreId);
   if (!getHCByIdResponse.success) return { success: false, isError: true };
 
-  const delHawkerCentre = getHCByIdResponse.output as HawkerCentre;
+  const delHawkerCentre = getHCByIdResponse.output;
 
   const favouritesUpdated = [...user.favourites];
   favouritesUpdated.splice(deleteIdx, 1);
@@ -187,16 +190,16 @@ export async function getUserFavouritesWithResults(
     };
   }
 
-  const user = getUserResponse.output as User;
+  const user = getUserResponse.output;
   const userFavHCIds = user.favourites.map((fav) => fav.hawkerCentreId);
 
   const getAllResultsResponse = await getAllResults();
   if (!getAllResultsResponse.success) return { success: false };
-  const resultsAll = getAllResultsResponse.output as Result[];
+  const resultsAll = getAllResultsResponse.output;
 
   const getAllHCResponse = await getAllHawkerCentres();
   if (!getAllHCResponse.success) return { success: false };
-  const hawkerCentres = getAllHCResponse.output as HawkerCentre[];
+  const hawkerCentres = getAllHCResponse.output;
 
   const userFavsWithResults = userFavHCIds.map((favHCId) => {
     const resultsForHawkerCentre = resultsAll.filter(
@@ -244,7 +247,7 @@ export async function isUserInFavouritesMode(
     };
   }
 
-  const user = getUserResponse.output as User;
+  const user = getUserResponse.output;
   return {
     success: true,
     isInFavouritesMode: user.isInFavouritesMode,
@@ -303,7 +306,7 @@ export async function manageNotifications(props: {
     let currentValue: boolean | undefined;
 
     if (getUserResponse.success) {
-      const user = getUserResponse.output as User;
+      const user = getUserResponse.output;
       currentValue = user.notifications;
     }
 

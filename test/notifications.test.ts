@@ -4,8 +4,9 @@ import { parseISO } from 'date-fns';
 import * as sender from '../src/bot/sender';
 import { initDictionary, t } from '../src/lang';
 import * as Result from '../src/models/Result';
+import { GetAllResultsResponse } from '../src/models/Result';
 import * as User from '../src/models/User';
-import { DBResponse } from '../src/utils/types';
+import { GetAllUsersResponse } from '../src/models/User';
 import { mockResults, mockUsers } from './__mocks__/db';
 import { assertBotResponse, makeNotificationsWrapper } from './helpers/bot';
 
@@ -30,13 +31,15 @@ describe('Notifications module', () => {
     const users = { success: true, output: mockUsers } as unknown;
     getAllUsersSpy = jest
       .spyOn(User, 'getAllUsers')
-      .mockImplementation(() => Promise.resolve(users) as Promise<DBResponse>);
+      .mockImplementation(
+        () => Promise.resolve(users) as Promise<GetAllUsersResponse>,
+      );
 
     const results = { success: true, output: mockResults } as unknown;
     getAllResultsSpy = jest
       .spyOn(Result, 'getAllResults')
       .mockImplementation(
-        () => Promise.resolve(results) as Promise<DBResponse>,
+        () => Promise.resolve(results) as Promise<GetAllResultsResponse>,
       );
   });
 

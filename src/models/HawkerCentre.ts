@@ -2,7 +2,7 @@ import * as AWS from 'aws-sdk';
 
 import { initAWSConfig, TABLE_HC, TABLE_NAME_HC } from '../aws/config';
 import { getDynamoDBBillingDetails } from '../aws/dynamodb';
-import { DBResponse, getStage, Stage } from '../utils/types';
+import { BaseResponse, getStage, Stage } from '../utils/types';
 import { HawkerCentre } from './types';
 
 initAWSConfig();
@@ -44,7 +44,16 @@ export async function uploadHawkerCentres(
   );
 }
 
-export async function getAllHawkerCentres(): Promise<DBResponse> {
+export type GetAllHCResponse = BaseResponse &
+  (
+    | {
+        success: true;
+        output: HawkerCentre[];
+      }
+    | { success: false }
+  );
+
+export async function getAllHawkerCentres(): Promise<GetAllHCResponse> {
   const params: AWS.DynamoDB.DocumentClient.ScanInput = {
     TableName: TABLE_HC,
   };
@@ -57,13 +66,22 @@ export async function getAllHawkerCentres(): Promise<DBResponse> {
 
   return {
     success: true,
-    output: scanOutput.Items,
+    output: scanOutput.Items as HawkerCentre[],
   };
 }
 
+export type GetHCByIdResponse = BaseResponse &
+  (
+    | {
+        success: true;
+        output: HawkerCentre;
+      }
+    | { success: false }
+  );
+
 export async function getHawkerCentreById(
   hawkerCentreId: number,
-): Promise<DBResponse> {
+): Promise<GetHCByIdResponse> {
   const params: AWS.DynamoDB.DocumentClient.GetItemInput = {
     TableName: TABLE_HC,
     Key: {
@@ -79,6 +97,6 @@ export async function getHawkerCentreById(
 
   return {
     success: true,
-    output: getOutput.Item,
+    output: getOutput.Item as HawkerCentre,
   };
 }

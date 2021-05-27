@@ -21,7 +21,7 @@ export async function processSearch(term: string): Promise<SearchResponse> {
 
   const getAllResultsResponse = await getAllResults();
   if (!getAllResultsResponse.success) return { success: false };
-  const resultsAll = getAllResultsResponse.output as Result[];
+  const resultsAll = getAllResultsResponse.output;
 
   const isDataPresent = checkIsDataPresent(resultsAll, modifier);
   if (!isDataPresent) {

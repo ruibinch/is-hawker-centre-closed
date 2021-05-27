@@ -4,7 +4,7 @@ import { formatISO } from 'date-fns';
 import { initAWSConfig, TABLE_NAME_USERS, TABLE_USERS } from '../aws/config';
 import { getDynamoDBBillingDetails } from '../aws/dynamodb';
 import { currentDate } from '../utils/date';
-import { DBResponse, Stage } from '../utils/types';
+import { BaseResponse, Stage } from '../utils/types';
 import { UserFavourite, User } from './types';
 
 initAWSConfig();
@@ -27,7 +27,7 @@ export const makeUserSchema = (
   AttributeDefinitions: [{ AttributeName: 'userId', AttributeType: 'N' }],
 });
 
-export async function addUser(user: User): Promise<DBResponse> {
+export async function addUser(user: User): Promise<BaseResponse> {
   const userInput: AWS.DynamoDB.DocumentClient.PutItemInput = {
     TableName: TABLE_USERS,
     Item: {
@@ -41,7 +41,16 @@ export async function addUser(user: User): Promise<DBResponse> {
   return { success: true };
 }
 
-export async function getAllUsers(): Promise<DBResponse> {
+export type GetAllUsersResponse = BaseResponse &
+  (
+    | {
+        success: true;
+        output: User[];
+      }
+    | { success: false }
+  );
+
+export async function getAllUsers(): Promise<GetAllUsersResponse> {
   const params: AWS.DynamoDB.DocumentClient.ScanInput = {
     TableName: TABLE_USERS,
   };
@@ -54,11 +63,22 @@ export async function getAllUsers(): Promise<DBResponse> {
 
   return {
     success: true,
-    output: scanOutput.Items,
+    output: scanOutput.Items as User[],
   };
 }
 
-export async function getUserById(userId: number): Promise<DBResponse> {
+export type GetUserByIdResponse = BaseResponse &
+  (
+    | {
+        success: true;
+        output: User;
+      }
+    | { success: false }
+  );
+
+export async function getUserById(
+  userId: number,
+): Promise<GetUserByIdResponse> {
   const params: AWS.DynamoDB.DocumentClient.GetItemInput = {
     TableName: TABLE_USERS,
     Key: {
@@ -74,14 +94,14 @@ export async function getUserById(userId: number): Promise<DBResponse> {
 
   return {
     success: true,
-    output: getResponse.Item,
+    output: getResponse.Item as User,
   };
 }
 
 export async function updateUserFavourites(
   userId: number,
   favouritesUpdated: UserFavourite[],
-): Promise<DBResponse> {
+): Promise<BaseResponse> {
   const updateUserInput: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
     TableName: TABLE_USERS,
     Key: {
@@ -101,7 +121,7 @@ export async function updateUserFavourites(
 export async function updateUserInFavouritesMode(
   userId: number,
   isInFavouritesMode: boolean,
-): Promise<DBResponse> {
+): Promise<BaseResponse> {
   const updateUserInput: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
     TableName: TABLE_USERS,
     Key: {
@@ -122,7 +142,7 @@ export async function updateUserInFavouritesMode(
 export async function updateUserNotifications(
   userId: number,
   notifications: boolean,
-): Promise<DBResponse> {
+): Promise<BaseResponse> {
   const updateUserInput: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
     TableName: TABLE_USERS,
     Key: {

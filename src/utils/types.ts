@@ -20,8 +20,3 @@ export type BotResponse = {
 };
 
 export type ServiceResponse = Promise<BotResponse | null>;
-
-// TODO: consider extending from this to allow `output` to be accurately typed
-export type DBResponse = BaseResponse & {
-  output?: unknown;
-};

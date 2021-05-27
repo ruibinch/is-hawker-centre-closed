@@ -1,7 +1,6 @@
 import { parseISO } from 'date-fns';
 
 import { getAllResults } from '../../models/Result';
-import { Result, User } from '../../models/types';
 import { getAllUsers } from '../../models/User';
 import { currentDate, isWithinDateBounds } from '../../utils/date';
 import { UserWithResult } from './types';
@@ -14,11 +13,11 @@ export async function getUsersWithFavsClosedToday(): Promise<
 > {
   const getAllUsersResponse = await getAllUsers();
   if (!getAllUsersResponse.success) return null;
-  const usersAll = getAllUsersResponse.output as User[];
+  const usersAll = getAllUsersResponse.output;
 
   const getAllResultsResponse = await getAllResults();
   if (!getAllResultsResponse.success) return null;
-  const resultsAll = getAllResultsResponse.output as Result[];
+  const resultsAll = getAllResultsResponse.output;
 
   const resultsCurrent = resultsAll.filter((result) =>
     isWithinDateBounds(

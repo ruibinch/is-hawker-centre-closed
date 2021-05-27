@@ -4,8 +4,8 @@ import { parseISO } from 'date-fns';
 import * as sender from '../src/bot/sender';
 import { initDictionary, t } from '../src/lang';
 import * as Result from '../src/models/Result';
+import { GetAllResultsResponse } from '../src/models/Result';
 import * as favouritesIndex from '../src/services/favourites/index';
-import { DBResponse } from '../src/utils/types';
 import { mockResults } from './__mocks__/db';
 import { assertBotResponse, makeBotWrapper } from './helpers/bot';
 
@@ -29,7 +29,7 @@ describe('Search module', () => {
     getAllResultsSpy = jest
       .spyOn(Result, 'getAllResults')
       .mockImplementation(
-        () => Promise.resolve(results) as Promise<DBResponse>,
+        () => Promise.resolve(results) as Promise<GetAllResultsResponse>,
       );
   });
 
