@@ -24,6 +24,7 @@
     "remove:prod": "sls remove -s prod -f bot",
     "print:bot-commands": "ts-node src/bot/commands.ts",
     "run:backup": "ts-node src/scripts/runBackup.ts",
+    "run:test-api": "ts-node src/scripts/testApi.ts",
     "lint": "eslint . --ext .ts",
     "test": "TZ=UTC jest"
   },
