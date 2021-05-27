@@ -1,0 +1,21 @@
+# Changelog
+
+## [Unreleased]
+
+## [0.2.0] - 2021-05-28
+
+### Added
+
+- Notifications module
+
+### Changed
+
+- Updated all keyword filters to search by individual words in the keyword, and on both primary and secondary names
+- /list will now correctly include present hawker centre closures instead of only considering future closure dates
+- /list will now display "today" or "tomorrow" instead of the full dates
+
+## [0.1.0] - 2021-05-13
+
+### Added
+
+- Production-ready version with search, favourites and feedback modules
