@@ -4,6 +4,7 @@ import * as sender from '../src/bot/sender';
 import { initDictionary, t } from '../src/lang';
 import * as Feedback from '../src/models/Feedback';
 import * as favouritesIndex from '../src/services/favourites/index';
+import { DBResponse } from '../src/utils/types';
 import { assertBotResponse, makeBotWrapper } from './helpers/bot';
 
 describe('Feedback module', () => {
@@ -31,7 +32,9 @@ describe('Feedback module', () => {
     sendMessageSpy = jest.spyOn(sender, 'sendMessage').mockImplementation();
     addFeedbackToDBSpy = jest
       .spyOn(Feedback, 'addFeedbackToDB')
-      .mockImplementation();
+      .mockImplementation(
+        () => Promise.resolve({ success: true }) as Promise<DBResponse>,
+      );
   });
 
   afterEach(() => {

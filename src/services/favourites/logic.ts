@@ -41,9 +41,9 @@ export async function findHCByKeyword(
   keyword: string,
 ): Promise<FindHCResponse | null> {
   const getAllHCResponse = await getAllHawkerCentres();
-  if (!getAllHCResponse.Items) return null;
+  if (!getAllHCResponse.success) return null;
 
-  const hawkerCentres = getAllHCResponse.Items as HawkerCentreInfo[];
+  const hawkerCentres = getAllHCResponse.output as HawkerCentreInfo[];
   const hcFilteredByKeyword = filterByKeyword(hawkerCentres, keyword);
 
   // if there is only 1 result and the keyword is an exact match, return `isExactMatch` set to true
@@ -87,7 +87,7 @@ export async function addHCToFavourites(props: {
   };
 
   const getUserResponse = await getUserById(userId);
-  if (!getUserResponse.Item) {
+  if (!getUserResponse.success) {
     // user does not exist yet in DB
     const newUser: User = {
       userId,
@@ -98,11 +98,11 @@ export async function addHCToFavourites(props: {
       notifications: true,
     };
 
-    await addUser(newUser);
-    return { success: true };
+    const dbResponse = await addUser(newUser);
+    return { success: dbResponse.success };
   }
 
-  const user = getUserResponse.Item as User;
+  const user = getUserResponse.output as User;
   const userFavourites = user.favourites.map((fav) => fav.hawkerCentreId);
 
   // Check if hawker centre already exists in the favourites list
@@ -118,8 +118,8 @@ export async function addHCToFavourites(props: {
     (a, b) => a.hawkerCentreId - b.hawkerCentreId,
   );
 
-  await updateUserFavourites(userId, favouritesUpdated);
-  return { success: true };
+  const dbResponse = await updateUserFavourites(userId, favouritesUpdated);
+  return { success: dbResponse.success };
 }
 
 export async function deleteHCFromFavourites(props: {
@@ -132,7 +132,7 @@ export async function deleteHCFromFavourites(props: {
   } = props;
 
   const getUserResponse = await getUserById(userId);
-  if (!getUserResponse.Item) {
+  if (!getUserResponse.success) {
     // user does not exist
     return {
       success: false,
@@ -140,7 +140,7 @@ export async function deleteHCFromFavourites(props: {
     };
   }
 
-  const user = getUserResponse.Item as User;
+  const user = getUserResponse.output as User;
 
   if (
     Number.isNaN(deleteIdx) ||
@@ -157,9 +157,9 @@ export async function deleteHCFromFavourites(props: {
   // get details of HC to be deleted
   const delHawkerCentreId = user.favourites[deleteIdx].hawkerCentreId;
   const getHCByIdResponse = await getHawkerCentreById(delHawkerCentreId);
-  if (getHCByIdResponse === null) return null;
+  if (!getHCByIdResponse.success) return null;
 
-  const delHawkerCentre = getHCByIdResponse.Item as HawkerCentreInfo;
+  const delHawkerCentre = getHCByIdResponse.output as HawkerCentreInfo;
 
   const favouritesUpdated = [...user.favourites];
   favouritesUpdated.splice(deleteIdx, 1);
@@ -180,19 +180,21 @@ export async function getUserFavouritesWithResults(
   const { id: userId } = telegramUser;
 
   const getUserResponse = await getUserById(userId);
-  if (!getUserResponse.Item) {
+  if (!getUserResponse.success) {
     // user does not exist in DB
     return [];
   }
 
-  const user = getUserResponse.Item as User;
+  const user = getUserResponse.output as User;
   const userFavHCIds = user.favourites.map((fav) => fav.hawkerCentreId);
 
   const getAllResultsResponse = await getAllResults();
-  const resultsAll = getAllResultsResponse.Items as Result[];
+  if (!getAllResultsResponse.success) return null;
+  const resultsAll = getAllResultsResponse.output as Result[];
 
   const getAllHCResponse = await getAllHawkerCentres();
-  const hawkerCentres = getAllHCResponse.Items as HawkerCentreInfo[];
+  if (!getAllHCResponse.success) return null;
+  const hawkerCentres = getAllHCResponse.output as HawkerCentreInfo[];
 
   const userFavsWithResults = userFavHCIds.map((favHCId) => {
     const resultsForHawkerCentre = resultsAll.filter(
@@ -230,14 +232,14 @@ export async function isUserInFavouritesMode(
 
   const getUserResponse = await getUserById(userId);
 
-  if (!getUserResponse.Item) {
+  if (!getUserResponse.success) {
     // user does not exist in DB
     return {
       success: false,
     };
   }
 
-  const user = getUserResponse.Item as User;
+  const user = getUserResponse.output as User;
   return {
     success: true,
     isInFavouritesMode: user.isInFavouritesMode,
@@ -255,7 +257,7 @@ export async function toggleUserInFavouritesMode(
 
   // TODO: potentially improve this flow
   const getUserResponse = await getUserById(userId);
-  if (!getUserResponse.Item) {
+  if (!getUserResponse.success) {
     // user does not exist yet in DB
     const newUser: User = {
       userId,
@@ -295,8 +297,8 @@ export async function manageNotifications(props: {
   if (keyword === '') {
     let currentValue: boolean | undefined;
 
-    if (getUserResponse.Item) {
-      const user = getUserResponse.Item as User;
+    if (getUserResponse.success) {
+      const user = getUserResponse.output as User;
       currentValue = user.notifications;
     }
 
@@ -317,7 +319,7 @@ export async function manageNotifications(props: {
   })();
 
   if (newNotificationsValue !== undefined) {
-    if (!getUserResponse.Item) {
+    if (!getUserResponse.success) {
       // user does not exist yet in DB
       const newUser: User = {
         userId,

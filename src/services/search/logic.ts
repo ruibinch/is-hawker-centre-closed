@@ -15,12 +15,15 @@ import {
 import { extractSearchModifier } from './searchModifier';
 import { SearchModifier, SearchObject, SearchResponse } from './types';
 
-export async function processSearch(term: string): Promise<SearchResponse> {
+export async function processSearch(
+  term: string,
+): Promise<SearchResponse | null> {
   const searchParams = parseSearchTerm(term);
   const { keyword, modifier } = searchParams;
 
   const getAllResultsResponse = await getAllResults();
-  const resultsAll = getAllResultsResponse.Items as Result[];
+  if (!getAllResultsResponse.success) return null;
+  const resultsAll = getAllResultsResponse.output as Result[];
 
   const isDataPresent = checkIsDataPresent(resultsAll, modifier);
   if (!isDataPresent) {

@@ -9,12 +9,16 @@ import { UserWithResult } from './types';
 /**
  * Returns a list of users along with their saved favourite hawker centres that are closed today.
  */
-export async function getUsersWithFavsClosedToday(): Promise<UserWithResult[]> {
+export async function getUsersWithFavsClosedToday(): Promise<
+  UserWithResult[] | null
+> {
   const getAllUsersResponse = await getAllUsers();
-  const usersAll = getAllUsersResponse.Items as User[];
+  if (!getAllUsersResponse.success) return null;
+  const usersAll = getAllUsersResponse.output as User[];
 
   const getAllResultsResponse = await getAllResults();
-  const resultsAll = getAllResultsResponse.Items as Result[];
+  if (!getAllResultsResponse.success) return null;
+  const resultsAll = getAllResultsResponse.output as Result[];
 
   const resultsCurrent = resultsAll.filter((result) =>
     isWithinDateBounds(

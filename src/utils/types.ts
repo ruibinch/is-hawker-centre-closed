@@ -14,9 +14,19 @@ export enum Module {
   general = 'general',
 }
 
+/**
+ * Response types
+ */
+
 export type BotResponse = {
   message: string;
   choices?: string[];
 };
 
 export type ServiceResponse = Promise<BotResponse | null>;
+
+// TODO: consider extending from this to allow `output` to be accurately typed
+export type DBResponse = {
+  success: boolean;
+  output?: unknown;
+};

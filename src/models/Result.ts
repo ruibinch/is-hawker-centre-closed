@@ -1,5 +1,4 @@
 import * as AWS from 'aws-sdk';
-import { PromiseResult } from 'aws-sdk/lib/request';
 
 import {
   initAWSConfig,
@@ -7,7 +6,7 @@ import {
   TABLE_RESULTS,
 } from '../aws/config';
 import { getDynamoDBBillingDetails } from '../aws/dynamodb';
-import { getStage, Stage } from '../utils/types';
+import { DBResponse, getStage, Stage } from '../utils/types';
 import { Result } from './types';
 
 initAWSConfig();
@@ -52,12 +51,19 @@ export function uploadResults(results: Result[]): void {
   );
 }
 
-export async function getAllResults(): Promise<
-  PromiseResult<AWS.DynamoDB.DocumentClient.ScanOutput, AWS.AWSError>
-> {
+export async function getAllResults(): Promise<DBResponse> {
   const params: AWS.DynamoDB.DocumentClient.ScanInput = {
     TableName: TABLE_RESULTS,
   };
 
-  return dynamoDb.scan(params).promise();
+  const scanOutput = await dynamoDb.scan(params).promise();
+
+  if (scanOutput === null) {
+    return { success: false };
+  }
+
+  return {
+    success: true,
+    output: scanOutput.Items,
+  };
 }

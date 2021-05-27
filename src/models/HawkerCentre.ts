@@ -1,9 +1,8 @@
 import * as AWS from 'aws-sdk';
-import { PromiseResult } from 'aws-sdk/lib/request';
 
 import { initAWSConfig, TABLE_HC, TABLE_NAME_HC } from '../aws/config';
 import { getDynamoDBBillingDetails } from '../aws/dynamodb';
-import { getStage, Stage } from '../utils/types';
+import { DBResponse, getStage, Stage } from '../utils/types';
 import { HawkerCentreInfo } from './types';
 
 initAWSConfig();
@@ -43,21 +42,26 @@ export function uploadHawkerCentres(hawkerCentres: HawkerCentreInfo[]): void {
   );
 }
 
-export async function getAllHawkerCentres(): Promise<
-  PromiseResult<AWS.DynamoDB.DocumentClient.ScanOutput, AWS.AWSError>
-> {
+export async function getAllHawkerCentres(): Promise<DBResponse> {
   const params: AWS.DynamoDB.DocumentClient.ScanInput = {
     TableName: TABLE_HC,
   };
 
-  return dynamoDb.scan(params).promise();
+  const scanOutput = await dynamoDb.scan(params).promise();
+
+  if (!scanOutput.Items) {
+    return { success: false };
+  }
+
+  return {
+    success: true,
+    output: scanOutput.Items,
+  };
 }
 
 export async function getHawkerCentreById(
   hawkerCentreId: number,
-): Promise<
-  PromiseResult<AWS.DynamoDB.DocumentClient.GetItemOutput, AWS.AWSError>
-> {
+): Promise<DBResponse> {
   const params: AWS.DynamoDB.DocumentClient.GetItemInput = {
     TableName: TABLE_HC,
     Key: {
@@ -65,5 +69,14 @@ export async function getHawkerCentreById(
     },
   };
 
-  return dynamoDb.get(params).promise();
+  const getOutput = await dynamoDb.get(params).promise();
+
+  if (getOutput === null) {
+    return { success: false };
+  }
+
+  return {
+    success: true,
+    output: getOutput.Item,
+  };
 }

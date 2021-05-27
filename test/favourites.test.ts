@@ -1,6 +1,4 @@
 /* eslint-disable max-len */
-import * as AWS from 'aws-sdk';
-import { PromiseResult } from 'aws-sdk/lib/request';
 import { parseISO } from 'date-fns';
 
 import * as sender from '../src/bot/sender';
@@ -11,6 +9,7 @@ import * as User from '../src/models/User';
 import * as favouritesIndex from '../src/services/favourites/index';
 import * as feedbackIndex from '../src/services/feedback/index';
 import * as searchIndex from '../src/services/search/index';
+import { DBResponse } from '../src/utils/types';
 import {
   mockHawkerCentres,
   mockResults,
@@ -45,50 +44,36 @@ describe('Favourites module', () => {
       .spyOn(Date, 'now')
       .mockImplementation(() => parseISO('2021-01-05').valueOf());
 
-    const hawkerCentres = { Items: mockHawkerCentres } as unknown;
+    const hawkerCentres = {
+      success: true,
+      output: mockHawkerCentres,
+    } as unknown;
     getAllHawkerCentresSpy = jest
       .spyOn(HawkerCentre, 'getAllHawkerCentres')
       .mockImplementation(
-        () =>
-          Promise.resolve(hawkerCentres) as Promise<
-            PromiseResult<AWS.DynamoDB.DocumentClient.ScanOutput, AWS.AWSError>
-          >,
+        () => Promise.resolve(hawkerCentres) as Promise<DBResponse>,
       );
 
-    const hawkerCentre = { Item: mockHawkerCentres[0] } as unknown;
+    const hawkerCentre = {
+      success: true,
+      output: mockHawkerCentres[0],
+    } as unknown;
     getHawkerCentreByIdSpy = jest
       .spyOn(HawkerCentre, 'getHawkerCentreById')
       .mockImplementation(
-        () =>
-          Promise.resolve(hawkerCentre) as Promise<
-            PromiseResult<
-              AWS.DynamoDB.DocumentClient.GetItemOutput,
-              AWS.AWSError
-            >
-          >,
+        () => Promise.resolve(hawkerCentre) as Promise<DBResponse>,
       );
 
-    const user = { Item: mockUser } as unknown;
+    const user = { success: true, output: mockUser } as unknown;
     getUserByIdSpy = jest
       .spyOn(User, 'getUserById')
-      .mockImplementation(
-        () =>
-          Promise.resolve(user) as Promise<
-            PromiseResult<
-              AWS.DynamoDB.DocumentClient.GetItemOutput,
-              AWS.AWSError
-            >
-          >,
-      );
+      .mockImplementation(() => Promise.resolve(user) as Promise<DBResponse>);
 
-    const results = { Items: mockResults } as unknown;
+    const results = { success: true, output: mockResults } as unknown;
     getAllResultsSpy = jest
       .spyOn(Result, 'getAllResults')
       .mockImplementation(
-        () =>
-          Promise.resolve(results) as Promise<
-            PromiseResult<AWS.DynamoDB.DocumentClient.ScanOutput, AWS.AWSError>
-          >,
+        () => Promise.resolve(results) as Promise<DBResponse>,
       );
   });
 
@@ -100,13 +85,19 @@ describe('Favourites module', () => {
 
     updateUserFavouritesSpy = jest
       .spyOn(User, 'updateUserFavourites')
-      .mockImplementation();
+      .mockImplementation(
+        () => Promise.resolve({ success: true }) as Promise<DBResponse>,
+      );
     updateUserInFavouritesModeSpy = jest
       .spyOn(User, 'updateUserInFavouritesMode')
-      .mockImplementation();
+      .mockImplementation(
+        () => Promise.resolve({ success: true }) as Promise<DBResponse>,
+      );
     updateUserNotificationsSpy = jest
       .spyOn(User, 'updateUserNotifications')
-      .mockImplementation();
+      .mockImplementation(
+        () => Promise.resolve({ success: true }) as Promise<DBResponse>,
+      );
   });
 
   afterEach(() => {
@@ -230,18 +221,10 @@ describe('Favourites module', () => {
 
   describe('existing user with multiple saved favourites', () => {
     beforeAll(() => {
-      const user = { Item: mockUser } as unknown;
+      const user = { success: true, output: mockUser } as unknown;
       getUserByIdSpy = jest
         .spyOn(User, 'getUserById')
-        .mockImplementation(
-          () =>
-            Promise.resolve(user) as Promise<
-              PromiseResult<
-                AWS.DynamoDB.DocumentClient.GetItemOutput,
-                AWS.AWSError
-              >
-            >,
-        );
+        .mockImplementation(() => Promise.resolve(user) as Promise<DBResponse>);
     });
 
     afterAll(() => {
@@ -424,18 +407,10 @@ describe('Favourites module', () => {
 
   describe('existing user with one saved favourite', () => {
     beforeAll(() => {
-      const user = { Item: mockUserWithOneFav } as unknown;
+      const user = { success: true, output: mockUserWithOneFav } as unknown;
       getUserByIdSpy = jest
         .spyOn(User, 'getUserById')
-        .mockImplementation(
-          () =>
-            Promise.resolve(user) as Promise<
-              PromiseResult<
-                AWS.DynamoDB.DocumentClient.GetItemOutput,
-                AWS.AWSError
-              >
-            >,
-        );
+        .mockImplementation(() => Promise.resolve(user) as Promise<DBResponse>);
     });
 
     afterAll(() => {
@@ -458,18 +433,10 @@ describe('Favourites module', () => {
 
   describe('existing user with no saved favourites', () => {
     beforeAll(() => {
-      const user = { Item: mockUserWithNoFavs } as unknown;
+      const user = { success: true, output: mockUserWithNoFavs } as unknown;
       getUserByIdSpy = jest
         .spyOn(User, 'getUserById')
-        .mockImplementation(
-          () =>
-            Promise.resolve(user) as Promise<
-              PromiseResult<
-                AWS.DynamoDB.DocumentClient.GetItemOutput,
-                AWS.AWSError
-              >
-            >,
-        );
+        .mockImplementation(() => Promise.resolve(user) as Promise<DBResponse>);
     });
 
     afterAll(() => {
@@ -519,18 +486,16 @@ describe('Favourites module', () => {
       getUserByIdSpy = jest
         .spyOn(User, 'getUserById')
         .mockImplementation(
-          () =>
-            Promise.resolve({}) as Promise<
-              PromiseResult<
-                AWS.DynamoDB.DocumentClient.GetItemOutput,
-                AWS.AWSError
-              >
-            >,
+          () => Promise.resolve({ success: false }) as Promise<DBResponse>,
         );
     });
 
     beforeEach(() => {
-      addUserSpy = jest.spyOn(User, 'addUser').mockImplementation();
+      addUserSpy = jest
+        .spyOn(User, 'addUser')
+        .mockImplementation(
+          () => Promise.resolve({ success: true }) as Promise<DBResponse>,
+        );
     });
 
     afterEach(() => {
@@ -658,18 +623,10 @@ describe('Favourites module', () => {
 
   describe('user in favourites mode', () => {
     beforeAll(() => {
-      const user = { Item: mockUserInFavMode } as unknown;
+      const user = { success: true, output: mockUserInFavMode } as unknown;
       getUserByIdSpy = jest
         .spyOn(User, 'getUserById')
-        .mockImplementation(
-          () =>
-            Promise.resolve(user) as Promise<
-              PromiseResult<
-                AWS.DynamoDB.DocumentClient.GetItemOutput,
-                AWS.AWSError
-              >
-            >,
-        );
+        .mockImplementation(() => Promise.resolve(user) as Promise<DBResponse>);
     });
 
     afterAll(() => {

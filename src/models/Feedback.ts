@@ -1,5 +1,4 @@
 import * as AWS from 'aws-sdk';
-import { PromiseResult } from 'aws-sdk/lib/request';
 import { formatISO } from 'date-fns';
 
 import {
@@ -9,7 +8,7 @@ import {
 } from '../aws/config';
 import { getDynamoDBBillingDetails } from '../aws/dynamodb';
 import { currentDate } from '../utils/date';
-import { Stage } from '../utils/types';
+import { DBResponse, Stage } from '../utils/types';
 import { Feedback } from './types';
 
 initAWSConfig();
@@ -32,11 +31,7 @@ export const makeFeedbackSchema = (
   AttributeDefinitions: [{ AttributeName: 'feedbackId', AttributeType: 'S' }],
 });
 
-export async function addFeedbackToDB(
-  feedback: Feedback,
-): Promise<
-  PromiseResult<AWS.DynamoDB.DocumentClient.PutItemOutput, AWS.AWSError>
-> {
+export async function addFeedbackToDB(feedback: Feedback): Promise<DBResponse> {
   const feedbackInput: AWS.DynamoDB.DocumentClient.PutItemInput = {
     TableName: TABLE_FEEDBACK,
     Item: {
@@ -46,5 +41,6 @@ export async function addFeedbackToDB(
     ConditionExpression: 'attribute_not_exists(feedbackId)',
   };
 
-  return dynamoDb.put(feedbackInput).promise();
+  await dynamoDb.put(feedbackInput).promise();
+  return { success: true };
 }

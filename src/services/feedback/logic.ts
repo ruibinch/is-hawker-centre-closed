@@ -20,6 +20,6 @@ export async function addFeedback(props: {
     text,
   };
 
-  await addFeedbackToDB(feedback);
-  return { success: true };
+  const dbResponse = await addFeedbackToDB(feedback);
+  return { success: dbResponse.success };
 }

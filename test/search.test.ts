@@ -1,12 +1,11 @@
 /* eslint-disable max-len */
-import * as AWS from 'aws-sdk';
-import { PromiseResult } from 'aws-sdk/lib/request';
 import { parseISO } from 'date-fns';
 
 import * as sender from '../src/bot/sender';
 import { initDictionary, t } from '../src/lang';
 import * as Result from '../src/models/Result';
 import * as favouritesIndex from '../src/services/favourites/index';
+import { DBResponse } from '../src/utils/types';
 import { mockResults } from './__mocks__/db';
 import { assertBotResponse, makeBotWrapper } from './helpers/bot';
 
@@ -22,19 +21,15 @@ describe('Search module', () => {
   beforeAll(() => {
     initDictionary();
 
-    const results = { Items: mockResults } as unknown;
-
     maybeHandleFavouriteSelectionSpy = jest
       .spyOn(favouritesIndex, 'maybeHandleFavouriteSelection')
       .mockImplementation(() => Promise.resolve({ success: false }));
 
+    const results = { success: true, output: mockResults } as unknown;
     getAllResultsSpy = jest
       .spyOn(Result, 'getAllResults')
       .mockImplementation(
-        () =>
-          Promise.resolve(results) as Promise<
-            PromiseResult<AWS.DynamoDB.DocumentClient.ScanOutput, AWS.AWSError>
-          >,
+        () => Promise.resolve(results) as Promise<DBResponse>,
       );
   });
 

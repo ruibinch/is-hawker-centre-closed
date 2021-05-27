@@ -116,6 +116,10 @@ export const notifications: APIGatewayProxyHandler = async (
   initDictionary();
 
   const notificationsOutput = await constructNotifications();
+  if (notificationsOutput === null) {
+    return callbackWrapper(400);
+  }
+
   notificationsOutput.forEach((notification) => {
     const { userId: chatId, message } = notification;
     sendMessage({ chatId, message });

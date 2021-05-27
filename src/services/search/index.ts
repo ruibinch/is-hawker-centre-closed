@@ -9,6 +9,7 @@ export * from './types';
 
 export async function runSearch(textSanitised: string): ServiceResponse {
   const searchResponse = await processSearch(textSanitised);
+  if (searchResponse === null) return null;
 
   return {
     message: makeMessage(searchResponse),

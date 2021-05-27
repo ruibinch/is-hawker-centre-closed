@@ -1,12 +1,11 @@
 /* eslint-disable max-len */
-import * as AWS from 'aws-sdk';
-import { PromiseResult } from 'aws-sdk/lib/request';
 import { parseISO } from 'date-fns';
 
 import * as sender from '../src/bot/sender';
 import { initDictionary, t } from '../src/lang';
 import * as Result from '../src/models/Result';
 import * as User from '../src/models/User';
+import { DBResponse } from '../src/utils/types';
 import { mockResults, mockUsers } from './__mocks__/db';
 import { assertBotResponse, makeNotificationsWrapper } from './helpers/bot';
 
@@ -28,24 +27,16 @@ describe('Notifications module', () => {
       .spyOn(Date, 'now')
       .mockImplementation(() => parseISO('2021-02-08').valueOf());
 
-    const users = { Items: mockUsers } as unknown;
+    const users = { success: true, output: mockUsers } as unknown;
     getAllUsersSpy = jest
       .spyOn(User, 'getAllUsers')
-      .mockImplementation(
-        () =>
-          Promise.resolve(users) as Promise<
-            PromiseResult<AWS.DynamoDB.DocumentClient.ScanOutput, AWS.AWSError>
-          >,
-      );
+      .mockImplementation(() => Promise.resolve(users) as Promise<DBResponse>);
 
-    const results = { Items: mockResults } as unknown;
+    const results = { success: true, output: mockResults } as unknown;
     getAllResultsSpy = jest
       .spyOn(Result, 'getAllResults')
       .mockImplementation(
-        () =>
-          Promise.resolve(results) as Promise<
-            PromiseResult<AWS.DynamoDB.DocumentClient.ScanOutput, AWS.AWSError>
-          >,
+        () => Promise.resolve(results) as Promise<DBResponse>,
       );
   });
 
