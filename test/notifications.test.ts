@@ -27,6 +27,10 @@ describe('Notifications module', () => {
     dateSpy = jest
       .spyOn(Date, 'now')
       .mockImplementation(() => parseISO('2021-02-08').valueOf());
+  });
+
+  beforeEach(() => {
+    sendMessageSpy = jest.spyOn(sender, 'sendMessage').mockImplementation();
 
     const users = { success: true, output: mockUsers } as unknown;
     getAllUsersSpy = jest
@@ -43,19 +47,16 @@ describe('Notifications module', () => {
       );
   });
 
-  beforeEach(() => {
-    sendMessageSpy = jest.spyOn(sender, 'sendMessage').mockImplementation();
-  });
-
   afterEach(() => {
+    mockCallback.mockRestore();
     sendMessageSpy.mockRestore();
+
+    getAllUsersSpy.mockRestore();
+    getAllResultsSpy.mockRestore();
   });
 
   afterAll(() => {
     dateSpy.mockRestore();
-
-    getAllUsersSpy.mockRestore();
-    getAllResultsSpy.mockRestore();
   });
 
   it('sends a notification to users who with a favourite hawker centre that is closed today', async () => {
@@ -87,6 +88,40 @@ describe('Notifications module', () => {
     expect(sendMessageSpy).toHaveBeenCalledTimes(2);
     expectedMessages.forEach((expectedMessage) => {
       assertBotResponse(sendMessageSpy, expectedMessage);
+    });
+  });
+
+  it('returns an error 400 when getAllUsers fails', async () => {
+    getAllUsersSpy = jest
+      .spyOn(User, 'getAllUsers')
+      .mockImplementation(
+        () =>
+          Promise.resolve({ success: false }) as Promise<GetAllUsersResponse>,
+      );
+
+    await callNotifications();
+
+    expect(sendMessageSpy).not.toHaveBeenCalled();
+    expect(mockCallback).toHaveBeenCalledWith(null, {
+      body: '',
+      statusCode: 400,
+    });
+  });
+
+  it('returns an error 400 when getAllResults fails', async () => {
+    getAllResultsSpy = jest
+      .spyOn(Result, 'getAllResults')
+      .mockImplementation(
+        () =>
+          Promise.resolve({ success: false }) as Promise<GetAllResultsResponse>,
+      );
+
+    await callNotifications();
+
+    expect(sendMessageSpy).not.toHaveBeenCalled();
+    expect(mockCallback).toHaveBeenCalledWith(null, {
+      body: '',
+      statusCode: 400,
     });
   });
 });

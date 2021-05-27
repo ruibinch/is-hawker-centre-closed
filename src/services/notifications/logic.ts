@@ -3,20 +3,18 @@ import { parseISO } from 'date-fns';
 import { getAllResults } from '../../models/Result';
 import { getAllUsers } from '../../models/User';
 import { currentDate, isWithinDateBounds } from '../../utils/date';
-import { UserWithResult } from './types';
+import { GetUsersWithFavsClosedTodayResponse, UserWithResult } from './types';
 
 /**
  * Returns a list of users along with their saved favourite hawker centres that are closed today.
  */
-export async function getUsersWithFavsClosedToday(): Promise<
-  UserWithResult[] | null
-> {
+export async function getUsersWithFavsClosedToday(): Promise<GetUsersWithFavsClosedTodayResponse> {
   const getAllUsersResponse = await getAllUsers();
-  if (!getAllUsersResponse.success) return null;
+  if (!getAllUsersResponse.success) return { success: false };
   const usersAll = getAllUsersResponse.output;
 
   const getAllResultsResponse = await getAllResults();
-  if (!getAllResultsResponse.success) return null;
+  if (!getAllResultsResponse.success) return { success: false };
   const resultsAll = getAllResultsResponse.output;
 
   const resultsCurrent = resultsAll.filter((result) =>
@@ -47,5 +45,8 @@ export async function getUsersWithFavsClosedToday(): Promise<
     [],
   );
 
-  return usersWithFavsClosedToday;
+  return {
+    success: true,
+    output: usersWithFavsClosedToday,
+  };
 }

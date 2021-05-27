@@ -357,10 +357,6 @@ function filterByKeyword(
   hawkerCentres: HawkerCentre[],
   keyword: string,
 ): HawkerCentre[] {
-  if (keyword === '') {
-    return [];
-  }
-
   const searchKeywords = keyword.split(' ');
 
   return hawkerCentres.filter((hc) =>

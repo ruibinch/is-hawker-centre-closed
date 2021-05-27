@@ -189,8 +189,6 @@ async function executeAddHCToFavourites(props: {
     hawkerCentre,
     telegramUser,
   });
-  if (addHCResponse === null) return null;
-
   const { success, isDuplicate } = addHCResponse;
 
   if (success) {

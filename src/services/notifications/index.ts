@@ -6,9 +6,9 @@ export async function constructNotifications(): Promise<
   NotificationMessage[] | null
 > {
   const usersWithFavsClosedToday = await getUsersWithFavsClosedToday();
-  if (usersWithFavsClosedToday === null) return null;
+  if (!usersWithFavsClosedToday.success) return null;
 
-  const notifications = usersWithFavsClosedToday
+  const notifications = usersWithFavsClosedToday.output
     .filter((userWithResult) => userWithResult.results.length > 0)
     .map((userWithResult) => ({
       userId: userWithResult.userId,

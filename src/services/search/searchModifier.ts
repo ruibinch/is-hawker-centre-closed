@@ -38,6 +38,7 @@ function parseSearchModifier(s: string): SearchModifier | undefined {
     case 'tomorrow':
     case 'month':
       return str;
+    /* istanbul ignore next */
     default:
       return undefined;
   }
