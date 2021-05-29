@@ -48,16 +48,6 @@ export const COMMANDS: Command[] = [
   },
 ];
 
-// If this file is run as a script, print the list of commands with associated descriptions for feeding into Telegram BotFather.
-/* istanbul ignore next */
-if (require.main === module) {
-  console.log(
-    COMMANDS.map(
-      (cmd) => `${cmd.endpoint.replace('/', '')} - ${cmd.description}`,
-    ).join('\n'),
-  );
-}
-
 /**
  * Returns if a keyword is in the structure of a command, i.e. starting with a slash and containing only one word.
  */
