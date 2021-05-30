@@ -15,7 +15,6 @@ import { GetUserByIdResponse } from '../src/models/User';
 import * as favouritesIndex from '../src/services/favourites/index';
 import * as feedbackIndex from '../src/services/feedback/index';
 import * as searchIndex from '../src/services/search/index';
-import { BaseResponse } from '../src/utils/types';
 import {
   mockHawkerCentres,
   mockResults,
@@ -93,19 +92,13 @@ describe('Favourites module', () => {
 
     updateUserFavouritesSpy = jest
       .spyOn(User, 'updateUserFavourites')
-      .mockImplementation(
-        () => Promise.resolve({ success: true }) as Promise<BaseResponse>,
-      );
+      .mockImplementation(() => Promise.resolve() as Promise<void>);
     updateUserInFavouritesModeSpy = jest
       .spyOn(User, 'updateUserInFavouritesMode')
-      .mockImplementation(
-        () => Promise.resolve({ success: true }) as Promise<BaseResponse>,
-      );
+      .mockImplementation(() => Promise.resolve() as Promise<void>);
     updateUserNotificationsSpy = jest
       .spyOn(User, 'updateUserNotifications')
-      .mockImplementation(
-        () => Promise.resolve({ success: true }) as Promise<BaseResponse>,
-      );
+      .mockImplementation(() => Promise.resolve() as Promise<void>);
   });
 
   afterEach(() => {
@@ -508,9 +501,7 @@ describe('Favourites module', () => {
     beforeEach(() => {
       addUserSpy = jest
         .spyOn(User, 'addUser')
-        .mockImplementation(
-          () => Promise.resolve({ success: true }) as Promise<BaseResponse>,
-        );
+        .mockImplementation(() => Promise.resolve() as Promise<void>);
     });
 
     afterEach(() => {

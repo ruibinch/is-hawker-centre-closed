@@ -8,7 +8,7 @@ import {
 } from '../aws/config';
 import { getDynamoDBBillingDetails } from '../aws/dynamodb';
 import { currentDate } from '../utils/date';
-import { BaseResponse, Stage } from '../utils/types';
+import { Stage } from '../utils/types';
 import { Feedback } from './types';
 
 initAWSConfig();
@@ -31,9 +31,7 @@ export const makeFeedbackSchema = (
   AttributeDefinitions: [{ AttributeName: 'feedbackId', AttributeType: 'S' }],
 });
 
-export async function addFeedbackToDB(
-  feedback: Feedback,
-): Promise<BaseResponse> {
+export async function addFeedbackToDB(feedback: Feedback): Promise<void> {
   const feedbackInput: AWS.DynamoDB.DocumentClient.PutItemInput = {
     TableName: TABLE_FEEDBACK,
     Item: {
@@ -44,5 +42,4 @@ export async function addFeedbackToDB(
   };
 
   await dynamoDb.put(feedbackInput).promise();
-  return { success: true };
 }

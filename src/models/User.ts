@@ -33,7 +33,7 @@ export const makeUserSchema = (
   AttributeDefinitions: [{ AttributeName: 'userId', AttributeType: 'N' }],
 });
 
-export async function addUser(user: User): Promise<BaseResponse> {
+export async function addUser(user: User): Promise<void> {
   const userInput: AWS.DynamoDB.DocumentClient.PutItemInput = {
     TableName: TABLE_USERS,
     Item: {
@@ -44,7 +44,6 @@ export async function addUser(user: User): Promise<BaseResponse> {
   };
 
   await dynamoDb.put(userInput).promise();
-  return { success: true };
 }
 
 export type GetAllUsersResponse = BaseResponse &
@@ -113,7 +112,7 @@ export async function getUserById(
 export async function updateUserFavourites(
   userId: number,
   favouritesUpdated: UserFavourite[],
-): Promise<BaseResponse> {
+): Promise<void> {
   const updateUserInput: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
     TableName: TABLE_USERS,
     Key: {
@@ -127,13 +126,12 @@ export async function updateUserFavourites(
   };
 
   await dynamoDb.update(updateUserInput).promise();
-  return { success: true };
 }
 
 export async function updateUserInFavouritesMode(
   userId: number,
   isInFavouritesMode: boolean,
-): Promise<BaseResponse> {
+): Promise<void> {
   const updateUserInput: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
     TableName: TABLE_USERS,
     Key: {
@@ -148,13 +146,12 @@ export async function updateUserInFavouritesMode(
   };
 
   await dynamoDb.update(updateUserInput).promise();
-  return { success: true };
 }
 
 export async function updateUserNotifications(
   userId: number,
   notifications: boolean,
-): Promise<BaseResponse> {
+): Promise<void> {
   const updateUserInput: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
     TableName: TABLE_USERS,
     Key: {
@@ -168,5 +165,4 @@ export async function updateUserNotifications(
   };
 
   await dynamoDb.update(updateUserInput).promise();
-  return { success: true };
 }

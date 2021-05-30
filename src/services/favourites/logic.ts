@@ -95,8 +95,8 @@ export async function addHCToFavourites(props: {
       notifications: true,
     };
 
-    const addUserResponse = await addUser(newUser);
-    return { success: addUserResponse.success };
+    await addUser(newUser);
+    return { success: true };
   }
 
   const user = getUserResponse.output;
@@ -115,11 +115,8 @@ export async function addHCToFavourites(props: {
     (a, b) => a.hawkerCentreId - b.hawkerCentreId,
   );
 
-  const updateUserFavsResponse = await updateUserFavourites(
-    userId,
-    favouritesUpdated,
-  );
-  return { success: updateUserFavsResponse.success };
+  await updateUserFavourites(userId, favouritesUpdated);
+  return { success: true };
 }
 
 export async function deleteHCFromFavourites(props: {
