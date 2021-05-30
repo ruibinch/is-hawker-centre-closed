@@ -7,7 +7,7 @@ import {
   addHCToFavourites,
   deleteHCFromFavourites,
   findHCByKeyword,
-  getUserFavouritesWithResults,
+  getUserFavouritesWithClosures,
   isUserInFavouritesMode,
   manageNotifications,
   toggleUserInFavouritesMode,
@@ -80,13 +80,13 @@ export async function manageFavourites(
       };
     }
     case '/list': {
-      const getFavResponseWithResults = await getUserFavouritesWithResults(
+      const getFavResponseWithClosures = await getUserFavouritesWithClosures(
         telegramUser,
       );
-      if (!getFavResponseWithResults.success) return null;
+      if (!getFavResponseWithClosures.success) return null;
 
       return {
-        message: makeFavouritesListMessage(getFavResponseWithResults.results),
+        message: makeFavouritesListMessage(getFavResponseWithClosures.closures),
       };
     }
     case '/notify': {

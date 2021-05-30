@@ -26,7 +26,7 @@ APIG_DEV=12345678
 APIG_PROD=87654321
 
 # DynamoDB table names
-TABLE_NAME_RESULTS=ihcc-results
+TABLE_NAME_CLOSURES=ihcc-closures
 TABLE_NAME_HC=ihcc-hawkerCentres
 TABLE_NAME_USERS=ihcc-users
 TABLE_NAME_FEEDBACK=ihcc-feedback
@@ -68,14 +68,14 @@ This script executes 2 other scripts:
 1. `yarn db:create`
 
 - Creates 4 tables in the specified region:
-  1. RESULTS
+  1. CLOSURES
   1. HC
   1. USERS
   1. FEEDBACK
 
 2. `yarn db:seed:dev`, `yarn db:seed:prod`
 
-- Populates the RESULTS and HC tables in the dev and prod environments with the latest values obtained from data.gov.sg API.
+- Populates the CLOSURES and HC tables in the dev and prod environments with the latest values obtained from data.gov.sg API.
 
 ### Deploying Lambda functions
 

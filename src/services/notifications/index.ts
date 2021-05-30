@@ -9,10 +9,10 @@ export async function constructNotifications(): Promise<
   if (!usersWithFavsClosedToday.success) return null;
 
   const notifications = usersWithFavsClosedToday.output
-    .filter((userWithResult) => userWithResult.results.length > 0)
-    .map((userWithResult) => ({
-      userId: userWithResult.userId,
-      message: makeNotificationMessage(userWithResult.results),
+    .filter((userWithClosure) => userWithClosure.closures.length > 0)
+    .map((userWithClosure) => ({
+      userId: userWithClosure.userId,
+      message: makeNotificationMessage(userWithClosure.closures),
     }));
 
   return notifications;

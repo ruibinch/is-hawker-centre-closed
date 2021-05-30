@@ -20,7 +20,7 @@ export type Dimensions = {
   height: number;
 };
 
-export type Result = {
+export type Closure = {
   id: string;
   hawkerCentre: string;
   startDate: string;

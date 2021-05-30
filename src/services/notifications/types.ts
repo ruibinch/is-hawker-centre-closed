@@ -1,16 +1,16 @@
-import { Result } from '../../models/types';
+import { Closure } from '../../models/types';
 import { BaseResponse } from '../../utils/types';
 
-export type UserWithResult = {
+export type UserWithClosure = {
   userId: number;
-  results: Result[];
+  closures: Closure[];
 };
 
 export type GetUsersWithFavsClosedTodayResponse = BaseResponse &
   (
     | {
         success: true;
-        output: UserWithResult[];
+        output: UserWithClosure[];
       }
     | { success: false }
   );

@@ -1,4 +1,4 @@
-import { Result } from '../../models/types';
+import { Closure } from '../../models/types';
 import { BaseResponse } from '../../utils/types';
 
 export type SearchQuery = {
@@ -10,7 +10,7 @@ export type SearchResponse = BaseResponse &
     | {
         success: true;
         params: SearchObject;
-        results: Result[];
+        closures: Closure[];
       }
     | {
         success: false;

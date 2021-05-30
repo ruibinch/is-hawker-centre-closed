@@ -1,9 +1,9 @@
 import { parseISO } from 'date-fns';
 
-import { getAllResults } from '../../models/Result';
+import { getAllClosures } from '../../models/Closure';
 import { getAllUsers } from '../../models/User';
 import { currentDate, isWithinDateBounds } from '../../utils/date';
-import { GetUsersWithFavsClosedTodayResponse, UserWithResult } from './types';
+import { GetUsersWithFavsClosedTodayResponse, UserWithClosure } from './types';
 
 /**
  * Returns a list of users along with their saved favourite hawker centres that are closed today.
@@ -13,31 +13,31 @@ export async function getUsersWithFavsClosedToday(): Promise<GetUsersWithFavsClo
   if (!getAllUsersResponse.success) return { success: false };
   const usersAll = getAllUsersResponse.output;
 
-  const getAllResultsResponse = await getAllResults();
-  if (!getAllResultsResponse.success) return { success: false };
-  const resultsAll = getAllResultsResponse.output;
+  const getAllClosuresResponse = await getAllClosures();
+  if (!getAllClosuresResponse.success) return { success: false };
+  const closuresAll = getAllClosuresResponse.output;
 
-  const resultsCurrent = resultsAll.filter((result) =>
+  const closuresCurrent = closuresAll.filter((closure) =>
     isWithinDateBounds(
       currentDate(),
-      parseISO(result.startDate),
-      parseISO(result.endDate),
+      parseISO(closure.startDate),
+      parseISO(closure.endDate),
     ),
   );
 
   const usersWithNotifications = usersAll.filter((user) => user.notifications);
 
   const usersWithFavsClosedToday = usersWithNotifications.reduce(
-    (_usersWithFavsClosedToday: UserWithResult[], user) => {
+    (_usersWithFavsClosedToday: UserWithClosure[], user) => {
       const userFavHCIds = user.favourites.map((fav) => fav.hawkerCentreId);
-      const applicableResults = resultsCurrent.filter((result) =>
-        userFavHCIds.includes(result.hawkerCentreId),
+      const applicableClosures = closuresCurrent.filter((closure) =>
+        userFavHCIds.includes(closure.hawkerCentreId),
       );
 
-      if (applicableResults.length > 0) {
+      if (applicableClosures.length > 0) {
         _usersWithFavsClosedToday.push({
           userId: user.userId,
-          results: applicableResults,
+          closures: applicableClosures,
         });
       }
       return _usersWithFavsClosedToday;

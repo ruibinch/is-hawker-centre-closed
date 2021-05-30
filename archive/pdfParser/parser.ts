@@ -5,7 +5,7 @@ import {
   Dimensions,
   TextBox,
   TextContentItem,
-  Result,
+  Closure,
 } from './types';
 import {
   generateHash,
@@ -157,7 +157,7 @@ function parseRows(
  *   - Converts the dates to ISO8601 format
  * - Adds a SHA1-hash ID to prevent duplicate entries from being saved
  */
-function packageIntoResult(rowsRaw: Record<string, TextBox[]>[]): Result[] {
+function packageIntoResult(rowsRaw: Record<string, TextBox[]>[]): Closure[] {
   const cleanTextInRow = (row: TextBox[], isDate = false) => {
     const texts = row.map((entry) => entry.text);
     let text = texts.join('').trim();

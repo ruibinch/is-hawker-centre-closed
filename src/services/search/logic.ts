@@ -5,8 +5,8 @@ import {
   parseISO,
 } from 'date-fns';
 
-import { getAllResults } from '../../models/Result';
-import { Result } from '../../models/types';
+import { getAllClosures } from '../../models/Closure';
+import { Closure } from '../../models/types';
 import { currentDate, isWithinDateBounds } from '../../utils/date';
 import { extractSearchModifier } from './searchModifier';
 import { SearchModifier, SearchObject, SearchResponse } from './types';
@@ -15,25 +15,25 @@ export async function processSearch(term: string): Promise<SearchResponse> {
   const searchParams = parseSearchTerm(term);
   const { keyword, modifier } = searchParams;
 
-  const getAllResultsResponse = await getAllResults();
-  if (!getAllResultsResponse.success) return { success: false };
-  const resultsAll = getAllResultsResponse.output;
+  const getAllClosuresResponse = await getAllClosures();
+  if (!getAllClosuresResponse.success) return { success: false };
+  const closuresAll = getAllClosuresResponse.output;
 
-  const resultsFilteredByKeyword = filterByKeyword(resultsAll, keyword);
+  const closuresFilteredByKeyword = filterByKeyword(closuresAll, keyword);
 
-  const resultsFilteredByKeywordAndDate = filterByDate(
-    resultsFilteredByKeyword,
+  const closuresFilteredByKeywordAndDate = filterByDate(
+    closuresFilteredByKeyword,
     modifier,
   );
 
-  const results = sortInDateAscThenAlphabeticalOrder(
-    resultsFilteredByKeywordAndDate,
+  const closures = sortInDateAscThenAlphabeticalOrder(
+    closuresFilteredByKeywordAndDate,
   );
 
   return {
     success: true,
     params: searchParams,
-    results,
+    closures,
   };
 }
 
@@ -60,37 +60,37 @@ function parseSearchTerm(term: string): SearchObject {
 }
 
 /**
- * Filters the list of results by keyword matching the hawker centre name or secondary name.
+ * Filters the list of closures by keyword matching the hawker centre name or secondary name.
  * Searches across the individual words in the input keyword.
  */
-function filterByKeyword(results: Result[], keyword: string) {
+function filterByKeyword(closures: Closure[], keyword: string) {
   if (keyword === '') {
-    return results;
+    return closures;
   }
 
   const searchKeywords = keyword.split(' ');
 
-  return results.filter((result) =>
+  return closures.filter((closure) =>
     searchKeywords.every((searchKeyword) => {
       const filterRegex = new RegExp(`\\b${searchKeyword.toLowerCase()}`);
       return (
-        filterRegex.test(result.name.toLowerCase()) ||
-        (result.nameSecondary &&
-          filterRegex.test(result.nameSecondary.toLowerCase()))
+        filterRegex.test(closure.name.toLowerCase()) ||
+        (closure.nameSecondary &&
+          filterRegex.test(closure.nameSecondary.toLowerCase()))
       );
     }),
   );
 }
 
 /**
- * Filters the list of results by date based on the search modifier.
+ * Filters the list of closures by date based on the search modifier.
  */
-function filterByDate(results: Result[], modifier: SearchModifier) {
+function filterByDate(closures: Closure[], modifier: SearchModifier) {
   const currDate = currentDate();
 
-  return results.filter((result) => {
-    const startDate = parseISO(result.startDate);
-    const endDate = parseISO(result.endDate);
+  return closures.filter((closure) => {
+    const startDate = parseISO(closure.startDate);
+    const endDate = parseISO(closure.endDate);
 
     return (() => {
       if (modifier === 'today') {
@@ -119,9 +119,9 @@ function filterByDate(results: Result[], modifier: SearchModifier) {
  * 3. Alphabetical order of hawker centre name
  */
 export function sortInDateAscThenAlphabeticalOrder(
-  results: Result[],
-): Result[] {
-  return [...results].sort((a, b) => {
+  closures: Closure[],
+): Closure[] {
+  return [...closures].sort((a, b) => {
     const aStartDate = parseISO(a.startDate);
     const aEndDate = parseISO(a.endDate);
     const bStartDate = parseISO(b.startDate);

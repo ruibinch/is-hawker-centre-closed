@@ -20,9 +20,9 @@ type HawkerCentreClosure = {
   endDate: string;
 };
 
-export type Result = HawkerCentre & HawkerCentreClosure;
+export type Closure = HawkerCentre & HawkerCentreClosure;
 
-export type ResultPartial = HawkerCentre & Partial<HawkerCentreClosure>;
+export type ClosurePartial = HawkerCentre & Partial<HawkerCentreClosure>;
 
 export type UserFavourite = {
   hawkerCentreId: number;

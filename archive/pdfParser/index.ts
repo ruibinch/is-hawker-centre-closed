@@ -1,9 +1,9 @@
 import fs from 'fs';
 import pdf from 'pdf-parse';
 
-// import { uploadResults } from '../../common/dynamodb';
+// import { uploadClosures } from '../../common/dynamodb';
 import { renderPage } from './parser';
-import { Result } from './types';
+import { Closure } from './types';
 import { isBlank } from './utils';
 
 const args = process.argv.slice(2);
@@ -19,27 +19,27 @@ pdf(dataBuffer, {
 }).then((data) => {
   const outputs = data.text.split('\n');
 
-  let results: Result[] = [];
+  let closures: Closure[] = [];
   outputs.forEach((output) => {
     if (isBlank(output)) return;
 
     const outputJson = JSON.parse(output);
-    results = [...results, ...outputJson];
+    closures = [...closures, ...outputJson];
   });
 
   if (isUploadToAws === 'true') {
-    console.log(`[${fileName}.pdf] ${results.length} entries found`);
+    console.log(`[${fileName}.pdf] ${closures.length} entries found`);
     console.log(`[${fileName}.pdf] Uploading to AWS`);
-    // uploadResults(results);
+    // uploadClosures(closures);
   } else {
     console.log(
-      results
+      closures
         .map(
-          (result) =>
-            `${result.hawkerCentre} (${result.startDate} to ${result.endDate})`,
+          (closure) =>
+            `${closure.hawkerCentre} (${closure.startDate} to ${closure.endDate})`,
         )
         .join('\n\n'),
     );
-    console.log(`[${fileName}.pdf] ${results.length} entries found`);
+    console.log(`[${fileName}.pdf] ${closures.length} entries found`);
   }
 });

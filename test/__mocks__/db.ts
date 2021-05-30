@@ -1,7 +1,7 @@
-import { HawkerCentre, Result, User } from '../../src/models/types';
+import { HawkerCentre, Closure, User } from '../../src/models/types';
 import { TelegramUser } from '../../src/utils/telegram';
 
-export const mockResults: Result[] = [
+export const mockClosures: Closure[] = [
   {
     id: '111',
     hawkerCentreId: 1,

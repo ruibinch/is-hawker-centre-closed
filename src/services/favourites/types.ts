@@ -1,4 +1,4 @@
-import { HawkerCentre, ResultPartial } from '../../models/types';
+import { HawkerCentre, ClosurePartial } from '../../models/types';
 import { BaseResponse, BotResponse } from '../../utils/types';
 
 export type FindHCResponse = BaseResponse &
@@ -37,11 +37,11 @@ export type DeleteHCResponse = BaseResponse &
       ))
   );
 
-export type GetUserFavsWithResultsResponse = BaseResponse &
+export type GetUserFavsWithClosuresResponse = BaseResponse &
   (
     | {
         success: true;
-        results: ResultPartial[];
+        closures: ClosurePartial[];
       }
     | {
         success: false;

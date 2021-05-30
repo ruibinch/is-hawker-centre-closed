@@ -1,12 +1,12 @@
 import * as AWS from 'aws-sdk';
 
 import { initAWSConfig } from '../aws/config';
+import { makeClosureSchema, makeClosureTableName } from '../models/Closure';
 import { makeFeedbackSchema, makeFeedbackTableName } from '../models/Feedback';
 import {
   makeHawkerCentreSchema,
   makeHawkerCentreTableName,
 } from '../models/HawkerCentre';
-import { makeResultsSchema, makeResultsTableName } from '../models/Result';
 import { makeUserSchema, makeUserTableName } from '../models/User';
 import { Stage } from '../utils/types';
 
@@ -18,12 +18,15 @@ const dynamoDb = new AWS.DynamoDB();
 
 async function createTables() {
   Promise.all(
-    Object.values(Stage).map(async (stage) => {
-      const resultsTableCreateOutput = await dynamoDb
-        .createTable(makeResultsSchema(stage))
+    // FIXME: explore on improving this
+    ['dev', 'prod'].map(async (stageName) => {
+      const stage = stageName as Stage;
+
+      const closuresTableCreateOutput = await dynamoDb
+        .createTable(makeClosureSchema(stage))
         .promise();
       console.log(
-        `Created table "${resultsTableCreateOutput.TableDescription?.TableName}"`,
+        `Created table "${closuresTableCreateOutput.TableDescription?.TableName}"`,
       );
 
       const hawkerCentreTableCreateOutput = await dynamoDb
@@ -52,14 +55,15 @@ async function createTables() {
 
 async function deleteTables() {
   Promise.all(
-    Object.values(Stage).map(async (stage) => {
-      const resultsTableDeleteOutput = await dynamoDb
+    ['dev', 'prod'].map(async (stageName) => {
+      const stage = stageName as Stage;
+      const closuresTableDeleteOutput = await dynamoDb
         .deleteTable({
-          TableName: makeResultsTableName(stage),
+          TableName: makeClosureTableName(stage),
         })
         .promise();
       console.log(
-        `Deleted table "${resultsTableDeleteOutput.TableDescription?.TableName}"`,
+        `Deleted table "${closuresTableDeleteOutput.TableDescription?.TableName}"`,
       );
 
       const hawkerCentreTableDeleteOutput = await dynamoDb

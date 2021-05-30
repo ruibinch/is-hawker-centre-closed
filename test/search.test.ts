@@ -3,10 +3,10 @@ import { parseISO } from 'date-fns';
 
 import * as sender from '../src/bot/sender';
 import { initDictionary, t } from '../src/lang';
-import * as Result from '../src/models/Result';
-import { GetAllResultsResponse } from '../src/models/Result';
+import * as Closure from '../src/models/Closure';
+import { GetAllClosuresResponse } from '../src/models/Closure';
 import * as favouritesIndex from '../src/services/favourites/index';
-import { mockResults } from './__mocks__/db';
+import { mockClosures } from './__mocks__/db';
 import { assertBotResponse, makeBotWrapper } from './helpers/bot';
 
 describe('Search module', () => {
@@ -16,7 +16,7 @@ describe('Search module', () => {
   let dateSpy: jest.SpyInstance;
   let sendMessageSpy: jest.SpyInstance;
   let maybeHandleFavouriteSelectionSpy: jest.SpyInstance;
-  let getAllResultsSpy: jest.SpyInstance;
+  let getAllClosuresSpy: jest.SpyInstance;
 
   beforeAll(() => {
     initDictionary();
@@ -25,11 +25,11 @@ describe('Search module', () => {
       .spyOn(favouritesIndex, 'maybeHandleFavouriteSelection')
       .mockImplementation(() => Promise.resolve({ success: false }));
 
-    const results = { success: true, output: mockResults } as unknown;
-    getAllResultsSpy = jest
-      .spyOn(Result, 'getAllResults')
+    const closures = { success: true, output: mockClosures } as unknown;
+    getAllClosuresSpy = jest
+      .spyOn(Closure, 'getAllClosures')
       .mockImplementation(
-        () => Promise.resolve(results) as Promise<GetAllResultsResponse>,
+        () => Promise.resolve(closures) as Promise<GetAllClosuresResponse>,
       );
   });
 
@@ -45,7 +45,7 @@ describe('Search module', () => {
     mockCallback.mockRestore();
     dateSpy.mockRestore();
     maybeHandleFavouriteSelectionSpy.mockRestore();
-    getAllResultsSpy.mockRestore();
+    getAllClosuresSpy.mockRestore();
   });
 
   describe('when data exists in DB', () => {
@@ -59,7 +59,7 @@ describe('Search module', () => {
       dateSpy.mockRestore();
     });
 
-    it('["littleroot"] returns a single result occurring today', async () => {
+    it('["littleroot"] returns a single closure occurring today', async () => {
       const expectedMessage =
         t('search.hawker-centres-closed.with-keyword.present', {
           keyword: 'containing the keyword *littleroot* ',
@@ -76,7 +76,7 @@ describe('Search module', () => {
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
-    it('["littleroot today"] returns a single result occurring today', async () => {
+    it('["littleroot today"] returns a single closure occurring today', async () => {
       const expectedMessage =
         t('search.hawker-centres-closed.with-keyword.present', {
           keyword: 'containing the keyword *littleroot* ',
@@ -93,7 +93,7 @@ describe('Search module', () => {
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
-    it('["rustboro"] does not return any result if there is no result occurring today', async () => {
+    it('["rustboro"] does not return any closure if there is no closure occurring today', async () => {
       const expectedMessage = t('search.no-hawker-centres-closed.present', {
         keyword: 'containing the keyword *rustboro* ',
         timePeriod: 'today',
@@ -103,7 +103,7 @@ describe('Search module', () => {
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
-    it('["slateport tmr"] returns all results occurring tomorrow', async () => {
+    it('["slateport tmr"] returns all closures occurring tomorrow', async () => {
       const expectedMessage =
         t('search.hawker-centres-closed.with-keyword.future', {
           keyword: 'containing the keyword *slateport* ',
@@ -120,7 +120,7 @@ describe('Search module', () => {
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
-    it('["slateport tomorrow"] returns all results occurring tomorrow', async () => {
+    it('["slateport tomorrow"] returns all closures occurring tomorrow', async () => {
       const expectedMessage =
         t('search.hawker-centres-closed.with-keyword.future', {
           keyword: 'containing the keyword *slateport* ',
@@ -137,7 +137,7 @@ describe('Search module', () => {
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
-    it('["oldale month"] returns results occurring in the current month', async () => {
+    it('["oldale month"] returns closures occurring in the current month', async () => {
       const expectedMessage =
         t('search.hawker-centres-closed.with-keyword.present', {
           keyword: 'containing the keyword *oldale* ',
@@ -196,7 +196,7 @@ describe('Search module', () => {
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
-    it('["verdanturf next month"] returns results occurring in the next month', async () => {
+    it('["verdanturf next month"] returns closures occurring in the next month', async () => {
       const expectedMessage =
         t('search.hawker-centres-closed.with-keyword.future', {
           keyword: 'containing the keyword *verdanturf* ',
@@ -213,7 +213,7 @@ describe('Search module', () => {
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
-    it('["melville next month"] returns results occurring in the next month with the long-term renovation works suffix', async () => {
+    it('["melville next month"] returns closures occurring in the next month with the long-term renovation works suffix', async () => {
       const expectedMessage =
         t('search.hawker-centres-closed.with-keyword.future', {
           keyword: 'containing the keyword *melville* ',
@@ -230,7 +230,7 @@ describe('Search module', () => {
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
-    it('["Today"] returns all results occurring today', async () => {
+    it('["Today"] returns all closures occurring today', async () => {
       const expectedMessage =
         t('search.hawker-centres-closed.without-keyword.present', {
           numHC: 2,
@@ -255,7 +255,7 @@ describe('Search module', () => {
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
-    it('["Tmr"] returns all results occurring tomorrow', async () => {
+    it('["Tmr"] returns all closures occurring tomorrow', async () => {
       const expectedMessage =
         t('search.hawker-centres-closed.without-keyword.future', {
           numHC: 2,
@@ -280,7 +280,7 @@ describe('Search module', () => {
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
-    it('["Tomorrow"] returns all results occurring tomorrow', async () => {
+    it('["Tomorrow"] returns all closures occurring tomorrow', async () => {
       const expectedMessage =
         t('search.hawker-centres-closed.without-keyword.future', {
           numHC: 2,
@@ -305,7 +305,7 @@ describe('Search module', () => {
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
-    it('["Month"] returns all results occurring in the current month', async () => {
+    it('["Month"] returns all closures occurring in the current month', async () => {
       const expectedMessage =
         t('search.hawker-centres-closed.without-keyword.present', {
           numHC: 7,
@@ -360,7 +360,7 @@ describe('Search module', () => {
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
-    it('["Next month"] returns all results occurring in the current month', async () => {
+    it('["Next month"] returns all closures occurring in the current month', async () => {
       const expectedMessage =
         t('search.hawker-centres-closed.without-keyword.future', {
           numHC: 3,
@@ -403,7 +403,7 @@ describe('Search module', () => {
       dateSpy.mockRestore();
     });
 
-    it('["Today"] returns no results', async () => {
+    it('["Today"] returns no closures', async () => {
       const expectedMessage = t('search.no-hawker-centres-closed.present', {
         keyword: '',
         timePeriod: 'today',
@@ -413,7 +413,7 @@ describe('Search module', () => {
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
-    it('["Tmr"] returns no results', async () => {
+    it('["Tmr"] returns no closures', async () => {
       const expectedMessage = t('search.no-hawker-centres-closed.future', {
         keyword: '',
         timePeriod: 'tomorrow',
@@ -423,7 +423,7 @@ describe('Search module', () => {
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
-    it('["Tomorrow"] returns no results', async () => {
+    it('["Tomorrow"] returns no closures', async () => {
       const expectedMessage = t('search.no-hawker-centres-closed.future', {
         keyword: '',
         timePeriod: 'tomorrow',
@@ -433,7 +433,7 @@ describe('Search module', () => {
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
-    it('["Month"] returns no results', async () => {
+    it('["Month"] returns no closures', async () => {
       const expectedMessage = t('search.no-hawker-centres-closed.present', {
         keyword: '',
         timePeriod: 'this month',

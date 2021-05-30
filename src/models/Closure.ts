@@ -2,24 +2,24 @@ import * as AWS from 'aws-sdk';
 
 import {
   initAWSConfig,
-  TABLE_NAME_RESULTS,
-  TABLE_RESULTS,
+  TABLE_NAME_CLOSURES,
+  TABLE_CLOSURES,
 } from '../aws/config';
 import { getDynamoDBBillingDetails } from '../aws/dynamodb';
 import { BaseResponse, getStage, Stage } from '../utils/types';
-import { Result } from './types';
+import { Closure } from './types';
 
 initAWSConfig();
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
-export const makeResultsTableName = (stage: Stage): string =>
-  `${TABLE_NAME_RESULTS}-${stage}`;
+export const makeClosureTableName = (stage: Stage): string =>
+  `${TABLE_NAME_CLOSURES}-${stage}`;
 
-export const makeResultsSchema = (
+export const makeClosureSchema = (
   stage: Stage,
 ): AWS.DynamoDB.CreateTableInput => ({
   ...getDynamoDBBillingDetails(),
-  TableName: makeResultsTableName(stage),
+  TableName: makeClosureTableName(stage),
   KeySchema: [
     {
       AttributeName: 'id',
@@ -36,33 +36,33 @@ export const makeResultsSchema = (
   ],
 });
 
-export async function uploadResults(results: Result[]): Promise<void> {
-  const resultsTable = makeResultsTableName(getStage());
+export async function uploadClosures(closures: Closure[]): Promise<void> {
+  const closuresTable = makeClosureTableName(getStage());
 
   await Promise.all(
-    results.map((result) => {
-      const resultInput: AWS.DynamoDB.DocumentClient.PutItemInput = {
-        TableName: resultsTable,
-        Item: result,
+    closures.map((closure) => {
+      const closureInput: AWS.DynamoDB.DocumentClient.PutItemInput = {
+        TableName: closuresTable,
+        Item: closure,
         ConditionExpression: 'attribute_not_exists(id)',
       };
-      return dynamoDb.put(resultInput).promise();
+      return dynamoDb.put(closureInput).promise();
     }),
   );
 }
 
-export type GetAllResultsResponse = BaseResponse &
+export type GetAllClosuresResponse = BaseResponse &
   (
     | {
         success: true;
-        output: Result[];
+        output: Closure[];
       }
     | { success: false }
   );
 
-export async function getAllResults(): Promise<GetAllResultsResponse> {
+export async function getAllClosures(): Promise<GetAllClosuresResponse> {
   const params: AWS.DynamoDB.DocumentClient.ScanInput = {
-    TableName: TABLE_RESULTS,
+    TableName: TABLE_CLOSURES,
   };
 
   const scanOutput = await dynamoDb.scan(params).promise();
@@ -73,6 +73,6 @@ export async function getAllResults(): Promise<GetAllResultsResponse> {
 
   return {
     success: true,
-    output: scanOutput.Items as Result[],
+    output: scanOutput.Items as Closure[],
   };
 }

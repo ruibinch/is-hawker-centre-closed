@@ -3,13 +3,13 @@ import { parseISO } from 'date-fns';
 
 import * as sender from '../src/bot/sender';
 import { initDictionary, t } from '../src/lang';
+import * as Closure from '../src/models/Closure';
+import { GetAllClosuresResponse } from '../src/models/Closure';
 import * as HawkerCentre from '../src/models/HawkerCentre';
 import {
   GetAllHCResponse,
   GetHCByIdResponse,
 } from '../src/models/HawkerCentre';
-import * as Result from '../src/models/Result';
-import { GetAllResultsResponse } from '../src/models/Result';
 import * as User from '../src/models/User';
 import { GetUserByIdResponse } from '../src/models/User';
 import * as favouritesIndex from '../src/services/favourites/index';
@@ -17,7 +17,7 @@ import * as feedbackIndex from '../src/services/feedback/index';
 import * as searchIndex from '../src/services/search/index';
 import {
   mockHawkerCentres,
-  mockResults,
+  mockClosures,
   mockUser,
   mockUserInFavMode,
   mockUserWithNoFavs,
@@ -40,7 +40,7 @@ describe('Favourites module', () => {
   let updateUserFavouritesSpy: jest.SpyInstance;
   let updateUserInFavouritesModeSpy: jest.SpyInstance;
   let updateUserNotificationsSpy: jest.SpyInstance;
-  let getAllResultsSpy: jest.SpyInstance;
+  let getAllClosuresSpy: jest.SpyInstance;
 
   beforeAll(() => {
     initDictionary();
@@ -76,11 +76,11 @@ describe('Favourites module', () => {
         () => Promise.resolve(user) as Promise<GetUserByIdResponse>,
       );
 
-    const results = { success: true, output: mockResults } as unknown;
-    getAllResultsSpy = jest
-      .spyOn(Result, 'getAllResults')
+    const closures = { success: true, output: mockClosures } as unknown;
+    getAllClosuresSpy = jest
+      .spyOn(Closure, 'getAllClosures')
       .mockImplementation(
-        () => Promise.resolve(results) as Promise<GetAllResultsResponse>,
+        () => Promise.resolve(closures) as Promise<GetAllClosuresResponse>,
       );
   });
 
@@ -117,7 +117,7 @@ describe('Favourites module', () => {
     getAllHawkerCentresSpy.mockRestore();
     getHawkerCentreByIdSpy.mockRestore();
     getUserByIdSpy.mockRestore();
-    getAllResultsSpy.mockRestore();
+    getAllClosuresSpy.mockRestore();
   });
 
   describe('empty commands', () => {

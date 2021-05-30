@@ -1,5 +1,5 @@
 import { t } from '../../lang';
-import { HawkerCentre, ResultPartial } from '../../models/types';
+import { HawkerCentre, ClosurePartial } from '../../models/types';
 import { formatDateDisplay } from '../../utils/date';
 import { MAX_CHOICES } from './constants';
 
@@ -60,13 +60,13 @@ export function makeDeleteErrorMessage(numFavourites: number): string {
 }
 
 export function makeFavouritesListMessage(
-  hawkerCentresWithResults: ResultPartial[],
+  hawkerCentresWithClosures: ClosurePartial[],
 ): string {
-  if (hawkerCentresWithResults.length === 0) {
+  if (hawkerCentresWithClosures.length === 0) {
     return makeNoSavedFavouritesMessage();
   }
 
-  const hcOutput = hawkerCentresWithResults
+  const hcOutput = hawkerCentresWithClosures
     .map((hc, idx) => {
       const { startDate, endDate, reason } = hc;
 

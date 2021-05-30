@@ -1,12 +1,12 @@
 /* eslint-disable max-len */
 import { formatISO, isPast, parseISO } from 'date-fns';
 
+import { getAllClosures } from '../../models/Closure';
 import {
   getAllHawkerCentres,
   getHawkerCentreById,
 } from '../../models/HawkerCentre';
-import { getAllResults } from '../../models/Result';
-import { HawkerCentre, Result, User, UserFavourite } from '../../models/types';
+import { HawkerCentre, Closure, User, UserFavourite } from '../../models/types';
 import {
   getUserById,
   addUser,
@@ -26,7 +26,7 @@ import {
   AddHCResponse,
   DeleteHCResponse,
   FindHCResponse,
-  GetUserFavsWithResultsResponse,
+  GetUserFavsWithClosuresResponse,
   IsUserInFavModeResponse,
   ManageNotificationsResponse,
   ToggleUserInFavModeResponse,
@@ -41,7 +41,7 @@ export async function findHCByKeyword(
   const hawkerCentres = getAllHCResponse.output;
   const hcFilteredByKeyword = filterByKeyword(hawkerCentres, keyword);
 
-  // if there is only 1 result and the keyword is an exact match, return `isExactMatch` set to true
+  // if there is only 1 HC result and the keyword is an exact match, return `isExactMatch` set to true
   if (hcFilteredByKeyword.length === 1) {
     if (keyword === hcFilteredByKeyword[0].name) {
       return {
@@ -173,9 +173,9 @@ export async function deleteHCFromFavourites(props: {
 /**
  * Returns the user's favourites list, along with the results of their next closure times.
  */
-export async function getUserFavouritesWithResults(
+export async function getUserFavouritesWithClosures(
   telegramUser: TelegramUser,
-): Promise<GetUserFavsWithResultsResponse> {
+): Promise<GetUserFavsWithClosuresResponse> {
   const { id: userId } = telegramUser;
 
   const getUserResponse = await getUserById(userId);
@@ -183,30 +183,32 @@ export async function getUserFavouritesWithResults(
     // user does not exist in DB
     return {
       success: true,
-      results: [],
+      closures: [],
     };
   }
 
   const user = getUserResponse.output;
   const userFavHCIds = user.favourites.map((fav) => fav.hawkerCentreId);
 
-  const getAllResultsResponse = await getAllResults();
-  if (!getAllResultsResponse.success) return { success: false };
-  const resultsAll = getAllResultsResponse.output;
+  const getAllClosuresResponse = await getAllClosures();
+  if (!getAllClosuresResponse.success) return { success: false };
+  const closuresAll = getAllClosuresResponse.output;
 
   const getAllHCResponse = await getAllHawkerCentres();
   if (!getAllHCResponse.success) return { success: false };
   const hawkerCentres = getAllHCResponse.output;
 
-  const userFavsWithResults = userFavHCIds.map((favHCId) => {
-    const resultsForHawkerCentre = resultsAll.filter(
-      (result) => result.hawkerCentreId === favHCId,
+  const userFavsWithClosures = userFavHCIds.map((favHCId) => {
+    const closuresForHawkerCentre = closuresAll.filter(
+      (closure) => closure.hawkerCentreId === favHCId,
     );
 
-    const nextOccurringResult = getNextOccurringResult(resultsForHawkerCentre);
+    const nextOccurringClosure = getNextOccurringClosure(
+      closuresForHawkerCentre,
+    );
 
-    // if there is no next occurring result, fallback to returning the basic info
-    if (!nextOccurringResult) {
+    // if there is no next occurring closure, fallback to returning the basic info
+    if (!nextOccurringClosure) {
       const hawkerCentre = hawkerCentres.find(
         (hc) => hc.hawkerCentreId === favHCId,
       );
@@ -218,12 +220,12 @@ export async function getUserFavouritesWithResults(
       return hawkerCentre;
     }
 
-    return nextOccurringResult;
+    return nextOccurringClosure;
   });
 
   return {
     success: true,
-    results: userFavsWithResults,
+    closures: userFavsWithClosures,
   };
 }
 
@@ -368,14 +370,14 @@ function filterByKeyword(
 }
 
 /**
- * Returns the result entry that is the next to occur w.r.t. the current date (includes results occurring today).
+ * Returns the closure entry that is the next to occur w.r.t. the current date (includes closures occurring today).
  */
-function getNextOccurringResult(results: Result[]): Result | undefined {
-  const resultsSorted = sortInDateAscThenAlphabeticalOrder(results);
+function getNextOccurringClosure(closures: Closure[]): Closure | undefined {
+  const closuresSorted = sortInDateAscThenAlphabeticalOrder(closures);
 
-  const resultsSortedAndFiltered = resultsSorted.filter(
-    (result) => !isPast(parseISO(result.endDate)),
+  const closuresSortedAndFiltered = closuresSorted.filter(
+    (closure) => !isPast(parseISO(closure.endDate)),
   );
 
-  return resultsSortedAndFiltered[0];
+  return closuresSortedAndFiltered[0];
 }

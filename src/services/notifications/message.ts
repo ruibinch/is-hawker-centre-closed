@@ -1,28 +1,28 @@
 import { t } from '../../lang';
-import { ClosureReason, Result } from '../../models/types';
+import { ClosureReason, Closure } from '../../models/types';
 import { formatDateDisplay } from '../../utils/date';
 
-export function makeNotificationMessage(results: Result[]): string {
+export function makeNotificationMessage(closures: Closure[]): string {
   let reply = t(
-    results.length === 1
+    closures.length === 1
       ? 'notifications.overview.singular'
       : 'notifications.overview.plural',
     {
       emoji: '\u{1F4A1}',
-      numHC: results.length,
+      numHC: closures.length,
     },
   );
 
-  const resultsInText = results.map((result) =>
+  const closuresInText = closures.map((closure) =>
     t('notifications.item', {
-      hcName: result.name,
-      startDate: formatDateDisplay(result.startDate, true),
-      endDate: formatDateDisplay(result.endDate, true),
-      closureReason: makeClosureReasonSnippet(result.reason),
+      hcName: closure.name,
+      startDate: formatDateDisplay(closure.startDate, true),
+      endDate: formatDateDisplay(closure.endDate, true),
+      closureReason: makeClosureReasonSnippet(closure.reason),
     }),
   );
 
-  reply += resultsInText.join('\n\n');
+  reply += closuresInText.join('\n\n');
   return reply;
 }
 

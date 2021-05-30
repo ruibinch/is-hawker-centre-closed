@@ -65,8 +65,8 @@ export function generateHash(...inputs: string[]): string {
   return new Hashes.SHA1().hex(inputs.join(''));
 }
 
-export function writeFile(results: unknown[], filename: string): void {
-  fs.writeFile(`./data/${filename}`, JSON.stringify(results), (err) => {
+export function writeFile(output: unknown[], filename: string): void {
+  fs.writeFile(`./data/${filename}`, JSON.stringify(output), (err) => {
     if (err) throw err;
     console.log(`Data successfully written to ${filename}`);
   });

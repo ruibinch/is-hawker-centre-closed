@@ -1,6 +1,6 @@
+import { uploadClosures } from '../models/Closure';
 import { uploadHawkerCentres } from '../models/HawkerCentre';
-import { uploadResults } from '../models/Result';
-import { ClosureReason, HawkerCentre, Result } from '../models/types';
+import { ClosureReason, HawkerCentre, Closure } from '../models/types';
 import { currentDateInYYYYMMDD, toDateISO8601 } from '../utils/date';
 import { HawkerCentreClosureRecord } from './types';
 import {
@@ -14,23 +14,23 @@ const args = process.argv.slice(2);
 const [isUploadToAws] = args;
 
 getRawRecords().then(async (recordsRaw) => {
-  const results = generateResults(recordsRaw);
+  const closures = generateClosures(recordsRaw);
 
-  const hawkerCentres: HawkerCentre[] = getHawkerCentresList(results);
+  const hawkerCentres: HawkerCentre[] = getHawkerCentresList(closures);
 
-  console.log(`${results.length} results found`);
+  console.log(`${closures.length} closures found`);
   console.log(`${hawkerCentres.length} hawker centres found`);
-  writeFile(results, `results-${currentDateInYYYYMMDD()}.json`);
+  writeFile(closures, `closures-${currentDateInYYYYMMDD()}.json`);
   writeFile(hawkerCentres, `hawkerCentres-${currentDateInYYYYMMDD()}.json`);
 
   if (isUploadToAws !== 'false') {
-    await uploadResults(results);
+    await uploadClosures(closures);
     await uploadHawkerCentres(hawkerCentres);
   }
 });
 
-function generateResults(recordsRaw: HawkerCentreClosureRecord[]): Result[] {
-  return recordsRaw.reduce((_results: Result[], recordRaw) => {
+function generateClosures(recordsRaw: HawkerCentreClosureRecord[]): Closure[] {
+  return recordsRaw.reduce((_closures: Closure[], recordRaw) => {
     const {
       _id: hawkerCentreId,
       name,
@@ -65,28 +65,28 @@ function generateResults(recordsRaw: HawkerCentreClosureRecord[]): Result[] {
       [otherWorksStartDate, otherWorksEndDate, 'renovation'],
     ].forEach(([startDate, endDate, reason]) => {
       if (startDate && endDate && reason) {
-        const result = generateResult({
+        const closure = generateClosure({
           hawkerCentreId,
           name,
           startDate,
           endDate,
           reason: reason as ClosureReason,
         });
-        _results.push(result);
+        _closures.push(closure);
       }
     });
 
-    return _results;
+    return _closures;
   }, []);
 }
 
-function generateResult(props: {
+function generateClosure(props: {
   hawkerCentreId: number;
   name: string;
   startDate: string;
   endDate: string;
   reason: ClosureReason;
-}): Result {
+}): Closure {
   const { hawkerCentreId, name, startDate, endDate, reason } = props;
 
   const id = generateHash(name, reason, startDate, endDate);
@@ -103,11 +103,11 @@ function generateResult(props: {
   };
 }
 
-function getHawkerCentresList(results: Result[]) {
-  const hawkerCentres = results.map((result) => ({
-    hawkerCentreId: result.hawkerCentreId,
-    name: result.name,
-    nameSecondary: result.nameSecondary,
+function getHawkerCentresList(closures: Closure[]) {
+  const hawkerCentres = closures.map((closure) => ({
+    hawkerCentreId: closure.hawkerCentreId,
+    name: closure.name,
+    nameSecondary: closure.nameSecondary,
   }));
 
   // remove duplicate entries

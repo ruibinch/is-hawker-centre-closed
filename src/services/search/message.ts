@@ -8,11 +8,11 @@ export function makeMessage(searchResponse: SearchResponse): string {
 
   const {
     params: { keyword, modifier },
-    results,
+    closures,
   } = searchResponse;
   let reply = '';
 
-  if (results.length === 0) {
+  if (closures.length === 0) {
     reply = t(
       isSearchModifierInFuture(modifier)
         ? 'search.no-hawker-centres-closed.future'
@@ -29,7 +29,7 @@ export function makeMessage(searchResponse: SearchResponse): string {
           ? 'search.hawker-centres-closed.without-keyword.future'
           : 'search.hawker-centres-closed.without-keyword.present',
         {
-          numHC: results.length,
+          numHC: closures.length,
           timePeriod: makeTimePeriodSnippet(modifier),
         },
       );
@@ -45,13 +45,13 @@ export function makeMessage(searchResponse: SearchResponse): string {
       );
     }
 
-    reply += results
-      .map((result) =>
+    reply += closures
+      .map((closure) =>
         t('search.item', {
-          hcName: result.name,
-          startDate: formatDateDisplay(result.startDate),
-          endDate: formatDateDisplay(result.endDate),
-          closureReason: makeClosureReasonSnippet(result.reason),
+          hcName: closure.name,
+          startDate: formatDateDisplay(closure.startDate),
+          endDate: formatDateDisplay(closure.endDate),
+          closureReason: makeClosureReasonSnippet(closure.reason),
         }),
       )
       .join('\n\n');
