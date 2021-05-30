@@ -8,25 +8,20 @@ export function makeMessage(searchResponse: SearchResponse): string {
 
   const {
     params: { keyword, modifier },
-    isDataPresent,
     results,
   } = searchResponse;
   let reply = '';
 
   if (results.length === 0) {
-    if (isDataPresent === false && modifier === 'nextMonth') {
-      reply = t('search.error.next-month-data-unavailable');
-    } else {
-      reply = t(
-        isSearchModifierInFuture(modifier)
-          ? 'search.no-hawker-centres-closed.future'
-          : 'search.no-hawker-centres-closed.present',
-        {
-          keyword: makeKeywordSnippet(keyword),
-          timePeriod: makeTimePeriodSnippet(modifier),
-        },
-      );
-    }
+    reply = t(
+      isSearchModifierInFuture(modifier)
+        ? 'search.no-hawker-centres-closed.future'
+        : 'search.no-hawker-centres-closed.present',
+      {
+        keyword: makeKeywordSnippet(keyword),
+        timePeriod: makeTimePeriodSnippet(modifier),
+      },
+    );
   } else {
     if (keyword === '') {
       reply = t(

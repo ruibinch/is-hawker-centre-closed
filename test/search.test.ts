@@ -442,12 +442,5 @@ describe('Search module', () => {
       await callBot('Month');
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
-
-    it('["Next month"] returns no results', async () => {
-      const expectedMessage = t('search.error.next-month-data-unavailable');
-
-      await callBot('Next month');
-      assertBotResponse(sendMessageSpy, expectedMessage);
-    });
   });
 });

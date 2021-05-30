@@ -29,7 +29,6 @@
   "general.command-help.explanation.favourites-section.third": "Typing /list will show you all your favourites as well as their next closure dates, making for an even easier way for you to check on their closure status\\!\n\n",
   "general.command-help.explanation.favourites-section.fourth": "When one of your favourite hawker centres is closed, a notification will be sent to you on that day at *6am SGT*\\. Use the /notify command to view/toggle your notification setting\\.",
   "search.example-format": "e\\.g\\. _{{searchTerm}}_ will display the hawker centres containing the keyword __{{keyword}}__ that are closed __{{modifier}}__\\.",
-  "search.error.next-month-data-unavailable": "No data is available for next month yet, check back again in a while\\!",
   "search.no-hawker-centres-closed.present": "All good\\! No hawker centres {{keyword}}are undergoing cleaning {{timePeriod}}\\.",
   "search.no-hawker-centres-closed.future": "All good\\! No hawker centres {{keyword}}will be undergoing cleaning {{timePeriod}}\\.",
   "search.hawker-centres-closed.without-keyword.present": "There are *{{numHC}}* hawker centres that are closed {{timePeriod}}:\n\n",

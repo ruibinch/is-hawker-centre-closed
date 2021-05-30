@@ -10,7 +10,6 @@ export type SearchResponse = BaseResponse &
     | {
         success: true;
         params: SearchObject;
-        isDataPresent?: boolean;
         results: Result[];
       }
     | {

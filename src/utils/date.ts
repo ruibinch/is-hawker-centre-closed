@@ -1,4 +1,4 @@
-import { addMonths, format, isToday, isTomorrow, parseISO } from 'date-fns';
+import { format, isToday, isTomorrow, parseISO } from 'date-fns';
 
 import { t } from '../lang';
 
@@ -40,14 +40,6 @@ export function formatDateDisplay(
   }
 
   return format(date, 'dd\\-MMM');
-}
-
-// Returns in YYYY-MM format
-export function getNextPeriod(): string {
-  const dateInNextPeriod = addMonths(currentDate(), 1);
-  return `${dateInNextPeriod.getFullYear()}-${padValueTo2Digits(
-    `${dateInNextPeriod.getMonth() + 1}`,
-  )}`;
 }
 
 /**

@@ -7,11 +7,7 @@ import {
 
 import { getAllResults } from '../../models/Result';
 import { Result } from '../../models/types';
-import {
-  currentDate,
-  getNextPeriod,
-  isWithinDateBounds,
-} from '../../utils/date';
+import { currentDate, isWithinDateBounds } from '../../utils/date';
 import { extractSearchModifier } from './searchModifier';
 import { SearchModifier, SearchObject, SearchResponse } from './types';
 
@@ -22,16 +18,6 @@ export async function processSearch(term: string): Promise<SearchResponse> {
   const getAllResultsResponse = await getAllResults();
   if (!getAllResultsResponse.success) return { success: false };
   const resultsAll = getAllResultsResponse.output;
-
-  const isDataPresent = checkIsDataPresent(resultsAll, modifier);
-  if (!isDataPresent) {
-    return {
-      success: true,
-      params: searchParams,
-      isDataPresent: false,
-      results: [],
-    };
-  }
 
   const resultsFilteredByKeyword = filterByKeyword(resultsAll, keyword);
 
@@ -71,22 +57,6 @@ function parseSearchTerm(term: string): SearchObject {
     keyword: term.slice(0, modifierStartIndex).trim(),
     modifier,
   };
-}
-
-/**
- * If modifier is "nextMonth", check if the data for that time period is present first.
- */
-// TODO: relook at the necessity of this function
-function checkIsDataPresent(results: Result[], modifier: SearchModifier) {
-  if (modifier !== 'nextMonth') return true;
-
-  // extract the YYYY-MM portion of the dates and remove duplicates
-  const timePeriods = [
-    ...new Set(results.map((rseult) => rseult.startDate.slice(0, 7))),
-  ];
-  const nextPeriod = getNextPeriod();
-
-  return timePeriods.includes(nextPeriod);
 }
 
 /**
