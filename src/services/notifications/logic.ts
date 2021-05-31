@@ -10,12 +10,12 @@ import { GetUsersWithFavsClosedTodayResponse, UserWithClosure } from './types';
  */
 export async function getUsersWithFavsClosedToday(): Promise<GetUsersWithFavsClosedTodayResponse> {
   const getAllUsersResponse = await getAllUsers();
-  if (!getAllUsersResponse.success) return { success: false };
-  const usersAll = getAllUsersResponse.output;
+  if (getAllUsersResponse.err) return { success: false };
+  const usersAll = getAllUsersResponse.val;
 
   const getAllClosuresResponse = await getAllClosures();
-  if (!getAllClosuresResponse.success) return { success: false };
-  const closuresAll = getAllClosuresResponse.output;
+  if (getAllClosuresResponse.err) return { success: false };
+  const closuresAll = getAllClosuresResponse.val;
 
   const closuresCurrent = closuresAll.filter((closure) =>
     isWithinDateBounds(

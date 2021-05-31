@@ -1,4 +1,5 @@
 import * as AWS from 'aws-sdk';
+import { Err, Ok, Result } from 'ts-results';
 
 import {
   initAWSConfig,
@@ -6,7 +7,8 @@ import {
   TABLE_CLOSURES,
 } from '../aws/config';
 import { getDynamoDBBillingDetails } from '../aws/dynamodb';
-import { BaseResponse, getStage, Stage } from '../utils/types';
+import { AWSError } from '../errors/AWSError';
+import { getStage, Stage } from '../utils/types';
 import { Closure } from './types';
 
 initAWSConfig();
@@ -51,16 +53,7 @@ export async function uploadClosures(closures: Closure[]): Promise<void> {
   );
 }
 
-export type GetAllClosuresResponse = BaseResponse &
-  (
-    | {
-        success: true;
-        output: Closure[];
-      }
-    | { success: false }
-  );
-
-export async function getAllClosures(): Promise<GetAllClosuresResponse> {
+export async function getAllClosures(): Promise<Result<Closure[], AWSError>> {
   const params: AWS.DynamoDB.DocumentClient.ScanInput = {
     TableName: TABLE_CLOSURES,
   };
@@ -68,11 +61,8 @@ export async function getAllClosures(): Promise<GetAllClosuresResponse> {
   const scanOutput = await dynamoDb.scan(params).promise();
 
   if (scanOutput === null) {
-    return { success: false };
+    return Err(new AWSError());
   }
 
-  return {
-    success: true,
-    output: scanOutput.Items as Closure[],
-  };
+  return Ok(scanOutput.Items as Closure[]);
 }

@@ -16,8 +16,8 @@ export async function processSearch(term: string): Promise<SearchResponse> {
   const { keyword, modifier } = searchParams;
 
   const getAllClosuresResponse = await getAllClosures();
-  if (!getAllClosuresResponse.success) return { success: false };
-  const closuresAll = getAllClosuresResponse.output;
+  if (getAllClosuresResponse.err) return { success: false };
+  const closuresAll = getAllClosuresResponse.val;
 
   const closuresFilteredByKeyword = filterByKeyword(closuresAll, keyword);
 

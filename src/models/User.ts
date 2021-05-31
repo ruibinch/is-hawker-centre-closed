@@ -1,11 +1,13 @@
 import * as AWS from 'aws-sdk';
 import { formatISO } from 'date-fns';
 import NodeCache from 'node-cache';
+import { Err, Ok, Result } from 'ts-results';
 
 import { initAWSConfig, TABLE_NAME_USERS, TABLE_USERS } from '../aws/config';
 import { getDynamoDBBillingDetails } from '../aws/dynamodb';
+import { AWSError } from '../errors/AWSError';
 import { currentDate } from '../utils/date';
-import { BaseResponse, Stage } from '../utils/types';
+import { Stage } from '../utils/types';
 import { UserFavourite, User } from './types';
 
 initAWSConfig();
@@ -46,16 +48,7 @@ export async function addUser(user: User): Promise<void> {
   await dynamoDb.put(userInput).promise();
 }
 
-export type GetAllUsersResponse = BaseResponse &
-  (
-    | {
-        success: true;
-        output: User[];
-      }
-    | { success: false }
-  );
-
-export async function getAllUsers(): Promise<GetAllUsersResponse> {
+export async function getAllUsers(): Promise<Result<User[], AWSError>> {
   const params: AWS.DynamoDB.DocumentClient.ScanInput = {
     TableName: TABLE_USERS,
   };
@@ -63,27 +56,15 @@ export async function getAllUsers(): Promise<GetAllUsersResponse> {
   const scanOutput = await dynamoDb.scan(params).promise();
 
   if (scanOutput === null) {
-    return { success: false };
+    return Err(new AWSError());
   }
 
-  return {
-    success: true,
-    output: scanOutput.Items as User[],
-  };
+  return Ok(scanOutput.Items as User[]);
 }
-
-export type GetUserByIdResponse = BaseResponse &
-  (
-    | {
-        success: true;
-        output: User;
-      }
-    | { success: false }
-  );
 
 export async function getUserById(
   userId: number,
-): Promise<GetUserByIdResponse> {
+): Promise<Result<User, AWSError>> {
   let user = userCache.get(userId);
 
   if (user === undefined) {
@@ -97,16 +78,13 @@ export async function getUserById(
     const getResponse = await dynamoDb.get(params).promise();
 
     if (!getResponse.Item) {
-      return { success: false };
+      return Err(new AWSError());
     }
 
     user = getResponse.Item;
   }
 
-  return {
-    success: true,
-    output: user as User,
-  };
+  return Ok(user as User);
 }
 
 export async function updateUserFavourites(

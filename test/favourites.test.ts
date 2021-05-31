@@ -1,17 +1,14 @@
 /* eslint-disable max-len */
 import { parseISO } from 'date-fns';
+import { Err, Ok, Result } from 'ts-results';
 
 import * as sender from '../src/bot/sender';
+import { AWSError } from '../src/errors/AWSError';
 import { initDictionary, t } from '../src/lang';
-import * as Closure from '../src/models/Closure';
-import { GetAllClosuresResponse } from '../src/models/Closure';
-import * as HawkerCentre from '../src/models/HawkerCentre';
-import {
-  GetAllHCResponse,
-  GetHCByIdResponse,
-} from '../src/models/HawkerCentre';
-import * as User from '../src/models/User';
-import { GetUserByIdResponse } from '../src/models/User';
+import * as ClosureFile from '../src/models/Closure';
+import * as HawkerCentreFile from '../src/models/HawkerCentre';
+import { Closure, HawkerCentre, User } from '../src/models/types';
+import * as UserFile from '../src/models/User';
 import * as favouritesIndex from '../src/services/favourites/index';
 import * as feedbackIndex from '../src/services/feedback/index';
 import * as searchIndex from '../src/services/search/index';
@@ -49,38 +46,37 @@ describe('Favourites module', () => {
       .spyOn(Date, 'now')
       .mockImplementation(() => parseISO('2021-01-05').valueOf());
 
-    const hawkerCentres = {
-      success: true,
-      output: mockHawkerCentres,
-    } as unknown;
     getAllHawkerCentresSpy = jest
-      .spyOn(HawkerCentre, 'getAllHawkerCentres')
+      .spyOn(HawkerCentreFile, 'getAllHawkerCentres')
       .mockImplementation(
-        () => Promise.resolve(hawkerCentres) as Promise<GetAllHCResponse>,
+        () =>
+          Promise.resolve(Ok(mockHawkerCentres)) as Promise<
+            Result<HawkerCentre[], AWSError>
+          >,
       );
 
-    const hawkerCentre = {
-      success: true,
-      output: mockHawkerCentres[0],
-    } as unknown;
     getHawkerCentreByIdSpy = jest
-      .spyOn(HawkerCentre, 'getHawkerCentreById')
+      .spyOn(HawkerCentreFile, 'getHawkerCentreById')
       .mockImplementation(
-        () => Promise.resolve(hawkerCentre) as Promise<GetHCByIdResponse>,
+        () =>
+          Promise.resolve(Ok(mockHawkerCentres[0])) as Promise<
+            Result<HawkerCentre, AWSError>
+          >,
       );
 
-    const user = { success: true, output: mockUser } as unknown;
     getUserByIdSpy = jest
-      .spyOn(User, 'getUserById')
+      .spyOn(UserFile, 'getUserById')
       .mockImplementation(
-        () => Promise.resolve(user) as Promise<GetUserByIdResponse>,
+        () => Promise.resolve(Ok(mockUser)) as Promise<Result<User, AWSError>>,
       );
 
-    const closures = { success: true, output: mockClosures } as unknown;
     getAllClosuresSpy = jest
-      .spyOn(Closure, 'getAllClosures')
+      .spyOn(ClosureFile, 'getAllClosures')
       .mockImplementation(
-        () => Promise.resolve(closures) as Promise<GetAllClosuresResponse>,
+        () =>
+          Promise.resolve(Ok(mockClosures)) as Promise<
+            Result<Closure[], AWSError>
+          >,
       );
   });
 
@@ -91,13 +87,13 @@ describe('Favourites module', () => {
       .mockImplementation();
 
     updateUserFavouritesSpy = jest
-      .spyOn(User, 'updateUserFavourites')
+      .spyOn(UserFile, 'updateUserFavourites')
       .mockImplementation(() => Promise.resolve() as Promise<void>);
     updateUserInFavouritesModeSpy = jest
-      .spyOn(User, 'updateUserInFavouritesMode')
+      .spyOn(UserFile, 'updateUserInFavouritesMode')
       .mockImplementation(() => Promise.resolve() as Promise<void>);
     updateUserNotificationsSpy = jest
-      .spyOn(User, 'updateUserNotifications')
+      .spyOn(UserFile, 'updateUserNotifications')
       .mockImplementation(() => Promise.resolve() as Promise<void>);
   });
 
@@ -222,11 +218,11 @@ describe('Favourites module', () => {
 
   describe('existing user with multiple saved favourites', () => {
     beforeAll(() => {
-      const user = { success: true, output: mockUser } as unknown;
       getUserByIdSpy = jest
-        .spyOn(User, 'getUserById')
+        .spyOn(UserFile, 'getUserById')
         .mockImplementation(
-          () => Promise.resolve(user) as Promise<GetUserByIdResponse>,
+          () =>
+            Promise.resolve(Ok(mockUser)) as Promise<Result<User, AWSError>>,
         );
     });
 
@@ -410,11 +406,13 @@ describe('Favourites module', () => {
 
   describe('existing user with one saved favourite', () => {
     beforeAll(() => {
-      const user = { success: true, output: mockUserWithOneFav } as unknown;
       getUserByIdSpy = jest
-        .spyOn(User, 'getUserById')
+        .spyOn(UserFile, 'getUserById')
         .mockImplementation(
-          () => Promise.resolve(user) as Promise<GetUserByIdResponse>,
+          () =>
+            Promise.resolve(Ok(mockUserWithOneFav)) as Promise<
+              Result<User, AWSError>
+            >,
         );
     });
 
@@ -438,11 +436,13 @@ describe('Favourites module', () => {
 
   describe('existing user with no saved favourites', () => {
     beforeAll(() => {
-      const user = { success: true, output: mockUserWithNoFavs } as unknown;
       getUserByIdSpy = jest
-        .spyOn(User, 'getUserById')
+        .spyOn(UserFile, 'getUserById')
         .mockImplementation(
-          () => Promise.resolve(user) as Promise<GetUserByIdResponse>,
+          () =>
+            Promise.resolve(Ok(mockUserWithNoFavs)) as Promise<
+              Result<User, AWSError>
+            >,
         );
     });
 
@@ -491,16 +491,18 @@ describe('Favourites module', () => {
 
     beforeAll(() => {
       getUserByIdSpy = jest
-        .spyOn(User, 'getUserById')
+        .spyOn(UserFile, 'getUserById')
         .mockImplementation(
           () =>
-            Promise.resolve({ success: false }) as Promise<GetUserByIdResponse>,
+            Promise.resolve(Err(new AWSError())) as Promise<
+              Result<User, AWSError>
+            >,
         );
     });
 
     beforeEach(() => {
       addUserSpy = jest
-        .spyOn(User, 'addUser')
+        .spyOn(UserFile, 'addUser')
         .mockImplementation(() => Promise.resolve() as Promise<void>);
     });
 
@@ -629,11 +631,13 @@ describe('Favourites module', () => {
 
   describe('user in favourites mode', () => {
     beforeAll(() => {
-      const user = { success: true, output: mockUserInFavMode } as unknown;
       getUserByIdSpy = jest
-        .spyOn(User, 'getUserById')
+        .spyOn(UserFile, 'getUserById')
         .mockImplementation(
-          () => Promise.resolve(user) as Promise<GetUserByIdResponse>,
+          () =>
+            Promise.resolve(Ok(mockUserInFavMode)) as Promise<
+              Result<User, AWSError>
+            >,
         );
     });
 

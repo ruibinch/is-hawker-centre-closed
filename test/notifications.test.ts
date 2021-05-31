@@ -1,12 +1,13 @@
 /* eslint-disable max-len */
 import { parseISO } from 'date-fns';
+import { Err, Ok, Result } from 'ts-results';
 
 import * as sender from '../src/bot/sender';
+import { AWSError } from '../src/errors/AWSError';
 import { initDictionary, t } from '../src/lang';
-import * as Closure from '../src/models/Closure';
-import { GetAllClosuresResponse } from '../src/models/Closure';
-import * as User from '../src/models/User';
-import { GetAllUsersResponse } from '../src/models/User';
+import * as ClosureFile from '../src/models/Closure';
+import { Closure, User } from '../src/models/types';
+import * as UserFile from '../src/models/User';
 import { mockClosures, mockUsers } from './__mocks__/db';
 import { assertBotResponse, makeNotificationsWrapper } from './helpers/bot';
 
@@ -32,18 +33,20 @@ describe('Notifications module', () => {
   beforeEach(() => {
     sendMessageSpy = jest.spyOn(sender, 'sendMessage').mockImplementation();
 
-    const users = { success: true, output: mockUsers } as unknown;
     getAllUsersSpy = jest
-      .spyOn(User, 'getAllUsers')
+      .spyOn(UserFile, 'getAllUsers')
       .mockImplementation(
-        () => Promise.resolve(users) as Promise<GetAllUsersResponse>,
+        () =>
+          Promise.resolve(Ok(mockUsers)) as Promise<Result<User[], AWSError>>,
       );
 
-    const closures = { success: true, output: mockClosures } as unknown;
     getAllClosuresSpy = jest
-      .spyOn(Closure, 'getAllClosures')
+      .spyOn(ClosureFile, 'getAllClosures')
       .mockImplementation(
-        () => Promise.resolve(closures) as Promise<GetAllClosuresResponse>,
+        () =>
+          Promise.resolve(Ok(mockClosures)) as Promise<
+            Result<Closure[], AWSError>
+          >,
       );
   });
 
@@ -93,10 +96,12 @@ describe('Notifications module', () => {
 
   it('returns an error 400 when getAllUsers fails', async () => {
     getAllUsersSpy = jest
-      .spyOn(User, 'getAllUsers')
+      .spyOn(UserFile, 'getAllUsers')
       .mockImplementation(
         () =>
-          Promise.resolve({ success: false }) as Promise<GetAllUsersResponse>,
+          Promise.resolve(Err(new AWSError())) as Promise<
+            Result<User[], AWSError>
+          >,
       );
 
     await callNotifications();
@@ -110,12 +115,12 @@ describe('Notifications module', () => {
 
   it('returns an error 400 when getAllClosures fails', async () => {
     getAllClosuresSpy = jest
-      .spyOn(Closure, 'getAllClosures')
+      .spyOn(ClosureFile, 'getAllClosures')
       .mockImplementation(
         () =>
-          Promise.resolve({
-            success: false,
-          }) as Promise<GetAllClosuresResponse>,
+          Promise.resolve(Err(new AWSError())) as Promise<
+            Result<Closure[], AWSError>
+          >,
       );
 
     await callNotifications();
