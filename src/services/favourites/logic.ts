@@ -121,7 +121,7 @@ export async function addHCToFavourites(props: {
 export async function deleteHCFromFavourites(props: {
   deleteIdx: number;
   telegramUser: TelegramUser;
-}): Promise<Result<DeleteHCResponseOk, DeleteHCResponseError>> {
+}): Promise<Result<DeleteHCResponseOk, CustomError | DeleteHCResponseError>> {
   const {
     deleteIdx,
     telegramUser: { id: userId },
@@ -131,7 +131,6 @@ export async function deleteHCFromFavourites(props: {
   if (getUserResponse.err) {
     // user does not exist
     return Err({
-      isError: false,
       numFavourites: 0,
     });
   }
@@ -145,7 +144,6 @@ export async function deleteHCFromFavourites(props: {
   ) {
     // out of bounds
     return Err({
-      isError: false,
       numFavourites: user.favourites.length,
     });
   }
@@ -153,7 +151,7 @@ export async function deleteHCFromFavourites(props: {
   // get details of HC to be deleted
   const delHawkerCentreId = user.favourites[deleteIdx].hawkerCentreId;
   const getHCByIdResponse = await getHawkerCentreById(delHawkerCentreId);
-  if (getHCByIdResponse.err) return Err({ isError: true });
+  if (getHCByIdResponse.err) return Err(getHCByIdResponse.val);
 
   const delHawkerCentre = getHCByIdResponse.val;
 
@@ -282,7 +280,7 @@ export async function toggleUserInFavouritesMode(
 export async function manageNotifications(props: {
   keyword: string;
   telegramUser: TelegramUser;
-}): Promise<Result<ManageNotificationsResponse, void>> {
+}): Promise<ManageNotificationsResponse> {
   const {
     keyword,
     telegramUser: { id: userId, username, language_code: languageCode },
@@ -300,10 +298,10 @@ export async function manageNotifications(props: {
       currentValue = user.notifications;
     }
 
-    return Ok({
+    return {
       operation: 'read',
       currentValue,
-    });
+    };
   }
 
   const newNotificationsValue = (() => {
@@ -334,10 +332,10 @@ export async function manageNotifications(props: {
     }
   }
 
-  return Ok({
+  return {
     operation: 'write',
     newValue: newNotificationsValue,
-  });
+  };
 }
 
 /**

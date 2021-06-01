@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import { parseISO } from 'date-fns';
-import { Ok, Result } from 'ts-results';
+import { Err, Ok, Result } from 'ts-results';
 
 import * as sender from '../src/bot/sender';
 import { AWSError } from '../src/errors/AWSError';
@@ -25,7 +25,7 @@ describe('Search module', () => {
 
     maybeHandleFavouriteSelectionSpy = jest
       .spyOn(favouritesIndex, 'maybeHandleFavouriteSelection')
-      .mockImplementation(() => Promise.resolve({ success: false }));
+      .mockImplementation(() => Promise.resolve(Err.EMPTY));
 
     getAllClosuresSpy = jest
       .spyOn(ClosureFile, 'getAllClosures')

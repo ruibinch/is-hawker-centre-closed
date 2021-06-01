@@ -1,5 +1,4 @@
 import { HawkerCentre, ClosurePartial } from '../../models/types';
-import { BaseResponse, BotResponse } from '../../utils/types';
 
 export type FindHCResponse = {
   isExactMatch?: boolean;
@@ -15,29 +14,13 @@ export type DeleteHCResponseOk = {
   hawkerCentre: HawkerCentre;
 };
 
-export type DeleteHCResponseError =
-  | {
-      isError: false;
-      numFavourites: number;
-    }
-  | {
-      isError: true;
-    };
+export type DeleteHCResponseError = {
+  numFavourites: number;
+};
 
 export type GetUserFavsWithClosuresResponse = {
   closures: ClosurePartial[];
 };
-
-export type HandleFavouriteSelectionResponse = BaseResponse &
-  (
-    | {
-        success: true;
-        response: BotResponse;
-      }
-    | {
-        success: false;
-      }
-  );
 
 export type IsUserInFavModeResponse = {
   isInFavouritesMode?: boolean;
