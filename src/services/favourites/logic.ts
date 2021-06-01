@@ -1,6 +1,8 @@
 /* eslint-disable max-len */
 import { formatISO, isPast, parseISO } from 'date-fns';
+import { Err, Ok, Result } from 'ts-results';
 
+import { CustomError } from '../../errors/CustomError';
 import { getAllClosures } from '../../models/Closure';
 import {
   getAllHawkerCentres,
@@ -24,19 +26,19 @@ import {
 } from './constants';
 import {
   AddHCResponse,
-  DeleteHCResponse,
+  DeleteHCResponseError,
+  DeleteHCResponseOk,
   FindHCResponse,
   GetUserFavsWithClosuresResponse,
   IsUserInFavModeResponse,
   ManageNotificationsResponse,
-  ToggleUserInFavModeResponse,
 } from './types';
 
 export async function findHCByKeyword(
   keyword: string,
-): Promise<FindHCResponse> {
+): Promise<Result<FindHCResponse, CustomError>> {
   const getAllHCResponse = await getAllHawkerCentres();
-  if (getAllHCResponse.err) return { success: false };
+  if (getAllHCResponse.err) return Err(getAllHCResponse.val);
 
   const hawkerCentres = getAllHCResponse.val;
   const hcFilteredByKeyword = filterByKeyword(hawkerCentres, keyword);
@@ -44,11 +46,10 @@ export async function findHCByKeyword(
   // if there is only 1 HC result and the keyword is an exact match, return `isExactMatch` set to true
   if (hcFilteredByKeyword.length === 1) {
     if (keyword === hcFilteredByKeyword[0].name) {
-      return {
-        success: true,
+      return Ok({
         isExactMatch: true,
         hawkerCentres: hcFilteredByKeyword,
-      };
+      });
     }
   }
 
@@ -56,11 +57,10 @@ export async function findHCByKeyword(
     hcFilteredByKeyword.length === 0 ||
     hcFilteredByKeyword.length > MAX_CHOICES;
 
-  return {
-    success: true,
+  return Ok({
     isFindError,
     hawkerCentres: hcFilteredByKeyword,
-  };
+  });
 }
 
 /**
@@ -72,7 +72,7 @@ export async function findHCByKeyword(
 export async function addHCToFavourites(props: {
   hawkerCentre: HawkerCentre;
   telegramUser: TelegramUser;
-}): Promise<AddHCResponse> {
+}): Promise<Result<AddHCResponse, CustomError>> {
   const {
     hawkerCentre: { hawkerCentreId },
     telegramUser: { id: userId, username, language_code: languageCode },
@@ -96,7 +96,7 @@ export async function addHCToFavourites(props: {
     };
 
     await addUser(newUser);
-    return { success: true };
+    return Ok({});
   }
 
   const user = getUserResponse.val;
@@ -104,10 +104,9 @@ export async function addHCToFavourites(props: {
 
   // Check if hawker centre already exists in the favourites list
   if (userFavourites.includes(addFavHC.hawkerCentreId)) {
-    return {
-      success: false,
+    return Ok({
       isDuplicate: true,
-    };
+    });
   }
 
   // Save list in ascending order of hawkerCentreId
@@ -116,13 +115,13 @@ export async function addHCToFavourites(props: {
   );
 
   await updateUserFavourites(userId, favouritesUpdated);
-  return { success: true };
+  return Ok({});
 }
 
 export async function deleteHCFromFavourites(props: {
   deleteIdx: number;
   telegramUser: TelegramUser;
-}): Promise<DeleteHCResponse> {
+}): Promise<Result<DeleteHCResponseOk, DeleteHCResponseError>> {
   const {
     deleteIdx,
     telegramUser: { id: userId },
@@ -131,11 +130,10 @@ export async function deleteHCFromFavourites(props: {
   const getUserResponse = await getUserById(userId);
   if (getUserResponse.err) {
     // user does not exist
-    return {
-      success: false,
+    return Err({
       isError: false,
       numFavourites: 0,
-    };
+    });
   }
 
   const user = getUserResponse.val;
@@ -146,17 +144,16 @@ export async function deleteHCFromFavourites(props: {
     deleteIdx >= user.favourites.length
   ) {
     // out of bounds
-    return {
-      success: false,
+    return Err({
       isError: false,
       numFavourites: user.favourites.length,
-    };
+    });
   }
 
   // get details of HC to be deleted
   const delHawkerCentreId = user.favourites[deleteIdx].hawkerCentreId;
   const getHCByIdResponse = await getHawkerCentreById(delHawkerCentreId);
-  if (getHCByIdResponse.err) return { success: false, isError: true };
+  if (getHCByIdResponse.err) return Err({ isError: true });
 
   const delHawkerCentre = getHCByIdResponse.val;
 
@@ -164,10 +161,9 @@ export async function deleteHCFromFavourites(props: {
   favouritesUpdated.splice(deleteIdx, 1);
 
   await updateUserFavourites(userId, favouritesUpdated);
-  return {
-    success: true,
+  return Ok({
     hawkerCentre: delHawkerCentre,
-  };
+  });
 }
 
 /**
@@ -175,27 +171,26 @@ export async function deleteHCFromFavourites(props: {
  */
 export async function getUserFavouritesWithClosures(
   telegramUser: TelegramUser,
-): Promise<GetUserFavsWithClosuresResponse> {
+): Promise<Result<GetUserFavsWithClosuresResponse, CustomError>> {
   const { id: userId } = telegramUser;
 
   const getUserResponse = await getUserById(userId);
   if (getUserResponse.err) {
     // user does not exist in DB
-    return {
-      success: true,
+    return Ok({
       closures: [],
-    };
+    });
   }
 
   const user = getUserResponse.val;
   const userFavHCIds = user.favourites.map((fav) => fav.hawkerCentreId);
 
   const getAllClosuresResponse = await getAllClosures();
-  if (getAllClosuresResponse.err) return { success: false };
+  if (getAllClosuresResponse.err) return Err(getAllClosuresResponse.val);
   const closuresAll = getAllClosuresResponse.val;
 
   const getAllHCResponse = await getAllHawkerCentres();
-  if (getAllHCResponse.err) return { success: false };
+  if (getAllHCResponse.err) return Err(getAllHCResponse.val);
   const hawkerCentres = getAllHCResponse.val;
 
   const userFavsWithClosures = userFavHCIds.map((favHCId) => {
@@ -223,10 +218,9 @@ export async function getUserFavouritesWithClosures(
     return nextOccurringClosure;
   });
 
-  return {
-    success: true,
+  return Ok({
     closures: userFavsWithClosures,
-  };
+  });
 }
 
 /**
@@ -234,23 +228,20 @@ export async function getUserFavouritesWithClosures(
  */
 export async function isUserInFavouritesMode(
   telegramUser: TelegramUser,
-): Promise<IsUserInFavModeResponse> {
+): Promise<Result<IsUserInFavModeResponse, CustomError>> {
   const { id: userId } = telegramUser;
 
   const getUserResponse = await getUserById(userId);
 
   if (getUserResponse.err) {
     // user does not exist in DB
-    return {
-      success: false,
-    };
+    return Err(getUserResponse.val);
   }
 
   const user = getUserResponse.val;
-  return {
-    success: true,
+  return Ok({
     isInFavouritesMode: user.isInFavouritesMode,
-  };
+  });
 }
 
 /**
@@ -259,7 +250,7 @@ export async function isUserInFavouritesMode(
 export async function toggleUserInFavouritesMode(
   telegramUser: TelegramUser,
   isInFavouritesMode: boolean,
-): Promise<ToggleUserInFavModeResponse> {
+): Promise<Result<void, void>> {
   const { id: userId, username, language_code: languageCode } = telegramUser;
 
   // TODO: potentially improve this flow
@@ -280,7 +271,7 @@ export async function toggleUserInFavouritesMode(
     await updateUserInFavouritesMode(userId, isInFavouritesMode);
   }
 
-  return { success: true };
+  return Ok.EMPTY;
 }
 
 /**
@@ -291,7 +282,7 @@ export async function toggleUserInFavouritesMode(
 export async function manageNotifications(props: {
   keyword: string;
   telegramUser: TelegramUser;
-}): Promise<ManageNotificationsResponse> {
+}): Promise<Result<ManageNotificationsResponse, void>> {
   const {
     keyword,
     telegramUser: { id: userId, username, language_code: languageCode },
@@ -309,10 +300,10 @@ export async function manageNotifications(props: {
       currentValue = user.notifications;
     }
 
-    return {
+    return Ok({
       operation: 'read',
       currentValue,
-    };
+    });
   }
 
   const newNotificationsValue = (() => {
@@ -343,10 +334,10 @@ export async function manageNotifications(props: {
     }
   }
 
-  return {
+  return Ok({
     operation: 'write',
     newValue: newNotificationsValue,
-  };
+  });
 }
 
 /**

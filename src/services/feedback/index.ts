@@ -21,9 +21,7 @@ export async function manageFeedback(
     telegramUser,
   });
 
-  const { success } = addFeedbackResponse;
-
-  if (success) {
+  if (addFeedbackResponse.ok) {
     return {
       message: makeFeedbackAddedMessage(),
     };

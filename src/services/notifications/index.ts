@@ -5,10 +5,10 @@ import { NotificationMessage } from './types';
 export async function constructNotifications(): Promise<
   NotificationMessage[] | null
 > {
-  const usersWithFavsClosedToday = await getUsersWithFavsClosedToday();
-  if (!usersWithFavsClosedToday.success) return null;
+  const usersWithFavsClosedTodayResponse = await getUsersWithFavsClosedToday();
+  if (usersWithFavsClosedTodayResponse.err) return null;
 
-  const notifications = usersWithFavsClosedToday.output
+  const notifications = usersWithFavsClosedTodayResponse.val
     .filter((userWithClosure) => userWithClosure.closures.length > 0)
     .map((userWithClosure) => ({
       userId: userWithClosure.userId,

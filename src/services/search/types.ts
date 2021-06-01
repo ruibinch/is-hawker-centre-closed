@@ -1,30 +1,20 @@
 import { Closure } from '../../models/types';
-import { BaseResponse } from '../../utils/types';
 
 export type SearchQuery = {
   term: string;
 };
 
-export type SearchResponse = BaseResponse &
-  (
-    | {
-        success: true;
-        params: SearchObject;
-        closures: Closure[];
-      }
-    | {
-        success: false;
-      }
-  );
+export type SearchResponse = {
+  params: SearchObject;
+  closures: Closure[];
+};
 
 export type SearchModifier = 'today' | 'tomorrow' | 'month' | 'nextMonth';
 
-export type ExtractSearchModifierResult =
-  | {
-      modifier: SearchModifier;
-      index: number;
-    }
-  | undefined;
+export type ExtractSearchModifierResult = {
+  modifier: SearchModifier;
+  index: number;
+};
 
 export type SearchObject = {
   keyword: string;

@@ -1,6 +1,5 @@
 import { isCommand } from '../../bot/commands';
 import { HawkerCentre } from '../../models/types';
-import { makeGenericErrorMessage } from '../../utils/message';
 import { TelegramUser } from '../../utils/telegram';
 import { ServiceResponse } from '../../utils/types';
 import {
@@ -37,9 +36,9 @@ export async function manageFavourites(
   switch (command) {
     case '/fav': {
       const findHCResponse = await findHCByKeyword(keyword);
-      if (!findHCResponse.success) return null;
+      if (findHCResponse.err) return findHCResponse.val;
 
-      const { isExactMatch, isFindError, hawkerCentres } = findHCResponse;
+      const { isExactMatch, isFindError, hawkerCentres } = findHCResponse.val;
 
       if (isExactMatch) {
         return executeAddHCToFavourites({
@@ -65,28 +64,31 @@ export async function manageFavourites(
         deleteIdx: Number(keyword) - 1,
         telegramUser,
       });
-      if (!deleteHCResponse.success && deleteHCResponse.isError) return null;
 
-      if (deleteHCResponse.success) {
+      if (deleteHCResponse.err) {
+        if (deleteHCResponse.val.isError) return null;
+
         return {
-          message: makeSuccessfullyDeletedMessage(
-            deleteHCResponse.hawkerCentre,
-          ),
+          message: makeDeleteErrorMessage(deleteHCResponse.val.numFavourites),
         };
       }
 
       return {
-        message: makeDeleteErrorMessage(deleteHCResponse.numFavourites),
+        message: makeSuccessfullyDeletedMessage(
+          deleteHCResponse.val.hawkerCentre,
+        ),
       };
     }
     case '/list': {
       const getFavResponseWithClosures = await getUserFavouritesWithClosures(
         telegramUser,
       );
-      if (!getFavResponseWithClosures.success) return null;
+      if (getFavResponseWithClosures.err) return null;
 
       return {
-        message: makeFavouritesListMessage(getFavResponseWithClosures.closures),
+        message: makeFavouritesListMessage(
+          getFavResponseWithClosures.val.closures,
+        ),
       };
     }
     case '/notify': {
@@ -94,18 +96,19 @@ export async function manageFavourites(
         keyword,
         telegramUser,
       });
+      if (manageNotificationsResponse.err) return null;
 
-      if (manageNotificationsResponse.operation === 'read') {
+      if (manageNotificationsResponse.val.operation === 'read') {
         return {
           message: makeReadNotificationsSettingMessage(
-            manageNotificationsResponse.currentValue,
+            manageNotificationsResponse.val.currentValue,
           ),
         };
       }
 
       return {
         message: makeWriteNotificationsSettingMessage(
-          manageNotificationsResponse.newValue,
+          manageNotificationsResponse.val.newValue,
         ),
       };
     }
@@ -127,8 +130,8 @@ export async function maybeHandleFavouriteSelection(
   );
 
   if (
-    !isUserInFavouritesModeResponse.success ||
-    !isUserInFavouritesModeResponse.isInFavouritesMode
+    isUserInFavouritesModeResponse.err ||
+    !isUserInFavouritesModeResponse.val.isInFavouritesMode
   ) {
     return { success: false };
   }
@@ -152,9 +155,9 @@ async function handleFavouriteSelection(
   if (isCommand(keyword)) return { success: false };
 
   const findHCResponse = await findHCByKeyword(keyword);
-  if (!findHCResponse.success) return { success: false };
+  if (findHCResponse.err) return { success: false };
 
-  const { isExactMatch, hawkerCentres } = findHCResponse;
+  const { isExactMatch, hawkerCentres } = findHCResponse.val;
 
   if (isExactMatch) {
     const addHCToFavouritesResponse = await executeAddHCToFavourites({
@@ -189,23 +192,13 @@ async function executeAddHCToFavourites(props: {
     hawkerCentre,
     telegramUser,
   });
-  const { success, isDuplicate } = addHCResponse;
+  if (addHCResponse.err) return null;
 
-  if (success) {
-    return {
-      message: makeSuccessfullyAddedMessage(hawkerCentre),
-    };
-  }
+  const { isDuplicate } = addHCResponse.val;
 
-  if (isDuplicate) {
-    return {
-      message: makeDuplicateHCErrorMessage(hawkerCentre),
-    };
-  }
-
-  // should never reach here
-  /* istanbul ignore next */
   return {
-    message: makeGenericErrorMessage(),
+    message: isDuplicate
+      ? makeDuplicateHCErrorMessage(hawkerCentre)
+      : makeSuccessfullyAddedMessage(hawkerCentre),
   };
 }
