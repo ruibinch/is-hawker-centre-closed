@@ -29,12 +29,7 @@ describe('Search module', () => {
 
     getAllClosuresSpy = jest
       .spyOn(ClosureFile, 'getAllClosures')
-      .mockImplementation(
-        () =>
-          Promise.resolve(Ok(mockClosures)) as Promise<
-            Result<Closure[], AWSError>
-          >,
-      );
+      .mockImplementation(() => Promise.resolve(Ok(mockClosures)));
   });
 
   beforeEach(() => {

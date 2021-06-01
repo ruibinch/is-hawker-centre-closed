@@ -32,7 +32,7 @@ describe('Feedback module', () => {
     sendMessageSpy = jest.spyOn(sender, 'sendMessage').mockImplementation();
     addFeedbackToDBSpy = jest
       .spyOn(Feedback, 'addFeedbackToDB')
-      .mockImplementation(() => Promise.resolve() as Promise<void>);
+      .mockImplementation(() => Promise.resolve());
   });
 
   afterEach(() => {

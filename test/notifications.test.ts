@@ -35,19 +35,11 @@ describe('Notifications module', () => {
 
     getAllUsersSpy = jest
       .spyOn(UserFile, 'getAllUsers')
-      .mockImplementation(
-        () =>
-          Promise.resolve(Ok(mockUsers)) as Promise<Result<User[], AWSError>>,
-      );
+      .mockImplementation(() => Promise.resolve(Ok(mockUsers)));
 
     getAllClosuresSpy = jest
       .spyOn(ClosureFile, 'getAllClosures')
-      .mockImplementation(
-        () =>
-          Promise.resolve(Ok(mockClosures)) as Promise<
-            Result<Closure[], AWSError>
-          >,
-      );
+      .mockImplementation(() => Promise.resolve(Ok(mockClosures)));
   });
 
   afterEach(() => {
@@ -97,12 +89,7 @@ describe('Notifications module', () => {
   it('returns an error 400 when getAllUsers fails', async () => {
     getAllUsersSpy = jest
       .spyOn(UserFile, 'getAllUsers')
-      .mockImplementation(
-        () =>
-          Promise.resolve(Err(new AWSError())) as Promise<
-            Result<User[], AWSError>
-          >,
-      );
+      .mockImplementation(() => Promise.resolve(Err(new AWSError())));
 
     await callNotifications();
 
@@ -116,12 +103,7 @@ describe('Notifications module', () => {
   it('returns an error 400 when getAllClosures fails', async () => {
     getAllClosuresSpy = jest
       .spyOn(ClosureFile, 'getAllClosures')
-      .mockImplementation(
-        () =>
-          Promise.resolve(Err(new AWSError())) as Promise<
-            Result<Closure[], AWSError>
-          >,
-      );
+      .mockImplementation(() => Promise.resolve(Err(new AWSError())));
 
     await callNotifications();
 
