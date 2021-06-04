@@ -36,6 +36,7 @@
     "@types/pdf-parse": "^1.1.0",
     "@typescript-eslint/eslint-plugin": "^4.21.0",
     "@typescript-eslint/parser": "^4.21.0",
+    "aws-sdk": "^2.921.0",
     "eslint": "^7.23.0",
     "eslint-config-airbnb-typescript": "^12.3.1",
     "eslint-config-prettier": "^8.1.0",
@@ -57,7 +58,6 @@
     "webpack-node-externals": "^2.5.2"
   },
   "dependencies": {
-    "aws-sdk": "^2.884.0",
     "axios": "^0.21.1",
     "date-fns": "^2.20.1",
     "dotenv": "^8.2.0",

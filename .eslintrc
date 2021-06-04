@@ -33,7 +33,17 @@
     ],
     "@typescript-eslint/naming-convention": "off",
     "no-underscore-dangle": "off",
-    "no-param-reassign": "off"
+    "no-param-reassign": "off",
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": [
+          "**/models/*.ts",
+          "**/scripts/*.ts",
+          "./src/aws/config.ts"
+        ]
+      }
+    ]
   },
   "env": {
     "browser": true,
