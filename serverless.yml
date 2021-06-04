@@ -17,6 +17,7 @@ custom:
         - TABLE_NAME_USERS
         - TABLE_NAME_FEEDBACK
   webpack:
+    packager: yarn
     includeModules: true
   botFolder: src/bot
 
