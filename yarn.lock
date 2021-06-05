@@ -6014,10 +6014,10 @@ ts-node@^9.1.1:
     source-map-support "^0.5.17"
     yn "3.1.1"
 
-ts-results@^3.3.0:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/ts-results/-/ts-results-3.3.0.tgz#68623a6c18e65556287222dab76498a28154922f"
-  integrity sha512-FWqxGX2NHp5oCyaMd96o2y2uMQmSu8Dey6kvyuFdRJ2AzfmWo3kWa4UsPlCGlfQ/qu03m09ZZtppMoY8EMHuiA==
+ts-results@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/ts-results/-/ts-results-3.0.0.tgz#f28fc4c6ac0e94fc3af4ea08be42617e169a7ff5"
+  integrity sha512-Txxbn48H4cOMC0v38FMwRJD/uVs/1AoWvfVj0Lqngv6YGvmOibANoLOoa+1mP5G4InGxSvbfZyZyxS9DIWfU3g==
 
 tsconfig-paths@^3.9.0:
   version "3.9.0"
