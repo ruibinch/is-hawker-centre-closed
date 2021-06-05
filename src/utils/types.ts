@@ -1,3 +1,7 @@
+import { Result } from 'ts-results';
+
+import { AWSError } from '../errors/AWSError';
+
 export type Stage = 'dev' | 'prod';
 
 export function getStage(): Stage {
@@ -10,13 +14,9 @@ export type Module = 'search' | 'favourites' | 'feedback' | 'general';
  * Response types
  */
 
-export type BaseResponse = {
-  success: boolean;
-};
-
 export type BotResponse = {
   message: string;
   choices?: string[];
 };
 
-export type ServiceResponse = Promise<BotResponse | null>;
+export type ServiceResponse = Result<BotResponse, AWSError | void>;

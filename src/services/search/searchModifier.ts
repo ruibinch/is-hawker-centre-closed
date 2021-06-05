@@ -1,3 +1,5 @@
+import { Err, Ok, Result } from 'ts-results';
+
 import { ExtractSearchModifierResult, SearchModifier } from './types';
 
 // List of accepted search modifiers
@@ -5,21 +7,20 @@ const SEARCH_MODIFIERS = ['today', 'month', 'next month', 'tmr', 'tomorrow'];
 
 export function extractSearchModifier(
   term: string,
-): ExtractSearchModifierResult {
+): Result<ExtractSearchModifierResult, void> {
   const modifierRegex = new RegExp(`(${SEARCH_MODIFIERS.join('|')})$`);
 
   // ref: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/exec
   const matches = modifierRegex.exec(term.toLowerCase());
-  if (matches === null) return undefined;
+  if (matches === null) return Err.EMPTY;
 
   const searchModifier = parseSearchModifier(matches[0]);
-  if (!searchModifier) return undefined;
+  if (!searchModifier) return Err.EMPTY;
 
-  const result: ExtractSearchModifierResult = {
+  return Ok({
     modifier: searchModifier,
     index: matches.index,
-  };
-  return result;
+  });
 }
 
 /**

@@ -1,10 +1,12 @@
 /* eslint-disable max-len */
 import { parseISO } from 'date-fns';
+import { Err, Ok, Result } from 'ts-results';
 
 import * as sender from '../src/bot/sender';
+import { AWSError } from '../src/errors/AWSError';
 import { initDictionary, t } from '../src/lang';
-import * as Closure from '../src/models/Closure';
-import { GetAllClosuresResponse } from '../src/models/Closure';
+import * as ClosureFile from '../src/models/Closure';
+import { Closure } from '../src/models/types';
 import * as favouritesIndex from '../src/services/favourites/index';
 import { mockClosures } from './__mocks__/db';
 import { assertBotResponse, makeBotWrapper } from './helpers/bot';
@@ -23,14 +25,11 @@ describe('Search module', () => {
 
     maybeHandleFavouriteSelectionSpy = jest
       .spyOn(favouritesIndex, 'maybeHandleFavouriteSelection')
-      .mockImplementation(() => Promise.resolve({ success: false }));
+      .mockImplementation(() => Promise.resolve(Err.EMPTY));
 
-    const closures = { success: true, output: mockClosures } as unknown;
     getAllClosuresSpy = jest
-      .spyOn(Closure, 'getAllClosures')
-      .mockImplementation(
-        () => Promise.resolve(closures) as Promise<GetAllClosuresResponse>,
-      );
+      .spyOn(ClosureFile, 'getAllClosures')
+      .mockImplementation(() => Promise.resolve(Ok(mockClosures)));
   });
 
   beforeEach(() => {

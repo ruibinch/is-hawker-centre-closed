@@ -1,4 +1,5 @@
 import { APIGatewayProxyEvent, Context } from 'aws-lambda';
+import { Err } from 'ts-results';
 
 import { bot } from '../src/bot/handler';
 import * as sender from '../src/bot/sender';
@@ -206,7 +207,7 @@ describe('Validation module', () => {
     beforeEach(() => {
       runSearchSpy = jest
         .spyOn(searchFeature, 'runSearch')
-        .mockReturnValue(Promise.resolve(null));
+        .mockReturnValue(Promise.resolve(Err.EMPTY));
     });
 
     afterEach(() => {

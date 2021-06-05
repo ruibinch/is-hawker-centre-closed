@@ -4,20 +4,24 @@ import {
   isSameMonth,
   parseISO,
 } from 'date-fns';
+import { Err, Ok, Result } from 'ts-results';
 
+import { CustomError } from '../../errors/CustomError';
 import { getAllClosures } from '../../models/Closure';
 import { Closure } from '../../models/types';
 import { currentDate, isWithinDateBounds } from '../../utils/date';
 import { extractSearchModifier } from './searchModifier';
 import { SearchModifier, SearchObject, SearchResponse } from './types';
 
-export async function processSearch(term: string): Promise<SearchResponse> {
+export async function processSearch(
+  term: string,
+): Promise<Result<SearchResponse, CustomError>> {
   const searchParams = parseSearchTerm(term);
   const { keyword, modifier } = searchParams;
 
   const getAllClosuresResponse = await getAllClosures();
-  if (!getAllClosuresResponse.success) return { success: false };
-  const closuresAll = getAllClosuresResponse.output;
+  if (getAllClosuresResponse.err) return Err(getAllClosuresResponse.val);
+  const closuresAll = getAllClosuresResponse.val;
 
   const closuresFilteredByKeyword = filterByKeyword(closuresAll, keyword);
 
@@ -30,11 +34,10 @@ export async function processSearch(term: string): Promise<SearchResponse> {
     closuresFilteredByKeywordAndDate,
   );
 
-  return {
-    success: true,
+  return Ok({
     params: searchParams,
     closures,
-  };
+  });
 }
 
 /**
@@ -45,14 +48,14 @@ export async function processSearch(term: string): Promise<SearchResponse> {
 function parseSearchTerm(term: string): SearchObject {
   const modifierResult = extractSearchModifier(term);
 
-  if (!modifierResult) {
+  if (modifierResult.err) {
     return {
       keyword: term,
       modifier: 'today', // defaults to today if no modifier
     };
   }
 
-  const { modifier, index: modifierStartIndex } = modifierResult;
+  const { modifier, index: modifierStartIndex } = modifierResult.val;
   return {
     keyword: term.slice(0, modifierStartIndex).trim(),
     modifier,

@@ -1,13 +1,14 @@
+import { Ok, Result } from 'ts-results';
+
 import { addFeedbackToDB } from '../../models/Feedback';
 import { Feedback } from '../../models/types';
 import { currentDate } from '../../utils/date';
 import { TelegramUser } from '../../utils/telegram';
-import { AddFeedbackResponse } from './types';
 
 export async function addFeedback(props: {
   text: string;
   telegramUser: TelegramUser;
-}): Promise<AddFeedbackResponse> {
+}): Promise<Result<void, void>> {
   const {
     text,
     telegramUser: { id: userId, username },
@@ -21,5 +22,5 @@ export async function addFeedback(props: {
   };
 
   await addFeedbackToDB(feedback);
-  return { success: true };
+  return Ok.EMPTY;
 }

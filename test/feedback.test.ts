@@ -1,4 +1,5 @@
 import { parseISO } from 'date-fns';
+import { Err } from 'ts-results';
 
 import * as sender from '../src/bot/sender';
 import { initDictionary, t } from '../src/lang';
@@ -24,14 +25,14 @@ describe('Feedback module', () => {
 
     maybeHandleFavouriteSelectionSpy = jest
       .spyOn(favouritesIndex, 'maybeHandleFavouriteSelection')
-      .mockImplementation(() => Promise.resolve({ success: false }));
+      .mockImplementation(() => Promise.resolve(Err.EMPTY));
   });
 
   beforeEach(() => {
     sendMessageSpy = jest.spyOn(sender, 'sendMessage').mockImplementation();
     addFeedbackToDBSpy = jest
       .spyOn(Feedback, 'addFeedbackToDB')
-      .mockImplementation(() => Promise.resolve() as Promise<void>);
+      .mockImplementation(() => Promise.resolve());
   });
 
   afterEach(() => {

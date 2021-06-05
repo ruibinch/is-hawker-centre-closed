@@ -1,3 +1,5 @@
+import { Ok } from 'ts-results';
+
 import { TelegramUser } from '../../utils/telegram';
 import { ServiceResponse } from '../../utils/types';
 import { addFeedback } from './logic';
@@ -12,7 +14,7 @@ export * from './message';
 export async function manageFeedback(
   text: string,
   telegramUser: TelegramUser,
-): ServiceResponse {
+): Promise<ServiceResponse> {
   const [, ...textSplit] = text.split(' ');
   const feedbackText = textSplit.join(' ');
 
@@ -21,15 +23,13 @@ export async function manageFeedback(
     telegramUser,
   });
 
-  const { success } = addFeedbackResponse;
-
-  if (success) {
-    return {
+  if (addFeedbackResponse.ok) {
+    return Ok({
       message: makeFeedbackAddedMessage(),
-    };
+    });
   }
 
-  return {
+  return Ok({
     message: makeErrorAddingFeedbackMessage(),
-  };
+  });
 }

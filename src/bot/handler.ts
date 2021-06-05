@@ -1,6 +1,7 @@
 import { APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
 
 import { makeCallbackWrapper } from '../aws/lambda';
+import { AWSError } from '../errors/AWSError';
 import { initDictionary } from '../lang';
 import {
   maybeHandleFavouriteSelection,
@@ -71,7 +72,7 @@ export const bot: APIGatewayProxyHandler = async (
 
   // this try-catch loop will catch all the errors that have bubbled up from the child functions
   try {
-    let botResponse: BotResponse | null;
+    let botResponse: BotResponse | undefined;
 
     // eslint-disable-next-line max-len
     // must always first check if the user is in favourites mode so that isInFavouritesMode can be toggled back to false if applicable
@@ -80,18 +81,28 @@ export const bot: APIGatewayProxyHandler = async (
       telegramUser,
     );
 
-    // If favourites flow is not applicable, perform customary handling
-    if (maybeHandleFavouriteSelectionResult.success) {
-      const { response } = maybeHandleFavouriteSelectionResult;
-      botResponse = response;
+    if (maybeHandleFavouriteSelectionResult.ok) {
+      botResponse = maybeHandleFavouriteSelectionResult.val;
     } else {
+      // If favourites flow is not applicable, perform customary handling
       const executionFn = makeExecutionFn(textSanitised);
-      botResponse = await executionFn(textSanitised, telegramUser);
+      const executionFnResponse = await executionFn(
+        textSanitised,
+        telegramUser,
+      );
+
+      if (executionFnResponse.ok) {
+        botResponse = executionFnResponse.val;
+      } else if (executionFnResponse.val instanceof AWSError) {
+        throw executionFnResponse.val;
+      }
     }
 
-    if (botResponse === null) throw new Error();
+    // TODO: throw custom error
+    if (!botResponse) throw new Error();
     const { message, choices } = botResponse;
 
+    // TODO: throw custom error
     if (choices) {
       sendMessageWithChoices({ chatId, message, choices });
     } else {
@@ -116,11 +127,11 @@ export const notifications: APIGatewayProxyHandler = async (
   initDictionary();
 
   const notificationsOutput = await constructNotifications();
-  if (notificationsOutput === null) {
+  if (notificationsOutput.err) {
     return callbackWrapper(400);
   }
 
-  notificationsOutput.forEach((notification) => {
+  notificationsOutput.val.forEach((notification) => {
     const { userId: chatId, message } = notification;
     sendMessage({ chatId, message });
   });
