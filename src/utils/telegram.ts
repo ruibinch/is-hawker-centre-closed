@@ -1,7 +1,7 @@
 // Ref: https://core.telegram.org/bots/api
 // NOTE: not a comprehensive type definition, the less-used fields are ignored
 
-type TelegramResponseBase = {
+export type TelegramResponseBase = {
   ok: boolean;
   description?: string;
 };
