@@ -1,13 +1,12 @@
 /* eslint-disable max-len */
 import { parseISO } from 'date-fns';
-import { Err, Ok, Result } from 'ts-results';
+import { Err, Ok } from 'ts-results';
 
 import * as sender from '../src/bot/sender';
 import { AWSError } from '../src/errors/AWSError';
 import { initDictionary, t } from '../src/lang';
 import * as ClosureFile from '../src/models/Closure';
 import * as HawkerCentreFile from '../src/models/HawkerCentre';
-import { Closure, HawkerCentre, User } from '../src/models/types';
 import * as UserFile from '../src/models/User';
 import * as favouritesIndex from '../src/services/favourites/index';
 import * as feedbackIndex from '../src/services/feedback/index';

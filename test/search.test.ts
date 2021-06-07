@@ -1,12 +1,10 @@
 /* eslint-disable max-len */
 import { parseISO } from 'date-fns';
-import { Err, Ok, Result } from 'ts-results';
+import { Err, Ok } from 'ts-results';
 
 import * as sender from '../src/bot/sender';
-import { AWSError } from '../src/errors/AWSError';
 import { initDictionary, t } from '../src/lang';
 import * as ClosureFile from '../src/models/Closure';
-import { Closure } from '../src/models/types';
 import * as favouritesIndex from '../src/services/favourites/index';
 import { mockClosures } from './__mocks__/db';
 import { assertBotResponse, makeBotWrapper } from './helpers/bot';
