@@ -326,7 +326,7 @@ describe('Favourites module', () => {
               hcName: 'Mossdeep Gym',
               nextClosureDetails: t('favourites.item.closure-details', {
                 startDate: 'today',
-                endDate: 'tomorrow',
+                endDate: 'today',
                 closureReason: '',
               }),
             }),

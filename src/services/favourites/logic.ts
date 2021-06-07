@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { formatISO, isPast, parseISO } from 'date-fns';
+import { endOfDay, formatISO, isPast, parseISO } from 'date-fns';
 import { Err, Ok, Result } from 'ts-results';
 
 import { CustomError } from '../../errors/CustomError';
@@ -365,7 +365,7 @@ function getNextOccurringClosure(closures: Closure[]): Closure | undefined {
   const closuresSorted = sortInDateAscThenAlphabeticalOrder(closures);
 
   const closuresSortedAndFiltered = closuresSorted.filter(
-    (closure) => !isPast(parseISO(closure.endDate)),
+    (closure) => !isPast(endOfDay(parseISO(closure.endDate))),
   );
 
   return closuresSortedAndFiltered[0];

@@ -185,7 +185,7 @@ describe('Search module', () => {
         t('search.item', {
           hcName: 'Mossdeep Gym',
           startDate: '05\\-Jan',
-          endDate: '06\\-Jan',
+          endDate: '05\\-Jan',
           closureReason: '',
         });
 
@@ -330,7 +330,7 @@ describe('Search module', () => {
           t('search.item', {
             hcName: 'Mossdeep Gym',
             startDate: '05\\-Jan',
-            endDate: '06\\-Jan',
+            endDate: '05\\-Jan',
             closureReason: '',
           }),
           t('search.item', {

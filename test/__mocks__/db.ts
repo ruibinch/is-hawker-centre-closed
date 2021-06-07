@@ -33,7 +33,7 @@ export const mockClosures: Closure[] = [
     name: 'Mossdeep Gym',
     nameSecondary: 'Psychics in space',
     startDate: '2021-01-05',
-    endDate: '2021-01-06',
+    endDate: '2021-01-05',
   },
   {
     id: '111',
