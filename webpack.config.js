@@ -21,9 +21,9 @@ module.exports = {
   externals: [nodeExternals()],
   module: {
     rules: [
-      // all files with a `.ts` or `.tsx` extension will be handled by `ts-loader`
+      // all files with a `.ts` extension will be handled by `ts-loader`
       {
-        test: /\.(tsx?)$/,
+        test: /\.ts$/,
         loader: 'ts-loader',
         exclude: [
           [
