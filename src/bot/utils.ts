@@ -1,8 +1,9 @@
 import emojiRegexFactory from 'emoji-regex/RGI_Emoji';
+import { Err, Ok, Result } from 'ts-results';
 
 import { t } from '../lang';
 import { TelegramMessage } from '../utils/telegram';
-import { ValidateInputMessageResponse } from './types';
+import { ValidateResponseError, ValidateResponseOk } from './types';
 
 function isDefined(...variables: unknown[]) {
   return variables.every(Boolean);
@@ -10,7 +11,7 @@ function isDefined(...variables: unknown[]) {
 
 export function validateInputMessage(
   message: TelegramMessage,
-): ValidateInputMessageResponse {
+): Result<ValidateResponseOk, ValidateResponseError> {
   let errorMessage = '';
   let textSanitised = '';
 
@@ -61,19 +62,17 @@ export function validateInputMessage(
   }
 
   if (errorMessage !== '') {
-    return {
-      success: false,
+    return Err({
       errorMessage: t('validation.error.base-message-format', {
         emoji: '\u{2757}',
         errorMessage,
       }),
-    };
+    });
   }
 
-  return {
-    success: true,
+  return Ok({
     textSanitised,
-  };
+  });
 }
 
 /**

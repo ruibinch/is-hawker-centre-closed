@@ -7,12 +7,10 @@ export type Command = {
   description: string;
 };
 
-export type ValidateInputMessageResponse =
-  | {
-      success: true;
-      textSanitised: string;
-    }
-  | {
-      success: false;
-      errorMessage: string;
-    };
+export type ValidateResponseOk = {
+  textSanitised: string;
+};
+
+export type ValidateResponseError = {
+  errorMessage: string;
+};

@@ -2,6 +2,7 @@ import { APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
 
 import { makeCallbackWrapper } from '../aws/lambda';
 import { AWSError } from '../errors/AWSError';
+import { ServiceError } from '../errors/ServiceError';
 import { initDictionary } from '../lang';
 import {
   maybeHandleFavouriteSelection,
@@ -41,45 +42,43 @@ export const bot: APIGatewayProxyHandler = async (
     chat: { id: chatId },
   } = inputMessage;
 
-  const validationResponse = validateInputMessage(inputMessage);
-
-  if (!validationResponse.success) {
-    const { errorMessage } = validationResponse;
-    sendMessage({ chatId, message: errorMessage });
-    return callbackWrapper(204);
-  }
-
-  const { textSanitised } = validationResponse;
-
-  if (isCommand(textSanitised)) {
-    const commandMessage = makeCommandMessage(textSanitised);
-    if (commandMessage) {
-      sendMessage({ chatId, message: commandMessage });
-      return callbackWrapper(204);
-    }
-  }
-
-  const makeExecutionFn = (_textSanitised: string) => {
-    if (isCommandInModule(_textSanitised, 'favourites')) {
-      return manageFavourites;
-    }
-    if (isCommandInModule(_textSanitised, 'feedback')) {
-      return manageFeedback;
-    }
-
-    return runSearch;
-  };
-
   // this try-catch loop will catch all the errors that have bubbled up from the child functions
   try {
+    const validationResponse = validateInputMessage(inputMessage);
+
+    if (validationResponse.err) {
+      const { errorMessage } = validationResponse.val;
+      await sendMessage({ chatId, message: errorMessage });
+      return callbackWrapper(204);
+    }
+
+    const { textSanitised } = validationResponse.val;
+
+    if (isCommand(textSanitised)) {
+      const commandMessage = makeCommandMessage(textSanitised);
+      if (commandMessage) {
+        await sendMessage({ chatId, message: commandMessage });
+        return callbackWrapper(204);
+      }
+    }
+
+    const makeExecutionFn = (_textSanitised: string) => {
+      if (isCommandInModule(_textSanitised, 'favourites')) {
+        return manageFavourites;
+      }
+      if (isCommandInModule(_textSanitised, 'feedback')) {
+        return manageFeedback;
+      }
+
+      return runSearch;
+    };
+
     let botResponse: BotResponse | undefined;
 
     // eslint-disable-next-line max-len
     // must always first check if the user is in favourites mode so that isInFavouritesMode can be toggled back to false if applicable
-    const maybeHandleFavouriteSelectionResult = await maybeHandleFavouriteSelection(
-      textSanitised,
-      telegramUser,
-    );
+    const maybeHandleFavouriteSelectionResult =
+      await maybeHandleFavouriteSelection(textSanitised, telegramUser);
 
     if (maybeHandleFavouriteSelectionResult.ok) {
       botResponse = maybeHandleFavouriteSelectionResult.val;
@@ -98,20 +97,19 @@ export const bot: APIGatewayProxyHandler = async (
       }
     }
 
-    // TODO: throw custom error
-    if (!botResponse) throw new Error();
+    if (!botResponse) throw new ServiceError();
     const { message, choices } = botResponse;
 
-    // TODO: throw custom error
     if (choices) {
-      sendMessageWithChoices({ chatId, message, choices });
+      await sendMessageWithChoices({ chatId, message, choices });
     } else {
-      sendMessage({ chatId, message });
+      await sendMessage({ chatId, message });
     }
 
     return callbackWrapper(204);
   } catch (error) {
-    // console.log(error);
+    // TODO: improve error handling based on error type (Sentry?)
+    console.error('[bot > handler]', error);
     sendMessage({ chatId, message: makeGenericErrorMessage() });
     return callbackWrapper(400);
   }
