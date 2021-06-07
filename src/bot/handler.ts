@@ -46,13 +46,13 @@ export const bot: APIGatewayProxyHandler = async (
   try {
     const validationResponse = validateInputMessage(inputMessage);
 
-    if (!validationResponse.success) {
-      const { errorMessage } = validationResponse;
+    if (validationResponse.err) {
+      const { errorMessage } = validationResponse.val;
       await sendMessage({ chatId, message: errorMessage });
       return callbackWrapper(204);
     }
 
-    const { textSanitised } = validationResponse;
+    const { textSanitised } = validationResponse.val;
 
     if (isCommand(textSanitised)) {
       const commandMessage = makeCommandMessage(textSanitised);
