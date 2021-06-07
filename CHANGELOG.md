@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.2.1] - 2021-06-07
+
+### Fixed
+
+- Closures occurring only today were not appearing in /list or being triggered in the daily notification
+
 ## [0.2.0] - 2021-05-28
 
 ### Added
