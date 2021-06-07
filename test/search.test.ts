@@ -51,7 +51,7 @@ describe('Search module', () => {
     beforeAll(() => {
       dateSpy = jest
         .spyOn(Date, 'now')
-        .mockImplementation(() => parseISO('2021-01-01').valueOf());
+        .mockImplementation(() => parseISO('2021-01-01T11:30:25').valueOf());
     });
 
     afterAll(() => {
@@ -395,7 +395,7 @@ describe('Search module', () => {
     beforeAll(() => {
       dateSpy = jest
         .spyOn(Date, 'now')
-        .mockImplementation(() => parseISO('2021-03-01').valueOf());
+        .mockImplementation(() => parseISO('2021-03-01T11:30:25').valueOf());
     });
 
     afterAll(() => {

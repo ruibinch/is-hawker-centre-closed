@@ -3,6 +3,7 @@ import {
   differenceInCalendarMonths,
   isSameMonth,
   parseISO,
+  startOfDay,
 } from 'date-fns';
 import { Err, Ok, Result } from 'ts-results';
 
@@ -89,7 +90,7 @@ function filterByKeyword(closures: Closure[], keyword: string) {
  * Filters the list of closures by date based on the search modifier.
  */
 function filterByDate(closures: Closure[], modifier: SearchModifier) {
-  const currDate = currentDate();
+  const currDate = startOfDay(currentDate());
 
   return closures.filter((closure) => {
     const startDate = parseISO(closure.startDate);

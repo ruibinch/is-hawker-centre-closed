@@ -1,4 +1,4 @@
-import { parseISO } from 'date-fns';
+import { parseISO, startOfDay } from 'date-fns';
 import { Err, Ok, Result } from 'ts-results';
 
 import { CustomError } from '../../errors/CustomError';
@@ -23,7 +23,7 @@ export async function getUsersWithFavsClosedToday(): Promise<
 
   const closuresCurrent = closuresAll.filter((closure) =>
     isWithinDateBounds(
-      currentDate(),
+      startOfDay(currentDate()),
       parseISO(closure.startDate),
       parseISO(closure.endDate),
     ),

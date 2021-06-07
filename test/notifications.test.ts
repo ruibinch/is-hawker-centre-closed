@@ -27,7 +27,7 @@ describe('Notifications module', () => {
 
     dateSpy = jest
       .spyOn(Date, 'now')
-      .mockImplementation(() => parseISO('2021-02-08').valueOf());
+      .mockImplementation(() => parseISO('2021-02-08T11:30:25').valueOf());
   });
 
   beforeEach(() => {

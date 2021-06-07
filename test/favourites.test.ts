@@ -44,7 +44,7 @@ describe('Favourites module', () => {
 
     dateSpy = jest
       .spyOn(Date, 'now')
-      .mockImplementation(() => parseISO('2021-01-05').valueOf());
+      .mockImplementation(() => parseISO('2021-01-05T11:30:25').valueOf());
 
     getAllHawkerCentresSpy = jest
       .spyOn(HawkerCentreFile, 'getAllHawkerCentres')
@@ -225,7 +225,7 @@ describe('Favourites module', () => {
           expect.arrayContaining([
             {
               hawkerCentreId: 12,
-              dateAdded: '2021-01-05T00:00:00Z',
+              dateAdded: '2021-01-05T11:30:25Z',
             },
           ]),
         );
@@ -496,7 +496,7 @@ describe('Favourites module', () => {
           favourites: [
             {
               hawkerCentreId: 12,
-              dateAdded: '2021-01-05T00:00:00Z',
+              dateAdded: '2021-01-05T11:30:25Z',
             },
           ],
           isInFavouritesMode: false,
@@ -620,7 +620,7 @@ describe('Favourites module', () => {
           expect.arrayContaining([
             {
               hawkerCentreId: 38,
-              dateAdded: '2021-01-05T00:00:00Z',
+              dateAdded: '2021-01-05T11:30:25Z',
             },
           ]),
         );
