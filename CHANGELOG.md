@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.3.0] - 2021-06-08
+
 ### Changed
 
 - Single-day closures will have a single date displayed instead of the format "{{startDate}} to {{endDate}}"
