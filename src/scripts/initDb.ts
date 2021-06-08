@@ -17,8 +17,7 @@ initAWSConfig();
 const dynamoDb = new AWS.DynamoDB();
 
 async function createTables() {
-  Promise.all(
-    // FIXME: explore on improving this
+  await Promise.all(
     ['dev', 'prod'].map(async (stageName) => {
       const stage = stageName as Stage;
 
@@ -54,7 +53,7 @@ async function createTables() {
 }
 
 async function deleteTables() {
-  Promise.all(
+  await Promise.all(
     ['dev', 'prod'].map(async (stageName) => {
       const stage = stageName as Stage;
       const closuresTableDeleteOutput = await dynamoDb

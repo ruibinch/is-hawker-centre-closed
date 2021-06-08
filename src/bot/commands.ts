@@ -55,9 +55,6 @@ export function isCommand(s: string): boolean {
   return s.startsWith('/') && s.split(' ').length === 1;
 }
 
-/**
- * Returns if a command is belongs to the input specified module.
- */
 export function isCommandInModule(s: string, module: Module): boolean {
   const [command] = s.split(' ');
 
@@ -75,9 +72,6 @@ function isCommandWithoutExplanation(s: string): boolean {
     .includes(s);
 }
 
-/**
- * Returns if a command is supported.
- */
 function isCommandSupported(s: string): boolean {
   return COMMANDS.map((cmd) => cmd.endpoint).includes(s);
 }

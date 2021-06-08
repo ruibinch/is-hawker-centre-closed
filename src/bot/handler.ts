@@ -9,9 +9,9 @@ import {
   manageFavourites,
 } from '../services/favourites';
 import { manageFeedback } from '../services/feedback';
+import { makeGenericErrorMessage } from '../services/message';
 import { constructNotifications } from '../services/notifications';
 import { runSearch } from '../services/search';
-import { makeGenericErrorMessage } from '../utils/message';
 import { TelegramMessage } from '../utils/telegram';
 import { BotResponse } from '../utils/types';
 import { validateToken } from './auth';

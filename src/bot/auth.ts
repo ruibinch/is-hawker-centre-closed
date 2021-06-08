@@ -4,6 +4,9 @@ type QueryParams = {
   token?: string;
 };
 
+/**
+ * Naive method of cross-checking the `token` value sent in the HTTP request with the saved BOT_TOKEN.
+ */
 export function validateToken(
   queryStringParameters: APIGatewayProxyEventQueryStringParameters | null,
 ): boolean {

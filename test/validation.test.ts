@@ -186,11 +186,11 @@ describe('Validation module', () => {
     });
 
     it('sends a message with a missing body', async () => {
-      const event: APIGatewayProxyEvent = ({
+      const event: APIGatewayProxyEvent = {
         queryStringParameters: {
           token: 'pokemongottacatchthemall',
         },
-      } as unknown) as APIGatewayProxyEvent;
+      } as unknown as APIGatewayProxyEvent;
 
       const result = await bot(event, {} as Context, mockCallback);
 

@@ -45,13 +45,13 @@ export type TelegramMessage = {
   voice?: unknown;
 };
 
-// Methods
-
 export type WebhookInfoResponse = TelegramResponseBase & {
   result: {
     url: string;
   };
 };
+
+// Methods
 
 export function makeTelegramApiBase(token: string): string {
   return `https://api.telegram.org/bot${token}`;

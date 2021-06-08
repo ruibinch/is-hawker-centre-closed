@@ -28,7 +28,7 @@ async function clearBackups() {
     [],
   );
 
-  Promise.all(
+  await Promise.all(
     backupsARN.map((backupARN) =>
       dynamoDb
         .deleteBackup({
@@ -47,7 +47,7 @@ async function clearBackups() {
 }
 
 async function createBackup() {
-  Promise.all(
+  await Promise.all(
     tablesToBackup.map((tableName) =>
       dynamoDb
         .createBackup({

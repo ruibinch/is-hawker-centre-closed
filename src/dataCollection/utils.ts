@@ -61,6 +61,20 @@ export function parseHawkerCentreName(
   return [namePrimary, nameSecondary];
 }
 
+/**
+ * Reads in a date in DD/MM/YYYY format and returns in YYYY-MM-DD format.
+ */
+export function parseClosureDate(s: string): string | null {
+  if (!/^\d{1,2}\/\d{1,2}\/\d{4}$/g.test(s)) {
+    return null;
+  }
+
+  const padValueTo2Digits = (value: string): string => `0${value}`.slice(-2);
+
+  const [day, month, year] = s.split('/');
+  return `${year}-${padValueTo2Digits(month)}-${padValueTo2Digits(day)}`;
+}
+
 export function generateHash(...inputs: string[]): string {
   return new Hashes.SHA1().hex(inputs.join(''));
 }

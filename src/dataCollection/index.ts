@@ -1,11 +1,12 @@
 import { uploadClosures } from '../models/Closure';
 import { uploadHawkerCentres } from '../models/HawkerCentre';
 import { ClosureReason, HawkerCentre, Closure } from '../models/types';
-import { currentDateInYYYYMMDD, toDateISO8601 } from '../utils/date';
+import { currentDateInYYYYMMDD } from '../utils/date';
 import { HawkerCentreClosureRecord } from './types';
 import {
   generateHash,
   getRawRecords,
+  parseClosureDate,
   parseHawkerCentreName,
   writeFile,
 } from './utils';
@@ -46,16 +47,16 @@ function generateClosures(recordsRaw: HawkerCentreClosureRecord[]): Closure[] {
       other_works_enddate,
     } = recordRaw;
 
-    const q1CleaningStartDate = toDateISO8601(q1_cleaningstartdate);
-    const q1CleaningEndDate = toDateISO8601(q1_cleaningenddate);
-    const q2CleaningStartDate = toDateISO8601(q2_cleaningstartdate);
-    const q2CleaningEndDate = toDateISO8601(q2_cleaningenddate);
-    const q3CleaningStartDate = toDateISO8601(q3_cleaningstartdate);
-    const q3CleaningEndDate = toDateISO8601(q3_cleaningenddate);
-    const q4CleaningStartDate = toDateISO8601(q4_cleaningstartdate);
-    const q4CleaningEndDate = toDateISO8601(q4_cleaningenddate);
-    const otherWorksStartDate = toDateISO8601(other_works_startdate);
-    const otherWorksEndDate = toDateISO8601(other_works_enddate);
+    const q1CleaningStartDate = parseClosureDate(q1_cleaningstartdate);
+    const q1CleaningEndDate = parseClosureDate(q1_cleaningenddate);
+    const q2CleaningStartDate = parseClosureDate(q2_cleaningstartdate);
+    const q2CleaningEndDate = parseClosureDate(q2_cleaningenddate);
+    const q3CleaningStartDate = parseClosureDate(q3_cleaningstartdate);
+    const q3CleaningEndDate = parseClosureDate(q3_cleaningenddate);
+    const q4CleaningStartDate = parseClosureDate(q4_cleaningstartdate);
+    const q4CleaningEndDate = parseClosureDate(q4_cleaningenddate);
+    const otherWorksStartDate = parseClosureDate(other_works_startdate);
+    const otherWorksEndDate = parseClosureDate(other_works_enddate);
 
     [
       [q1CleaningStartDate, q1CleaningEndDate, 'cleaning'],

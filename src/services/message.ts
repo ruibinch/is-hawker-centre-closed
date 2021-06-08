@@ -1,6 +1,10 @@
 import { t } from '../lang';
 import { formatDateDisplay } from '../utils/date';
 
+export function makeGenericErrorMessage(): string {
+  return t('validation.error.generic');
+}
+
 export function makeClosurePeriodSnippet(
   startDate: string,
   endDate: string,
