@@ -5,6 +5,8 @@
 ### Changed
 
 - Single-day closures will have a single date displayed instead of the format "{{startDate}} to {{endDate}}"
+- Added temporal pronoun "yesterday"
+- Temporal pronouns will be used whenever applicable
 
 ## [0.2.1] - 2021-06-07
 

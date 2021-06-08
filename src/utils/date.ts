@@ -1,4 +1,4 @@
-import { format, isToday, isTomorrow, parseISO } from 'date-fns';
+import { format, isToday, isTomorrow, isYesterday, parseISO } from 'date-fns';
 
 import { t } from '../lang';
 
@@ -23,7 +23,7 @@ export function isWithinDateBounds(
 
 /**
  * Formats the input date in YYYY-MM-DD format to dd-MMM format.
- * If displayTemporalPronoun is set to true, then return "today" or "tomorrow" whenever applicable.
+ * If displayTemporalPronoun is set to true, then return "yesterday", "today" or "tomorrow" when applicable.
  */
 export function formatDateDisplay(
   dateString: string,
@@ -31,6 +31,9 @@ export function formatDateDisplay(
 ): string {
   const date = parseISO(dateString);
   if (displayTemporalPronoun) {
+    if (isYesterday(date)) {
+      return t('common.time.yesterday');
+    }
     if (isToday(date)) {
       return t('common.time.today');
     }

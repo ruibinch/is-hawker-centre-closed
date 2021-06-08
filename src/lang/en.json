@@ -75,6 +75,7 @@
   "common.hc-item": "*{{hcName}}*\n{{closurePeriod}}{{closureReason}}",
   "common.closure-reason.renovation": "long\\-term renovation works",
   "common.time.time-period": "{{startDate}} to {{endDate}}",
+  "common.time.yesterday": "yesterday",
   "common.time.today": "today",
   "common.time.tomorrow": "tomorrow",
   "common.time.this-month": "this month",
