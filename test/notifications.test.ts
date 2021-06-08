@@ -59,7 +59,7 @@ describe('Notifications module', () => {
         emoji: '\u{1F4A1}',
         numHC: 1,
       }) +
-        t('notifications.item', {
+        t('common.hc-item', {
           hcName: 'Verdanturf Town',
           closurePeriod: t('common.time.time-period', {
             startDate: t('common.time.today'),
@@ -71,7 +71,7 @@ describe('Notifications module', () => {
         emoji: '\u{1F4A1}',
         numHC: 1,
       }) +
-        t('notifications.item', {
+        t('common.hc-item', {
           hcName: 'Melville City',
           closurePeriod: t('common.time.time-period', {
             startDate: '01\\-Feb',

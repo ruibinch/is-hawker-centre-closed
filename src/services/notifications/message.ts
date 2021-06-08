@@ -14,7 +14,7 @@ export function makeNotificationMessage(closures: Closure[]): string {
   );
 
   const closuresInText = closures.map((closure) =>
-    t('notifications.item', {
+    t('common.hc-item', {
       hcName: closure.name,
       closurePeriod: makeClosurePeriodSnippet(
         closure.startDate,

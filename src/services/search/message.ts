@@ -45,7 +45,7 @@ export function makeMessage(searchResponse: SearchResponse): string {
 
     reply += closures
       .map((closure) =>
-        t('search.item', {
+        t('common.hc-item', {
           hcName: closure.name,
           closurePeriod: makeClosurePeriodSnippet(
             closure.startDate,
