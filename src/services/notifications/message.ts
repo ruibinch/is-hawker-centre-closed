@@ -1,6 +1,6 @@
 import { t } from '../../lang';
 import { ClosureReason, Closure } from '../../models/types';
-import { formatDateDisplay } from '../../utils/date';
+import { makeClosurePeriodSnippet } from '../message';
 
 export function makeNotificationMessage(closures: Closure[]): string {
   let reply = t(
@@ -16,8 +16,10 @@ export function makeNotificationMessage(closures: Closure[]): string {
   const closuresInText = closures.map((closure) =>
     t('notifications.item', {
       hcName: closure.name,
-      startDate: formatDateDisplay(closure.startDate, true),
-      endDate: formatDateDisplay(closure.endDate, true),
+      closurePeriod: makeClosurePeriodSnippet(
+        closure.startDate,
+        closure.endDate,
+      ),
       closureReason: makeClosureReasonSnippet(closure.reason),
     }),
   );

@@ -316,8 +316,10 @@ describe('Favourites module', () => {
               index: 2,
               hcName: 'Verdanturf Town',
               nextClosureDetails: t('favourites.item.closure-details', {
-                startDate: '08\\-Feb',
-                endDate: '09\\-Feb',
+                closurePeriod: t('common.time.time-period', {
+                  startDate: '08\\-Feb',
+                  endDate: '09\\-Feb',
+                }),
                 closureReason: '',
               }),
             }),
@@ -325,8 +327,7 @@ describe('Favourites module', () => {
               index: 3,
               hcName: 'Mossdeep Gym',
               nextClosureDetails: t('favourites.item.closure-details', {
-                startDate: 'today',
-                endDate: 'today',
+                closurePeriod: t('common.time.today'),
                 closureReason: '',
               }),
             }),

@@ -1,6 +1,6 @@
 import { t } from '../../lang';
 import { HawkerCentre, ClosurePartial } from '../../models/types';
-import { formatDateDisplay } from '../../utils/date';
+import { makeClosurePeriodSnippet } from '../message';
 import { MAX_CHOICES } from './constants';
 
 export function makeAddHCMessage(props: {
@@ -76,8 +76,7 @@ export function makeFavouritesListMessage(
         nextClosureDetails:
           startDate && endDate
             ? t('favourites.item.closure-details', {
-                startDate: formatDateDisplay(startDate, true),
-                endDate: formatDateDisplay(endDate, true),
+                closurePeriod: makeClosurePeriodSnippet(startDate, endDate),
                 closureReason:
                   reason === 'renovation'
                     ? t('favourites.item.closure-reason', {

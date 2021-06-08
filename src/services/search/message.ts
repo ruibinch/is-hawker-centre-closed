@@ -1,6 +1,6 @@
 import { t } from '../../lang';
 import { ClosureReason } from '../../models/types';
-import { formatDateDisplay } from '../../utils/date';
+import { makeClosurePeriodSnippet } from '../message';
 import { SearchModifier, SearchResponse } from './types';
 
 export function makeMessage(searchResponse: SearchResponse): string {
@@ -47,8 +47,10 @@ export function makeMessage(searchResponse: SearchResponse): string {
       .map((closure) =>
         t('search.item', {
           hcName: closure.name,
-          startDate: formatDateDisplay(closure.startDate),
-          endDate: formatDateDisplay(closure.endDate),
+          closurePeriod: makeClosurePeriodSnippet(
+            closure.startDate,
+            closure.endDate,
+          ),
           closureReason: makeClosureReasonSnippet(closure.reason),
         }),
       )

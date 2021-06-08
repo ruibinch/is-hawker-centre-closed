@@ -61,8 +61,10 @@ describe('Notifications module', () => {
       }) +
         t('notifications.item', {
           hcName: 'Verdanturf Town',
-          startDate: 'today',
-          endDate: 'tomorrow',
+          closurePeriod: t('common.time.time-period', {
+            startDate: t('common.time.today'),
+            endDate: t('common.time.tomorrow'),
+          }),
           closureReason: '',
         }),
       t('notifications.overview.singular', {
@@ -71,8 +73,10 @@ describe('Notifications module', () => {
       }) +
         t('notifications.item', {
           hcName: 'Melville City',
-          startDate: '01\\-Feb',
-          endDate: '28\\-Feb',
+          closurePeriod: t('common.time.time-period', {
+            startDate: '01\\-Feb',
+            endDate: '28\\-Feb',
+          }),
           closureReason: ' _\\(long\\-term renovation works\\)_',
         }),
     ];

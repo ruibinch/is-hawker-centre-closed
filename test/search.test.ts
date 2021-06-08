@@ -64,8 +64,10 @@ describe('Search module', () => {
         }) +
         t('search.item', {
           hcName: 'Littleroot Town',
-          startDate: '01\\-Jan',
-          endDate: '02\\-Jan',
+          closurePeriod: t('common.time.time-period', {
+            startDate: t('common.time.today'),
+            endDate: t('common.time.tomorrow'),
+          }),
           closureReason: '',
         });
 
@@ -81,8 +83,10 @@ describe('Search module', () => {
         }) +
         t('search.item', {
           hcName: 'Littleroot Town',
-          startDate: '01\\-Jan',
-          endDate: '02\\-Jan',
+          closurePeriod: t('common.time.time-period', {
+            startDate: t('common.time.today'),
+            endDate: t('common.time.tomorrow'),
+          }),
           closureReason: '',
         });
 
@@ -108,8 +112,7 @@ describe('Search module', () => {
         }) +
         t('search.item', {
           hcName: 'Slateport City',
-          startDate: '02\\-Jan',
-          endDate: '02\\-Jan',
+          closurePeriod: t('common.time.tomorrow'),
           closureReason: '',
         });
 
@@ -125,8 +128,7 @@ describe('Search module', () => {
         }) +
         t('search.item', {
           hcName: 'Slateport City',
-          startDate: '02\\-Jan',
-          endDate: '02\\-Jan',
+          closurePeriod: t('common.time.tomorrow'),
           closureReason: '',
         });
 
@@ -143,14 +145,18 @@ describe('Search module', () => {
         [
           t('search.item', {
             hcName: 'Oldale Town',
-            startDate: '15\\-Jan',
-            endDate: '18\\-Jan',
+            closurePeriod: t('common.time.time-period', {
+              startDate: '15\\-Jan',
+              endDate: '18\\-Jan',
+            }),
             closureReason: '',
           }),
           t('search.item', {
             hcName: 'Oldale Town',
-            startDate: '30\\-Jan',
-            endDate: '31\\-Jan',
+            closurePeriod: t('common.time.time-period', {
+              startDate: '30\\-Jan',
+              endDate: '31\\-Jan',
+            }),
             closureReason: '',
           }),
         ].join('\n\n');
@@ -167,8 +173,10 @@ describe('Search module', () => {
         }) +
         t('search.item', {
           hcName: 'Route 118 near Melville City',
-          startDate: '21\\-Jan',
-          endDate: '24\\-Jan',
+          closurePeriod: t('common.time.time-period', {
+            startDate: '21\\-Jan',
+            endDate: '24\\-Jan',
+          }),
           closureReason: '',
         });
 
@@ -184,8 +192,7 @@ describe('Search module', () => {
         }) +
         t('search.item', {
           hcName: 'Mossdeep Gym',
-          startDate: '05\\-Jan',
-          endDate: '05\\-Jan',
+          closurePeriod: '05\\-Jan',
           closureReason: '',
         });
 
@@ -201,8 +208,10 @@ describe('Search module', () => {
         }) +
         t('search.item', {
           hcName: 'Verdanturf Town',
-          startDate: '08\\-Feb',
-          endDate: '09\\-Feb',
+          closurePeriod: t('common.time.time-period', {
+            startDate: '08\\-Feb',
+            endDate: '09\\-Feb',
+          }),
           closureReason: '',
         });
 
@@ -218,8 +227,10 @@ describe('Search module', () => {
         }) +
         t('search.item', {
           hcName: 'Melville City',
-          startDate: '01\\-Feb',
-          endDate: '28\\-Feb',
+          closurePeriod: t('common.time.time-period', {
+            startDate: '01\\-Feb',
+            endDate: '28\\-Feb',
+          }),
           closureReason: ' _\\(long\\-term renovation works\\)_',
         });
 
@@ -236,14 +247,15 @@ describe('Search module', () => {
         [
           t('search.item', {
             hcName: 'Melville City',
-            startDate: '01\\-Jan',
-            endDate: '01\\-Jan',
+            closurePeriod: t('common.time.today'),
             closureReason: '',
           }),
           t('search.item', {
             hcName: 'Littleroot Town',
-            startDate: '01\\-Jan',
-            endDate: '02\\-Jan',
+            closurePeriod: t('common.time.time-period', {
+              startDate: t('common.time.today'),
+              endDate: t('common.time.tomorrow'),
+            }),
             closureReason: '',
           }),
         ].join('\n\n');
@@ -261,14 +273,15 @@ describe('Search module', () => {
         [
           t('search.item', {
             hcName: 'Littleroot Town',
-            startDate: '01\\-Jan',
-            endDate: '02\\-Jan',
+            closurePeriod: t('common.time.time-period', {
+              startDate: t('common.time.today'),
+              endDate: t('common.time.tomorrow'),
+            }),
             closureReason: '',
           }),
           t('search.item', {
             hcName: 'Slateport City',
-            startDate: '02\\-Jan',
-            endDate: '02\\-Jan',
+            closurePeriod: t('common.time.tomorrow'),
             closureReason: '',
           }),
         ].join('\n\n');
@@ -286,14 +299,15 @@ describe('Search module', () => {
         [
           t('search.item', {
             hcName: 'Littleroot Town',
-            startDate: '01\\-Jan',
-            endDate: '02\\-Jan',
+            closurePeriod: t('common.time.time-period', {
+              startDate: t('common.time.today'),
+              endDate: t('common.time.tomorrow'),
+            }),
             closureReason: '',
           }),
           t('search.item', {
             hcName: 'Slateport City',
-            startDate: '02\\-Jan',
-            endDate: '02\\-Jan',
+            closurePeriod: t('common.time.tomorrow'),
             closureReason: '',
           }),
         ].join('\n\n');
@@ -311,44 +325,49 @@ describe('Search module', () => {
         [
           t('search.item', {
             hcName: 'Melville City',
-            startDate: '01\\-Jan',
-            endDate: '01\\-Jan',
+            closurePeriod: t('common.time.today'),
             closureReason: '',
           }),
           t('search.item', {
             hcName: 'Littleroot Town',
-            startDate: '01\\-Jan',
-            endDate: '02\\-Jan',
+            closurePeriod: t('common.time.time-period', {
+              startDate: t('common.time.today'),
+              endDate: t('common.time.tomorrow'),
+            }),
             closureReason: '',
           }),
           t('search.item', {
             hcName: 'Slateport City',
-            startDate: '02\\-Jan',
-            endDate: '02\\-Jan',
+            closurePeriod: t('common.time.tomorrow'),
             closureReason: '',
           }),
           t('search.item', {
             hcName: 'Mossdeep Gym',
-            startDate: '05\\-Jan',
-            endDate: '05\\-Jan',
+            closurePeriod: '05\\-Jan',
             closureReason: '',
           }),
           t('search.item', {
             hcName: 'Oldale Town',
-            startDate: '15\\-Jan',
-            endDate: '18\\-Jan',
+            closurePeriod: t('common.time.time-period', {
+              startDate: '15\\-Jan',
+              endDate: '18\\-Jan',
+            }),
             closureReason: '',
           }),
           t('search.item', {
             hcName: 'Route 118 near Melville City',
-            startDate: '21\\-Jan',
-            endDate: '24\\-Jan',
+            closurePeriod: t('common.time.time-period', {
+              startDate: '21\\-Jan',
+              endDate: '24\\-Jan',
+            }),
             closureReason: '',
           }),
           t('search.item', {
             hcName: 'Oldale Town',
-            startDate: '30\\-Jan',
-            endDate: '31\\-Jan',
+            closurePeriod: t('common.time.time-period', {
+              startDate: '30\\-Jan',
+              endDate: '31\\-Jan',
+            }),
             closureReason: '',
           }),
         ].join('\n\n');
@@ -366,20 +385,26 @@ describe('Search module', () => {
         [
           t('search.item', {
             hcName: 'Melville City',
-            startDate: '01\\-Feb',
-            endDate: '28\\-Feb',
+            closurePeriod: t('common.time.time-period', {
+              startDate: '01\\-Feb',
+              endDate: '28\\-Feb',
+            }),
             closureReason: ' _\\(long\\-term renovation works\\)_',
           }),
           t('search.item', {
             hcName: 'Rustboro City',
-            startDate: '02\\-Feb',
-            endDate: '05\\-Feb',
+            closurePeriod: t('common.time.time-period', {
+              startDate: '02\\-Feb',
+              endDate: '05\\-Feb',
+            }),
             closureReason: '',
           }),
           t('search.item', {
             hcName: 'Verdanturf Town',
-            startDate: '08\\-Feb',
-            endDate: '09\\-Feb',
+            closurePeriod: t('common.time.time-period', {
+              startDate: '08\\-Feb',
+              endDate: '09\\-Feb',
+            }),
             closureReason: '',
           }),
         ].join('\n\n');
