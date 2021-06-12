@@ -627,7 +627,7 @@ describe('Favourites module', () => {
       });
     });
 
-    describe.only('user ignores the choices screen and executes another flow', () => {
+    describe('user ignores the choices screen and executes another flow', () => {
       let manageFavouritesSpy: jest.SpyInstance;
       let manageFeedbackSpy: jest.SpyInstance;
       let runSearchSpy: jest.SpyInstance;
