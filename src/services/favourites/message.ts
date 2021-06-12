@@ -109,14 +109,11 @@ export function makeReadNotificationsSettingMessage(
     );
   }
 
-  return (
-    t('favourites.notifications.current', {
-      currentValue: currentValue ? 'on' : 'off',
-    }) +
-    t('favourites.notifications.toggle-prompt', {
-      desiredValue: currentValue ? 'off' : 'on',
-    })
-  );
+  return currentValue
+    ? t('favourites.notifications.current-on') +
+        t('favourites.notifications.toggle-prompt-off')
+    : t('favourites.notifications.current-off') +
+        t('favourites.notifications.toggle-prompt-on');
 }
 
 export function makeWriteNotificationsSettingMessage(

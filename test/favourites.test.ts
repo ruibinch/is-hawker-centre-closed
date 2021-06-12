@@ -342,12 +342,8 @@ describe('Favourites module', () => {
     describe('viewing/toggling the notification setting', () => {
       it('["/notify"] returns the user\'s current notification setting', async () => {
         const expectedMessage =
-          t('favourites.notifications.current', {
-            currentValue: 'on',
-          }) +
-          t('favourites.notifications.toggle-prompt', {
-            desiredValue: 'off',
-          });
+          t('favourites.notifications.current-on') +
+          t('favourites.notifications.toggle-prompt-off');
 
         await callBot('/notify');
         assertBotResponse(sendMessageSpy, expectedMessage);
@@ -443,12 +439,8 @@ describe('Favourites module', () => {
     describe('viewing the notification setting', () => {
       it('["/notify"] returns the user\'s current notification setting', async () => {
         const expectedMessage =
-          t('favourites.notifications.current', {
-            currentValue: 'off',
-          }) +
-          t('favourites.notifications.toggle-prompt', {
-            desiredValue: 'on',
-          });
+          t('favourites.notifications.current-off') +
+          t('favourites.notifications.toggle-prompt-on');
 
         await callBot('/notify');
         assertBotResponse(sendMessageSpy, expectedMessage);
