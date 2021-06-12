@@ -11,7 +11,7 @@ export function makeAddHCMessage(props: {
 
   if (hawkerCentres.length === 0) {
     return t('favourites.error.no-results-found', {
-      keyword: ` for keyword *${keyword}*`,
+      keyword: t('favourites.snippet.keyword', { keyword }),
     });
   }
 
