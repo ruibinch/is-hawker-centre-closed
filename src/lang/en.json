@@ -68,7 +68,7 @@
   "favourites.notifications.toggle-prompt-off": "To turn it off, type in \"_/notify off_\"\\.",
   "favourites.notifications.turned-on": "Notifications are now *on*\\.",
   "favourites.notifications.turned-off": "Notifications are now *off*\\.",
-  "favourites.notifications.unrecognised-keyword": "Not sure if that means on or off\\.\\.\\.\n\nPlease try again with either _on_ or _off_\\.",
+  "favourites.notifications.unrecognised-keyword": "Invalid toggle keyword\\.\nPlease try again with either _on_ or _off_\\.",
   "language.command-language.explanation.first": "To toggle your preferred language option, type in \"_/language `[languageCode]`_\"\\.\n\n",
   "language.command-language.explanation.second": "Supported language codes are:\n",
   "language.command-language.explanation.third": "_en_, _zh_",
