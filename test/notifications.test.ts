@@ -4,7 +4,7 @@ import { Err, Ok } from 'ts-results';
 
 import * as sender from '../src/bot/sender';
 import { AWSError } from '../src/errors/AWSError';
-import { initDictionary, t } from '../src/lang';
+import { t } from '../src/lang';
 import * as ClosureFile from '../src/models/Closure';
 import * as UserFile from '../src/models/User';
 import { mockClosures, mockUsers } from './__mocks__/db';
@@ -18,12 +18,11 @@ describe('Notifications module', () => {
   let sendMessageSpy: jest.SpyInstance;
 
   // dynamodb mocks
+  let getUserByIdSpy: jest.SpyInstance;
   let getAllUsersSpy: jest.SpyInstance;
   let getAllClosuresSpy: jest.SpyInstance;
 
   beforeAll(() => {
-    initDictionary();
-
     dateSpy = jest
       .spyOn(Date, 'now')
       .mockImplementation(() => parseISO('2021-02-08T11:30:25').valueOf());
@@ -31,6 +30,10 @@ describe('Notifications module', () => {
 
   beforeEach(() => {
     sendMessageSpy = jest.spyOn(sender, 'sendMessage').mockImplementation();
+
+    getUserByIdSpy = jest
+      .spyOn(UserFile, 'getUserById')
+      .mockImplementation(() => Promise.resolve(Err(new AWSError())));
 
     getAllUsersSpy = jest
       .spyOn(UserFile, 'getAllUsers')
@@ -51,34 +54,15 @@ describe('Notifications module', () => {
 
   afterAll(() => {
     dateSpy.mockRestore();
+    getUserByIdSpy.mockRestore();
   });
 
   it('sends a notification to users who with a favourite hawker centre that is closed today', async () => {
     const expectedMessages = [
-      t('notifications.overview.singular', {
-        emoji: '\u{1F4A1}',
-        numHC: 1,
-      }) +
-        t('common.hc-item', {
-          hcName: 'Verdanturf Town',
-          closurePeriod: t('common.time.time-period', {
-            startDate: t('common.time.today'),
-            endDate: t('common.time.tomorrow'),
-          }),
-          closureReason: '',
-        }),
-      t('notifications.overview.singular', {
-        emoji: '\u{1F4A1}',
-        numHC: 1,
-      }) +
-        t('common.hc-item', {
-          hcName: 'Melville City',
-          closurePeriod: t('common.time.time-period', {
-            startDate: '01\\-Feb',
-            endDate: '28\\-Feb',
-          }),
-          closureReason: ' _\\(long\\-term renovation works\\)_',
-        }),
+      '\u{1F4A1} Heads up\\! 1 of your favourite hawker centres will be closed today\\.\n\n' +
+        '*Verdanturf Town*\ntoday to tomorrow',
+      '\u{1F4A1} Heads up\\! 1 of your favourite hawker centres will be closed today\\.\n\n' +
+        '*Melville City*\n01\\-Feb to 28\\-Feb _\\(long\\-term renovation works\\)_',
     ];
 
     await callNotifications();

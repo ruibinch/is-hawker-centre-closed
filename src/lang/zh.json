@@ -27,7 +27,7 @@
   "general.command-help.explanation.favourites-section.first": "{{emoji}} *喜爱*\n\n",
   "general.command-help.explanation.favourites-section.second": "您能使用/fav或者/del命令管理您的喜爱列表。\n\n",
   "general.command-help.explanation.favourites-section.third": "使用/list命令将显示您的喜爱列表和接着关闭时期，而成为更方便查看的方法！\n\n",
-  "general.command-help.explanation.favourites-section.fourth": "唯一喜爱的小贩中心关闭时，通知将在*早晨六点SGT*发送给您。使用/notify命令显示或切换通知设置。",
+  "general.command-help.explanation.favourites-section.fourth": "唯一喜爱的小贩中心关闭时，通知将在*早晨六点SGT*发送给您。使用/notify命令显示或切换通知设置。\n\n",
   "general.command-help.explanation.language-section.first": "{{emoji}} *语言*\n\n",
   "general.command-help.explanation.language-section.second": "您能使用/language命令以切换首选语言。\n\n",
   "search.example-format": "比如：_{{searchTerm}}_会显示包含单词__{{keyword}}__与__{{modifier}}__关闭的小贩中心。",

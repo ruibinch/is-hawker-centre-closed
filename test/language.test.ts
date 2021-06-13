@@ -1,9 +1,10 @@
 import { parseISO } from 'date-fns';
-import { Err } from 'ts-results';
+import { Err, Ok } from 'ts-results';
 
 import * as sender from '../src/bot/sender';
-import { initDictionary, t } from '../src/lang';
-import * as User from '../src/models/User';
+import { AWSError } from '../src/errors/AWSError';
+import { t } from '../src/lang';
+import * as UserFile from '../src/models/User';
 import * as favouritesIndex from '../src/services/favourites/index';
 import { assertBotResponse, makeBotWrapper } from './helpers/bot';
 
@@ -13,12 +14,11 @@ describe('Feedback module', () => {
 
   let dateSpy: jest.SpyInstance;
   let sendMessageSpy: jest.SpyInstance;
+  let getUserByIdSpy: jest.SpyInstance;
   let maybeHandleFavouriteSelectionSpy: jest.SpyInstance;
   let updateUserLanguageCodeSpy: jest.SpyInstance;
 
   beforeAll(() => {
-    initDictionary();
-
     dateSpy = jest
       .spyOn(Date, 'now')
       .mockImplementation(() => parseISO('2021-01-05').valueOf());
@@ -30,13 +30,19 @@ describe('Feedback module', () => {
 
   beforeEach(() => {
     sendMessageSpy = jest.spyOn(sender, 'sendMessage').mockImplementation();
+
+    getUserByIdSpy = jest
+      .spyOn(UserFile, 'getUserById')
+      .mockImplementation(() => Promise.resolve(Err(new AWSError())));
+
     updateUserLanguageCodeSpy = jest
-      .spyOn(User, 'updateUserLanguageCode')
+      .spyOn(UserFile, 'updateUserLanguageCode')
       .mockImplementation(() => Promise.resolve());
   });
 
   afterEach(() => {
     sendMessageSpy.mockRestore();
+    getUserByIdSpy.mockRestore();
     updateUserLanguageCodeSpy.mockRestore();
   });
 
@@ -48,16 +54,16 @@ describe('Feedback module', () => {
 
   it('["/language"] returns the explanatory message', async () => {
     const expectedMessage =
-      t('language.command-language.explanation.first') +
-      t('language.command-language.explanation.second') +
-      t('language.command-language.explanation.third');
+      'To toggle your preferred language option, type in "_/language `[languageCode]`_"\\.\n\n' +
+      'Supported language codes are:\n' +
+      '_en_, _zh_';
 
     await callBot('/language');
     assertBotResponse(sendMessageSpy, expectedMessage);
   });
 
   it('["/language en"] successfully updates the preferred language setting', async () => {
-    const expectedMessage = t('language.updated');
+    const expectedMessage = 'Your language option has been set to *English*\\.';
 
     await callBot('/language en');
     assertBotResponse(sendMessageSpy, expectedMessage);
@@ -66,7 +72,7 @@ describe('Feedback module', () => {
   });
 
   it('["/language zh"] successfully updates the preferred language setting', async () => {
-    const expectedMessage = t('language.updated');
+    const expectedMessage = '您的语言设置为*中文*。';
 
     await callBot('/language zh');
     assertBotResponse(sendMessageSpy, expectedMessage);
@@ -75,7 +81,8 @@ describe('Feedback module', () => {
   });
 
   it('["/language invalid"] returns an error message when the language code is invalid', async () => {
-    const expectedMessage = t('language.error-updating');
+    const expectedMessage =
+      'Invalid language code\\.\nPlease try again with either _en_ or _zh_\\.';
 
     await callBot('/language invalid');
     assertBotResponse(sendMessageSpy, expectedMessage);

@@ -35,18 +35,18 @@ function isValidLanguageCode(langCode: string): langCode is Language {
  */
 export async function getUserLanguageCode(
   telegramUser: TelegramUser,
-): Promise<Result<GetUserLanguageCodeResponse, AWSError>> {
+): Promise<GetUserLanguageCodeResponse> {
   const { id: userId } = telegramUser;
 
   const getUserResponse = await getUserById(userId);
 
   if (getUserResponse.err) {
-    // user does not exist in DB
-    return Err(getUserResponse.val);
+    // user does not exist in DB, return 'en' by default
+    return { languageCode: 'en' };
   }
 
   const user = getUserResponse.val;
-  return Ok({
+  return {
     languageCode: user.languageCode,
-  });
+  };
 }

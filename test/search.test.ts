@@ -3,8 +3,10 @@ import { parseISO } from 'date-fns';
 import { Err, Ok } from 'ts-results';
 
 import * as sender from '../src/bot/sender';
-import { initDictionary, t } from '../src/lang';
+import { AWSError } from '../src/errors/AWSError';
+import { t } from '../src/lang';
 import * as ClosureFile from '../src/models/Closure';
+import * as UserFile from '../src/models/User';
 import * as favouritesIndex from '../src/services/favourites/index';
 import { mockClosures } from './__mocks__/db';
 import { assertBotResponse, makeBotWrapper } from './helpers/bot';
@@ -15,11 +17,14 @@ describe('Search module', () => {
 
   let dateSpy: jest.SpyInstance;
   let sendMessageSpy: jest.SpyInstance;
+  let getUserByIdSpy: jest.SpyInstance;
   let maybeHandleFavouriteSelectionSpy: jest.SpyInstance;
   let getAllClosuresSpy: jest.SpyInstance;
 
   beforeAll(() => {
-    initDictionary();
+    getUserByIdSpy = jest
+      .spyOn(UserFile, 'getUserById')
+      .mockImplementation(() => Promise.resolve(Err(new AWSError())));
 
     maybeHandleFavouriteSelectionSpy = jest
       .spyOn(favouritesIndex, 'maybeHandleFavouriteSelection')
@@ -41,6 +46,7 @@ describe('Search module', () => {
   afterAll(() => {
     mockCallback.mockRestore();
     dateSpy.mockRestore();
+    getUserByIdSpy.mockRestore();
     maybeHandleFavouriteSelectionSpy.mockRestore();
     getAllClosuresSpy.mockRestore();
   });
@@ -58,18 +64,8 @@ describe('Search module', () => {
 
     it('["littleroot"] returns a single closure occurring today', async () => {
       const expectedMessage =
-        t('search.hawker-centres-closed.with-keyword.present', {
-          keyword: 'containing the keyword *littleroot* ',
-          timePeriod: 'today',
-        }) +
-        t('common.hc-item', {
-          hcName: 'Littleroot Town',
-          closurePeriod: t('common.time.time-period', {
-            startDate: t('common.time.today'),
-            endDate: t('common.time.tomorrow'),
-          }),
-          closureReason: '',
-        });
+        'Here are the hawker centres containing the keyword *littleroot* that are closed today:\n\n' +
+        '*Littleroot Town*\ntoday to tomorrow';
 
       await callBot('littleroot');
       assertBotResponse(sendMessageSpy, expectedMessage);

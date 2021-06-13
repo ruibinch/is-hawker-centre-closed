@@ -4,7 +4,7 @@ import { Err, Ok } from 'ts-results';
 
 import * as sender from '../src/bot/sender';
 import { AWSError } from '../src/errors/AWSError';
-import { initDictionary, t } from '../src/lang';
+import { t } from '../src/lang';
 import * as ClosureFile from '../src/models/Closure';
 import * as HawkerCentreFile from '../src/models/HawkerCentre';
 import * as UserFile from '../src/models/User';
@@ -39,8 +39,6 @@ describe('Favourites module', () => {
   let getAllClosuresSpy: jest.SpyInstance;
 
   beforeAll(() => {
-    initDictionary();
-
     dateSpy = jest
       .spyOn(Date, 'now')
       .mockImplementation(() => parseISO('2021-01-05T11:30:25').valueOf());
@@ -101,10 +99,8 @@ describe('Favourites module', () => {
   describe('empty commands', () => {
     it('["/fav"] returns the explanatory message', async () => {
       const expectedMessage =
-        t('favourites.command-fav.explanation.first') +
-        t('favourites.command-fav.explanation.second', {
-          example: 'bedok',
-        });
+        'Please specify some keyword to filter the list of hawker centres for you to add to your favourites\\.\n\n' +
+        'e\\.g\\. _/fav bedok_';
 
       await callBot('/fav');
       assertBotResponse(sendMessageSpy, expectedMessage);

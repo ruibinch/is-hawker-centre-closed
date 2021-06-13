@@ -1,15 +1,22 @@
 /* eslint-disable max-len */
+import { Err } from 'ts-results';
+
 import * as sender from '../src/bot/sender';
-import { initDictionary, t } from '../src/lang';
+import { AWSError } from '../src/errors/AWSError';
+import { t } from '../src/lang';
+import * as UserFile from '../src/models/User';
 import { assertBotResponse, makeBotWrapper } from './helpers/bot';
 
 describe('General module', () => {
   const mockCallback = jest.fn();
   const callBot = makeBotWrapper(mockCallback);
   let sendMessageSpy: jest.SpyInstance;
+  let getUserByIdSpy: jest.SpyInstance;
 
   beforeAll(() => {
-    initDictionary();
+    getUserByIdSpy = jest
+      .spyOn(UserFile, 'getUserById')
+      .mockImplementation(() => Promise.resolve(Err(new AWSError())));
   });
 
   beforeEach(() => {
@@ -22,18 +29,15 @@ describe('General module', () => {
 
   afterAll(() => {
     mockCallback.mockRestore();
+    getUserByIdSpy.mockRestore();
   });
 
   describe('/start', () => {
     it('returns the correct message', async () => {
       const expectedMessage =
-        t('general.command-start.explanation.first', {
-          emojis: '\u{1F35C}\u{1F35B}\u{1F367}',
-        }) +
-        t('general.command-start.explanation.second', {
-          example: 'bedok',
-        }) +
-        t('general.command-start.explanation.third');
+        'An easy way to check if your favourite hawker centre is closed today\\! \u{1F35C}\u{1F35B}\u{1F367}\n\n' +
+        'Simply send the bot some *subset of the hawker centre name*, e\\.g\\. _bedok_\\.\n\n' +
+        'Type in /help to see how you can customise your query further, as well as other features of the bot\\.';
 
       await callBot('/start');
       assertBotResponse(sendMessageSpy, expectedMessage);
