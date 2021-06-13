@@ -4,7 +4,7 @@ import enDict from './en.json';
 
 // FIXME: figure out how to best utilise this type in Dictionary
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-type Language = 'en';
+export type Language = 'en' | 'zh';
 
 type Dictionary = {
   [lang: string]: Record<string, string>;

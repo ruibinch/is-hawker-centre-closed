@@ -8,7 +8,12 @@ export function getStage(): Stage {
   return process.env.NODE_ENV === 'production' ? 'prod' : 'dev';
 }
 
-export type Module = 'search' | 'favourites' | 'feedback' | 'general';
+export type Module =
+  | 'search'
+  | 'favourites'
+  | 'language'
+  | 'feedback'
+  | 'general';
 
 /**
  * Response types

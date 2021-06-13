@@ -6,6 +6,7 @@ import { Err, Ok, Result } from 'ts-results';
 import { initAWSConfig, TABLE_NAME_USERS, TABLE_USERS } from '../aws/config';
 import { getDynamoDBBillingDetails } from '../aws/dynamodb';
 import { AWSError } from '../errors/AWSError';
+import { Language } from '../lang';
 import { currentDate } from '../utils/date';
 import { Stage } from '../utils/types';
 import { UserFavourite, User } from './types';
@@ -138,6 +139,25 @@ export async function updateUserNotifications(
     UpdateExpression: 'set notifications = :notif, lastUpdated = :timestamp',
     ExpressionAttributeValues: {
       ':notif': notifications,
+      ':timestamp': formatISO(currentDate()),
+    },
+  };
+
+  await dynamoDb.update(updateUserInput).promise();
+}
+
+export async function updateUserLanguageCode(
+  userId: number,
+  languageCode: Language,
+): Promise<void> {
+  const updateUserInput: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
+    TableName: TABLE_USERS,
+    Key: {
+      userId,
+    },
+    UpdateExpression: 'set languageCode = :lang, lastUpdated = :timestamp',
+    ExpressionAttributeValues: {
+      ':lang': languageCode,
       ':timestamp': formatISO(currentDate()),
     },
   };
