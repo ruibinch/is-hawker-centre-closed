@@ -9,7 +9,7 @@ import {
   manageFavourites,
 } from '../services/favourites';
 import { manageFeedback } from '../services/feedback';
-import { manageLanguage } from '../services/language';
+import { getUserLanguageCode, manageLanguage } from '../services/language';
 import { makeGenericErrorMessage } from '../services/message';
 import { constructNotifications } from '../services/notifications';
 import { runSearch } from '../services/search';
@@ -34,8 +34,6 @@ export const bot: APIGatewayProxyHandler = async (
     return callbackWrapper(400);
   }
 
-  initDictionary();
-
   const reqBody = JSON.parse(event.body);
   const inputMessage = reqBody.message as TelegramMessage;
   const {
@@ -45,6 +43,14 @@ export const bot: APIGatewayProxyHandler = async (
 
   // this try-catch loop will catch all the errors that have bubbled up from the child functions
   try {
+    const userLanguageCodeResponse = await getUserLanguageCode(telegramUser);
+    if (userLanguageCodeResponse.err) {
+      throw userLanguageCodeResponse.val;
+    }
+
+    const { languageCode } = userLanguageCodeResponse.val;
+    initDictionary(languageCode);
+
     const validationResponse = validateInputMessage(inputMessage);
 
     if (validationResponse.err) {
@@ -126,7 +132,8 @@ export const notifications: APIGatewayProxyHandler = async (
 ): Promise<APIGatewayProxyResult> => {
   const callbackWrapper = makeCallbackWrapper(callback);
 
-  initDictionary();
+  // FIXME: change this to dynamic init
+  initDictionary('en');
 
   const notificationsOutput = await constructNotifications();
   if (notificationsOutput.err) {

@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- /language command with ZH language option
+
 ## [0.3.0] - 2021-06-08
 
 ### Changed
