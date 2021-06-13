@@ -278,5 +278,4 @@ export const mockTelegramUser: TelegramUser = {
   first_name: 'Ash',
   last_name: 'Ketchum',
   username: 'ashketchum',
-  language_code: 'en',
 };

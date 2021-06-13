@@ -1,3 +1,5 @@
+import { Language } from '../lang';
+
 export type Feedback = {
   feedbackId: string;
   userId: number;
@@ -32,7 +34,7 @@ export type UserFavourite = {
 export type User = {
   userId: number;
   username?: string;
-  languageCode?: string;
+  languageCode: Language;
   favourites: UserFavourite[];
   isInFavouritesMode: boolean;
   notifications: boolean;
