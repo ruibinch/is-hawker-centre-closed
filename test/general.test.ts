@@ -63,7 +63,11 @@ describe('General module', () => {
         }) +
         t('general.command-help.explanation.favourites-section.second') +
         t('general.command-help.explanation.favourites-section.third') +
-        t('general.command-help.explanation.favourites-section.fourth');
+        t('general.command-help.explanation.favourites-section.fourth') +
+        t('general.command-help.explanation.language-section.first', {
+          emoji: '\u{1F4AC}',
+        }) +
+        t('general.command-help.explanation.language-section.second');
 
       await callBot('/help');
       assertBotResponse(sendMessageSpy, expectedMessage);
@@ -87,7 +91,8 @@ describe('General module', () => {
       const expectedMessage =
         t('general.error.unsupported-command.first') +
         t('general.error.unsupported-command.second', {
-          commands: '/start, /help, /list, /fav, /del, /notify, /feedback',
+          commands:
+            '/start, /help, /list, /fav, /del, /notify, /language, /feedback',
         });
 
       await callBot('/invalid');

@@ -41,6 +41,12 @@ export const COMMANDS: Command[] = [
     description: 'Toggle your notification setting',
   },
   {
+    module: 'language',
+    endpoint: '/language',
+    hasExplanation: true,
+    description: 'Toggle your preferred language',
+  },
+  {
     module: 'feedback',
     endpoint: '/feedback',
     hasExplanation: true,
@@ -124,7 +130,11 @@ export function makeCommandMessage(s: string): string | undefined {
         }) +
         t('general.command-help.explanation.favourites-section.second') +
         t('general.command-help.explanation.favourites-section.third') +
-        t('general.command-help.explanation.favourites-section.fourth');
+        t('general.command-help.explanation.favourites-section.fourth') +
+        t('general.command-help.explanation.language-section.first', {
+          emoji: '\u{1F4AC}',
+        }) +
+        t('general.command-help.explanation.language-section.second');
       break;
     }
     case '/fav': {
@@ -139,6 +149,13 @@ export function makeCommandMessage(s: string): string | undefined {
       reply =
         t('favourites.command-del.explanation.first') +
         t('favourites.command-del.explanation.second');
+      break;
+    }
+    case '/language': {
+      reply =
+        t('language.command-language.explanation.first') +
+        t('language.command-language.explanation.second') +
+        t('language.command-language.explanation.third');
       break;
     }
     case '/feedback': {

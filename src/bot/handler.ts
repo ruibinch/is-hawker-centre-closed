@@ -9,6 +9,7 @@ import {
   manageFavourites,
 } from '../services/favourites';
 import { manageFeedback } from '../services/feedback';
+import { manageLanguage } from '../services/language';
 import { makeGenericErrorMessage } from '../services/message';
 import { constructNotifications } from '../services/notifications';
 import { runSearch } from '../services/search';
@@ -65,6 +66,9 @@ export const bot: APIGatewayProxyHandler = async (
     const makeExecutionFn = (_textSanitised: string) => {
       if (isCommandInModule(_textSanitised, 'favourites')) {
         return manageFavourites;
+      }
+      if (isCommandInModule(_textSanitised, 'language')) {
+        return manageLanguage;
       }
       if (isCommandInModule(_textSanitised, 'feedback')) {
         return manageFeedback;
