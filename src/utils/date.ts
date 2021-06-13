@@ -42,5 +42,5 @@ export function formatDateDisplay(
     }
   }
 
-  return format(date, 'dd\\-MMM');
+  return format(date, t('common.time.date-format'));
 }

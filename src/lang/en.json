@@ -90,5 +90,6 @@
   "common.time.today": "today",
   "common.time.tomorrow": "tomorrow",
   "common.time.this-month": "this month",
-  "common.time.next-month": "next month"
+  "common.time.next-month": "next month",
+  "common.time.date-format": "dd\\-MMM"
 }

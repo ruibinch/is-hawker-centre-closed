@@ -88,5 +88,6 @@
   "common.time.today": "今天",
   "common.time.tomorrow": "明天",
   "common.time.this-month": "这个月",
-  "common.time.next-month": "下个月"
+  "common.time.next-month": "下个月",
+  "common.time.date-format": "M月d日"
 }
