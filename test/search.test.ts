@@ -241,10 +241,18 @@ describe('Search module', () => {
     it('["Today"] returns all closures occurring today', async () => {
       const expectedMessage =
         t('search.hawker-centres-closed.without-keyword.present', {
-          numHC: 2,
+          numHC: 3,
           timePeriod: 'today',
         }) +
         [
+          t('common.hc-item', {
+            hcName: 'Devon Corporation',
+            closurePeriod: t('common.time.time-period', {
+              startDate: '01\\-Nov',
+              endDate: '30\\-Apr',
+            }),
+            closureReason: ' _\\(long\\-term renovation works\\)_',
+          }),
           t('common.hc-item', {
             hcName: 'Melville City',
             closurePeriod: t('common.time.today'),
@@ -267,10 +275,18 @@ describe('Search module', () => {
     it('["Tmr"] returns all closures occurring tomorrow', async () => {
       const expectedMessage =
         t('search.hawker-centres-closed.without-keyword.future', {
-          numHC: 2,
+          numHC: 3,
           timePeriod: 'tomorrow',
         }) +
         [
+          t('common.hc-item', {
+            hcName: 'Devon Corporation',
+            closurePeriod: t('common.time.time-period', {
+              startDate: '01\\-Nov',
+              endDate: '30\\-Apr',
+            }),
+            closureReason: ' _\\(long\\-term renovation works\\)_',
+          }),
           t('common.hc-item', {
             hcName: 'Littleroot Town',
             closurePeriod: t('common.time.time-period', {
@@ -293,10 +309,18 @@ describe('Search module', () => {
     it('["Tomorrow"] returns all closures occurring tomorrow', async () => {
       const expectedMessage =
         t('search.hawker-centres-closed.without-keyword.future', {
-          numHC: 2,
+          numHC: 3,
           timePeriod: 'tomorrow',
         }) +
         [
+          t('common.hc-item', {
+            hcName: 'Devon Corporation',
+            closurePeriod: t('common.time.time-period', {
+              startDate: '01\\-Nov',
+              endDate: '30\\-Apr',
+            }),
+            closureReason: ' _\\(long\\-term renovation works\\)_',
+          }),
           t('common.hc-item', {
             hcName: 'Littleroot Town',
             closurePeriod: t('common.time.time-period', {
@@ -319,10 +343,18 @@ describe('Search module', () => {
     it('["Month"] returns all closures occurring in the current month', async () => {
       const expectedMessage =
         t('search.hawker-centres-closed.without-keyword.present', {
-          numHC: 7,
+          numHC: 8,
           timePeriod: 'this month',
         }) +
         [
+          t('common.hc-item', {
+            hcName: 'Devon Corporation',
+            closurePeriod: t('common.time.time-period', {
+              startDate: '01\\-Nov',
+              endDate: '30\\-Apr',
+            }),
+            closureReason: ' _\\(long\\-term renovation works\\)_',
+          }),
           t('common.hc-item', {
             hcName: 'Melville City',
             closurePeriod: t('common.time.today'),
@@ -418,7 +450,7 @@ describe('Search module', () => {
     beforeAll(() => {
       dateSpy = jest
         .spyOn(Date, 'now')
-        .mockImplementation(() => parseISO('2021-03-01T11:30:25').valueOf());
+        .mockImplementation(() => parseISO('2021-05-01T11:30:25').valueOf());
     });
 
     afterAll(() => {

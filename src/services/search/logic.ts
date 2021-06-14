@@ -105,7 +105,10 @@ function filterByDate(closures: Closure[], modifier: SearchModifier) {
         return isWithinDateBounds(tomorrowDate, startDate, endDate);
       }
       if (modifier === 'month') {
-        return isSameMonth(currDate, startDate);
+        return (
+          isWithinDateBounds(currDate, startDate, endDate) ||
+          isSameMonth(currDate, startDate)
+        );
       }
       if (modifier === 'nextMonth') {
         return differenceInCalendarMonths(startDate, currDate) === 1;

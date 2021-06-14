@@ -83,6 +83,14 @@ export const mockClosures: Closure[] = [
     startDate: '2021-02-01',
     endDate: '2021-02-28',
   },
+  {
+    id: '111',
+    hawkerCentreId: 11,
+    reason: 'renovation',
+    name: 'Devon Corporation',
+    startDate: '2020-11-01',
+    endDate: '2021-04-30',
+  },
 ];
 
 export const mockHawkerCentres: HawkerCentre[] = [
