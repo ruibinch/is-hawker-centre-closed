@@ -22,15 +22,22 @@ export function makeMessage(searchResponse: SearchResponse): string {
     );
   } else {
     if (keyword === '') {
-      reply = t(
-        isSearchModifierInFuture(modifier)
-          ? 'search.hawker-centres-closed.without-keyword.future'
-          : 'search.hawker-centres-closed.without-keyword.present',
-        {
-          numHC: closures.length,
-          timePeriod: makeTimePeriodSnippet(modifier),
-        },
-      );
+      const messageString = (() => {
+        if (closures.length === 1) {
+          return isSearchModifierInFuture(modifier)
+            ? 'search.hawker-centres-closed.without-keyword.singular.future'
+            : 'search.hawker-centres-closed.without-keyword.singular.present';
+        }
+
+        return isSearchModifierInFuture(modifier)
+          ? 'search.hawker-centres-closed.without-keyword.plural.future'
+          : 'search.hawker-centres-closed.without-keyword.plural.present';
+      })();
+
+      reply = t(messageString, {
+        numHC: closures.length,
+        timePeriod: makeTimePeriodSnippet(modifier),
+      });
     } else {
       reply = t(
         isSearchModifierInFuture(modifier)

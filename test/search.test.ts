@@ -240,7 +240,7 @@ describe('Search module', () => {
 
     it('["Today"] returns all closures occurring today', async () => {
       const expectedMessage =
-        t('search.hawker-centres-closed.without-keyword.present', {
+        t('search.hawker-centres-closed.without-keyword.plural.present', {
           numHC: 3,
           timePeriod: 'today',
         }) +
@@ -274,7 +274,7 @@ describe('Search module', () => {
 
     it('["Tmr"] returns all closures occurring tomorrow', async () => {
       const expectedMessage =
-        t('search.hawker-centres-closed.without-keyword.future', {
+        t('search.hawker-centres-closed.without-keyword.plural.future', {
           numHC: 3,
           timePeriod: 'tomorrow',
         }) +
@@ -308,7 +308,7 @@ describe('Search module', () => {
 
     it('["Tomorrow"] returns all closures occurring tomorrow', async () => {
       const expectedMessage =
-        t('search.hawker-centres-closed.without-keyword.future', {
+        t('search.hawker-centres-closed.without-keyword.plural.future', {
           numHC: 3,
           timePeriod: 'tomorrow',
         }) +
@@ -342,7 +342,7 @@ describe('Search module', () => {
 
     it('["Month"] returns all closures occurring in the current month', async () => {
       const expectedMessage =
-        t('search.hawker-centres-closed.without-keyword.present', {
+        t('search.hawker-centres-closed.without-keyword.plural.present', {
           numHC: 8,
           timePeriod: 'this month',
         }) +
@@ -410,7 +410,7 @@ describe('Search module', () => {
 
     it('["Next month"] returns all closures occurring in the current month', async () => {
       const expectedMessage =
-        t('search.hawker-centres-closed.without-keyword.future', {
+        t('search.hawker-centres-closed.without-keyword.plural.future', {
           numHC: 3,
           timePeriod: 'next month',
         }) +
