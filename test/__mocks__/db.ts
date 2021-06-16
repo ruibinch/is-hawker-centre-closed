@@ -260,7 +260,7 @@ export const mockUsers: User[] = [
   {
     userId: 5,
     username: 'meowth',
-    languageCode: 'en',
+    languageCode: 'zh',
     favourites: [
       {
         hawkerCentreId: 5,

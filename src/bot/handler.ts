@@ -127,9 +127,6 @@ export const notifications: APIGatewayProxyHandler = async (
 ): Promise<APIGatewayProxyResult> => {
   const callbackWrapper = makeCallbackWrapper(callback);
 
-  // FIXME: change this to dynamic init
-  initDictionary('en');
-
   const notificationsOutput = await constructNotifications();
   if (notificationsOutput.err) {
     return callbackWrapper(400);

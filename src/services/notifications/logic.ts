@@ -41,6 +41,7 @@ export async function getUsersWithFavsClosedToday(): Promise<
       if (applicableClosures.length > 0) {
         _usersWithFavsClosedToday.push({
           userId: user.userId,
+          languageCode: user.languageCode,
           closures: applicableClosures,
         });
       }

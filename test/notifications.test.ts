@@ -57,12 +57,12 @@ describe('Notifications module', () => {
     getUserByIdSpy.mockRestore();
   });
 
-  it('sends a notification to users who with a favourite hawker centre that is closed today', async () => {
+  it('sends a notification to users in their preferred language with a favourite hawker centre that is closed today', async () => {
     const expectedMessages = [
       '\u{1F4A1} Heads up\\! 1 of your favourite hawker centres will be closed today\\.\n\n' +
         '*Verdanturf Town*\ntoday to tomorrow',
-      '\u{1F4A1} Heads up\\! 1 of your favourite hawker centres will be closed today\\.\n\n' +
-        '*Melville City*\n01\\-Feb to 28\\-Feb _\\(long\\-term renovation works\\)_',
+      '\u{1F4A1} 注意！今天有1个您喜爱的小贩中心关闭。\n\n' +
+        '*Melville City*\n2月1日至2月28日 _（长期整修工程）_',
     ];
 
     await callNotifications();
