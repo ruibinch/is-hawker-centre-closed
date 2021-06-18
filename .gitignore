@@ -4,6 +4,7 @@
 .vscode
 .webpack
 
+coverage/
 data/
 node_modules/
 *.log
