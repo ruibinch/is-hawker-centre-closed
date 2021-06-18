@@ -3,7 +3,9 @@ import { Err } from 'ts-results';
 
 import { bot } from '../src/bot/handler';
 import * as sender from '../src/bot/sender';
-import { initDictionary, t } from '../src/lang';
+import { AWSError } from '../src/errors/AWSError';
+import { t } from '../src/lang';
+import * as UserFile from '../src/models/User';
 import * as searchFeature from '../src/services/search';
 import { assertBotResponse, makeBotWrapper } from './helpers/bot';
 
@@ -11,9 +13,12 @@ describe('Validation module', () => {
   const mockCallback = jest.fn();
   const callBot = makeBotWrapper(mockCallback);
   let sendMessageSpy: jest.SpyInstance;
+  let getUserByIdSpy: jest.SpyInstance;
 
   beforeAll(() => {
-    initDictionary();
+    getUserByIdSpy = jest
+      .spyOn(UserFile, 'getUserById')
+      .mockImplementation(() => Promise.resolve(Err(new AWSError())));
   });
 
   afterAll(() => {
@@ -26,14 +31,14 @@ describe('Validation module', () => {
 
   afterEach(() => {
     sendMessageSpy.mockRestore();
+    getUserByIdSpy.mockRestore();
   });
 
   describe('non-text messages', () => {
     it('sends an emoji', async () => {
-      const expectedMessage = t('validation.error.base-message-format', {
-        emoji: '\u{2757}',
-        errorMessage: t('validation.error.message-type-emoji'),
-      });
+      const expectedMessage =
+        "\u{2757} That's a cute emoji but this bot has no idea which hawker centre that could refer to\\.\n\n" +
+        'Please try again with a text message\\.';
 
       await callBot('😊');
       assertBotResponse(sendMessageSpy, expectedMessage);

@@ -10,7 +10,6 @@ export const mockTelegramUser: TelegramUser = {
   first_name: 'Ash',
   last_name: 'Ketchum',
   username: 'ashketchum',
-  language_code: 'en',
 };
 
 export const mockTelegramChat: TelegramChat = {
@@ -21,9 +20,9 @@ export const mockTelegramChat: TelegramChat = {
   username: 'ashketchum',
 };
 
-export function makeTelegramMessage(
-  params: Partial<TelegramMessage> = {},
-): { message: TelegramMessage } {
+export function makeTelegramMessage(params: Partial<TelegramMessage> = {}): {
+  message: TelegramMessage;
+} {
   return {
     message: {
       message_id: 123,

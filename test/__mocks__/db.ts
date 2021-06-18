@@ -260,7 +260,7 @@ export const mockUsers: User[] = [
   {
     userId: 5,
     username: 'meowth',
-    languageCode: 'en',
+    languageCode: 'zh',
     favourites: [
       {
         hawkerCentreId: 5,
@@ -278,5 +278,4 @@ export const mockTelegramUser: TelegramUser = {
   first_name: 'Ash',
   last_name: 'Ketchum',
   username: 'ashketchum',
-  language_code: 'en',
 };

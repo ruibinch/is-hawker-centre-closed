@@ -75,7 +75,7 @@ export async function addHCToFavourites(props: {
 }): Promise<Result<AddHCResponse, CustomError>> {
   const {
     hawkerCentre: { hawkerCentreId },
-    telegramUser: { id: userId, username, language_code: languageCode },
+    telegramUser: { id: userId, username },
   } = props;
 
   const addFavHC: UserFavourite = {
@@ -89,7 +89,7 @@ export async function addHCToFavourites(props: {
     const newUser: User = {
       userId,
       username,
-      languageCode,
+      languageCode: 'en',
       favourites: [addFavHC],
       isInFavouritesMode: false,
       notifications: true,
@@ -249,7 +249,7 @@ export async function toggleUserInFavouritesMode(
   telegramUser: TelegramUser,
   isInFavouritesMode: boolean,
 ): Promise<Result<void, void>> {
-  const { id: userId, username, language_code: languageCode } = telegramUser;
+  const { id: userId, username } = telegramUser;
 
   // TODO: potentially improve this flow
   const getUserResponse = await getUserById(userId);
@@ -258,7 +258,7 @@ export async function toggleUserInFavouritesMode(
     const newUser: User = {
       userId,
       username,
-      languageCode,
+      languageCode: 'en',
       favourites: [],
       isInFavouritesMode,
       notifications: true,
@@ -283,7 +283,7 @@ export async function manageNotifications(props: {
 }): Promise<ManageNotificationsResponse> {
   const {
     keyword,
-    telegramUser: { id: userId, username, language_code: languageCode },
+    telegramUser: { id: userId, username },
   } = props;
 
   // TODO: potentially improve this flow
@@ -320,7 +320,7 @@ export async function manageNotifications(props: {
       const newUser: User = {
         userId,
         username,
-        languageCode,
+        languageCode: 'en',
         favourites: [],
         isInFavouritesMode: false,
         notifications: newNotificationsValue,

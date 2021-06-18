@@ -201,7 +201,7 @@ function makeRandomSearchExample(): string {
   return t('search.example-format', {
     searchTerm,
     keyword,
-    modifier,
+    modifier: t(`common.time.${modifier.replace(/\s/, '-')}`),
   });
 }
 

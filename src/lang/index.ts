@@ -1,6 +1,7 @@
 import i18n, { TranslateOptions } from 'i18n-js';
 
 import enDict from './en.json';
+import zhDict from './zh.json';
 
 // FIXME: figure out how to best utilise this type in Dictionary
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -28,10 +29,11 @@ const normaliseDictionary = (dictionary: Dictionary) =>
 
 const dictionary: Dictionary = {
   en: enDict,
+  zh: zhDict,
 };
 
-export const initDictionary = (): void => {
-  i18n.locale = 'en';
+export const initDictionary = (languageCode: Language): void => {
+  i18n.locale = languageCode;
   i18n.translations = normaliseDictionary(dictionary);
 };
 
