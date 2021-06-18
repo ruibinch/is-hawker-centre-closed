@@ -1,9 +1,8 @@
 import { parseISO } from 'date-fns';
-import { Err, Ok } from 'ts-results';
+import { Err } from 'ts-results';
 
 import * as sender from '../src/bot/sender';
 import { AWSError } from '../src/errors/AWSError';
-import { t } from '../src/lang';
 import * as UserFile from '../src/models/User';
 import * as favouritesIndex from '../src/services/favourites/index';
 import { assertBotResponse, makeBotWrapper } from './helpers/bot';
