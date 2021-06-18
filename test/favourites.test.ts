@@ -4,7 +4,6 @@ import { Err, Ok } from 'ts-results';
 
 import * as sender from '../src/bot/sender';
 import { AWSError } from '../src/errors/AWSError';
-import { t } from '../src/lang';
 import * as ClosureFile from '../src/models/Closure';
 import * as HawkerCentreFile from '../src/models/HawkerCentre';
 import * as UserFile from '../src/models/User';
@@ -108,8 +107,8 @@ describe('Favourites module', () => {
 
     it('["/del"] returns the explanatory message', async () => {
       const expectedMessage =
-        t('favourites.command-del.explanation.first') +
-        t('favourites.command-del.explanation.second');
+        'To delete a favourite hawker centre, specify an index number based on the favourites list displayed by the /list command\\.\n\n' +
+        'e\\.g\\. _/del 3_';
 
       await callBot('/del');
       assertBotResponse(sendMessageSpy, expectedMessage);
@@ -118,7 +117,8 @@ describe('Favourites module', () => {
 
   describe('searching for a favourite hawker centre', () => {
     it('["/fav oldale"] returns a single result, and sets isInFavouritesMode to true', async () => {
-      const expectedMessage = t('favourites.confirm-hawker-centre');
+      const expectedMessage =
+        'Confirm that this is the hawker centre to be added?';
       const expectedChoices = ['Oldale Town'];
 
       await callBot('/fav oldale');
@@ -132,7 +132,7 @@ describe('Favourites module', () => {
     });
 
     it('["/fav fortree"] returns multiple choices for selection, and sets isInFavouritesMode to true', async () => {
-      const expectedMessage = t('favourites.choose-favourite-hawker-centre');
+      const expectedMessage = 'Choose your favourite hawker centre:';
       const expectedChoices = ['Fortree Market', 'Fortree Gym'];
 
       await callBot('/fav fortree');
@@ -146,7 +146,8 @@ describe('Favourites module', () => {
     });
 
     it('["/fav psychic"] searches on secondary name, and sets isInFavouritesMode to true', async () => {
-      const expectedMessage = t('favourites.confirm-hawker-centre');
+      const expectedMessage =
+        'Confirm that this is the hawker centre to be added?';
       const expectedChoices = ['Mossdeep Gym'];
 
       await callBot('/fav psychic');
@@ -160,7 +161,8 @@ describe('Favourites module', () => {
     });
 
     it('["/fav melville 118"] searches across multiple words, and sets isInFavouritesMode to true', async () => {
-      const expectedMessage = t('favourites.confirm-hawker-centre');
+      const expectedMessage =
+        'Confirm that this is the hawker centre to be added?';
       const expectedChoices = ['Route 118 near Melville City'];
 
       await callBot('/fav melville 118');
@@ -174,9 +176,8 @@ describe('Favourites module', () => {
     });
 
     it('["/fav lilycove"] returns an error message when there are no results', async () => {
-      const expectedMessage = t('favourites.error.no-results-found', {
-        keyword: ' for keyword *lilycove*',
-      });
+      const expectedMessage =
+        'No results found for keyword *lilycove*\\. Try again?';
 
       await callBot('/fav lilycove');
       assertBotResponse(sendMessageSpy, expectedMessage);
@@ -185,7 +186,8 @@ describe('Favourites module', () => {
     });
 
     it('["/fav gym"] returns an error message when there are too many results', async () => {
-      const expectedMessage = t('favourites.error.too-many-results');
+      const expectedMessage =
+        'Too many results to be displayed, please further refine your search\\.';
 
       await callBot('/fav gym');
       assertBotResponse(sendMessageSpy, expectedMessage);
@@ -207,9 +209,8 @@ describe('Favourites module', () => {
 
     describe('adding a favourite hawker centre', () => {
       it('["/fav Slateport Market"] an exact match will add it to the favourites list', async () => {
-        const expectedMessage = t('favourites.hawker-centre-added', {
-          hcName: 'Slateport Market',
-        });
+        const expectedMessage =
+          'Great, adding *Slateport Market* to your list of favourites\\!';
 
         await callBot('/fav Slateport Market');
         assertBotResponse(sendMessageSpy, expectedMessage);
@@ -227,9 +228,8 @@ describe('Favourites module', () => {
       });
 
       it('["/fav Verdanturf Town"] returns a duplicate error message when hawker centre is already in the favourites list', async () => {
-        const expectedMessage = t('favourites.error.duplicate-hawker-centres', {
-          hcName: 'Verdanturf Town',
-        });
+        const expectedMessage =
+          '*Verdanturf Town* is already in your favourites list\\!';
 
         await callBot('/fav Verdanturf Town');
         assertBotResponse(sendMessageSpy, expectedMessage);
@@ -241,9 +241,8 @@ describe('Favourites module', () => {
 
     describe('deleting a favourite hawker centre', () => {
       it('["/del 1"] (Littleroot Town) successfully deletes the hawker centre from the favourites list', async () => {
-        const expectedMessage = t('favourites.hawker-centre-removed', {
-          hcName: 'Littleroot Town',
-        });
+        const expectedMessage =
+          '*Littleroot Town* has been deleted from your list of favourites\\.';
 
         await callBot('/del 1');
         assertBotResponse(sendMessageSpy, expectedMessage);
@@ -261,10 +260,8 @@ describe('Favourites module', () => {
 
       it('["/del 0"] (invalid) returns an error message when index number is out of bounds', async () => {
         const expectedMessage =
-          t('favourites.error.invalid-delete-index.first') +
-          t('favourites.error.invalid-delete-index.second.multiple-favs', {
-            numFavourites: 3,
-          });
+          'That is not a valid index number\\. ' +
+          'Try again with a value from 1 to 3\\.';
 
         await callBot('/del 0');
         assertBotResponse(sendMessageSpy, expectedMessage);
@@ -274,10 +271,8 @@ describe('Favourites module', () => {
 
       it('["/del 5"] (invalid) returns an error message when index number is out of bounds', async () => {
         const expectedMessage =
-          t('favourites.error.invalid-delete-index.first') +
-          t('favourites.error.invalid-delete-index.second.multiple-favs', {
-            numFavourites: 3,
-          });
+          'That is not a valid index number\\. ' +
+          'Try again with a value from 1 to 3\\.';
 
         await callBot('/del 5');
         assertBotResponse(sendMessageSpy, expectedMessage);
@@ -287,10 +282,8 @@ describe('Favourites module', () => {
 
       it('["/del invalidValue"] (invalid) returns an error message when index number is not a valid number', async () => {
         const expectedMessage =
-          t('favourites.error.invalid-delete-index.first') +
-          t('favourites.error.invalid-delete-index.second.multiple-favs', {
-            numFavourites: 3,
-          });
+          'That is not a valid index number\\. ' +
+          'Try again with a value from 1 to 3\\.';
 
         await callBot('/del invalidValue');
         assertBotResponse(sendMessageSpy, expectedMessage);
@@ -301,34 +294,13 @@ describe('Favourites module', () => {
 
     describe("getting list of user's favourites", () => {
       it('["/list"] correctly returns the user\'s favourite hawker centres with results', async () => {
-        const expectedMessage = t('favourites.list', {
-          hcOutput: [
-            t('favourites.item', {
-              index: 1,
-              hcName: 'Littleroot Town',
-              nextClosureDetails: '',
-            }),
-            t('favourites.item', {
-              index: 2,
-              hcName: 'Verdanturf Town',
-              nextClosureDetails: t('favourites.item.closure-details', {
-                closurePeriod: t('common.time.time-period', {
-                  startDate: '08\\-Feb',
-                  endDate: '09\\-Feb',
-                }),
-                closureReason: '',
-              }),
-            }),
-            t('favourites.item', {
-              index: 3,
-              hcName: 'Mossdeep Gym',
-              nextClosureDetails: t('favourites.item.closure-details', {
-                closurePeriod: t('common.time.today'),
-                closureReason: '',
-              }),
-            }),
-          ].join('\n'),
-        });
+        const expectedMessage =
+          'Your favourite hawker centres and their next closure dates are:\n\n' +
+          '1\\. *Littleroot Town*\n' +
+          '2\\. *Verdanturf Town*\n' +
+          '    _\\(08\\-Feb to 09\\-Feb\\)_\n' +
+          '3\\. *Mossdeep Gym*\n' +
+          '    _\\(today\\)_';
 
         await callBot('/list');
         assertBotResponse(sendMessageSpy, expectedMessage);
@@ -338,15 +310,15 @@ describe('Favourites module', () => {
     describe('viewing/toggling the notification setting', () => {
       it('["/notify"] returns the user\'s current notification setting', async () => {
         const expectedMessage =
-          t('favourites.notifications.current-on') +
-          t('favourites.notifications.toggle-prompt-off');
+          'Your notification setting is currently on\\.\n\n' +
+          'To turn it off, type in "_/notify off_"\\.';
 
         await callBot('/notify');
         assertBotResponse(sendMessageSpy, expectedMessage);
       });
 
       it('["/notify on"] sets the user\'s notification setting to on', async () => {
-        const expectedMessage = t('favourites.notifications.turned-on');
+        const expectedMessage = 'Notifications are now *on*\\.';
 
         await callBot('/notify on');
         assertBotResponse(sendMessageSpy, expectedMessage);
@@ -355,7 +327,7 @@ describe('Favourites module', () => {
       });
 
       it('["/notify off"] sets the user\'s notification setting to off', async () => {
-        const expectedMessage = t('favourites.notifications.turned-off');
+        const expectedMessage = 'Notifications are now *off*\\.';
 
         await callBot('/notify off');
         assertBotResponse(sendMessageSpy, expectedMessage);
@@ -364,9 +336,8 @@ describe('Favourites module', () => {
       });
 
       it('["/notify invalidValue"] returns an error message when notification keyword is invalid', async () => {
-        const expectedMessage = t(
-          'favourites.notifications.unrecognised-keyword',
-        );
+        const expectedMessage =
+          'Invalid toggle keyword\\.\nPlease try again with either _on_ or _off_\\.';
 
         await callBot('/notify invalidValue');
         assertBotResponse(sendMessageSpy, expectedMessage);
@@ -390,8 +361,8 @@ describe('Favourites module', () => {
     describe('deleting a favourite hawker centre', () => {
       it('["/del 0"] (invalid) returns an error message stating that there is only one valid value when index number is out of bounds', async () => {
         const expectedMessage =
-          t('favourites.error.invalid-delete-index.first') +
-          t('favourites.error.invalid-delete-index.second.one-fav');
+          'That is not a valid index number\\. ' +
+          'The only valid value is 1\\.';
 
         await callBot('/del 0');
         assertBotResponse(sendMessageSpy, expectedMessage);
@@ -414,7 +385,8 @@ describe('Favourites module', () => {
 
     describe("getting list of user's favourites", () => {
       it('["/list"] returns a message prompting to add some favourites', async () => {
-        const expectedMessage = t('favourites.error.no-saved-favourites');
+        const expectedMessage =
+          "You've not added any favourites yet\\. Try adding some using the /fav command\\.";
 
         await callBot('/list');
         assertBotResponse(sendMessageSpy, expectedMessage);
@@ -423,7 +395,8 @@ describe('Favourites module', () => {
 
     describe('deleting a favourite hawker centre', () => {
       it('["/del 0"] returns a message prompting to add some favourites', async () => {
-        const expectedMessage = t('favourites.error.no-saved-favourites');
+        const expectedMessage =
+          "You've not added any favourites yet\\. Try adding some using the /fav command\\.";
 
         await callBot('/del 0');
         assertBotResponse(sendMessageSpy, expectedMessage);
@@ -435,8 +408,8 @@ describe('Favourites module', () => {
     describe('viewing the notification setting', () => {
       it('["/notify"] returns the user\'s current notification setting', async () => {
         const expectedMessage =
-          t('favourites.notifications.current-off') +
-          t('favourites.notifications.toggle-prompt-on');
+          'Your notification setting is currently off\\.\n\n' +
+          'To turn it on, type in "_/notify on_"\\.';
 
         await callBot('/notify');
         assertBotResponse(sendMessageSpy, expectedMessage);
@@ -469,9 +442,8 @@ describe('Favourites module', () => {
 
     describe('adding a favourite hawker centre', () => {
       it('["/fav Slateport Market"] creates a new user with the saved favourite', async () => {
-        const expectedMessage = t('favourites.hawker-centre-added', {
-          hcName: 'Slateport Market',
-        });
+        const expectedMessage =
+          'Great, adding *Slateport Market* to your list of favourites\\!';
 
         await callBot('/fav Slateport Market');
         assertBotResponse(sendMessageSpy, expectedMessage);
@@ -493,7 +465,8 @@ describe('Favourites module', () => {
       });
 
       it('["/fav oldale"] returns a single result, and creates a new user with isInFavouritesMode set to true', async () => {
-        const expectedMessage = t('favourites.confirm-hawker-centre');
+        const expectedMessage =
+          'Confirm that this is the hawker centre to be added?';
         const expectedChoices = ['Oldale Town'];
 
         await callBot('/fav oldale');
@@ -517,7 +490,8 @@ describe('Favourites module', () => {
 
     describe("getting list of user's favourites", () => {
       it('["/list"] returns a message prompting to add some favourites', async () => {
-        const expectedMessage = t('favourites.error.no-saved-favourites');
+        const expectedMessage =
+          "You've not added any favourites yet\\. Try adding some using the /fav command\\.";
 
         await callBot('/list');
         assertBotResponse(sendMessageSpy, expectedMessage);
@@ -526,7 +500,8 @@ describe('Favourites module', () => {
 
     describe('deleting a favourite hawker centre', () => {
       it('["/del 0"] returns a message prompting to add some favourites', async () => {
-        const expectedMessage = t('favourites.error.no-saved-favourites');
+        const expectedMessage =
+          "You've not added any favourites yet\\. Try adding some using the /fav command\\.";
 
         await callBot('/del 0');
         assertBotResponse(sendMessageSpy, expectedMessage);
@@ -538,16 +513,16 @@ describe('Favourites module', () => {
     describe('viewing/toggling the notification setting', () => {
       it('["/notify"] returns an error message when no notification setting is specified', async () => {
         const expectedMessage =
-          t('favourites.notifications.not-specified.first') +
-          t('favourites.notifications.not-specified.second') +
-          t('favourites.notifications.not-specified.third');
+          'You currently do not have a notification setting specified\\.\n\n' +
+          'To toggle your notification setting, specify either the _on_ or _off_ keyword\\.\n' +
+          'e\\.g\\. _/notify on_';
 
         await callBot('/notify');
         assertBotResponse(sendMessageSpy, expectedMessage);
       });
 
       it('["/notify on"] creates a new user with notification setting set to on', async () => {
-        const expectedMessage = t('favourites.notifications.turned-on');
+        const expectedMessage = 'Notifications are now *on*\\.';
 
         await callBot('/notify on');
         assertBotResponse(sendMessageSpy, expectedMessage);
@@ -564,7 +539,7 @@ describe('Favourites module', () => {
       });
 
       it('["/notify off"] creates a new user with notification setting set to off', async () => {
-        const expectedMessage = t('favourites.notifications.turned-off');
+        const expectedMessage = 'Notifications are now *off*\\.';
 
         await callBot('/notify off');
         assertBotResponse(sendMessageSpy, expectedMessage);
@@ -595,9 +570,8 @@ describe('Favourites module', () => {
 
     describe('user selects one of the displayed choices', () => {
       it('["Sootopolis Gym"] adds to the favourites list', async () => {
-        const expectedMessage = t('favourites.hawker-centre-added', {
-          hcName: 'Sootopolis Gym',
-        });
+        const expectedMessage =
+          'Great, adding *Sootopolis Gym* to your list of favourites\\!';
 
         await callBot('Sootopolis Gym');
         assertBotResponse(sendMessageSpy, expectedMessage);

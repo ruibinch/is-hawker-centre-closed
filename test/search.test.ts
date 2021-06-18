@@ -4,7 +4,6 @@ import { Err, Ok } from 'ts-results';
 
 import * as sender from '../src/bot/sender';
 import { AWSError } from '../src/errors/AWSError';
-import { t } from '../src/lang';
 import * as ClosureFile from '../src/models/Closure';
 import * as UserFile from '../src/models/User';
 import * as favouritesIndex from '../src/services/favourites/index';
@@ -73,28 +72,16 @@ describe('Search module', () => {
 
     it('["littleroot today"] returns a single closure occurring today', async () => {
       const expectedMessage =
-        t('search.hawker-centres-closed.with-keyword.present', {
-          keyword: 'containing the keyword *littleroot* ',
-          timePeriod: 'today',
-        }) +
-        t('common.hc-item', {
-          hcName: 'Littleroot Town',
-          closurePeriod: t('common.time.time-period', {
-            startDate: t('common.time.today'),
-            endDate: t('common.time.tomorrow'),
-          }),
-          closureReason: '',
-        });
+        'Here are the hawker centres containing the keyword *littleroot* that are closed today:\n\n' +
+        '*Littleroot Town*\ntoday to tomorrow';
 
       await callBot('littleroot today');
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
     it('["rustboro"] does not return any closure if there is no closure occurring today', async () => {
-      const expectedMessage = t('search.no-hawker-centres-closed.present', {
-        keyword: 'containing the keyword *rustboro* ',
-        timePeriod: 'today',
-      });
+      const expectedMessage =
+        'All good\\! No hawker centres containing the keyword *rustboro* are undergoing cleaning today\\.';
 
       await callBot('rustboro');
       assertBotResponse(sendMessageSpy, expectedMessage);
@@ -102,15 +89,8 @@ describe('Search module', () => {
 
     it('["slateport tmr"] returns all closures occurring tomorrow', async () => {
       const expectedMessage =
-        t('search.hawker-centres-closed.with-keyword.future', {
-          keyword: 'containing the keyword *slateport* ',
-          timePeriod: 'tomorrow',
-        }) +
-        t('common.hc-item', {
-          hcName: 'Slateport City',
-          closurePeriod: t('common.time.tomorrow'),
-          closureReason: '',
-        });
+        'Here are the hawker centres containing the keyword *slateport* that will be closed tomorrow:\n\n' +
+        '*Slateport City*\ntomorrow';
 
       await callBot('slateport tmr');
       assertBotResponse(sendMessageSpy, expectedMessage);
@@ -118,15 +98,8 @@ describe('Search module', () => {
 
     it('["slateport tomorrow"] returns all closures occurring tomorrow', async () => {
       const expectedMessage =
-        t('search.hawker-centres-closed.with-keyword.future', {
-          keyword: 'containing the keyword *slateport* ',
-          timePeriod: 'tomorrow',
-        }) +
-        t('common.hc-item', {
-          hcName: 'Slateport City',
-          closurePeriod: t('common.time.tomorrow'),
-          closureReason: '',
-        });
+        'Here are the hawker centres containing the keyword *slateport* that will be closed tomorrow:\n\n' +
+        '*Slateport City*\ntomorrow';
 
       await callBot('slateport tomorrow');
       assertBotResponse(sendMessageSpy, expectedMessage);
@@ -134,28 +107,9 @@ describe('Search module', () => {
 
     it('["oldale month"] returns closures occurring in the current month', async () => {
       const expectedMessage =
-        t('search.hawker-centres-closed.with-keyword.present', {
-          keyword: 'containing the keyword *oldale* ',
-          timePeriod: 'this month',
-        }) +
-        [
-          t('common.hc-item', {
-            hcName: 'Oldale Town',
-            closurePeriod: t('common.time.time-period', {
-              startDate: '15\\-Jan',
-              endDate: '18\\-Jan',
-            }),
-            closureReason: '',
-          }),
-          t('common.hc-item', {
-            hcName: 'Oldale Town',
-            closurePeriod: t('common.time.time-period', {
-              startDate: '30\\-Jan',
-              endDate: '31\\-Jan',
-            }),
-            closureReason: '',
-          }),
-        ].join('\n\n');
+        'Here are the hawker centres containing the keyword *oldale* that are closed this month:\n\n' +
+        '*Oldale Town*\n15\\-Jan to 18\\-Jan\n\n' +
+        '*Oldale Town*\n30\\-Jan to 31\\-Jan';
 
       await callBot('oldale month');
       assertBotResponse(sendMessageSpy, expectedMessage);
@@ -163,18 +117,8 @@ describe('Search module', () => {
 
     it('["melville 118 month"] searches across multiple words', async () => {
       const expectedMessage =
-        t('search.hawker-centres-closed.with-keyword.present', {
-          keyword: 'containing the keyword *melville 118* ',
-          timePeriod: 'this month',
-        }) +
-        t('common.hc-item', {
-          hcName: 'Route 118 near Melville City',
-          closurePeriod: t('common.time.time-period', {
-            startDate: '21\\-Jan',
-            endDate: '24\\-Jan',
-          }),
-          closureReason: '',
-        });
+        'Here are the hawker centres containing the keyword *melville 118* that are closed this month:\n\n' +
+        '*Route 118 near Melville City*\n21\\-Jan to 24\\-Jan';
 
       await callBot('melville 118 month');
       assertBotResponse(sendMessageSpy, expectedMessage);
@@ -182,15 +126,8 @@ describe('Search module', () => {
 
     it('["psychic month"] searches on secondary name', async () => {
       const expectedMessage =
-        t('search.hawker-centres-closed.with-keyword.present', {
-          keyword: 'containing the keyword *psychic* ',
-          timePeriod: 'this month',
-        }) +
-        t('common.hc-item', {
-          hcName: 'Mossdeep Gym',
-          closurePeriod: '05\\-Jan',
-          closureReason: '',
-        });
+        'Here are the hawker centres containing the keyword *psychic* that are closed this month:\n\n' +
+        '*Mossdeep Gym*\n05\\-Jan';
 
       await callBot('psychic month');
       assertBotResponse(sendMessageSpy, expectedMessage);
@@ -198,18 +135,8 @@ describe('Search module', () => {
 
     it('["verdanturf next month"] returns closures occurring in the next month', async () => {
       const expectedMessage =
-        t('search.hawker-centres-closed.with-keyword.future', {
-          keyword: 'containing the keyword *verdanturf* ',
-          timePeriod: 'next month',
-        }) +
-        t('common.hc-item', {
-          hcName: 'Verdanturf Town',
-          closurePeriod: t('common.time.time-period', {
-            startDate: '08\\-Feb',
-            endDate: '09\\-Feb',
-          }),
-          closureReason: '',
-        });
+        'Here are the hawker centres containing the keyword *verdanturf* that will be closed next month:\n\n' +
+        '*Verdanturf Town*\n08\\-Feb to 09\\-Feb';
 
       await callBot('verdanturf next month');
       assertBotResponse(sendMessageSpy, expectedMessage);
@@ -217,18 +144,8 @@ describe('Search module', () => {
 
     it('["melville next month"] returns closures occurring in the next month with the long-term renovation works suffix', async () => {
       const expectedMessage =
-        t('search.hawker-centres-closed.with-keyword.future', {
-          keyword: 'containing the keyword *melville* ',
-          timePeriod: 'next month',
-        }) +
-        t('common.hc-item', {
-          hcName: 'Melville City',
-          closurePeriod: t('common.time.time-period', {
-            startDate: '01\\-Feb',
-            endDate: '28\\-Feb',
-          }),
-          closureReason: ' _\\(long\\-term renovation works\\)_',
-        });
+        'Here are the hawker centres containing the keyword *melville* that will be closed next month:\n\n' +
+        '*Melville City*\n01\\-Feb to 28\\-Feb _\\(long\\-term renovation works\\)_';
 
       await callBot('melville next month');
       assertBotResponse(sendMessageSpy, expectedMessage);
@@ -236,33 +153,10 @@ describe('Search module', () => {
 
     it('["Today"] returns all closures occurring today', async () => {
       const expectedMessage =
-        t('search.hawker-centres-closed.without-keyword.plural.present', {
-          numHC: 3,
-          timePeriod: 'today',
-        }) +
-        [
-          t('common.hc-item', {
-            hcName: 'Devon Corporation',
-            closurePeriod: t('common.time.time-period', {
-              startDate: '01\\-Nov',
-              endDate: '30\\-Apr',
-            }),
-            closureReason: ' _\\(long\\-term renovation works\\)_',
-          }),
-          t('common.hc-item', {
-            hcName: 'Melville City',
-            closurePeriod: t('common.time.today'),
-            closureReason: '',
-          }),
-          t('common.hc-item', {
-            hcName: 'Littleroot Town',
-            closurePeriod: t('common.time.time-period', {
-              startDate: t('common.time.today'),
-              endDate: t('common.time.tomorrow'),
-            }),
-            closureReason: '',
-          }),
-        ].join('\n\n');
+        'There are *3* hawker centres that are closed today:\n\n' +
+        '*Devon Corporation*\n01\\-Nov to 30\\-Apr _\\(long\\-term renovation works\\)_\n\n' +
+        '*Melville City*\ntoday\n\n' +
+        '*Littleroot Town*\ntoday to tomorrow';
 
       await callBot('Today');
       assertBotResponse(sendMessageSpy, expectedMessage);
@@ -270,33 +164,10 @@ describe('Search module', () => {
 
     it('["Tmr"] returns all closures occurring tomorrow', async () => {
       const expectedMessage =
-        t('search.hawker-centres-closed.without-keyword.plural.future', {
-          numHC: 3,
-          timePeriod: 'tomorrow',
-        }) +
-        [
-          t('common.hc-item', {
-            hcName: 'Devon Corporation',
-            closurePeriod: t('common.time.time-period', {
-              startDate: '01\\-Nov',
-              endDate: '30\\-Apr',
-            }),
-            closureReason: ' _\\(long\\-term renovation works\\)_',
-          }),
-          t('common.hc-item', {
-            hcName: 'Littleroot Town',
-            closurePeriod: t('common.time.time-period', {
-              startDate: t('common.time.today'),
-              endDate: t('common.time.tomorrow'),
-            }),
-            closureReason: '',
-          }),
-          t('common.hc-item', {
-            hcName: 'Slateport City',
-            closurePeriod: t('common.time.tomorrow'),
-            closureReason: '',
-          }),
-        ].join('\n\n');
+        'There are *3* hawker centres that will be closed tomorrow:\n\n' +
+        '*Devon Corporation*\n01\\-Nov to 30\\-Apr _\\(long\\-term renovation works\\)_\n\n' +
+        '*Littleroot Town*\ntoday to tomorrow\n\n' +
+        '*Slateport City*\ntomorrow';
 
       await callBot('Tmr');
       assertBotResponse(sendMessageSpy, expectedMessage);
@@ -304,33 +175,10 @@ describe('Search module', () => {
 
     it('["Tomorrow"] returns all closures occurring tomorrow', async () => {
       const expectedMessage =
-        t('search.hawker-centres-closed.without-keyword.plural.future', {
-          numHC: 3,
-          timePeriod: 'tomorrow',
-        }) +
-        [
-          t('common.hc-item', {
-            hcName: 'Devon Corporation',
-            closurePeriod: t('common.time.time-period', {
-              startDate: '01\\-Nov',
-              endDate: '30\\-Apr',
-            }),
-            closureReason: ' _\\(long\\-term renovation works\\)_',
-          }),
-          t('common.hc-item', {
-            hcName: 'Littleroot Town',
-            closurePeriod: t('common.time.time-period', {
-              startDate: t('common.time.today'),
-              endDate: t('common.time.tomorrow'),
-            }),
-            closureReason: '',
-          }),
-          t('common.hc-item', {
-            hcName: 'Slateport City',
-            closurePeriod: t('common.time.tomorrow'),
-            closureReason: '',
-          }),
-        ].join('\n\n');
+        'There are *3* hawker centres that will be closed tomorrow:\n\n' +
+        '*Devon Corporation*\n01\\-Nov to 30\\-Apr _\\(long\\-term renovation works\\)_\n\n' +
+        '*Littleroot Town*\ntoday to tomorrow\n\n' +
+        '*Slateport City*\ntomorrow';
 
       await callBot('Tomorrow');
       assertBotResponse(sendMessageSpy, expectedMessage);
@@ -338,104 +186,26 @@ describe('Search module', () => {
 
     it('["Month"] returns all closures occurring in the current month', async () => {
       const expectedMessage =
-        t('search.hawker-centres-closed.without-keyword.plural.present', {
-          numHC: 8,
-          timePeriod: 'this month',
-        }) +
-        [
-          t('common.hc-item', {
-            hcName: 'Devon Corporation',
-            closurePeriod: t('common.time.time-period', {
-              startDate: '01\\-Nov',
-              endDate: '30\\-Apr',
-            }),
-            closureReason: ' _\\(long\\-term renovation works\\)_',
-          }),
-          t('common.hc-item', {
-            hcName: 'Melville City',
-            closurePeriod: t('common.time.today'),
-            closureReason: '',
-          }),
-          t('common.hc-item', {
-            hcName: 'Littleroot Town',
-            closurePeriod: t('common.time.time-period', {
-              startDate: t('common.time.today'),
-              endDate: t('common.time.tomorrow'),
-            }),
-            closureReason: '',
-          }),
-          t('common.hc-item', {
-            hcName: 'Slateport City',
-            closurePeriod: t('common.time.tomorrow'),
-            closureReason: '',
-          }),
-          t('common.hc-item', {
-            hcName: 'Mossdeep Gym',
-            closurePeriod: '05\\-Jan',
-            closureReason: '',
-          }),
-          t('common.hc-item', {
-            hcName: 'Oldale Town',
-            closurePeriod: t('common.time.time-period', {
-              startDate: '15\\-Jan',
-              endDate: '18\\-Jan',
-            }),
-            closureReason: '',
-          }),
-          t('common.hc-item', {
-            hcName: 'Route 118 near Melville City',
-            closurePeriod: t('common.time.time-period', {
-              startDate: '21\\-Jan',
-              endDate: '24\\-Jan',
-            }),
-            closureReason: '',
-          }),
-          t('common.hc-item', {
-            hcName: 'Oldale Town',
-            closurePeriod: t('common.time.time-period', {
-              startDate: '30\\-Jan',
-              endDate: '31\\-Jan',
-            }),
-            closureReason: '',
-          }),
-        ].join('\n\n');
+        'There are *8* hawker centres that are closed this month:\n\n' +
+        '*Devon Corporation*\n01\\-Nov to 30\\-Apr _\\(long\\-term renovation works\\)_\n\n' +
+        '*Melville City*\ntoday\n\n' +
+        '*Littleroot Town*\ntoday to tomorrow\n\n' +
+        '*Slateport City*\ntomorrow\n\n' +
+        '*Mossdeep Gym*\n05\\-Jan\n\n' +
+        '*Oldale Town*\n15\\-Jan to 18\\-Jan\n\n' +
+        '*Route 118 near Melville City*\n21\\-Jan to 24\\-Jan\n\n' +
+        '*Oldale Town*\n30\\-Jan to 31\\-Jan';
 
       await callBot('Month');
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
-    it('["Next month"] returns all closures occurring in the current month', async () => {
+    it('["Next month"] returns all closures occurring in the next month', async () => {
       const expectedMessage =
-        t('search.hawker-centres-closed.without-keyword.plural.future', {
-          numHC: 3,
-          timePeriod: 'next month',
-        }) +
-        [
-          t('common.hc-item', {
-            hcName: 'Melville City',
-            closurePeriod: t('common.time.time-period', {
-              startDate: '01\\-Feb',
-              endDate: '28\\-Feb',
-            }),
-            closureReason: ' _\\(long\\-term renovation works\\)_',
-          }),
-          t('common.hc-item', {
-            hcName: 'Rustboro City',
-            closurePeriod: t('common.time.time-period', {
-              startDate: '02\\-Feb',
-              endDate: '05\\-Feb',
-            }),
-            closureReason: '',
-          }),
-          t('common.hc-item', {
-            hcName: 'Verdanturf Town',
-            closurePeriod: t('common.time.time-period', {
-              startDate: '08\\-Feb',
-              endDate: '09\\-Feb',
-            }),
-            closureReason: '',
-          }),
-        ].join('\n\n');
+        'There are *3* hawker centres that will be closed next month:\n\n' +
+        '*Melville City*\n01\\-Feb to 28\\-Feb _\\(long\\-term renovation works\\)_\n\n' +
+        '*Rustboro City*\n02\\-Feb to 05\\-Feb\n\n' +
+        '*Verdanturf Town*\n08\\-Feb to 09\\-Feb';
 
       await callBot('Next month');
       assertBotResponse(sendMessageSpy, expectedMessage);
@@ -454,40 +224,32 @@ describe('Search module', () => {
     });
 
     it('["Today"] returns no closures', async () => {
-      const expectedMessage = t('search.no-hawker-centres-closed.present', {
-        keyword: '',
-        timePeriod: 'today',
-      });
+      const expectedMessage =
+        'All good\\! No hawker centres are undergoing cleaning today\\.';
 
       await callBot('Today');
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
     it('["Tmr"] returns no closures', async () => {
-      const expectedMessage = t('search.no-hawker-centres-closed.future', {
-        keyword: '',
-        timePeriod: 'tomorrow',
-      });
+      const expectedMessage =
+        'All good\\! No hawker centres will be undergoing cleaning tomorrow\\.';
 
       await callBot('Tmr');
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
     it('["Tomorrow"] returns no closures', async () => {
-      const expectedMessage = t('search.no-hawker-centres-closed.future', {
-        keyword: '',
-        timePeriod: 'tomorrow',
-      });
+      const expectedMessage =
+        'All good\\! No hawker centres will be undergoing cleaning tomorrow\\.';
 
       await callBot('Tomorrow');
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
     it('["Month"] returns no closures', async () => {
-      const expectedMessage = t('search.no-hawker-centres-closed.present', {
-        keyword: '',
-        timePeriod: 'this month',
-      });
+      const expectedMessage =
+        'All good\\! No hawker centres are undergoing cleaning this month\\.';
 
       await callBot('Month');
       assertBotResponse(sendMessageSpy, expectedMessage);

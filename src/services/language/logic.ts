@@ -1,6 +1,5 @@
 import { Err, Ok, Result } from 'ts-results';
 
-import { AWSError } from '../../errors/AWSError';
 import { initDictionary, Language } from '../../lang';
 import { getUserById, updateUserLanguageCode } from '../../models/User';
 import { TelegramUser } from '../../utils/telegram';

@@ -4,7 +4,6 @@ import { Err, Ok } from 'ts-results';
 
 import * as sender from '../src/bot/sender';
 import { AWSError } from '../src/errors/AWSError';
-import { t } from '../src/lang';
 import * as ClosureFile from '../src/models/Closure';
 import * as UserFile from '../src/models/User';
 import { mockClosures, mockUsers } from './__mocks__/db';

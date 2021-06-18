@@ -3,7 +3,6 @@ import { Err } from 'ts-results';
 
 import * as sender from '../src/bot/sender';
 import { AWSError } from '../src/errors/AWSError';
-import { t } from '../src/lang';
 import * as Feedback from '../src/models/Feedback';
 import * as UserFile from '../src/models/User';
 import * as favouritesIndex from '../src/services/favourites/index';
@@ -61,7 +60,7 @@ describe('Feedback module', () => {
   });
 
   it('["/feedback great bot"] successfully adds a feedback entry', async () => {
-    const expectedMessage = t('feedback.feedback-added');
+    const expectedMessage = 'Got it, thanks for your feedback\\!';
 
     await callBot('/feedback great bot');
     assertBotResponse(sendMessageSpy, expectedMessage);
