@@ -24,7 +24,7 @@
     "run:db:dev:seed": "ts-node src/dataCollection/index.ts",
     "run:db:prod:create": "NODE_ENV=production yarn run:db:dev:create",
     "run:db:prod:delete": "NODE_ENV=production yarn run:db:dev:delete",
-    "run:db:prod:reset": "NODE_ENV=production yarn run:db:dev:reset && yarn run:db:prod:seed",
+    "run:db:prod:reset": "NODE_ENV=production yarn run:db:dev:reset",
     "run:db:prod:seed": "NODE_ENV=production yarn run:db:dev:seed",
     "run:backup": "ts-node src/scripts/runBackup.ts",
     "run:print-commands": "ts-node src/scripts/printCommands.ts",
