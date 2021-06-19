@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.4.1] - 2021-06-19
+
 ### Fixed
 
 - Reworded "long-term renovation works" as "other works" for a more semantically correct closure reason
