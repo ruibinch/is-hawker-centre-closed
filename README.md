@@ -41,7 +41,7 @@ TABLE_NAME_FEEDBACK=ihcc-feedback
 yarn init:db
 
 # 2. Deploy Lambda functions
-yarn deploy:both:all
+yarn deploy:all
 
 # 3. Update APIG_* values in .env
 
@@ -55,6 +55,8 @@ Setting up from scratch consists of 3 steps:
 1. Deploying Lambda functions
 1. Initialising bot webhook
 
+By default, there are 2 accepted `env` values - `dev` and `prod`.
+
 ### Initialising DynamoDB
 
 First, we create the DB and populate it with values.
@@ -65,32 +67,44 @@ Run `yarn init:db`.
 
 This script executes 2 other scripts:
 
-1. `yarn run:db:dev:create`, `yarn run:db:prod:create`
+1. `yarn run:db:{{env}}:create`
 
-- Creates 4 tables in the specified region in the dev and prod environments:
-  1. CLOSURES
-  1. HC
-  1. USERS
-  1. FEEDBACK
+   - Creates 4 tables in the specified region in the dev and prod environments:
+     1. CLOSURES
+     1. HC
+     1. USERS
+     1. FEEDBACK
 
-2. `yarn run:db:dev:seed`, `yarn run:db:prod:seed`
+2. `yarn run:db:{{env}}:seed`
 
-- Populates the CLOSURES and HC tables in the dev and prod environments with the latest values obtained from data.gov.sg API.
+   - Populates the CLOSURES and HC tables in the dev and prod environments with the latest values obtained from data.gov.sg API.
 
 ### Deploying Lambda functions
 
-There is only 1 Lambda function to be deployed - the `bot` function.
+There are 2 Lambda functions to be deployed:
+
+1. `bot`
+1. `notifications`
 
 > :orange_book:  Uses values specified in `serverless.yml`
 
 To install a fresh deployment,
 
-1. Run `yarn deploy:dev:all` or `yarn deploy:prod:all`
+1. Run `yarn deploy:{{env}}`
 1. Note the new API Gateway ID(s) and update the `APIG_*` value(s) in `.env`
 
-To update an existing deployment,
+There are 2 methods to update an existing deployment, depending on the changes that have been made:
 
-1. Run `yarn deploy:dev:bot` or `yarn deploy:prod:bot`
+1. Infrastructure changes (e.g. editing `serverless.yml`)
+
+   - Run `yarn deploy:{{env}}`
+   - Re-deploys the entire service via CloudFormation
+
+1. Code changes (only changes to `.ts` files)
+
+   - Run `yarn deploy:{{env}} -f {{function_name}}`
+     - If updating the `bot` function, a helper command `yarn deploy:{{env}}:bot` can be used instead
+   - Uploads the updated code to Lambda
 
 ### Initialising bot webhook
 
@@ -98,7 +112,7 @@ Finally, we set up the webhook on our Telegram bot so that all messages sent to 
 
 > :notebook:  Uses BOT_TOKEN, REGION and APIG\_\* values from `.env`
 
-Run `yarn init:bot:dev` or `yarn init:bot:prod`.
+Run `yarn init:bot:{{env}}`.
 
 Verify that the output webhook URL corresponds correctly to your API gateway URL.
 
