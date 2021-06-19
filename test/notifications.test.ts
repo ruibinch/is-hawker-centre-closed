@@ -61,7 +61,7 @@ describe('Notifications module', () => {
       '\u{1F4A1} Heads up\\! 1 of your favourite hawker centres will be closed today\\.\n\n' +
         '*Verdanturf Town*\ntoday to tomorrow',
       '\u{1F4A1} 注意！今天有1个您喜爱的小贩中心关闭。\n\n' +
-        '*Melville City*\n2月1日至2月28日 _（长期整修工程）_',
+        '*Melville City*\n2月1日至2月28日 _（其他工程）_',
     ];
 
     await callNotifications();

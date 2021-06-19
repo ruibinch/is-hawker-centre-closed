@@ -89,9 +89,9 @@ function makeTimePeriodSnippet(modifier: SearchModifier) {
 
 function makeClosureReasonSnippet(reason: ClosureReason) {
   switch (reason) {
-    case 'renovation':
+    case 'others':
       return t('search.snippet.closure-reason', {
-        reason: t('common.closure-reason.renovation'),
+        reason: t('common.closure-reason.others'),
       });
     default:
       return '';

@@ -84,7 +84,7 @@
   "notifications.overview.plural": "{{emoji}} Heads up\\! {{numHC}} of your favourite hawker centres will be closed today\\.\n\n",
   "notifications.snippet.closure-reason": " _\\({{reason}}\\)_",
   "common.hc-item": "*{{hcName}}*\n{{closurePeriod}}{{closureReason}}",
-  "common.closure-reason.renovation": "long\\-term renovation works",
+  "common.closure-reason.others": "other works",
   "common.time.time-period": "{{startDate}} to {{endDate}}",
   "common.time.yesterday": "yesterday",
   "common.time.today": "today",

@@ -78,7 +78,7 @@ export const mockClosures: Closure[] = [
   {
     id: '111',
     hawkerCentreId: 5,
-    reason: 'renovation',
+    reason: 'others',
     name: 'Melville City',
     startDate: '2021-02-01',
     endDate: '2021-02-28',
@@ -86,7 +86,7 @@ export const mockClosures: Closure[] = [
   {
     id: '111',
     hawkerCentreId: 11,
-    reason: 'renovation',
+    reason: 'others',
     name: 'Devon Corporation',
     startDate: '2020-11-01',
     endDate: '2021-04-30',

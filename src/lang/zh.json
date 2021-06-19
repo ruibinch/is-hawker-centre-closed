@@ -84,7 +84,7 @@
   "notifications.overview.plural": "{{emoji}} 注意！今天有{{numHC}}个您喜爱的小贩中心关闭。\n\n",
   "notifications.snippet.closure-reason": " _（{{reason}}）_",
   "common.hc-item": "*{{hcName}}*\n{{closurePeriod}}{{closureReason}}",
-  "common.closure-reason.renovation": "长期整修工程",
+  "common.closure-reason.others": "其他工程",
   "common.time.time-period": "{{startDate}}至{{endDate}}",
   "common.time.yesterday": "昨天",
   "common.time.today": "今天",

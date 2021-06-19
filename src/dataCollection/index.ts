@@ -63,7 +63,7 @@ function generateClosures(recordsRaw: HawkerCentreClosureRecord[]): Closure[] {
       [q2CleaningStartDate, q2CleaningEndDate, 'cleaning'],
       [q3CleaningStartDate, q3CleaningEndDate, 'cleaning'],
       [q4CleaningStartDate, q4CleaningEndDate, 'cleaning'],
-      [otherWorksStartDate, otherWorksEndDate, 'renovation'],
+      [otherWorksStartDate, otherWorksEndDate, 'others'],
     ].forEach(([startDate, endDate, reason]) => {
       if (startDate && endDate && reason) {
         const closure = generateClosure({

@@ -142,10 +142,10 @@ describe('Search module', () => {
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
-    it('["melville next month"] returns closures occurring in the next month with the long-term renovation works suffix', async () => {
+    it('["melville next month"] returns closures occurring in the next month with the other works suffix', async () => {
       const expectedMessage =
         'Here are the hawker centres containing the keyword *melville* that will be closed next month:\n\n' +
-        '*Melville City*\n01\\-Feb to 28\\-Feb _\\(long\\-term renovation works\\)_';
+        '*Melville City*\n01\\-Feb to 28\\-Feb _\\(other works\\)_';
 
       await callBot('melville next month');
       assertBotResponse(sendMessageSpy, expectedMessage);
@@ -154,7 +154,7 @@ describe('Search module', () => {
     it('["Today"] returns all closures occurring today', async () => {
       const expectedMessage =
         'There are *3* hawker centres that are closed today:\n\n' +
-        '*Devon Corporation*\n01\\-Nov to 30\\-Apr _\\(long\\-term renovation works\\)_\n\n' +
+        '*Devon Corporation*\n01\\-Nov to 30\\-Apr _\\(other works\\)_\n\n' +
         '*Melville City*\ntoday\n\n' +
         '*Littleroot Town*\ntoday to tomorrow';
 
@@ -165,7 +165,7 @@ describe('Search module', () => {
     it('["Tmr"] returns all closures occurring tomorrow', async () => {
       const expectedMessage =
         'There are *3* hawker centres that will be closed tomorrow:\n\n' +
-        '*Devon Corporation*\n01\\-Nov to 30\\-Apr _\\(long\\-term renovation works\\)_\n\n' +
+        '*Devon Corporation*\n01\\-Nov to 30\\-Apr _\\(other works\\)_\n\n' +
         '*Littleroot Town*\ntoday to tomorrow\n\n' +
         '*Slateport City*\ntomorrow';
 
@@ -176,7 +176,7 @@ describe('Search module', () => {
     it('["Tomorrow"] returns all closures occurring tomorrow', async () => {
       const expectedMessage =
         'There are *3* hawker centres that will be closed tomorrow:\n\n' +
-        '*Devon Corporation*\n01\\-Nov to 30\\-Apr _\\(long\\-term renovation works\\)_\n\n' +
+        '*Devon Corporation*\n01\\-Nov to 30\\-Apr _\\(other works\\)_\n\n' +
         '*Littleroot Town*\ntoday to tomorrow\n\n' +
         '*Slateport City*\ntomorrow';
 
@@ -187,7 +187,7 @@ describe('Search module', () => {
     it('["Month"] returns all closures occurring in the current month', async () => {
       const expectedMessage =
         'There are *8* hawker centres that are closed this month:\n\n' +
-        '*Devon Corporation*\n01\\-Nov to 30\\-Apr _\\(long\\-term renovation works\\)_\n\n' +
+        '*Devon Corporation*\n01\\-Nov to 30\\-Apr _\\(other works\\)_\n\n' +
         '*Melville City*\ntoday\n\n' +
         '*Littleroot Town*\ntoday to tomorrow\n\n' +
         '*Slateport City*\ntomorrow\n\n' +
@@ -203,7 +203,7 @@ describe('Search module', () => {
     it('["Next month"] returns all closures occurring in the next month', async () => {
       const expectedMessage =
         'There are *3* hawker centres that will be closed next month:\n\n' +
-        '*Melville City*\n01\\-Feb to 28\\-Feb _\\(long\\-term renovation works\\)_\n\n' +
+        '*Melville City*\n01\\-Feb to 28\\-Feb _\\(other works\\)_\n\n' +
         '*Rustboro City*\n02\\-Feb to 05\\-Feb\n\n' +
         '*Verdanturf Town*\n08\\-Feb to 09\\-Feb';
 

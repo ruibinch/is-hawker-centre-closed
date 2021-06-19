@@ -13,7 +13,7 @@ export type HawkerCentre = {
   nameSecondary?: string;
 };
 
-export type ClosureReason = 'cleaning' | 'renovation';
+export type ClosureReason = 'cleaning' | 'others';
 
 type HawkerCentreClosure = {
   id: string;

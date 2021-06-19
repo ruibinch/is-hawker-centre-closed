@@ -78,9 +78,9 @@ export function makeFavouritesListMessage(
             ? t('favourites.item.closure-details', {
                 closurePeriod: makeClosurePeriodSnippet(startDate, endDate),
                 closureReason:
-                  reason === 'renovation'
+                  reason === 'others'
                     ? t('favourites.item.closure-reason', {
-                        reason: t('common.closure-reason.renovation'),
+                        reason: t('common.closure-reason.others'),
                       })
                     : '',
               })

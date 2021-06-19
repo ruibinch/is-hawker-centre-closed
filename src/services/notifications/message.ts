@@ -30,9 +30,9 @@ export function makeNotificationMessage(closures: Closure[]): string {
 
 function makeClosureReasonSnippet(reason: ClosureReason) {
   switch (reason) {
-    case 'renovation':
+    case 'others':
       return t('notifications.snippet.closure-reason', {
-        reason: t('common.closure-reason.renovation'),
+        reason: t('common.closure-reason.others'),
       });
     default:
       return '';
