@@ -13,77 +13,68 @@ import {
   makeHawkerCentreTableName,
 } from '../models/HawkerCentre';
 import { makeUserSchema, makeUserTableName } from '../models/User';
-import { Stage } from '../utils/types';
+import { getStage } from '../utils/types';
 
 const args = process.argv.slice(2);
 const [operation] = args;
 
 initAWSConfig();
 const dynamoDb = new AWS.DynamoDB();
+const stage = getStage();
 
 async function createTables() {
-  await Promise.all(
-    ['dev', 'prod'].map(async (stageName) => {
-      const stage = stageName as Stage;
-      const closuresTableCreateOutput = await dynamoDb
-        .createTable(makeClosureSchema(stage))
-        .promise();
-      const hawkerCentreTableCreateOutput = await dynamoDb
-        .createTable(makeHawkerCentreSchema(stage))
-        .promise();
-      const userTableCreateOutput = await dynamoDb
-        .createTable(makeUserSchema(stage))
-        .promise();
-      const feedbackTableCreateOutput = await dynamoDb
-        .createTable(makeFeedbackSchema(stage))
-        .promise();
+  const closuresTableCreateOutput = await dynamoDb
+    .createTable(makeClosureSchema(stage))
+    .promise();
+  const hawkerCentreTableCreateOutput = await dynamoDb
+    .createTable(makeHawkerCentreSchema(stage))
+    .promise();
+  const userTableCreateOutput = await dynamoDb
+    .createTable(makeUserSchema(stage))
+    .promise();
+  const feedbackTableCreateOutput = await dynamoDb
+    .createTable(makeFeedbackSchema(stage))
+    .promise();
 
-      console.log(
-        `Created tables:\n${makeTableNames([
-          closuresTableCreateOutput.TableDescription?.TableName,
-          hawkerCentreTableCreateOutput.TableDescription?.TableName,
-          userTableCreateOutput.TableDescription?.TableName,
-          feedbackTableCreateOutput.TableDescription?.TableName,
-        ])}`,
-      );
-    }),
+  console.log(
+    `Created tables:\n${makeTableNames([
+      closuresTableCreateOutput.TableDescription?.TableName,
+      hawkerCentreTableCreateOutput.TableDescription?.TableName,
+      userTableCreateOutput.TableDescription?.TableName,
+      feedbackTableCreateOutput.TableDescription?.TableName,
+    ])}`,
   );
 }
 
 async function deleteTables() {
-  await Promise.all(
-    ['dev', 'prod'].map(async (stageName) => {
-      const stage = stageName as Stage;
-      const closuresTableDeleteOutput = await dynamoDb
-        .deleteTable({
-          TableName: makeClosureTableName(stage),
-        })
-        .promise();
-      const hawkerCentreTableDeleteOutput = await dynamoDb
-        .deleteTable({
-          TableName: makeHawkerCentreTableName(stage),
-        })
-        .promise();
-      const userTableDeleteOutput = await dynamoDb
-        .deleteTable({
-          TableName: makeUserTableName(stage),
-        })
-        .promise();
-      const feedbackTableDeleteOutput = await dynamoDb
-        .deleteTable({
-          TableName: makeFeedbackTableName(stage),
-        })
-        .promise();
+  const closuresTableDeleteOutput = await dynamoDb
+    .deleteTable({
+      TableName: makeClosureTableName(stage),
+    })
+    .promise();
+  const hawkerCentreTableDeleteOutput = await dynamoDb
+    .deleteTable({
+      TableName: makeHawkerCentreTableName(stage),
+    })
+    .promise();
+  const userTableDeleteOutput = await dynamoDb
+    .deleteTable({
+      TableName: makeUserTableName(stage),
+    })
+    .promise();
+  const feedbackTableDeleteOutput = await dynamoDb
+    .deleteTable({
+      TableName: makeFeedbackTableName(stage),
+    })
+    .promise();
 
-      console.log(
-        `Deleted tables:\n${makeTableNames([
-          closuresTableDeleteOutput.TableDescription?.TableName,
-          hawkerCentreTableDeleteOutput.TableDescription?.TableName,
-          userTableDeleteOutput.TableDescription?.TableName,
-          feedbackTableDeleteOutput.TableDescription?.TableName,
-        ])}`,
-      );
-    }),
+  console.log(
+    `Deleted tables:\n${makeTableNames([
+      closuresTableDeleteOutput.TableDescription?.TableName,
+      hawkerCentreTableDeleteOutput.TableDescription?.TableName,
+      userTableDeleteOutput.TableDescription?.TableName,
+      feedbackTableDeleteOutput.TableDescription?.TableName,
+    ])}`,
   );
 }
 
@@ -100,61 +91,49 @@ async function resetTables() {
   const numEntriesInClosuresTable = getAllClosuresResponse.val.length;
   const numEntriesInHCTable = getAllClosuresResponse.val.length;
 
-  await Promise.all(
-    ['dev', 'prod'].map(async (stageName) => {
-      const stage = stageName as Stage;
-      const closuresTableDeleteOutput = await dynamoDb
-        .deleteTable({
-          TableName: makeClosureTableName(stage),
-        })
-        .promise();
-      const hawkerCentreTableDeleteOutput = await dynamoDb
-        .deleteTable({
-          TableName: makeHawkerCentreTableName(stage),
-        })
-        .promise();
+  const closuresTableDeleteOutput = await dynamoDb
+    .deleteTable({
+      TableName: makeClosureTableName(stage),
+    })
+    .promise();
+  const hawkerCentreTableDeleteOutput = await dynamoDb
+    .deleteTable({
+      TableName: makeHawkerCentreTableName(stage),
+    })
+    .promise();
+  console.log(
+    `Deleted tables:\n${[
+      [
+        closuresTableDeleteOutput.TableDescription?.TableName,
+        numEntriesInClosuresTable,
+      ],
+      [
+        hawkerCentreTableDeleteOutput.TableDescription?.TableName,
+        numEntriesInHCTable,
+      ],
+    ]
+      .map(
+        ([tableName, numEntries], idx) =>
+          `${idx + 1}. ${tableName} (${numEntries} entries)`,
+      )
+      .join('\n')}\n`,
+  );
 
-      console.log(
-        `Deleted tables:\n${[
-          [
-            closuresTableDeleteOutput.TableDescription?.TableName,
-            numEntriesInClosuresTable,
-          ],
-          [
-            hawkerCentreTableDeleteOutput.TableDescription?.TableName,
-            numEntriesInHCTable,
-          ],
-        ]
-          .map(
-            ([tableName, numEntries], idx) =>
-              `${idx + 1}. ${tableName} (${numEntries} entries)`,
-          )
-          .join('\n')}\n`,
-      );
-    }),
-  ).then(async () => {
-    // sleep for 2 secs for deletion process to propagate else creation will throw an error
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+  // sleep for 2 secs for deletion process to propagate else creation will throw an error
+  await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    await Promise.all(
-      ['dev', 'prod'].map(async (stageName) => {
-        const stage = stageName as Stage;
-        const closuresTableCreateOutput = await dynamoDb
-          .createTable(makeClosureSchema(stage))
-          .promise();
-        const hawkerCentreTableCreateOutput = await dynamoDb
-          .createTable(makeHawkerCentreSchema(stage))
-          .promise();
-
-        console.log(
-          `Created tables:\n${makeTableNames([
-            closuresTableCreateOutput.TableDescription?.TableName,
-            hawkerCentreTableCreateOutput.TableDescription?.TableName,
-          ])}`,
-        );
-      }),
-    );
-  });
+  const closuresTableCreateOutput = await dynamoDb
+    .createTable(makeClosureSchema(stage))
+    .promise();
+  const hawkerCentreTableCreateOutput = await dynamoDb
+    .createTable(makeHawkerCentreSchema(stage))
+    .promise();
+  console.log(
+    `Created tables:\n${makeTableNames([
+      closuresTableCreateOutput.TableDescription?.TableName,
+      hawkerCentreTableCreateOutput.TableDescription?.TableName,
+    ])}`,
+  );
 }
 
 function makeTableNames(tableNames: (string | undefined)[]) {
