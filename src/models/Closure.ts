@@ -51,6 +51,9 @@ export async function uploadClosures(closures: Closure[]): Promise<void> {
       return dynamoDb.put(closureInput).promise();
     }),
   );
+  console.log(
+    `Uploaded ${closures.length} entries to table "${closuresTable}"`,
+  );
 }
 
 export async function getAllClosures(): Promise<Result<Closure[], AWSError>> {

@@ -44,6 +44,7 @@ export async function uploadHawkerCentres(
       return dynamoDb.put(hawkerCentreInput).promise();
     }),
   );
+  console.log(`Uploaded ${hawkerCentres.length} entries to table "${hcTable}"`);
 }
 
 export async function getAllHawkerCentres(): Promise<

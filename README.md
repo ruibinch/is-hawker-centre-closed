@@ -65,15 +65,15 @@ Run `yarn init:db`.
 
 This script executes 2 other scripts:
 
-1. `yarn db:create`
+1. `yarn run:db:dev:create`, `yarn run:db:prod:create`
 
-- Creates 4 tables in the specified region:
+- Creates 4 tables in the specified region in the dev and prod environments:
   1. CLOSURES
   1. HC
   1. USERS
   1. FEEDBACK
 
-2. `yarn db:seed:dev`, `yarn db:seed:prod`
+2. `yarn run:db:dev:seed`, `yarn run:db:prod:seed`
 
 - Populates the CLOSURES and HC tables in the dev and prod environments with the latest values obtained from data.gov.sg API.
 
