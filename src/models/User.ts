@@ -9,7 +9,6 @@ import { AWSError } from '../errors/AWSError';
 import { Language } from '../lang';
 import { currentDate } from '../utils/date';
 import { Stage } from '../utils/types';
-import { UserFavourite, User } from './types';
 
 initAWSConfig();
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
@@ -19,42 +18,84 @@ const userCache = new NodeCache({
   useClones: false,
 });
 
-export const makeUserTableName = (stage: Stage): string =>
-  `${TABLE_NAME_USERS}-${stage}`;
+export type UserFavourite = {
+  hawkerCentreId: number;
+  dateAdded: string;
+};
 
-export const makeUserSchema = (
-  stage: Stage,
-): AWS.DynamoDB.CreateTableInput => ({
-  ...getDynamoDBBillingDetails(),
-  TableName: makeUserTableName(stage),
-  KeySchema: [
-    {
-      AttributeName: 'userId',
-      KeyType: 'HASH',
-    },
-  ],
-  AttributeDefinitions: [{ AttributeName: 'userId', AttributeType: 'N' }],
-});
+export type UserProps = {
+  userId: number;
+  username?: string;
+  languageCode: Language;
+  favourites: UserFavourite[];
+  isInFavouritesMode: boolean;
+  notifications: boolean;
+};
+
+export class User {
+  userId: number;
+
+  username?: string;
+
+  languageCode: Language;
+
+  favourites: UserFavourite[];
+
+  isInFavouritesMode: boolean;
+
+  notifications: boolean;
+
+  private constructor(props: UserProps) {
+    this.userId = props.userId;
+    this.username = props.username;
+    this.languageCode = props.languageCode;
+    this.favourites = props.favourites;
+    this.isInFavouritesMode = props.isInFavouritesMode;
+    this.notifications = props.notifications;
+  }
+
+  static create(props: UserProps): User {
+    return new User(props);
+  }
+
+  static getTableName(stage: Stage): string {
+    return `${TABLE_NAME_USERS}-${stage}`;
+  }
+
+  static getSchema(stage: Stage): AWS.DynamoDB.CreateTableInput {
+    return {
+      ...getDynamoDBBillingDetails(),
+      TableName: this.getTableName(stage),
+      KeySchema: [
+        {
+          AttributeName: 'userId',
+          KeyType: 'HASH',
+        },
+      ],
+      AttributeDefinitions: [{ AttributeName: 'userId', AttributeType: 'N' }],
+    };
+  }
+}
 
 export async function addUser(user: User): Promise<void> {
-  const userInput: AWS.DynamoDB.DocumentClient.PutItemInput = {
-    TableName: TABLE_USERS,
-    Item: {
-      ...user,
-      createdAt: formatISO(currentDate()),
-    },
-    ConditionExpression: 'attribute_not_exists(userId)',
-  };
-
-  await dynamoDb.put(userInput).promise();
+  await dynamoDb
+    .put({
+      TableName: TABLE_USERS,
+      Item: {
+        ...user,
+        createdAt: formatISO(currentDate()),
+      },
+      ConditionExpression: 'attribute_not_exists(userId)',
+    })
+    .promise();
 }
 
 export async function getAllUsers(): Promise<Result<User[], AWSError>> {
-  const params: AWS.DynamoDB.DocumentClient.ScanInput = {
-    TableName: TABLE_USERS,
-  };
-
-  const scanOutput = await dynamoDb.scan(params).promise();
+  const scanOutput = await dynamoDb
+    .scan({
+      TableName: TABLE_USERS,
+    })
+    .promise();
 
   if (scanOutput === null) {
     return Err(new AWSError());
@@ -69,14 +110,14 @@ export async function getUserById(
   let user = userCache.get(userId);
 
   if (user === undefined) {
-    const params: AWS.DynamoDB.DocumentClient.GetItemInput = {
-      TableName: TABLE_USERS,
-      Key: {
-        userId,
-      },
-    };
-
-    const getResponse = await dynamoDb.get(params).promise();
+    const getResponse = await dynamoDb
+      .get({
+        TableName: TABLE_USERS,
+        Key: {
+          userId,
+        },
+      })
+      .promise();
 
     if (!getResponse.Item) {
       return Err(new AWSError());
@@ -92,75 +133,75 @@ export async function updateUserFavourites(
   userId: number,
   favouritesUpdated: UserFavourite[],
 ): Promise<void> {
-  const updateUserInput: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
-    TableName: TABLE_USERS,
-    Key: {
-      userId,
-    },
-    UpdateExpression: 'set favourites = :fav, lastUpdated = :timestamp',
-    ExpressionAttributeValues: {
-      ':fav': favouritesUpdated,
-      ':timestamp': formatISO(currentDate()),
-    },
-  };
-
-  await dynamoDb.update(updateUserInput).promise();
+  await dynamoDb
+    .update({
+      TableName: TABLE_USERS,
+      Key: {
+        userId,
+      },
+      UpdateExpression: 'set favourites = :fav, lastUpdated = :timestamp',
+      ExpressionAttributeValues: {
+        ':fav': favouritesUpdated,
+        ':timestamp': formatISO(currentDate()),
+      },
+    })
+    .promise();
 }
 
 export async function updateUserInFavouritesMode(
   userId: number,
   isInFavouritesMode: boolean,
 ): Promise<void> {
-  const updateUserInput: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
-    TableName: TABLE_USERS,
-    Key: {
-      userId,
-    },
-    UpdateExpression:
-      'set isInFavouritesMode = :favMode, lastUpdated = :timestamp',
-    ExpressionAttributeValues: {
-      ':favMode': isInFavouritesMode,
-      ':timestamp': formatISO(currentDate()),
-    },
-  };
-
-  await dynamoDb.update(updateUserInput).promise();
+  await dynamoDb
+    .update({
+      TableName: TABLE_USERS,
+      Key: {
+        userId,
+      },
+      UpdateExpression:
+        'set isInFavouritesMode = :favMode, lastUpdated = :timestamp',
+      ExpressionAttributeValues: {
+        ':favMode': isInFavouritesMode,
+        ':timestamp': formatISO(currentDate()),
+      },
+    })
+    .promise();
 }
 
 export async function updateUserNotifications(
   userId: number,
   notifications: boolean,
 ): Promise<void> {
-  const updateUserInput: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
-    TableName: TABLE_USERS,
-    Key: {
-      userId,
-    },
-    UpdateExpression: 'set notifications = :notif, lastUpdated = :timestamp',
-    ExpressionAttributeValues: {
-      ':notif': notifications,
-      ':timestamp': formatISO(currentDate()),
-    },
-  };
-
-  await dynamoDb.update(updateUserInput).promise();
+  await dynamoDb
+    .update({
+      TableName: TABLE_USERS,
+      Key: {
+        userId,
+      },
+      UpdateExpression: 'set notifications = :notif, lastUpdated = :timestamp',
+      ExpressionAttributeValues: {
+        ':notif': notifications,
+        ':timestamp': formatISO(currentDate()),
+      },
+    })
+    .promise();
 }
 
 export async function updateUserLanguageCode(
   userId: number,
   languageCode: Language,
 ): Promise<void> {
-  const updateUserInput: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
-    TableName: TABLE_USERS,
-    Key: {
-      userId,
-    },
-    UpdateExpression: 'set languageCode = :lang, lastUpdated = :timestamp',
-    ExpressionAttributeValues: {
-      ':lang': languageCode,
-      ':timestamp': formatISO(currentDate()),
-    },
-  };
-
-  await dynamoDb.update(updateUserInput).promise();
+  await dynamoDb
+    .update({
+      TableName: TABLE_USERS,
+      Key: {
+        userId,
+      },
+      UpdateExpression: 'set languageCode = :lang, lastUpdated = :timestamp',
+      ExpressionAttributeValues: {
+        ':lang': languageCode,
+        ':timestamp': formatISO(currentDate()),
+      },
+    })
+    .promise();
 }

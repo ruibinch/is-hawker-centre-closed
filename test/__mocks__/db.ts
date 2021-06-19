@@ -1,4 +1,5 @@
-import { HawkerCentre, Closure, User } from '../../src/models/types';
+import { HawkerCentre, Closure } from '../../src/models/types';
+import { User } from '../../src/models/User';
 import { TelegramUser } from '../../src/utils/telegram';
 
 export const mockClosures: Closure[] = [

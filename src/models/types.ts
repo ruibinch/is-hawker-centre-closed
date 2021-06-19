@@ -1,5 +1,3 @@
-import { Language } from '../lang';
-
 export type Feedback = {
   feedbackId: string;
   userId: number;
@@ -25,17 +23,3 @@ type HawkerCentreClosure = {
 export type Closure = HawkerCentre & HawkerCentreClosure;
 
 export type ClosurePartial = HawkerCentre & Partial<HawkerCentreClosure>;
-
-export type UserFavourite = {
-  hawkerCentreId: number;
-  dateAdded: string;
-};
-
-export type User = {
-  userId: number;
-  username?: string;
-  languageCode: Language;
-  favourites: UserFavourite[];
-  isInFavouritesMode: boolean;
-  notifications: boolean;
-};

@@ -8,13 +8,15 @@ import {
   getAllHawkerCentres,
   getHawkerCentreById,
 } from '../../models/HawkerCentre';
-import { HawkerCentre, Closure, User, UserFavourite } from '../../models/types';
+import { HawkerCentre, Closure } from '../../models/types';
 import {
   getUserById,
   addUser,
   updateUserFavourites,
   updateUserInFavouritesMode,
   updateUserNotifications,
+  User,
+  UserFavourite,
 } from '../../models/User';
 import { currentDate } from '../../utils/date';
 import { TelegramUser } from '../../utils/telegram';
@@ -86,14 +88,14 @@ export async function addHCToFavourites(props: {
   const getUserResponse = await getUserById(userId);
   if (getUserResponse.err) {
     // user does not exist yet in DB
-    const newUser: User = {
+    const newUser = User.create({
       userId,
       username,
       languageCode: 'en',
       favourites: [addFavHC],
       isInFavouritesMode: false,
       notifications: true,
-    };
+    });
 
     await addUser(newUser);
     return Ok({});
@@ -255,14 +257,14 @@ export async function toggleUserInFavouritesMode(
   const getUserResponse = await getUserById(userId);
   if (getUserResponse.err) {
     // user does not exist yet in DB
-    const newUser: User = {
+    const newUser = User.create({
       userId,
       username,
       languageCode: 'en',
       favourites: [],
       isInFavouritesMode,
       notifications: true,
-    };
+    });
 
     await addUser(newUser);
   } else {
@@ -317,14 +319,14 @@ export async function manageNotifications(props: {
   if (newNotificationsValue !== undefined) {
     if (getUserResponse.err) {
       // user does not exist yet in DB
-      const newUser: User = {
+      const newUser = User.create({
         userId,
         username,
         languageCode: 'en',
         favourites: [],
         isInFavouritesMode: false,
         notifications: newNotificationsValue,
-      };
+      });
 
       await addUser(newUser);
     } else {
