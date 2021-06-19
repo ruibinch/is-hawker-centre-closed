@@ -11,6 +11,7 @@
     "init:bot:prod": "NODE_ENV=production yarn init:bot:dev",
     "db:create": "ts-node src/scripts/manageDb.ts create",
     "db:delete": "ts-node src/scripts/manageDb.ts delete",
+    "db:reset": "ts-node src/scripts/manageDb.ts reset && yearn db:seed:dev && yarn db:seed:prod",
     "db:seed:dev": "ts-node src/dataCollection/index.ts",
     "db:seed:prod": "NODE_ENV=production yarn db:seed:dev",
     "deploy:both:all": "yarn deploy:dev:all && yarn deploy:prod:all",
