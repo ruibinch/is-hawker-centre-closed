@@ -1,6 +1,6 @@
 import { uploadClosures } from '../models/Closure';
-import { uploadHawkerCentres } from '../models/HawkerCentre';
-import { ClosureReason, HawkerCentre, Closure } from '../models/types';
+import { HawkerCentre, uploadHawkerCentres } from '../models/HawkerCentre';
+import { ClosureReason, Closure } from '../models/types';
 import { currentDateInYYYYMMDD } from '../utils/date';
 import { HawkerCentreClosureRecord } from './types';
 import {

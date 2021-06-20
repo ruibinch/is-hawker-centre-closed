@@ -5,12 +5,6 @@ export type Feedback = {
   text: string;
 };
 
-export type HawkerCentre = {
-  hawkerCentreId: number;
-  name: string;
-  nameSecondary?: string;
-};
-
 export type ClosureReason = 'cleaning' | 'others';
 
 type HawkerCentreClosure = {

@@ -1,4 +1,5 @@
-import { HawkerCentre, Closure } from '../../src/models/types';
+import { HawkerCentre } from '../../src/models/HawkerCentre';
+import { Closure } from '../../src/models/types';
 import { User } from '../../src/models/User';
 import { TelegramUser } from '../../src/utils/telegram';
 

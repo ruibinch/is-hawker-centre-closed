@@ -7,8 +7,9 @@ import { getAllClosures } from '../../models/Closure';
 import {
   getAllHawkerCentres,
   getHawkerCentreById,
+  HawkerCentre,
 } from '../../models/HawkerCentre';
-import { HawkerCentre, Closure } from '../../models/types';
+import { Closure } from '../../models/types';
 import {
   getUserById,
   addUser,

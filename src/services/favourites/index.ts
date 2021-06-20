@@ -2,7 +2,7 @@ import { Err, Ok, Result } from 'ts-results';
 
 import { isCommand } from '../../bot/commands';
 import { CustomError } from '../../errors/CustomError';
-import { HawkerCentre } from '../../models/types';
+import { HawkerCentre } from '../../models/HawkerCentre';
 import { TelegramUser } from '../../utils/telegram';
 import { BotResponse, ServiceResponse } from '../../utils/types';
 import {
