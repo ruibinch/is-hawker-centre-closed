@@ -4,7 +4,7 @@ import { Err, Ok, Result } from 'ts-results';
 import { initAWSConfig, TABLE_HC, TABLE_NAME_HC } from '../aws/config';
 import { getDynamoDBBillingDetails } from '../aws/dynamodb';
 import { AWSError } from '../errors/AWSError';
-import { getStage, Stage } from '../utils/types';
+import { getStage, Stage } from '../utils';
 
 initAWSConfig();
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
