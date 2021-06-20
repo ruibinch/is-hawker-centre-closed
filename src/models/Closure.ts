@@ -1,7 +1,7 @@
 import * as AWS from 'aws-sdk';
 import { Err, Ok, Result } from 'ts-results';
 
-import { initAWSConfig, TABLE_NAME_CLOSURES } from '../aws/config';
+import { initAWSConfig, TABLE_CLOSURES } from '../aws/config';
 import { getDynamoDBBillingDetails } from '../aws/dynamodb';
 import { AWSError } from '../errors/AWSError';
 import { getStage } from '../utils';
@@ -40,7 +40,7 @@ export class ClosureObject {
   }
 
   static getTableName(): string {
-    return `${TABLE_NAME_CLOSURES}-${getStage()}`;
+    return `${TABLE_CLOSURES}-${getStage()}`;
   }
 
   static getSchema(): AWS.DynamoDB.CreateTableInput {

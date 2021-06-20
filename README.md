@@ -26,10 +26,10 @@ APIG_DEV=12345678
 APIG_PROD=87654321
 
 # DynamoDB table names
-TABLE_NAME_CLOSURES=ihcc-closures
-TABLE_NAME_HC=ihcc-hawkerCentres
-TABLE_NAME_USERS=ihcc-users
-TABLE_NAME_FEEDBACK=ihcc-feedback
+TABLE_CLOSURES=ihcc-closures
+TABLE_HC=ihcc-hawkerCentres
+TABLE_USERS=ihcc-users
+TABLE_FEEDBACK=ihcc-feedback
 ```
 
 ## Setup

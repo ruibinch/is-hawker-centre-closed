@@ -1,7 +1,7 @@
 import * as AWS from 'aws-sdk';
 import { Err, Ok, Result } from 'ts-results';
 
-import { initAWSConfig, TABLE_NAME_HC } from '../aws/config';
+import { initAWSConfig, TABLE_HC } from '../aws/config';
 import { getDynamoDBBillingDetails } from '../aws/dynamodb';
 import { AWSError } from '../errors/AWSError';
 import { getStage } from '../utils';
@@ -29,7 +29,7 @@ export class HawkerCentre {
   }
 
   static getTableName(): string {
-    return `${TABLE_NAME_HC}-${getStage()}`;
+    return `${TABLE_HC}-${getStage()}`;
   }
 
   static getSchema(): AWS.DynamoDB.CreateTableInput {

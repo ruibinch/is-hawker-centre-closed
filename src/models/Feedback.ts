@@ -1,7 +1,7 @@
 import * as AWS from 'aws-sdk';
 import { formatISO } from 'date-fns';
 
-import { initAWSConfig, TABLE_NAME_FEEDBACK } from '../aws/config';
+import { initAWSConfig, TABLE_FEEDBACK } from '../aws/config';
 import { getDynamoDBBillingDetails } from '../aws/dynamodb';
 import { getStage } from '../utils';
 import { currentDate } from '../utils/date';
@@ -33,7 +33,7 @@ export class Feedback {
   }
 
   static getTableName(): string {
-    return `${TABLE_NAME_FEEDBACK}-${getStage()}`;
+    return `${TABLE_FEEDBACK}-${getStage()}`;
   }
 
   static getSchema(): AWS.DynamoDB.CreateTableInput {

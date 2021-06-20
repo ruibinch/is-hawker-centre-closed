@@ -11,7 +11,7 @@ export const initAWSConfig = (): void => {
 };
 
 // reads from .env file
-export const TABLE_NAME_CLOSURES = process.env.TABLE_NAME_CLOSURES ?? '';
-export const TABLE_NAME_HC = process.env.TABLE_NAME_HC ?? '';
-export const TABLE_NAME_USERS = process.env.TABLE_NAME_USERS ?? '';
-export const TABLE_NAME_FEEDBACK = process.env.TABLE_NAME_FEEDBACK ?? '';
+export const TABLE_CLOSURES = process.env.TABLE_CLOSURES ?? '';
+export const TABLE_HC = process.env.TABLE_HC ?? '';
+export const TABLE_USERS = process.env.TABLE_USERS ?? '';
+export const TABLE_FEEDBACK = process.env.TABLE_FEEDBACK ?? '';

@@ -20,16 +20,16 @@ describe('Validation module', () => {
       .mockImplementation(() => Promise.resolve(Err(new AWSError())));
   });
 
-  afterAll(() => {
-    mockCallback.mockRestore();
-  });
-
   beforeEach(() => {
     sendMessageSpy = jest.spyOn(sender, 'sendMessage').mockImplementation();
   });
 
   afterEach(() => {
     sendMessageSpy.mockRestore();
+  });
+
+  afterAll(() => {
+    mockCallback.mockRestore();
     getUserByIdSpy.mockRestore();
   });
 

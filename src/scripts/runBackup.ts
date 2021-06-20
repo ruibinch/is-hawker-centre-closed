@@ -1,16 +1,12 @@
 import * as AWS from 'aws-sdk';
 
-import {
-  initAWSConfig,
-  TABLE_NAME_FEEDBACK,
-  TABLE_NAME_USERS,
-} from '../aws/config';
+import { initAWSConfig, TABLE_FEEDBACK, TABLE_USERS } from '../aws/config';
 import { currentDateInYYYYMMDD } from '../utils/date';
 
 initAWSConfig();
 const dynamoDb = new AWS.DynamoDB();
 
-const tablesToBackup = [TABLE_NAME_USERS, TABLE_NAME_FEEDBACK];
+const tablesToBackup = [TABLE_USERS, TABLE_FEEDBACK];
 
 async function clearBackups() {
   const backupsList = await dynamoDb.listBackups().promise();

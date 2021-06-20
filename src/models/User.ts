@@ -3,7 +3,7 @@ import { formatISO } from 'date-fns';
 import NodeCache from 'node-cache';
 import { Err, Ok, Result } from 'ts-results';
 
-import { initAWSConfig, TABLE_NAME_USERS } from '../aws/config';
+import { initAWSConfig, TABLE_USERS } from '../aws/config';
 import { getDynamoDBBillingDetails } from '../aws/dynamodb';
 import { AWSError } from '../errors/AWSError';
 import { Language } from '../lang';
@@ -59,7 +59,7 @@ export class User {
   }
 
   static getTableName(): string {
-    return `${TABLE_NAME_USERS}-${getStage()}`;
+    return `${TABLE_USERS}-${getStage()}`;
   }
 
   static getSchema(): AWS.DynamoDB.CreateTableInput {

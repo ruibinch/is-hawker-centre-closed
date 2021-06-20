@@ -12,10 +12,10 @@ custom:
         - BOT_TOKEN_dev
         - BOT_TOKEN_prod
         - REGION
-        - TABLE_NAME_CLOSURES
-        - TABLE_NAME_HC
-        - TABLE_NAME_USERS
-        - TABLE_NAME_FEEDBACK
+        - TABLE_CLOSURES
+        - TABLE_HC
+        - TABLE_USERS
+        - TABLE_FEEDBACK
   webpack:
     packager: yarn
     includeModules: true
@@ -43,23 +43,23 @@ provider:
         - Effect: Allow
           Action:
             - dynamodb:Scan
-          Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_NAME_CLOSURES}-${self:provider.stage}'
+          Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_CLOSURES}-${self:provider.stage}'
         - Effect: Allow
           Action:
             - dynamodb:Scan
             - dynamodb:GetItem
-          Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_NAME_HC}-${self:provider.stage}'
+          Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_HC}-${self:provider.stage}'
         - Effect: Allow
           Action:
             - dynamodb:Scan
             - dynamodb:GetItem
             - dynamodb:PutItem
             - dynamodb:UpdateItem
-          Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_NAME_USERS}-${self:provider.stage}'
+          Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_USERS}-${self:provider.stage}'
         - Effect: Allow
           Action:
             - dynamodb:PutItem
-          Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_NAME_FEEDBACK}-${self:provider.stage}'
+          Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_FEEDBACK}-${self:provider.stage}'
 
 package:
   patterns:
