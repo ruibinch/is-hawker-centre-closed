@@ -37,10 +37,6 @@ provider:
     TZ: Asia/Singapore
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
     BOT_TOKEN: ${env:BOT_TOKEN_${self:provider.stage}}
-    TABLE_CLOSURES: ${env:TABLE_NAME_CLOSURES}-${self:provider.stage}
-    TABLE_HC: ${env:TABLE_NAME_HC}-${self:provider.stage}
-    TABLE_USERS: ${env:TABLE_NAME_USERS}-${self:provider.stage}
-    TABLE_FEEDBACK: ${env:TABLE_NAME_FEEDBACK}-${self:provider.stage}
   iam:
     role:
       statements:

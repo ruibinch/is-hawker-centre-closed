@@ -61,8 +61,6 @@ By default, there are 2 accepted `env` values - `dev` and `prod`.
 
 First, we create the DB and populate it with values.
 
-> :notebook:  Uses REGION and TABLE_NAME\_\* values from `.env`
-
 Run `yarn init:db`.
 
 This script executes 2 other scripts:
@@ -86,8 +84,6 @@ There are 2 Lambda functions to be deployed:
 1. `bot`
 1. `notifications`
 
-> :orange_book:  Uses values specified in `serverless.yml`
-
 To install a fresh deployment,
 
 1. Run `yarn deploy:{{env}}`
@@ -109,8 +105,6 @@ There are 2 methods to update an existing deployment, depending on the changes t
 ### Initialising bot webhook
 
 Finally, we set up the webhook on our Telegram bot so that all messages sent to the bot will be immediately forwarded to our API gateway endpoint.
-
-> :notebook:  Uses BOT_TOKEN, REGION and APIG\_\* values from `.env`
 
 Run `yarn init:bot:{{env}}`.
 

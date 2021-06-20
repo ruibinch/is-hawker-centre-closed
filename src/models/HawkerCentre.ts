@@ -1,7 +1,7 @@
 import * as AWS from 'aws-sdk';
 import { Err, Ok, Result } from 'ts-results';
 
-import { initAWSConfig, TABLE_HC, TABLE_NAME_HC } from '../aws/config';
+import { initAWSConfig, TABLE_NAME_HC } from '../aws/config';
 import { getDynamoDBBillingDetails } from '../aws/dynamodb';
 import { AWSError } from '../errors/AWSError';
 import { getStage } from '../utils';
@@ -73,7 +73,7 @@ export async function getAllHawkerCentres(): Promise<
 > {
   const scanOutput = await dynamoDb
     .scan({
-      TableName: TABLE_HC,
+      TableName: HawkerCentre.getTableName(),
     })
     .promise();
 
@@ -89,7 +89,7 @@ export async function getHawkerCentreById(
 ): Promise<Result<HawkerCentre, AWSError>> {
   const getOutput = await dynamoDb
     .get({
-      TableName: TABLE_HC,
+      TableName: HawkerCentre.getTableName(),
       Key: {
         hawkerCentreId,
       },

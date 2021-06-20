@@ -1,11 +1,7 @@
 import * as AWS from 'aws-sdk';
 import { formatISO } from 'date-fns';
 
-import {
-  initAWSConfig,
-  TABLE_FEEDBACK,
-  TABLE_NAME_FEEDBACK,
-} from '../aws/config';
+import { initAWSConfig, TABLE_NAME_FEEDBACK } from '../aws/config';
 import { getDynamoDBBillingDetails } from '../aws/dynamodb';
 import { getStage } from '../utils';
 import { currentDate } from '../utils/date';
@@ -60,7 +56,7 @@ export class Feedback {
 export async function addFeedbackToDB(feedback: Feedback): Promise<void> {
   await dynamoDb
     .put({
-      TableName: TABLE_FEEDBACK,
+      TableName: Feedback.getTableName(),
       Item: {
         ...feedback,
         createdAt: formatISO(currentDate()),

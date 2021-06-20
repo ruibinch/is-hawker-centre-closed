@@ -1,11 +1,7 @@
 import * as AWS from 'aws-sdk';
 import { Err, Ok, Result } from 'ts-results';
 
-import {
-  initAWSConfig,
-  TABLE_NAME_CLOSURES,
-  TABLE_CLOSURES,
-} from '../aws/config';
+import { initAWSConfig, TABLE_NAME_CLOSURES } from '../aws/config';
 import { getDynamoDBBillingDetails } from '../aws/dynamodb';
 import { AWSError } from '../errors/AWSError';
 import { getStage } from '../utils';
@@ -91,7 +87,7 @@ export async function uploadClosures(closures: Closure[]): Promise<void> {
 export async function getAllClosures(): Promise<Result<Closure[], AWSError>> {
   const scanOutput = await dynamoDb
     .scan({
-      TableName: TABLE_CLOSURES,
+      TableName: ClosureObject.getTableName(),
     })
     .promise();
 
