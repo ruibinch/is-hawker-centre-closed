@@ -1,5 +1,6 @@
 import { t } from '../../lang';
-import { HawkerCentre, ClosurePartial } from '../../models/types';
+import { ClosurePartial } from '../../models/Closure';
+import { HawkerCentre } from '../../models/HawkerCentre';
 import { makeClosurePeriodSnippet } from '../message';
 import { MAX_CHOICES } from './constants';
 

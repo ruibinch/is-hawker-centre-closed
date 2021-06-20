@@ -8,8 +8,7 @@ import {
 import { Err, Ok, Result } from 'ts-results';
 
 import { CustomError } from '../../errors/CustomError';
-import { getAllClosures } from '../../models/Closure';
-import { Closure } from '../../models/types';
+import { Closure, getAllClosures } from '../../models/Closure';
 import { currentDate, isWithinDateBounds } from '../../utils/date';
 import { extractSearchModifier } from './searchModifier';
 import { SearchModifier, SearchObject, SearchResponse } from './types';

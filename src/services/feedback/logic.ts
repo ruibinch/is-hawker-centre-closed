@@ -1,7 +1,6 @@
 import { Ok, Result } from 'ts-results';
 
-import { addFeedbackToDB } from '../../models/Feedback';
-import { Feedback } from '../../models/types';
+import { addFeedbackToDB, Feedback } from '../../models/Feedback';
 import { currentDate } from '../../utils/date';
 import { TelegramUser } from '../../utils/telegram';
 

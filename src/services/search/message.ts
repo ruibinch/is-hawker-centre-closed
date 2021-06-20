@@ -1,5 +1,5 @@
 import { t } from '../../lang';
-import { ClosureReason } from '../../models/types';
+import { ClosureReason } from '../../models/Closure';
 import { makeClosurePeriodSnippet } from '../message';
 import { SearchModifier, SearchResponse } from './types';
 

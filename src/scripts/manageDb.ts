@@ -12,7 +12,7 @@ import {
   makeHawkerCentreSchema,
   makeHawkerCentreTableName,
 } from '../models/HawkerCentre';
-import { makeUserSchema, makeUserTableName } from '../models/User';
+import { User } from '../models/User';
 import { getStage } from '../utils/types';
 
 const args = process.argv.slice(2);
@@ -30,7 +30,7 @@ async function createTables() {
     .createTable(makeHawkerCentreSchema(stage))
     .promise();
   const userTableCreateOutput = await dynamoDb
-    .createTable(makeUserSchema(stage))
+    .createTable(User.getSchema(stage))
     .promise();
   const feedbackTableCreateOutput = await dynamoDb
     .createTable(makeFeedbackSchema(stage))
@@ -59,7 +59,7 @@ async function deleteTables() {
     .promise();
   const userTableDeleteOutput = await dynamoDb
     .deleteTable({
-      TableName: makeUserTableName(stage),
+      TableName: User.getTableName(stage),
     })
     .promise();
   const feedbackTableDeleteOutput = await dynamoDb

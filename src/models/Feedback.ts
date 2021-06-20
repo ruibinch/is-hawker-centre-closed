@@ -9,37 +9,63 @@ import {
 import { getDynamoDBBillingDetails } from '../aws/dynamodb';
 import { currentDate } from '../utils/date';
 import { Stage } from '../utils/types';
-import { Feedback } from './types';
 
 initAWSConfig();
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
-export const makeFeedbackTableName = (stage: Stage): string =>
-  `${TABLE_NAME_FEEDBACK}-${stage}`;
+type FeedbackProps = {
+  feedbackId: string;
+  userId: number;
+  username?: string;
+  text: string;
+};
 
-export const makeFeedbackSchema = (
-  stage: Stage,
-): AWS.DynamoDB.CreateTableInput => ({
-  ...getDynamoDBBillingDetails(),
-  TableName: makeFeedbackTableName(stage),
-  KeySchema: [
-    {
-      AttributeName: 'feedbackId',
-      KeyType: 'HASH',
-    },
-  ],
-  AttributeDefinitions: [{ AttributeName: 'feedbackId', AttributeType: 'S' }],
-});
+export class Feedback {
+  feedbackId: string;
+
+  userId: number;
+
+  username?: string;
+
+  text: string;
+
+  private constructor(props: FeedbackProps) {
+    this.feedbackId = props.feedbackId;
+    this.userId = props.userId;
+    this.username = props.username;
+    this.text = props.text;
+  }
+
+  static getTableName(stage: Stage): string {
+    return `${TABLE_NAME_FEEDBACK}-${stage}`;
+  }
+
+  static getSchema(stage: Stage): AWS.DynamoDB.CreateTableInput {
+    return {
+      ...getDynamoDBBillingDetails(),
+      TableName: this.getTableName(stage),
+      KeySchema: [
+        {
+          AttributeName: 'feedbackId',
+          KeyType: 'HASH',
+        },
+      ],
+      AttributeDefinitions: [
+        { AttributeName: 'feedbackId', AttributeType: 'S' },
+      ],
+    };
+  }
+}
 
 export async function addFeedbackToDB(feedback: Feedback): Promise<void> {
-  const feedbackInput: AWS.DynamoDB.DocumentClient.PutItemInput = {
-    TableName: TABLE_FEEDBACK,
-    Item: {
-      ...feedback,
-      createdAt: formatISO(currentDate()),
-    },
-    ConditionExpression: 'attribute_not_exists(feedbackId)',
-  };
-
-  await dynamoDb.put(feedbackInput).promise();
+  await dynamoDb
+    .put({
+      TableName: TABLE_FEEDBACK,
+      Item: {
+        ...feedback,
+        createdAt: formatISO(currentDate()),
+      },
+      ConditionExpression: 'attribute_not_exists(feedbackId)',
+    })
+    .promise();
 }

@@ -5,44 +5,65 @@ import { initAWSConfig, TABLE_HC, TABLE_NAME_HC } from '../aws/config';
 import { getDynamoDBBillingDetails } from '../aws/dynamodb';
 import { AWSError } from '../errors/AWSError';
 import { getStage, Stage } from '../utils/types';
-import { HawkerCentre } from './types';
 
 initAWSConfig();
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
-export const makeHawkerCentreTableName = (stage: Stage): string =>
-  `${TABLE_NAME_HC}-${stage}`;
+export type HawkerCentreProps = {
+  hawkerCentreId: number;
+  name: string;
+  nameSecondary?: string;
+};
 
-export const makeHawkerCentreSchema = (
-  stage: Stage,
-): AWS.DynamoDB.CreateTableInput => ({
-  ...getDynamoDBBillingDetails(),
-  TableName: makeHawkerCentreTableName(stage),
-  KeySchema: [
-    {
-      AttributeName: 'hawkerCentreId',
-      KeyType: 'HASH',
-    },
-  ],
-  AttributeDefinitions: [
-    { AttributeName: 'hawkerCentreId', AttributeType: 'N' },
-  ],
-});
+export class HawkerCentre {
+  hawkerCentreId: number;
+
+  name: string;
+
+  nameSecondary?: string;
+
+  private constructor(props: HawkerCentreProps) {
+    this.hawkerCentreId = props.hawkerCentreId;
+    this.name = props.name;
+    this.nameSecondary = props.nameSecondary;
+  }
+
+  static getTableName(stage: Stage): string {
+    return `${TABLE_NAME_HC}-${stage}`;
+  }
+
+  static getSchema(stage: Stage): AWS.DynamoDB.CreateTableInput {
+    return {
+      ...getDynamoDBBillingDetails(),
+      TableName: this.getTableName(stage),
+      KeySchema: [
+        {
+          AttributeName: 'hawkerCentreId',
+          KeyType: 'HASH',
+        },
+      ],
+      AttributeDefinitions: [
+        { AttributeName: 'hawkerCentreId', AttributeType: 'N' },
+      ],
+    };
+  }
+}
 
 export async function uploadHawkerCentres(
   hawkerCentres: HawkerCentre[],
 ): Promise<void> {
-  const hcTable = makeHawkerCentreTableName(getStage());
+  const hcTable = HawkerCentre.getTableName(getStage());
 
   await Promise.all(
-    hawkerCentres.map((hawkerCentre) => {
-      const hawkerCentreInput: AWS.DynamoDB.DocumentClient.PutItemInput = {
-        TableName: hcTable,
-        Item: hawkerCentre,
-        ConditionExpression: 'attribute_not_exists(hawkerCentreId)',
-      };
-      return dynamoDb.put(hawkerCentreInput).promise();
-    }),
+    hawkerCentres.map((hawkerCentre) =>
+      dynamoDb
+        .put({
+          TableName: hcTable,
+          Item: hawkerCentre,
+          ConditionExpression: 'attribute_not_exists(hawkerCentreId)',
+        })
+        .promise(),
+    ),
   );
   console.log(`Uploaded ${hawkerCentres.length} entries to table "${hcTable}"`);
 }
@@ -50,11 +71,11 @@ export async function uploadHawkerCentres(
 export async function getAllHawkerCentres(): Promise<
   Result<HawkerCentre[], AWSError>
 > {
-  const params: AWS.DynamoDB.DocumentClient.ScanInput = {
-    TableName: TABLE_HC,
-  };
-
-  const scanOutput = await dynamoDb.scan(params).promise();
+  const scanOutput = await dynamoDb
+    .scan({
+      TableName: TABLE_HC,
+    })
+    .promise();
 
   if (!scanOutput.Items) {
     return Err(new AWSError());
@@ -66,14 +87,14 @@ export async function getAllHawkerCentres(): Promise<
 export async function getHawkerCentreById(
   hawkerCentreId: number,
 ): Promise<Result<HawkerCentre, AWSError>> {
-  const params: AWS.DynamoDB.DocumentClient.GetItemInput = {
-    TableName: TABLE_HC,
-    Key: {
-      hawkerCentreId,
-    },
-  };
-
-  const getOutput = await dynamoDb.get(params).promise();
+  const getOutput = await dynamoDb
+    .get({
+      TableName: TABLE_HC,
+      Key: {
+        hawkerCentreId,
+      },
+    })
+    .promise();
 
   if (getOutput === null) {
     return Err(new AWSError());
