@@ -7,8 +7,8 @@ import { initAWSConfig, TABLE_NAME_USERS, TABLE_USERS } from '../aws/config';
 import { getDynamoDBBillingDetails } from '../aws/dynamodb';
 import { AWSError } from '../errors/AWSError';
 import { Language } from '../lang';
+import { getStage } from '../utils';
 import { currentDate } from '../utils/date';
-import { Stage } from '../utils/types';
 
 initAWSConfig();
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
@@ -58,14 +58,14 @@ export class User {
     return new User(props);
   }
 
-  static getTableName(stage: Stage): string {
-    return `${TABLE_NAME_USERS}-${stage}`;
+  static getTableName(): string {
+    return `${TABLE_NAME_USERS}-${getStage()}`;
   }
 
-  static getSchema(stage: Stage): AWS.DynamoDB.CreateTableInput {
+  static getSchema(): AWS.DynamoDB.CreateTableInput {
     return {
       ...getDynamoDBBillingDetails(),
-      TableName: this.getTableName(stage),
+      TableName: this.getTableName(),
       KeySchema: [
         {
           AttributeName: 'userId',
