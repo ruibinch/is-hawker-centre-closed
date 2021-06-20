@@ -3,13 +3,12 @@ import { endOfDay, formatISO, isPast, parseISO } from 'date-fns';
 import { Err, Ok, Result } from 'ts-results';
 
 import { CustomError } from '../../errors/CustomError';
-import { getAllClosures } from '../../models/Closure';
+import { Closure, getAllClosures } from '../../models/Closure';
 import {
   getAllHawkerCentres,
   getHawkerCentreById,
   HawkerCentre,
 } from '../../models/HawkerCentre';
-import { Closure } from '../../models/types';
 import {
   getUserById,
   addUser,

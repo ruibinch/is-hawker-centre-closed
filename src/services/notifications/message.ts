@@ -1,5 +1,5 @@
 import { t } from '../../lang';
-import { ClosureReason, Closure } from '../../models/types';
+import { ClosureReason, Closure } from '../../models/Closure';
 import { makeClosurePeriodSnippet } from '../message';
 
 export function makeNotificationMessage(closures: Closure[]): string {
