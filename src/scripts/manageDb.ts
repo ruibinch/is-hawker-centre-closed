@@ -1,39 +1,29 @@
 import * as AWS from 'aws-sdk';
 
 import { initAWSConfig } from '../aws/config';
-import {
-  getAllClosures,
-  makeClosureSchema,
-  makeClosureTableName,
-} from '../models/Closure';
-import { makeFeedbackSchema, makeFeedbackTableName } from '../models/Feedback';
-import {
-  getAllHawkerCentres,
-  makeHawkerCentreSchema,
-  makeHawkerCentreTableName,
-} from '../models/HawkerCentre';
+import { getAllClosures, ClosureObject } from '../models/Closure';
+import { Feedback } from '../models/Feedback';
+import { getAllHawkerCentres, HawkerCentre } from '../models/HawkerCentre';
 import { User } from '../models/User';
-import { getStage } from '../utils/types';
 
 const args = process.argv.slice(2);
 const [operation] = args;
 
 initAWSConfig();
 const dynamoDb = new AWS.DynamoDB();
-const stage = getStage();
 
 async function createTables() {
   const closuresTableCreateOutput = await dynamoDb
-    .createTable(makeClosureSchema(stage))
+    .createTable(ClosureObject.getSchema())
     .promise();
   const hawkerCentreTableCreateOutput = await dynamoDb
-    .createTable(makeHawkerCentreSchema(stage))
+    .createTable(HawkerCentre.getSchema())
     .promise();
   const userTableCreateOutput = await dynamoDb
-    .createTable(User.getSchema(stage))
+    .createTable(User.getSchema())
     .promise();
   const feedbackTableCreateOutput = await dynamoDb
-    .createTable(makeFeedbackSchema(stage))
+    .createTable(Feedback.getSchema())
     .promise();
 
   console.log(
@@ -49,22 +39,22 @@ async function createTables() {
 async function deleteTables() {
   const closuresTableDeleteOutput = await dynamoDb
     .deleteTable({
-      TableName: makeClosureTableName(stage),
+      TableName: ClosureObject.getTableName(),
     })
     .promise();
   const hawkerCentreTableDeleteOutput = await dynamoDb
     .deleteTable({
-      TableName: makeHawkerCentreTableName(stage),
+      TableName: HawkerCentre.getTableName(),
     })
     .promise();
   const userTableDeleteOutput = await dynamoDb
     .deleteTable({
-      TableName: User.getTableName(stage),
+      TableName: User.getTableName(),
     })
     .promise();
   const feedbackTableDeleteOutput = await dynamoDb
     .deleteTable({
-      TableName: makeFeedbackTableName(stage),
+      TableName: Feedback.getTableName(),
     })
     .promise();
 
@@ -93,12 +83,12 @@ async function resetTables() {
 
   const closuresTableDeleteOutput = await dynamoDb
     .deleteTable({
-      TableName: makeClosureTableName(stage),
+      TableName: ClosureObject.getTableName(),
     })
     .promise();
   const hawkerCentreTableDeleteOutput = await dynamoDb
     .deleteTable({
-      TableName: makeHawkerCentreTableName(stage),
+      TableName: HawkerCentre.getTableName(),
     })
     .promise();
   console.log(
@@ -123,10 +113,10 @@ async function resetTables() {
   await new Promise((resolve) => setTimeout(resolve, 2000));
 
   const closuresTableCreateOutput = await dynamoDb
-    .createTable(makeClosureSchema(stage))
+    .createTable(ClosureObject.getSchema())
     .promise();
   const hawkerCentreTableCreateOutput = await dynamoDb
-    .createTable(makeHawkerCentreSchema(stage))
+    .createTable(HawkerCentre.getSchema())
     .promise();
   console.log(
     `Created tables:\n${makeTableNames([

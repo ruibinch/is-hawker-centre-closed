@@ -1,10 +1,10 @@
 import * as AWS from 'aws-sdk';
 import { Err, Ok, Result } from 'ts-results';
 
-import { initAWSConfig, TABLE_HC, TABLE_NAME_HC } from '../aws/config';
+import { initAWSConfig, TABLE_HC } from '../aws/config';
 import { getDynamoDBBillingDetails } from '../aws/dynamodb';
 import { AWSError } from '../errors/AWSError';
-import { getStage, Stage } from '../utils/types';
+import { getStage } from '../utils';
 
 initAWSConfig();
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
@@ -28,14 +28,14 @@ export class HawkerCentre {
     this.nameSecondary = props.nameSecondary;
   }
 
-  static getTableName(stage: Stage): string {
-    return `${TABLE_NAME_HC}-${stage}`;
+  static getTableName(): string {
+    return `${TABLE_HC}-${getStage()}`;
   }
 
-  static getSchema(stage: Stage): AWS.DynamoDB.CreateTableInput {
+  static getSchema(): AWS.DynamoDB.CreateTableInput {
     return {
       ...getDynamoDBBillingDetails(),
-      TableName: this.getTableName(stage),
+      TableName: this.getTableName(),
       KeySchema: [
         {
           AttributeName: 'hawkerCentreId',
@@ -52,7 +52,7 @@ export class HawkerCentre {
 export async function uploadHawkerCentres(
   hawkerCentres: HawkerCentre[],
 ): Promise<void> {
-  const hcTable = HawkerCentre.getTableName(getStage());
+  const hcTable = HawkerCentre.getTableName();
 
   await Promise.all(
     hawkerCentres.map((hawkerCentre) =>
@@ -73,7 +73,7 @@ export async function getAllHawkerCentres(): Promise<
 > {
   const scanOutput = await dynamoDb
     .scan({
-      TableName: TABLE_HC,
+      TableName: HawkerCentre.getTableName(),
     })
     .promise();
 
@@ -89,7 +89,7 @@ export async function getHawkerCentreById(
 ): Promise<Result<HawkerCentre, AWSError>> {
   const getOutput = await dynamoDb
     .get({
-      TableName: TABLE_HC,
+      TableName: HawkerCentre.getTableName(),
       Key: {
         hawkerCentreId,
       },

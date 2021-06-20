@@ -9,7 +9,7 @@
     "init:bot": "yarn init:bot:prod",
     "init:bot:dev": "ts-node src/scripts/initBot.ts",
     "init:bot:prod": "NODE_ENV=production yarn init:bot:dev",
-    "deploy:all": "yarn deploy:dev:full && yarn deploy:prod",
+    "deploy:all": "yarn deploy:dev && yarn deploy:prod",
     "deploy:all:bot": "yarn deploy:dev:bot && yarn deploy:prod:bot",
     "deploy:dev": "sls deploy -s dev",
     "deploy:dev:bot": "sls deploy -s dev -f bot",

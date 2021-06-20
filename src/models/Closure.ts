@@ -1,22 +1,18 @@
 import * as AWS from 'aws-sdk';
 import { Err, Ok, Result } from 'ts-results';
 
-import {
-  initAWSConfig,
-  TABLE_NAME_CLOSURES,
-  TABLE_CLOSURES,
-} from '../aws/config';
+import { initAWSConfig, TABLE_CLOSURES } from '../aws/config';
 import { getDynamoDBBillingDetails } from '../aws/dynamodb';
 import { AWSError } from '../errors/AWSError';
-import { getStage, Stage } from '../utils/types';
+import { getStage } from '../utils';
 import { HawkerCentre } from './HawkerCentre';
 
 initAWSConfig();
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
-export type Closure = HawkerCentre & HawkerCentreClosure;
+export type Closure = HawkerCentre & ClosureObject;
 
-export type ClosurePartial = HawkerCentre & Partial<HawkerCentreClosure>;
+export type ClosurePartial = HawkerCentre & Partial<ClosureObject>;
 
 export type ClosureReason = 'cleaning' | 'others';
 
@@ -27,7 +23,7 @@ type HawkerCentreClosureProps = {
   endDate: string;
 };
 
-class HawkerCentreClosure {
+export class ClosureObject {
   id: string;
 
   reason: ClosureReason;
@@ -43,14 +39,14 @@ class HawkerCentreClosure {
     this.endDate = props.endDate;
   }
 
-  static getTableName(stage: Stage): string {
-    return `${TABLE_NAME_CLOSURES}-${stage}`;
+  static getTableName(): string {
+    return `${TABLE_CLOSURES}-${getStage()}`;
   }
 
-  static getSchema(stage: Stage): AWS.DynamoDB.CreateTableInput {
+  static getSchema(): AWS.DynamoDB.CreateTableInput {
     return {
       ...getDynamoDBBillingDetails(),
-      TableName: this.getTableName(stage),
+      TableName: this.getTableName(),
       KeySchema: [
         {
           AttributeName: 'id',
@@ -70,7 +66,7 @@ class HawkerCentreClosure {
 }
 
 export async function uploadClosures(closures: Closure[]): Promise<void> {
-  const closuresTable = HawkerCentreClosure.getTableName(getStage());
+  const closuresTable = ClosureObject.getTableName();
 
   await Promise.all(
     closures.map((closure) =>
@@ -91,7 +87,7 @@ export async function uploadClosures(closures: Closure[]): Promise<void> {
 export async function getAllClosures(): Promise<Result<Closure[], AWSError>> {
   const scanOutput = await dynamoDb
     .scan({
-      TableName: TABLE_CLOSURES,
+      TableName: ClosureObject.getTableName(),
     })
     .promise();
 

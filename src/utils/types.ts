@@ -4,10 +4,6 @@ import { AWSError } from '../errors/AWSError';
 
 export type Stage = 'dev' | 'prod';
 
-export function getStage(): Stage {
-  return process.env.NODE_ENV === 'production' ? 'prod' : 'dev';
-}
-
 export type Module =
   | 'search'
   | 'favourites'

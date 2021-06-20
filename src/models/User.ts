@@ -3,12 +3,12 @@ import { formatISO } from 'date-fns';
 import NodeCache from 'node-cache';
 import { Err, Ok, Result } from 'ts-results';
 
-import { initAWSConfig, TABLE_NAME_USERS, TABLE_USERS } from '../aws/config';
+import { initAWSConfig, TABLE_USERS } from '../aws/config';
 import { getDynamoDBBillingDetails } from '../aws/dynamodb';
 import { AWSError } from '../errors/AWSError';
 import { Language } from '../lang';
+import { getStage } from '../utils';
 import { currentDate } from '../utils/date';
-import { Stage } from '../utils/types';
 
 initAWSConfig();
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
@@ -58,14 +58,14 @@ export class User {
     return new User(props);
   }
 
-  static getTableName(stage: Stage): string {
-    return `${TABLE_NAME_USERS}-${stage}`;
+  static getTableName(): string {
+    return `${TABLE_USERS}-${getStage()}`;
   }
 
-  static getSchema(stage: Stage): AWS.DynamoDB.CreateTableInput {
+  static getSchema(): AWS.DynamoDB.CreateTableInput {
     return {
       ...getDynamoDBBillingDetails(),
-      TableName: this.getTableName(stage),
+      TableName: this.getTableName(),
       KeySchema: [
         {
           AttributeName: 'userId',
@@ -80,7 +80,7 @@ export class User {
 export async function addUser(user: User): Promise<void> {
   await dynamoDb
     .put({
-      TableName: TABLE_USERS,
+      TableName: User.getTableName(),
       Item: {
         ...user,
         createdAt: formatISO(currentDate()),
@@ -93,7 +93,7 @@ export async function addUser(user: User): Promise<void> {
 export async function getAllUsers(): Promise<Result<User[], AWSError>> {
   const scanOutput = await dynamoDb
     .scan({
-      TableName: TABLE_USERS,
+      TableName: User.getTableName(),
     })
     .promise();
 
@@ -112,7 +112,7 @@ export async function getUserById(
   if (user === undefined) {
     const getResponse = await dynamoDb
       .get({
-        TableName: TABLE_USERS,
+        TableName: User.getTableName(),
         Key: {
           userId,
         },
@@ -135,7 +135,7 @@ export async function updateUserFavourites(
 ): Promise<void> {
   await dynamoDb
     .update({
-      TableName: TABLE_USERS,
+      TableName: User.getTableName(),
       Key: {
         userId,
       },
@@ -154,7 +154,7 @@ export async function updateUserInFavouritesMode(
 ): Promise<void> {
   await dynamoDb
     .update({
-      TableName: TABLE_USERS,
+      TableName: User.getTableName(),
       Key: {
         userId,
       },
@@ -174,7 +174,7 @@ export async function updateUserNotifications(
 ): Promise<void> {
   await dynamoDb
     .update({
-      TableName: TABLE_USERS,
+      TableName: User.getTableName(),
       Key: {
         userId,
       },
@@ -193,7 +193,7 @@ export async function updateUserLanguageCode(
 ): Promise<void> {
   await dynamoDb
     .update({
-      TableName: TABLE_USERS,
+      TableName: User.getTableName(),
       Key: {
         userId,
       },
