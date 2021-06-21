@@ -1,13 +1,14 @@
 import { parseISO } from 'date-fns';
-import { Err } from 'ts-results';
+import { Err, Ok } from 'ts-results';
 
 import * as sender from '../src/bot/sender';
 import { AWSError } from '../src/errors/AWSError';
 import * as UserFile from '../src/models/User';
 import * as favouritesIndex from '../src/services/favourites/index';
+import { mockUser } from './__mocks__/db';
 import { assertBotResponse, makeBotWrapper } from './helpers/bot';
 
-describe('Feedback module', () => {
+describe('Language module', () => {
   const mockCallback = jest.fn();
   const callBot = makeBotWrapper(mockCallback);
 
@@ -61,24 +62,6 @@ describe('Feedback module', () => {
     assertBotResponse(sendMessageSpy, expectedMessage);
   });
 
-  it('["/language en"] successfully updates the preferred language setting', async () => {
-    const expectedMessage = 'Your language option has been set to *English*\\.';
-
-    await callBot('/language en');
-    assertBotResponse(sendMessageSpy, expectedMessage);
-
-    expect(updateUserLanguageCodeSpy).toHaveBeenCalledWith(1, 'en');
-  });
-
-  it('["/language zh"] successfully updates the preferred language setting', async () => {
-    const expectedMessage = '您的语言设置为*中文*。';
-
-    await callBot('/language zh');
-    assertBotResponse(sendMessageSpy, expectedMessage);
-
-    expect(updateUserLanguageCodeSpy).toHaveBeenCalledWith(1, 'zh');
-  });
-
   it('["/language invalid"] returns an error message when the language code is invalid', async () => {
     const expectedMessage =
       'Invalid language code\\.\nPlease try again with either _en_ or _zh_\\.';
@@ -87,5 +70,95 @@ describe('Feedback module', () => {
     assertBotResponse(sendMessageSpy, expectedMessage);
 
     expect(updateUserLanguageCodeSpy).not.toHaveBeenCalled();
+  });
+
+  describe('new user', () => {
+    let addUserSpy: jest.SpyInstance;
+
+    beforeAll(() => {
+      getUserByIdSpy = jest
+        .spyOn(UserFile, 'getUserById')
+        .mockImplementation(() => Promise.resolve(Err(new AWSError())));
+    });
+
+    beforeEach(() => {
+      addUserSpy = jest
+        .spyOn(UserFile, 'addUser')
+        .mockImplementation(() => Promise.resolve());
+    });
+
+    afterEach(() => {
+      addUserSpy.mockRestore();
+    });
+
+    afterAll(() => {
+      getUserByIdSpy.mockRestore();
+    });
+
+    it('["/language en"] creates a new user with the preferred language setting', async () => {
+      const expectedMessage =
+        'Your language option has been set to *English*\\.';
+
+      await callBot('/language en');
+      assertBotResponse(sendMessageSpy, expectedMessage);
+
+      expect(updateUserLanguageCodeSpy).not.toHaveBeenCalled();
+      expect(addUserSpy).toHaveBeenCalledWith({
+        userId: 1,
+        username: 'ashketchum',
+        languageCode: 'en',
+        favourites: [],
+        isInFavouritesMode: false,
+        notifications: true,
+      });
+    });
+
+    it('["/language zh"] creates a new user with the preferred language setting', async () => {
+      const expectedMessage = '您的语言设置为*中文*。';
+
+      await callBot('/language zh');
+      assertBotResponse(sendMessageSpy, expectedMessage);
+
+      expect(updateUserLanguageCodeSpy).not.toHaveBeenCalled();
+      expect(addUserSpy).toHaveBeenCalledWith({
+        userId: 1,
+        username: 'ashketchum',
+        languageCode: 'zh',
+        favourites: [],
+        isInFavouritesMode: false,
+        notifications: true,
+      });
+    });
+  });
+
+  describe('existing user', () => {
+    beforeEach(() => {
+      getUserByIdSpy = jest
+        .spyOn(UserFile, 'getUserById')
+        .mockImplementation(() => Promise.resolve(Ok(mockUser)));
+    });
+
+    afterEach(() => {
+      getUserByIdSpy.mockRestore();
+    });
+
+    it('["/language en"] successfully updates the preferred language setting', async () => {
+      const expectedMessage =
+        'Your language option has been set to *English*\\.';
+
+      await callBot('/language en');
+      assertBotResponse(sendMessageSpy, expectedMessage);
+
+      expect(updateUserLanguageCodeSpy).toHaveBeenCalledWith(1, 'en');
+    });
+
+    it('["/language zh"] successfully updates the preferred language setting', async () => {
+      const expectedMessage = '您的语言设置为*中文*。';
+
+      await callBot('/language zh');
+      assertBotResponse(sendMessageSpy, expectedMessage);
+
+      expect(updateUserLanguageCodeSpy).toHaveBeenCalledWith(1, 'zh');
+    });
   });
 });

@@ -1,7 +1,12 @@
 import { Err, Ok, Result } from 'ts-results';
 
 import { initDictionary, Language } from '../../lang';
-import { getUserById, updateUserLanguageCode } from '../../models/User';
+import {
+  addUser,
+  getUserById,
+  updateUserLanguageCode,
+  User,
+} from '../../models/User';
 import { TelegramUser } from '../../utils/telegram';
 import { GetUserLanguageCodeResponse } from './types';
 
@@ -11,7 +16,7 @@ export async function updateLanguage(props: {
 }): Promise<Result<void, void>> {
   const {
     text,
-    telegramUser: { id: userId },
+    telegramUser: { id: userId, username },
   } = props;
 
   if (!isValidLanguageCode(text)) {
@@ -19,9 +24,25 @@ export async function updateLanguage(props: {
   }
 
   const languageCode = text;
-  await updateUserLanguageCode(userId, languageCode);
-  initDictionary(languageCode);
 
+  const getUserResponse = await getUserById(userId);
+  if (getUserResponse.err) {
+    // user does not exist yet in DB
+    const newUser = User.create({
+      userId,
+      username,
+      languageCode,
+      favourites: [],
+      isInFavouritesMode: false,
+      notifications: true,
+    });
+
+    await addUser(newUser);
+  } else {
+    await updateUserLanguageCode(userId, languageCode);
+  }
+
+  initDictionary(languageCode);
   return Ok.EMPTY;
 }
 
