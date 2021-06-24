@@ -47,12 +47,12 @@ describe('General module', () => {
     it('returns the correct message', async () => {
       const expectedMessage =
         '\u{1F50D} *Search*\n\n' +
-        'The search query follows the structure:\n\n' +
-        '          `\\[keyword\\] \\[timeframe\\]`\n\n' +
-        'Supported timeframes are:\n' +
-        '_today_, _tmr_, _tomorrow_, _month_, _next month_\n' +
-        '\\(default is _today_\\)\n\n' +
-        'e\\.g\\. _bedok_ will display the hawker centres containing the keyword __bedok__ that are closed __today__\\.\n\n' +
+        'By default, the bot finds hawker centres containing your input keyword that are closed *today*\\.\n\n' +
+        'You can modify the search timeframe by adding one of these supported timeframes at the end:\n' +
+        '_today_, _tmr_, _tomorrow_, _month_, _next month_\n\n' +
+        'e\\.g\\. _bedok month_ will display the hawker centres containing the keyword __bedok__ that are closed __this month__\\.\n\n' +
+        'You can also search *by timeframe* alone\\.\n\n' +
+        'e\\.g\\. _tomorrow_ will display all hawker centres that are closed __tomorrow__\\.\n\n' +
         '\u{1F31F} *Favourites*\n\n' +
         'You can manage your favourite hawker centres via the /fav and /del commands\\.\n\n' +
         'Typing /list will show you all your favourites as well as their next closure dates, making for an even easier way for you to check on their closure status\\!\n\n' +

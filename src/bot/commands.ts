@@ -122,9 +122,7 @@ export function makeCommandMessage(s: string): string | undefined {
         t('general.command-help.explanation.search-section.fourth') +
         t('general.command-help.explanation.search-section.fifth') +
         t('general.command-help.explanation.search-section.sixth') +
-        t('general.command-help.explanation.search-section.seventh', {
-          example: makeRandomSearchExample(),
-        }) +
+        t('general.command-help.explanation.search-section.seventh') +
         t('general.command-help.explanation.favourites-section.first', {
           emoji: '\u{1F31F}',
         }) +
@@ -178,37 +176,11 @@ function formatEndpointForDisplay(endpoint: string) {
   return endpoint.replace(/_/g, '\\_');
 }
 
-const searchExamples = [
-  ['bedok', 'bedok', 'today'],
-  ['holland', 'holland', 'today'],
-  ['clementi today', 'clementi', 'today'],
-  ['redhill today', 'redhill', 'today'],
-  ['ang mo kio tmr', 'ang mo kio', 'tomorrow'],
-  ['tampines tmr', 'tampines', 'tomorrow'],
-  ['bukit merah tomorrow', 'bukit merah', 'tomorrow'],
-  ['whampoa tomorrow', 'whampoa', 'tomorrow'],
-  ['toa payoh month', 'toa payoh', 'this month'],
-  ['yishun month', 'yishun', 'this month'],
-  ['jurong next month', 'jurong', 'next month'],
-  ['telok next month', 'telok', 'next month'],
-];
-
-function makeRandomSearchExample(): string {
-  const searchExample =
-    searchExamples[generateRandomInt(0, searchExamples.length)];
-  const [searchTerm, keyword, modifier] = searchExample;
-
-  return t('search.example-format', {
-    searchTerm,
-    keyword,
-    modifier: t(`common.time.${modifier.replace(/\s/, '-')}`),
-  });
-}
-
 function makeRandomSearchKeywordExample(): string {
-  const searchExample =
-    searchExamples[generateRandomInt(0, searchExamples.length)];
-  return searchExample[1];
+  // prettier-ignore
+  const searchExamples = ['bedok', 'holland', 'clementi', 'redhill', 'ang mo kio', 'tampines', 'bukit merah', 'whampoa', 'toa payoh', 'yishun', 'jurong'];
+
+  return searchExamples[generateRandomInt(0, searchExamples.length)];
 }
 
 const feedbackExamples = [
