@@ -233,19 +233,14 @@ describe('Search module', () => {
       dateSpy.mockRestore();
     });
 
-    it('["pallet next"] returns a message stating that no hawker centres exist', async () => {
+    it('["pallet"/"pallet next"] returns a message stating that no hawker centres exist', async () => {
       const expectedMessage =
         'There are no hawker centres containing the keyword *pallet*\\. Please try again with another keyword\\.';
 
-      await callBot('pallet next');
+      await callBot('pallet');
       assertBotResponse(sendMessageSpy, expectedMessage);
-    });
 
-    it('["next"] executes normal search flow when "next" is the only word in the search query', async () => {
-      const expectedMessage =
-        'All good\\! No hawker centres containing the keyword *next* are undergoing cleaning today\\.';
-
-      await callBot('next');
+      await callBot('pallet next');
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 

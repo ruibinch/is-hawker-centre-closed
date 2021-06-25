@@ -6,6 +6,7 @@ export type SearchQuery = {
 
 export type SearchResponse = {
   params: SearchObject;
+  hasResults: boolean;
   closures: Closure[];
 };
 

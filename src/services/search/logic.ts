@@ -31,6 +31,14 @@ export async function processSearch(
 
   const closuresFilteredByKeyword = filterByKeyword(closuresAll, keyword);
 
+  if (closuresFilteredByKeyword.length === 0) {
+    return Ok({
+      params: searchParams,
+      hasResults: false,
+      closures: [],
+    });
+  }
+
   const closures = (() => {
     if (modifier === 'next') {
       const nextClosuresForEachHC = getNextClosuresForEachHC(
@@ -50,6 +58,7 @@ export async function processSearch(
 
   return Ok({
     params: searchParams,
+    hasResults: true,
     closures,
   });
 }

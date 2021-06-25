@@ -6,15 +6,22 @@ import { SearchModifier, SearchResponse } from './types';
 
 export function makeMessage(searchResponse: SearchResponse): string {
   const {
-    params: { modifier },
+    params: { modifier, keyword },
+    hasResults,
   } = searchResponse;
+  let reply;
 
-  const reply = (
-    isSearchModifierTimeBased(modifier)
-      ? makeMessageForTimeBasedModifier
-      : makeMessageForNonTimeBasedModifier
-  )(searchResponse);
-
+  if (!hasResults) {
+    reply = t('search.no-hawker-centres-exist', {
+      keyword: makeKeywordSnippet(keyword),
+    });
+  } else {
+    reply = (
+      isSearchModifierTimeBased(modifier)
+        ? makeMessageForTimeBasedModifier
+        : makeMessageForNonTimeBasedModifier
+    )(searchResponse);
+  }
   return reply;
 }
 
@@ -80,19 +87,12 @@ function makeMessageForNonTimeBasedModifier(
     params: { keyword },
     closures,
   } = searchResponse;
-  let reply = '';
 
-  if (closures.length === 0) {
-    reply = t('search.no-hawker-centres-exist', {
-      keyword: makeKeywordSnippet(keyword),
-    });
-  } else {
-    reply = t('search.hawker-centres-next-closure', {
-      keyword: makeKeywordSnippet(keyword),
-    });
+  let reply = t('search.hawker-centres-next-closure', {
+    keyword: makeKeywordSnippet(keyword),
+  });
 
-    reply += makeClosuresListOutput(closures);
-  }
+  reply += makeClosuresListOutput(closures);
 
   return reply;
 }
