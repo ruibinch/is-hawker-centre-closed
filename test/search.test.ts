@@ -151,6 +151,16 @@ describe('Search module', () => {
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
+    it('["melville next"] returns the next closure dates for hawker centres containing the keyword "melville"', async () => {
+      const expectedMessage =
+        'Here are the hawker centres containing the keyword *melville* and their next closure dates:\n\n' +
+        '*Melville City*\ntoday\n\n' +
+        '*Route 118 near Melville City*\n21\\-Jan to 24\\-Jan';
+
+      await callBot('melville next');
+      assertBotResponse(sendMessageSpy, expectedMessage);
+    });
+
     it('["Today"] returns all closures occurring today', async () => {
       const expectedMessage =
         'There are *3* hawker centres that are closed today:\n\n' +
@@ -221,6 +231,22 @@ describe('Search module', () => {
 
     afterAll(() => {
       dateSpy.mockRestore();
+    });
+
+    it('["pallet next"] returns a message stating that no hawker centres exist', async () => {
+      const expectedMessage =
+        'There are no hawker centres containing the keyword *pallet*\\. Please try again with another keyword\\.';
+
+      await callBot('pallet next');
+      assertBotResponse(sendMessageSpy, expectedMessage);
+    });
+
+    it('["next"] executes normal search flow when "next" is the only word in the search query', async () => {
+      const expectedMessage =
+        'All good\\! No hawker centres containing the keyword *next* are undergoing cleaning today\\.';
+
+      await callBot('next');
+      assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
     it('["Today"] returns no closures', async () => {

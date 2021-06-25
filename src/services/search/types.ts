@@ -9,7 +9,12 @@ export type SearchResponse = {
   closures: Closure[];
 };
 
-export type SearchModifier = 'today' | 'tomorrow' | 'month' | 'nextMonth';
+export type SearchModifier =
+  | 'today'
+  | 'tomorrow'
+  | 'month'
+  | 'nextMonth'
+  | 'next';
 
 export type ExtractSearchModifierResult = {
   modifier: SearchModifier;

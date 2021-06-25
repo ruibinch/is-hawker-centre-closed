@@ -3,7 +3,18 @@ import { Err, Ok, Result } from 'ts-results';
 import { ExtractSearchModifierResult, SearchModifier } from './types';
 
 // List of accepted search modifiers
-const SEARCH_MODIFIERS = ['today', 'month', 'next month', 'tmr', 'tomorrow'];
+const SEARCH_MODIFIERS = [
+  'today',
+  'month',
+  'next month',
+  'tmr',
+  'tomorrow',
+  '\\snext', // "next" cannot be a standalone modifier
+];
+
+export function isSearchModifierTimeBased(modifier: SearchModifier): boolean {
+  return modifier !== 'next';
+}
 
 export function extractSearchModifier(
   term: string,
@@ -38,6 +49,7 @@ function parseSearchModifier(s: string): SearchModifier | undefined {
     case 'today':
     case 'tomorrow':
     case 'month':
+    case 'next':
       return str;
     /* istanbul ignore next */
     default:

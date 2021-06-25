@@ -1,9 +1,26 @@
 import { t } from '../../lang';
-import { ClosureReason } from '../../models/Closure';
+import { Closure, ClosureReason } from '../../models/Closure';
 import { makeClosurePeriodSnippet } from '../message';
+import { isSearchModifierTimeBased } from './searchModifier';
 import { SearchModifier, SearchResponse } from './types';
 
 export function makeMessage(searchResponse: SearchResponse): string {
+  const {
+    params: { modifier },
+  } = searchResponse;
+
+  const reply = (
+    isSearchModifierTimeBased(modifier)
+      ? makeMessageForTimeBasedModifier
+      : makeMessageForNonTimeBasedModifier
+  )(searchResponse);
+
+  return reply;
+}
+
+function makeMessageForTimeBasedModifier(
+  searchResponse: SearchResponse,
+): string {
   const {
     params: { keyword, modifier },
     closures,
@@ -50,18 +67,31 @@ export function makeMessage(searchResponse: SearchResponse): string {
       );
     }
 
-    reply += closures
-      .map((closure) =>
-        t('common.hc-item', {
-          hcName: closure.name,
-          closurePeriod: makeClosurePeriodSnippet(
-            closure.startDate,
-            closure.endDate,
-          ),
-          closureReason: makeClosureReasonSnippet(closure.reason),
-        }),
-      )
-      .join('\n\n');
+    reply += makeClosuresListOutput(closures);
+  }
+
+  return reply;
+}
+
+function makeMessageForNonTimeBasedModifier(
+  searchResponse: SearchResponse,
+): string {
+  const {
+    params: { keyword },
+    closures,
+  } = searchResponse;
+  let reply = '';
+
+  if (closures.length === 0) {
+    reply = t('search.no-hawker-centres-exist', {
+      keyword: makeKeywordSnippet(keyword),
+    });
+  } else {
+    reply = t('search.hawker-centres-next-closure', {
+      keyword: makeKeywordSnippet(keyword),
+    });
+
+    reply += makeClosuresListOutput(closures);
   }
 
   return reply;
@@ -85,6 +115,21 @@ function makeTimePeriodSnippet(modifier: SearchModifier) {
     default:
       return '';
   }
+}
+
+function makeClosuresListOutput(closures: Closure[]) {
+  return closures
+    .map((closure) =>
+      t('common.hc-item', {
+        hcName: closure.name,
+        closurePeriod: makeClosurePeriodSnippet(
+          closure.startDate,
+          closure.endDate,
+        ),
+        closureReason: makeClosureReasonSnippet(closure.reason),
+      }),
+    )
+    .join('\n\n');
 }
 
 function makeClosureReasonSnippet(reason: ClosureReason) {
