@@ -49,10 +49,12 @@ describe('General module', () => {
         '\u{1F50D} *Search*\n\n' +
         'By default, the bot finds hawker centres containing your input keyword that are closed *today*\\.\n\n' +
         'You can modify the search timeframe by adding one of these supported timeframes at the end:\n' +
-        '_today_, _tmr_, _tomorrow_, _month_, _next month_\n\n' +
-        'e\\.g\\. _bedok month_ will display the hawker centres containing the keyword __bedok__ that are closed __this month__\\.\n\n' +
+        '_today_, _tmr_, _tomorrow_, _month_, _next month_, _next_\n\n' +
         'You can also search *by timeframe* alone\\.\n\n' +
-        'e\\.g\\. _tomorrow_ will display all hawker centres that are closed __tomorrow__\\.\n\n' +
+        'Examples:\n' +
+        '• "_bedok month_" will display the hawker centres containing the keyword __bedok__ that are closed __this month__\n' +
+        '• "_jurong next_" will display the hawker centres containing the keyword __jurong__ and their next closure dates\n' +
+        '• "_tomorrow_" will display all hawker centres that are closed __tomorrow__\n\n' +
         '\u{1F31F} *Favourites*\n\n' +
         'You can manage your favourite hawker centres via the /fav and /del commands\\.\n\n' +
         'Typing /list will show you all your favourites as well as their next closure dates, making for an even easier way for you to check on their closure status\\!\n\n' +

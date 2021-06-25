@@ -123,6 +123,8 @@ export function makeCommandMessage(s: string): string | undefined {
         t('general.command-help.explanation.search-section.fifth') +
         t('general.command-help.explanation.search-section.sixth') +
         t('general.command-help.explanation.search-section.seventh') +
+        t('general.command-help.explanation.search-section.eighth') +
+        t('general.command-help.explanation.search-section.ninth') +
         t('general.command-help.explanation.favourites-section.first', {
           emoji: '\u{1F31F}',
         }) +
