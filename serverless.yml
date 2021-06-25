@@ -36,6 +36,7 @@ provider:
   environment:
     TZ: Asia/Singapore
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+    STAGE: ${self:provider.stage}
     BOT_TOKEN: ${env:BOT_TOKEN_${self:provider.stage}}
   iam:
     role:
