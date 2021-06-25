@@ -10,6 +10,12 @@ import { Err, Ok, Result } from 'ts-results';
 import { CustomError } from '../../errors/CustomError';
 import { Closure, getAllClosures } from '../../models/Closure';
 import { currentDate, isWithinDateBounds } from '../../utils/date';
+import {
+  getNextOccurringClosure,
+  notEmpty,
+  sortInAlphabeticalOrder,
+  sortInDateAscThenAlphabeticalOrder,
+} from '../utils';
 import { extractSearchModifier } from './searchModifier';
 import { SearchModifier, SearchObject, SearchResponse } from './types';
 
@@ -25,14 +31,22 @@ export async function processSearch(
 
   const closuresFilteredByKeyword = filterByKeyword(closuresAll, keyword);
 
-  const closuresFilteredByKeywordAndDate = filterByDate(
-    closuresFilteredByKeyword,
-    modifier,
-  );
+  const closures = (() => {
+    if (modifier === 'next') {
+      const nextClosuresForEachHC = getNextClosuresForEachHC(
+        closuresFilteredByKeyword,
+      );
 
-  const closures = sortInDateAscThenAlphabeticalOrder(
-    closuresFilteredByKeywordAndDate,
-  );
+      return sortInAlphabeticalOrder(nextClosuresForEachHC);
+    }
+
+    const closuresFilteredByKeywordAndDate = filterByDate(
+      closuresFilteredByKeyword,
+      modifier,
+    );
+
+    return sortInDateAscThenAlphabeticalOrder(closuresFilteredByKeywordAndDate);
+  })();
 
   return Ok({
     params: searchParams,
@@ -119,24 +133,23 @@ function filterByDate(closures: Closure[], modifier: SearchModifier) {
 }
 
 /**
- * Sorting logic:
- * 1. By ascending order of start date, then
- * 2. By ascending order of end date, then
- * 3. Alphabetical order of hawker centre name
+ * Returns a list of upcoming closures for each hawker centre in the input closures list.
  */
-export function sortInDateAscThenAlphabeticalOrder(
-  closures: Closure[],
-): Closure[] {
-  return [...closures].sort((a, b) => {
-    const aStartDate = parseISO(a.startDate);
-    const aEndDate = parseISO(a.endDate);
-    const bStartDate = parseISO(b.startDate);
-    const bEndDate = parseISO(b.endDate);
+function getNextClosuresForEachHC(closures: Closure[]) {
+  const closuresByHC = closures.reduce(
+    (obj: Record<string, Closure[]>, closureEntry) => {
+      obj[closureEntry.hawkerCentreId] = [
+        ...(obj[closureEntry.hawkerCentreId] ?? []),
+        closureEntry,
+      ];
+      return obj;
+    },
+    {},
+  );
 
-    return (
-      aStartDate.getTime() - bStartDate.getTime() ||
-      aEndDate.getTime() - bEndDate.getTime() ||
-      a.name.localeCompare(b.name)
-    );
-  });
+  const nextClosuresForEachHC = Object.values(closuresByHC)
+    .map((closuresList) => getNextOccurringClosure(closuresList))
+    .filter(notEmpty);
+
+  return nextClosuresForEachHC;
 }

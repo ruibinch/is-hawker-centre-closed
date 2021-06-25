@@ -24,7 +24,10 @@ export async function sendMessage(props: {
     })
     .then((res) => res.data)
     .catch((error) => {
-      console.error('[bot > sender > sendMessage]', error.response.data);
+      console.error('[bot > sender > sendMessage]', {
+        telegramResponse: error.response.data,
+        message,
+      });
       return error.response.data;
     });
 
