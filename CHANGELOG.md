@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+## [0.5.0] - 2021-06-26
+
+### Added
+
+- Search by "next" modifier
+
+### Changed
+
+- Displayed a custom message when search keyword returns no results instead of searching on potentially gibberish keywords
+
 ## [0.4.1] - 2021-06-19
 
 ### Fixed
