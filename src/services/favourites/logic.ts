@@ -1,9 +1,9 @@
 /* eslint-disable max-len */
-import { endOfDay, formatISO, isPast, parseISO } from 'date-fns';
+import { formatISO } from 'date-fns';
 import { Err, Ok, Result } from 'ts-results';
 
 import { CustomError } from '../../errors/CustomError';
-import { Closure, getAllClosures } from '../../models/Closure';
+import { getAllClosures } from '../../models/Closure';
 import {
   getAllHawkerCentres,
   getHawkerCentreById,
@@ -20,7 +20,7 @@ import {
 } from '../../models/User';
 import { currentDate } from '../../utils/date';
 import { TelegramUser } from '../../utils/telegram';
-import { sortInDateAscThenAlphabeticalOrder } from '../search';
+import { getNextOccurringClosure } from '../utils';
 import {
   MAX_CHOICES,
   NOTIFICATION_OFF_KEYWORDS,
@@ -358,17 +358,4 @@ function filterByKeyword(
       );
     }),
   );
-}
-
-/**
- * Returns the closure entry that is the next to occur w.r.t. the current date (includes closures occurring today).
- */
-function getNextOccurringClosure(closures: Closure[]): Closure | undefined {
-  const closuresSorted = sortInDateAscThenAlphabeticalOrder(closures);
-
-  const closuresSortedAndFiltered = closuresSorted.filter(
-    (closure) => !isPast(endOfDay(parseISO(closure.endDate))),
-  );
-
-  return closuresSortedAndFiltered[0];
 }
