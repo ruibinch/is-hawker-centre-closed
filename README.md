@@ -20,10 +20,11 @@ An `.env` file with the following keys specified is required (the values for `AP
 BOT_TOKEN_dev=11111111:abcdefghijkl
 BOT_TOKEN_prod=22222222:abcdefghijkl
 
-# AWS
+# Environment
 REGION=eu-central-1
 APIG_DEV=12345678
 APIG_PROD=87654321
+SENTRY_DSN=https://xxxxx@yyy.ingest.sentry.io/zzz # optional
 
 # DynamoDB table names
 TABLE_CLOSURES=ihcc-closures
