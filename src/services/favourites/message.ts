@@ -1,7 +1,7 @@
 import { t } from '../../lang';
 import { ClosurePartial } from '../../models/Closure';
 import { HawkerCentre } from '../../models/HawkerCentre';
-import { makeClosurePeriodSnippet } from '../message';
+import { makeClosurePeriodSnippet, makeClosureReasonSnippet } from '../message';
 import { MAX_CHOICES } from './constants';
 
 export function makeAddHCMessage(props: {
@@ -78,12 +78,7 @@ export function makeFavouritesListMessage(
           startDate && endDate
             ? t('favourites.item.closure-details', {
                 closurePeriod: makeClosurePeriodSnippet(startDate, endDate),
-                closureReason:
-                  reason === 'others'
-                    ? t('favourites.item.closure-reason', {
-                        reason: t('common.closure-reason.others'),
-                      })
-                    : '',
+                closureReason: makeClosureReasonSnippet(reason),
               })
             : '',
       });

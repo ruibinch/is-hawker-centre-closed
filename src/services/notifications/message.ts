@@ -1,6 +1,6 @@
 import { t } from '../../lang';
-import { ClosureReason, Closure } from '../../models/Closure';
-import { makeClosurePeriodSnippet } from '../message';
+import { Closure } from '../../models/Closure';
+import { makeClosurePeriodSnippet, makeClosureReasonSnippet } from '../message';
 
 export function makeNotificationMessage(closures: Closure[]): string {
   let reply = t(
@@ -26,15 +26,4 @@ export function makeNotificationMessage(closures: Closure[]): string {
 
   reply += closuresInText.join('\n\n');
   return reply;
-}
-
-function makeClosureReasonSnippet(reason: ClosureReason) {
-  switch (reason) {
-    case 'others':
-      return t('notifications.snippet.closure-reason', {
-        reason: t('common.closure-reason.others'),
-      });
-    default:
-      return '';
-  }
 }

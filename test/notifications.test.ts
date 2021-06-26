@@ -59,9 +59,9 @@ describe('Notifications module', () => {
   it('sends a notification to users in their preferred language with a favourite hawker centre that is closed today', async () => {
     const expectedMessages = [
       '\u{1F4A1} Heads up\\! 1 of your favourite hawker centres will be closed today\\.\n\n' +
-        '*Verdanturf Town*\ntoday to tomorrow',
+        '*Verdanturf Town*\n\\(today to tomorrow\\)',
       '\u{1F4A1} 注意！今天有1个您喜爱的小贩中心关闭。\n\n' +
-        '*Melville City*\n2月1日至2月28日 _（其他工程）_',
+        '*Melville City*\n（2月1日至2月28日; 其他工程）',
     ];
 
     await callNotifications();

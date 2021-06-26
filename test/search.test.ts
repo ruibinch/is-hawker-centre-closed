@@ -64,7 +64,7 @@ describe('Search module', () => {
     it('["littleroot"] returns a single closure occurring today', async () => {
       const expectedMessage =
         'Here are the hawker centres containing the keyword *littleroot* that are closed today:\n\n' +
-        '*Littleroot Town*\ntoday to tomorrow';
+        '*Littleroot Town*\n\\(today to tomorrow\\)';
 
       await callBot('littleroot');
       assertBotResponse(sendMessageSpy, expectedMessage);
@@ -73,7 +73,7 @@ describe('Search module', () => {
     it('["littleroot today"] returns a single closure occurring today', async () => {
       const expectedMessage =
         'Here are the hawker centres containing the keyword *littleroot* that are closed today:\n\n' +
-        '*Littleroot Town*\ntoday to tomorrow';
+        '*Littleroot Town*\n\\(today to tomorrow\\)';
 
       await callBot('littleroot today');
       assertBotResponse(sendMessageSpy, expectedMessage);
@@ -90,7 +90,7 @@ describe('Search module', () => {
     it('["slateport tmr"] returns all closures occurring tomorrow', async () => {
       const expectedMessage =
         'Here are the hawker centres containing the keyword *slateport* that will be closed tomorrow:\n\n' +
-        '*Slateport City*\ntomorrow';
+        '*Slateport City*\n\\(tomorrow\\)';
 
       await callBot('slateport tmr');
       assertBotResponse(sendMessageSpy, expectedMessage);
@@ -99,7 +99,7 @@ describe('Search module', () => {
     it('["slateport tomorrow"] returns all closures occurring tomorrow', async () => {
       const expectedMessage =
         'Here are the hawker centres containing the keyword *slateport* that will be closed tomorrow:\n\n' +
-        '*Slateport City*\ntomorrow';
+        '*Slateport City*\n\\(tomorrow\\)';
 
       await callBot('slateport tomorrow');
       assertBotResponse(sendMessageSpy, expectedMessage);
@@ -108,8 +108,8 @@ describe('Search module', () => {
     it('["oldale month"] returns closures occurring in the current month', async () => {
       const expectedMessage =
         'Here are the hawker centres containing the keyword *oldale* that are closed this month:\n\n' +
-        '*Oldale Town*\n15\\-Jan to 18\\-Jan\n\n' +
-        '*Oldale Town*\n30\\-Jan to 31\\-Jan';
+        '*Oldale Town*\n\\(15\\-Jan to 18\\-Jan\\)\n\n' +
+        '*Oldale Town*\n\\(30\\-Jan to 31\\-Jan\\)';
 
       await callBot('oldale month');
       assertBotResponse(sendMessageSpy, expectedMessage);
@@ -118,7 +118,7 @@ describe('Search module', () => {
     it('["melville 118 month"] searches across multiple words', async () => {
       const expectedMessage =
         'Here are the hawker centres containing the keyword *melville 118* that are closed this month:\n\n' +
-        '*Route 118 near Melville City*\n21\\-Jan to 24\\-Jan';
+        '*Route 118 near Melville City*\n\\(21\\-Jan to 24\\-Jan\\)';
 
       await callBot('melville 118 month');
       assertBotResponse(sendMessageSpy, expectedMessage);
@@ -127,7 +127,7 @@ describe('Search module', () => {
     it('["psychic month"] searches on secondary name', async () => {
       const expectedMessage =
         'Here are the hawker centres containing the keyword *psychic* that are closed this month:\n\n' +
-        '*Mossdeep Gym*\n05\\-Jan';
+        '*Mossdeep Gym*\n\\(05\\-Jan\\)';
 
       await callBot('psychic month');
       assertBotResponse(sendMessageSpy, expectedMessage);
@@ -136,7 +136,7 @@ describe('Search module', () => {
     it('["verdanturf next month"] returns closures occurring in the next month', async () => {
       const expectedMessage =
         'Here are the hawker centres containing the keyword *verdanturf* that will be closed next month:\n\n' +
-        '*Verdanturf Town*\n08\\-Feb to 09\\-Feb';
+        '*Verdanturf Town*\n\\(08\\-Feb to 09\\-Feb\\)';
 
       await callBot('verdanturf next month');
       assertBotResponse(sendMessageSpy, expectedMessage);
@@ -145,7 +145,7 @@ describe('Search module', () => {
     it('["melville next month"] returns closures occurring in the next month with the other works suffix', async () => {
       const expectedMessage =
         'Here are the hawker centres containing the keyword *melville* that will be closed next month:\n\n' +
-        '*Melville City*\n01\\-Feb to 28\\-Feb _\\(other works\\)_';
+        '*Melville City*\n\\(01\\-Feb to 28\\-Feb; other works\\)';
 
       await callBot('melville next month');
       assertBotResponse(sendMessageSpy, expectedMessage);
@@ -154,8 +154,8 @@ describe('Search module', () => {
     it('["melville next"] returns the next closure dates for hawker centres containing the keyword "melville"', async () => {
       const expectedMessage =
         'Here are the hawker centres containing the keyword *melville* and their next closure dates:\n\n' +
-        '*Melville City*\ntoday\n\n' +
-        '*Route 118 near Melville City*\n21\\-Jan to 24\\-Jan';
+        '*Melville City*\n\\(today\\)\n\n' +
+        '*Route 118 near Melville City*\n\\(21\\-Jan to 24\\-Jan\\)';
 
       await callBot('melville next');
       assertBotResponse(sendMessageSpy, expectedMessage);
@@ -164,9 +164,9 @@ describe('Search module', () => {
     it('["Today"] returns all closures occurring today', async () => {
       const expectedMessage =
         'There are *3* hawker centres that are closed today:\n\n' +
-        '*Devon Corporation*\n01\\-Nov to 30\\-Apr _\\(other works\\)_\n\n' +
-        '*Melville City*\ntoday\n\n' +
-        '*Littleroot Town*\ntoday to tomorrow';
+        '*Devon Corporation*\n\\(01\\-Nov to 30\\-Apr; other works\\)\n\n' +
+        '*Melville City*\n\\(today\\)\n\n' +
+        '*Littleroot Town*\n\\(today to tomorrow\\)';
 
       await callBot('Today');
       assertBotResponse(sendMessageSpy, expectedMessage);
@@ -175,9 +175,9 @@ describe('Search module', () => {
     it('["Tmr"] returns all closures occurring tomorrow', async () => {
       const expectedMessage =
         'There are *3* hawker centres that will be closed tomorrow:\n\n' +
-        '*Devon Corporation*\n01\\-Nov to 30\\-Apr _\\(other works\\)_\n\n' +
-        '*Littleroot Town*\ntoday to tomorrow\n\n' +
-        '*Slateport City*\ntomorrow';
+        '*Devon Corporation*\n\\(01\\-Nov to 30\\-Apr; other works\\)\n\n' +
+        '*Littleroot Town*\n\\(today to tomorrow\\)\n\n' +
+        '*Slateport City*\n\\(tomorrow\\)';
 
       await callBot('Tmr');
       assertBotResponse(sendMessageSpy, expectedMessage);
@@ -186,9 +186,9 @@ describe('Search module', () => {
     it('["Tomorrow"] returns all closures occurring tomorrow', async () => {
       const expectedMessage =
         'There are *3* hawker centres that will be closed tomorrow:\n\n' +
-        '*Devon Corporation*\n01\\-Nov to 30\\-Apr _\\(other works\\)_\n\n' +
-        '*Littleroot Town*\ntoday to tomorrow\n\n' +
-        '*Slateport City*\ntomorrow';
+        '*Devon Corporation*\n\\(01\\-Nov to 30\\-Apr; other works\\)\n\n' +
+        '*Littleroot Town*\n\\(today to tomorrow\\)\n\n' +
+        '*Slateport City*\n\\(tomorrow\\)';
 
       await callBot('Tomorrow');
       assertBotResponse(sendMessageSpy, expectedMessage);
@@ -197,14 +197,14 @@ describe('Search module', () => {
     it('["Month"] returns all closures occurring in the current month', async () => {
       const expectedMessage =
         'There are *8* hawker centres that are closed this month:\n\n' +
-        '*Devon Corporation*\n01\\-Nov to 30\\-Apr _\\(other works\\)_\n\n' +
-        '*Melville City*\ntoday\n\n' +
-        '*Littleroot Town*\ntoday to tomorrow\n\n' +
-        '*Slateport City*\ntomorrow\n\n' +
-        '*Mossdeep Gym*\n05\\-Jan\n\n' +
-        '*Oldale Town*\n15\\-Jan to 18\\-Jan\n\n' +
-        '*Route 118 near Melville City*\n21\\-Jan to 24\\-Jan\n\n' +
-        '*Oldale Town*\n30\\-Jan to 31\\-Jan';
+        '*Devon Corporation*\n\\(01\\-Nov to 30\\-Apr; other works\\)\n\n' +
+        '*Melville City*\n\\(today\\)\n\n' +
+        '*Littleroot Town*\n\\(today to tomorrow\\)\n\n' +
+        '*Slateport City*\n\\(tomorrow\\)\n\n' +
+        '*Mossdeep Gym*\n\\(05\\-Jan\\)\n\n' +
+        '*Oldale Town*\n\\(15\\-Jan to 18\\-Jan\\)\n\n' +
+        '*Route 118 near Melville City*\n\\(21\\-Jan to 24\\-Jan\\)\n\n' +
+        '*Oldale Town*\n\\(30\\-Jan to 31\\-Jan\\)';
 
       await callBot('Month');
       assertBotResponse(sendMessageSpy, expectedMessage);
@@ -213,9 +213,9 @@ describe('Search module', () => {
     it('["Next month"] returns all closures occurring in the next month', async () => {
       const expectedMessage =
         'There are *3* hawker centres that will be closed next month:\n\n' +
-        '*Melville City*\n01\\-Feb to 28\\-Feb _\\(other works\\)_\n\n' +
-        '*Rustboro City*\n02\\-Feb to 05\\-Feb\n\n' +
-        '*Verdanturf Town*\n08\\-Feb to 09\\-Feb';
+        '*Melville City*\n\\(01\\-Feb to 28\\-Feb; other works\\)\n\n' +
+        '*Rustboro City*\n\\(02\\-Feb to 05\\-Feb\\)\n\n' +
+        '*Verdanturf Town*\n\\(08\\-Feb to 09\\-Feb\\)';
 
       await callBot('Next month');
       assertBotResponse(sendMessageSpy, expectedMessage);

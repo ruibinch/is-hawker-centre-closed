@@ -1,4 +1,5 @@
 import { t } from '../lang';
+import { ClosureReason } from '../models/Closure';
 import { formatDateDisplay } from '../utils/date';
 
 export function makeGenericErrorMessage(): string {
@@ -17,4 +18,17 @@ export function makeClosurePeriodSnippet(
     startDate: formatDateDisplay(startDate, true),
     endDate: formatDateDisplay(endDate, true),
   });
+}
+
+export function makeClosureReasonSnippet(
+  reason: ClosureReason | undefined,
+): string {
+  switch (reason) {
+    case 'others':
+      return t('common.hc-item.closure-reason', {
+        reason: t('common.closure-reason.others'),
+      });
+    default:
+      return '';
+  }
 }

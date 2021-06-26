@@ -1,6 +1,6 @@
 import { t } from '../../lang';
 import { Closure, ClosureReason } from '../../models/Closure';
-import { makeClosurePeriodSnippet } from '../message';
+import { makeClosurePeriodSnippet, makeClosureReasonSnippet } from '../message';
 import { isSearchModifierTimeBased } from './searchModifier';
 import { SearchModifier, SearchResponse } from './types';
 
@@ -130,17 +130,6 @@ function makeClosuresListOutput(closures: Closure[]) {
       }),
     )
     .join('\n\n');
-}
-
-function makeClosureReasonSnippet(reason: ClosureReason) {
-  switch (reason) {
-    case 'others':
-      return t('search.snippet.closure-reason', {
-        reason: t('common.closure-reason.others'),
-      });
-    default:
-      return '';
-  }
 }
 
 function isSearchModifierInFuture(modifier: SearchModifier) {
