@@ -1,4 +1,10 @@
-import { APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
+import * as Sentry from '@sentry/serverless';
+import {
+  APIGatewayProxyEvent,
+  APIGatewayProxyHandler,
+  APIGatewayProxyResult,
+} from 'aws-lambda';
+import dotenv from 'dotenv';
 
 import { makeCallbackWrapper } from '../aws/lambda';
 import { AWSError } from '../errors/AWSError';
@@ -20,105 +26,115 @@ import { isCommand, isCommandInModule, makeCommandMessage } from './commands';
 import { sendMessage, sendMessageWithChoices } from './sender';
 import { validateInputMessage } from './utils';
 
-export const bot: APIGatewayProxyHandler = async (
-  event,
-  _context,
-  callback,
-): Promise<APIGatewayProxyResult> => {
-  const callbackWrapper = makeCallbackWrapper(callback);
-  if (!validateToken(event.queryStringParameters)) {
-    return callbackWrapper(403);
-  }
+dotenv.config();
 
-  if (!event.body) {
-    return callbackWrapper(400);
-  }
+Sentry.AWSLambda.init({
+  dsn: process.env.SENTRY_DSN,
+  tracesSampleRate: 1.0, // sends 100% of errors to Sentry
+});
 
-  const reqBody = JSON.parse(event.body);
-  const inputMessage = reqBody.message as TelegramMessage;
-  const {
-    from: telegramUser,
-    chat: { id: chatId },
-  } = inputMessage;
-
-  // this try-catch loop will catch all the errors that have bubbled up from the child functions
-  try {
-    const { languageCode } = await getUserLanguageCode(telegramUser);
-    initDictionary(languageCode);
-
-    const validationResponse = validateInputMessage(inputMessage);
-
-    if (validationResponse.err) {
-      const { errorMessage } = validationResponse.val;
-      await sendMessage({ chatId, message: errorMessage });
-      return callbackWrapper(204);
+export const bot = Sentry.AWSLambda.wrapHandler(
+  async (
+    event: APIGatewayProxyEvent,
+    _context,
+    callback,
+  ): Promise<APIGatewayProxyResult> => {
+    const callbackWrapper = makeCallbackWrapper(callback);
+    if (!validateToken(event.queryStringParameters)) {
+      return callbackWrapper(403);
     }
 
-    const { textSanitised } = validationResponse.val;
+    if (!event.body) {
+      return callbackWrapper(400);
+    }
 
-    if (isCommand(textSanitised)) {
-      const commandMessage = makeCommandMessage(textSanitised);
-      if (commandMessage) {
-        await sendMessage({ chatId, message: commandMessage });
+    const reqBody = JSON.parse(event.body);
+    const inputMessage = reqBody.message as TelegramMessage;
+    const {
+      from: telegramUser,
+      chat: { id: chatId },
+    } = inputMessage;
+
+    // this try-catch loop will catch all the errors that have bubbled up from the child functions
+    try {
+      const { languageCode } = await getUserLanguageCode(telegramUser);
+      initDictionary(languageCode);
+
+      const validationResponse = validateInputMessage(inputMessage);
+
+      if (validationResponse.err) {
+        const { errorMessage } = validationResponse.val;
+        await sendMessage({ chatId, message: errorMessage });
         return callbackWrapper(204);
       }
+
+      const { textSanitised } = validationResponse.val;
+
+      if (isCommand(textSanitised)) {
+        const commandMessage = makeCommandMessage(textSanitised);
+        if (commandMessage) {
+          await sendMessage({ chatId, message: commandMessage });
+          return callbackWrapper(204);
+        }
+      }
+
+      const makeExecutionFn = (_textSanitised: string) => {
+        if (isCommandInModule(_textSanitised, 'favourites')) {
+          return manageFavourites;
+        }
+        if (isCommandInModule(_textSanitised, 'language')) {
+          return manageLanguage;
+        }
+        if (isCommandInModule(_textSanitised, 'feedback')) {
+          return manageFeedback;
+        }
+
+        return runSearch;
+      };
+
+      let botResponse: BotResponse | undefined;
+
+      // eslint-disable-next-line max-len
+      // must always first check if the user is in favourites mode so that isInFavouritesMode can be toggled back to false if applicable
+      const maybeHandleFavouriteSelectionResult =
+        await maybeHandleFavouriteSelection(textSanitised, telegramUser);
+
+      if (maybeHandleFavouriteSelectionResult.ok) {
+        botResponse = maybeHandleFavouriteSelectionResult.val;
+      } else {
+        // If favourites flow is not applicable, perform customary handling
+        const executionFn = makeExecutionFn(textSanitised);
+        const executionFnResponse = await executionFn(
+          textSanitised,
+          telegramUser,
+        );
+
+        if (executionFnResponse.ok) {
+          botResponse = executionFnResponse.val;
+        } else if (executionFnResponse.val instanceof AWSError) {
+          throw executionFnResponse.val;
+        }
+      }
+
+      if (!botResponse) throw new ServiceError();
+      const { message, choices } = botResponse;
+
+      if (choices) {
+        await sendMessageWithChoices({ chatId, message, choices });
+      } else {
+        await sendMessage({ chatId, message });
+      }
+
+      return callbackWrapper(204);
+    } catch (error) {
+      console.error('[bot > handler]', error);
+      sendMessage({ chatId, message: makeGenericErrorMessage() });
+
+      Sentry.captureException(error);
+      return callbackWrapper(204);
     }
-
-    const makeExecutionFn = (_textSanitised: string) => {
-      if (isCommandInModule(_textSanitised, 'favourites')) {
-        return manageFavourites;
-      }
-      if (isCommandInModule(_textSanitised, 'language')) {
-        return manageLanguage;
-      }
-      if (isCommandInModule(_textSanitised, 'feedback')) {
-        return manageFeedback;
-      }
-
-      return runSearch;
-    };
-
-    let botResponse: BotResponse | undefined;
-
-    // eslint-disable-next-line max-len
-    // must always first check if the user is in favourites mode so that isInFavouritesMode can be toggled back to false if applicable
-    const maybeHandleFavouriteSelectionResult =
-      await maybeHandleFavouriteSelection(textSanitised, telegramUser);
-
-    if (maybeHandleFavouriteSelectionResult.ok) {
-      botResponse = maybeHandleFavouriteSelectionResult.val;
-    } else {
-      // If favourites flow is not applicable, perform customary handling
-      const executionFn = makeExecutionFn(textSanitised);
-      const executionFnResponse = await executionFn(
-        textSanitised,
-        telegramUser,
-      );
-
-      if (executionFnResponse.ok) {
-        botResponse = executionFnResponse.val;
-      } else if (executionFnResponse.val instanceof AWSError) {
-        throw executionFnResponse.val;
-      }
-    }
-
-    if (!botResponse) throw new ServiceError();
-    const { message, choices } = botResponse;
-
-    if (choices) {
-      await sendMessageWithChoices({ chatId, message, choices });
-    } else {
-      await sendMessage({ chatId, message });
-    }
-
-    return callbackWrapper(204);
-  } catch (error) {
-    // TODO: improve error handling based on error type (Sentry?)
-    console.error('[bot > handler]', error);
-    sendMessage({ chatId, message: makeGenericErrorMessage() });
-    return callbackWrapper(400);
-  }
-};
+  },
+);
 
 export const notifications: APIGatewayProxyHandler = async (
   _event,
