@@ -3,7 +3,17 @@ import { Stage } from './types';
 export * from './types';
 
 export function getStage(): Stage {
-  return process.env.NODE_ENV === 'production' && process.env.STAGE === 'prod'
-    ? 'prod'
-    : 'dev';
+  const stageFromEnv = process.env.STAGE;
+  if (stageFromEnv !== undefined) {
+    if (!isStage(stageFromEnv)) {
+      throw new Error(`Invalid STAGE value: ${stageFromEnv}`);
+    }
+    return stageFromEnv;
+  }
+
+  return process.env.NODE_ENV === 'production' ? 'prod' : 'dev';
+}
+
+function isStage(s: string): s is Stage {
+  return s === 'dev' || s === 'prod';
 }
