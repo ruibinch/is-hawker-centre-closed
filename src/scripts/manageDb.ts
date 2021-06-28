@@ -79,7 +79,7 @@ async function resetTables() {
   }
 
   const numEntriesInClosuresTable = getAllClosuresResponse.val.length;
-  const numEntriesInHCTable = getAllClosuresResponse.val.length;
+  const numEntriesInHCTable = getAllHCResponse.val.length;
 
   const closuresTableDeleteOutput = await dynamoDb
     .deleteTable({
