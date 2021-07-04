@@ -1,4 +1,8 @@
-import { APIGatewayProxyEvent, Context } from 'aws-lambda';
+import {
+  APIGatewayProxyEvent,
+  APIGatewayProxyResult,
+  Context,
+} from 'aws-lambda';
 import { Err } from 'ts-results';
 
 import { bot } from '../src/bot/handler';
@@ -174,7 +178,8 @@ describe('Validation module', () => {
 
       expect(result).toBeDefined();
       if (result) {
-        expect(result.statusCode).toStrictEqual(403);
+        // type assertion required as Sentry.wrapHandler prevents the return result from being correctly inferred
+        expect((result as APIGatewayProxyResult).statusCode).toStrictEqual(403);
       }
     });
 
@@ -189,7 +194,8 @@ describe('Validation module', () => {
 
       expect(result).toBeDefined();
       if (result) {
-        expect(result.statusCode).toStrictEqual(400);
+        // type assertion required as Sentry.wrapHandler prevents the return result from being correctly inferred
+        expect((result as APIGatewayProxyResult).statusCode).toStrictEqual(400);
       }
     });
   });
