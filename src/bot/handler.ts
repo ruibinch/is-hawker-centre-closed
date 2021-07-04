@@ -127,10 +127,12 @@ export const bot = Sentry.AWSLambda.wrapHandler(
 
       return callbackWrapper(204);
     } catch (error) {
-      console.error('[bot > handler]', error);
-      sendMessage({ chatId, message: makeGenericErrorMessage() });
+      if (process.env.NODE_ENV !== 'test') {
+        console.error('[bot > handler]', error);
+        Sentry.captureException(error);
+      }
 
-      Sentry.captureException(error);
+      sendMessage({ chatId, message: makeGenericErrorMessage() });
       return callbackWrapper(204);
     }
   },
