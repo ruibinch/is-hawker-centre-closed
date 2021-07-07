@@ -28,6 +28,8 @@
     "run:db:prod:seed": "NODE_ENV=production yarn run:db:dev:seed",
     "run:backup:dev": "ts-node src/scripts/runBackup.ts",
     "run:backup:prod": "NODE_ENV=production yarn run:backup:dev",
+    "run:restore:dev": "ts-node src/scripts/runRestore.ts",
+    "run:restore:prod": "NODE_ENV=production yarn run:restore:dev",
     "run:print-commands": "ts-node src/scripts/printCommands.ts",
     "run:test-api": "ts-node src/scripts/testApi.ts",
     "lint": "eslint . --ext .ts",
