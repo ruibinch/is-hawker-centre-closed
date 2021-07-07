@@ -1,12 +1,13 @@
 import * as AWS from 'aws-sdk';
 
 import { initAWSConfig, TABLE_FEEDBACK, TABLE_USERS } from '../aws/config';
+import { getStage } from '../utils';
 import { currentDateInYYYYMMDD } from '../utils/date';
 
 initAWSConfig();
 const dynamoDb = new AWS.DynamoDB();
 
-const tablesToBackup = [TABLE_USERS, TABLE_FEEDBACK];
+const TABLES_TO_BACKUP = [TABLE_USERS, TABLE_FEEDBACK];
 
 async function clearBackups() {
   const backupsList = await dynamoDb.listBackups().promise();
@@ -42,13 +43,15 @@ async function clearBackups() {
     });
 }
 
-async function createBackup() {
+async function createBackups() {
+  const stage = getStage();
+
   await Promise.all(
-    tablesToBackup.map((tableName) =>
+    TABLES_TO_BACKUP.map((tableName) =>
       dynamoDb
         .createBackup({
           BackupName: `${tableName}-${currentDateInYYYYMMDD()}`,
-          TableName: `${tableName}-prod`,
+          TableName: `${tableName}-${stage}`,
         })
         .promise(),
     ),
@@ -57,4 +60,4 @@ async function createBackup() {
   });
 }
 
-clearBackups().then(() => createBackup());
+clearBackups().then(() => createBackups());
