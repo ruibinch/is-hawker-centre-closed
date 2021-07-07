@@ -2,6 +2,10 @@ import { Stage } from './types';
 
 export * from './types';
 
+export async function sleep(durationInMs: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, durationInMs));
+}
+
 export function getStage(): Stage {
   const stageFromEnv = process.env.STAGE;
   if (stageFromEnv !== undefined) {

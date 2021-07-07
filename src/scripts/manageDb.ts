@@ -5,6 +5,7 @@ import { getAllClosures, ClosureObject } from '../models/Closure';
 import { Feedback } from '../models/Feedback';
 import { getAllHawkerCentres, HawkerCentre } from '../models/HawkerCentre';
 import { User } from '../models/User';
+import { sleep } from '../utils';
 
 const args = process.argv.slice(2);
 const [operation] = args;
@@ -110,7 +111,7 @@ async function resetTables() {
   );
 
   // sleep for 2 secs for deletion process to propagate else creation will throw an error
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+  await sleep(2000);
 
   const closuresTableCreateOutput = await dynamoDb
     .createTable(ClosureObject.getSchema())
