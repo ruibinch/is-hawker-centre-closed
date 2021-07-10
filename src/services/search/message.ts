@@ -1,5 +1,5 @@
 import { t } from '../../lang';
-import { Closure, ClosureReason } from '../../models/Closure';
+import { Closure } from '../../models/Closure';
 import { makeClosurePeriodSnippet, makeClosureReasonSnippet } from '../message';
 import { isSearchModifierTimeBased } from './searchModifier';
 import { SearchModifier, SearchResponse } from './types';
@@ -9,7 +9,7 @@ export function makeMessage(searchResponse: SearchResponse): string {
     params: { modifier, keyword },
     hasResults,
   } = searchResponse;
-  let reply;
+  let reply: string;
 
   if (!hasResults) {
     reply = t('search.no-hawker-centres-exist', {

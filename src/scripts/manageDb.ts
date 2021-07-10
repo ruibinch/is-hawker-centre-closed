@@ -136,7 +136,6 @@ async function resetTables() {
 }
 
 async function run() {
-  console.log(`Selected AWS region: ${AWS.config.region}\n`);
   if (operation === 'create') {
     await createTables();
   } else if (operation === 'delete') {
