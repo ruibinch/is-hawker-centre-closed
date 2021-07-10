@@ -13,12 +13,12 @@ export async function addFeedback(props: {
     telegramUser: { id: userId, username },
   } = props;
 
-  const feedback: Feedback = {
+  const feedback = Feedback.create({
     feedbackId: `${userId}-${currentDate().getTime()}`,
     userId,
     username,
     text,
-  };
+  });
 
   await addFeedbackToDB(feedback);
   return Ok.EMPTY;

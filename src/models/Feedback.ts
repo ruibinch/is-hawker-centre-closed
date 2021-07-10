@@ -32,6 +32,10 @@ export class Feedback {
     this.text = props.text;
   }
 
+  static create(props: FeedbackProps): Feedback {
+    return new Feedback(props);
+  }
+
   static getTableName(): string {
     return `${TABLE_FEEDBACK}-${getStage()}`;
   }
