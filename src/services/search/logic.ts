@@ -9,10 +9,10 @@ import { Err, Ok, Result } from 'ts-results';
 
 import { CustomError } from '../../errors/CustomError';
 import { Closure, getAllClosures } from '../../models/Closure';
+import { notEmpty } from '../../utils';
 import { currentDate, isWithinDateBounds } from '../../utils/date';
 import {
   getNextOccurringClosure,
-  notEmpty,
   sortInAlphabeticalOrder,
   sortInDateAscThenAlphabeticalOrder,
 } from '../utils';
