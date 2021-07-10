@@ -1,23 +1,43 @@
 import * as AWS from 'aws-sdk';
 
 import { initAWSConfig, TABLE_FEEDBACK, TABLE_USERS } from '../aws/config';
-import { getStage } from '../utils';
-import { currentDateInYYYYMMDD } from '../utils/date';
+import { sendDiscordMessage } from '../ext/discord';
+import { getStage, notEmpty } from '../utils';
+import { currentDateInYYYYMMDD, formatDateWithTime } from '../utils/date';
 
 initAWSConfig();
 const dynamoDb = new AWS.DynamoDB();
+const stage = getStage();
 
 const TABLES_TO_BACKUP = [TABLE_USERS, TABLE_FEEDBACK];
 
-async function clearBackups() {
+function getTablesToBackup() {
+  return TABLES_TO_BACKUP.map((tableName) => `${tableName}-${stage}`);
+}
+
+function generateBackupDetailsOutput(
+  backupDetails: AWS.DynamoDB.BackupDetails,
+) {
+  const { BackupName, BackupSizeBytes, BackupCreationDateTime } = backupDetails;
+
+  return `${BackupName} (${
+    BackupSizeBytes ?? 'unknown'
+  } bytes; created at ${formatDateWithTime(BackupCreationDateTime)})`;
+}
+
+async function deleteBackups() {
   const backupsList = await dynamoDb.listBackups().promise();
   if (!backupsList.BackupSummaries) {
-    throw new Error('Unable to view list of backups');
+    await sendDiscordMessage(
+      'BACKUP DELETION UNSUCCESSFUL\n\nUnable to view list of backups',
+    );
+    return;
   }
 
+  // TODO: keep last 3 backups instead of deleting all
   const backupsARN = backupsList.BackupSummaries.reduce(
     (arr: string[], summary) => {
-      if (summary.BackupArn) {
+      if (summary.BackupArn && summary.TableName?.endsWith(stage)) {
         arr.push(summary.BackupArn);
       }
       return arr;
@@ -25,7 +45,7 @@ async function clearBackups() {
     [],
   );
 
-  await Promise.all(
+  const responses = await Promise.all(
     backupsARN.map((backupARN) =>
       dynamoDb
         .deleteBackup({
@@ -33,31 +53,57 @@ async function clearBackups() {
         })
         .promise(),
     ),
-  )
-    .then((response) => {
-      console.log('Backups deleted:', JSON.stringify(response, null, 4));
+  );
+
+  const responsesOutput = responses
+    .map((response, idx) => {
+      const backupDetails = response.BackupDescription?.BackupDetails;
+      return backupDetails
+        ? `${idx + 1}. ${generateBackupDetailsOutput(backupDetails)}`
+        : undefined;
     })
-    .catch((error) => {
-      console.log(error);
-      throw new Error('Error encountered when deleting backups');
-    });
+    .filter(notEmpty);
+
+  await sendDiscordMessage(
+    `BACKUPS DELETED\n\n${
+      responsesOutput.length === 0 ? 'none' : responsesOutput.join('\n')
+    }`,
+  );
 }
 
 async function createBackups() {
-  const stage = getStage();
-
-  await Promise.all(
-    TABLES_TO_BACKUP.map((tableName) =>
+  const responses = await Promise.all(
+    getTablesToBackup().map((fullTableName) =>
       dynamoDb
         .createBackup({
-          BackupName: `${tableName}-${currentDateInYYYYMMDD()}`,
-          TableName: `${tableName}-${stage}`,
+          BackupName: `${fullTableName}-${currentDateInYYYYMMDD()}`,
+          TableName: fullTableName,
         })
         .promise(),
     ),
-  ).then((response) => {
-    console.log('\nBackups created:', JSON.stringify(response, null, 4));
-  });
+  );
+
+  const responsesOutput = responses
+    .map((response, idx) => {
+      const backupDetails = response.BackupDetails;
+      return backupDetails
+        ? `${idx + 1}. ${generateBackupDetailsOutput(backupDetails)}`
+        : undefined;
+    })
+    .filter(notEmpty);
+
+  await sendDiscordMessage(
+    `BACKUPS CREATED\n\n${
+      responsesOutput.length === 0 ? 'none' : responsesOutput.join('\n')
+    }`,
+  );
 }
 
-clearBackups().then(() => createBackups());
+async function run() {
+  await deleteBackups();
+  await createBackups();
+
+  process.exit(0);
+}
+
+run();

@@ -1,7 +1,9 @@
 import * as AWS from 'aws-sdk';
 
 import { initAWSConfig, TABLE_FEEDBACK, TABLE_USERS } from '../aws/config';
+import { sendDiscordMessage } from '../ext/discord';
 import { getStage, sleep } from '../utils';
+import { formatDateWithTime } from '../utils/date';
 
 const args = process.argv.slice(2);
 const [keyword] = args;
@@ -9,30 +11,50 @@ const [keyword] = args;
 initAWSConfig();
 const dynamoDb = new AWS.DynamoDB();
 
+function makeSuccessMessage(s: string) {
+  return `RESTORE SUCCESSFUL\n\n${s}`;
+}
+
+function makeErrorMessage(s: string) {
+  return `RESTORE UNSUCCESSFUL\n\n${s}`;
+}
+
+function makeInProgressMessage(s: string) {
+  return `RESTORE IN PROGRESS\n\n${s}`;
+}
+
 async function restoreBackup(tableName: string) {
   const backupsList = await dynamoDb.listBackups().promise();
   if (!backupsList.BackupSummaries) {
-    throw new Error('Unable to view list of backups');
+    await sendDiscordMessage(
+      makeErrorMessage('Unable to view list of backups'),
+    );
+    return;
   }
 
-  const stage = getStage();
-  const fullTableName = `${tableName}-${stage}`;
-
+  const fullTableName = `${tableName}-${getStage()}`;
   const backupsForTable = backupsList.BackupSummaries.filter(
     (backupEntry) => backupEntry.TableName === fullTableName,
   );
   if (backupsForTable.length === 0) {
-    throw new Error(`No backups found for table ${fullTableName}`);
+    await sendDiscordMessage(
+      makeErrorMessage(`No backups found for table ${fullTableName}`),
+    );
+    return;
   }
 
-  // Assume that there is only 1 backup for each table, or that the latest backup is the first entry
+  // Assume that there is only 1 backup for each table
   const [latestBackup] = backupsForTable;
   const { BackupArn: latestBackupArn, BackupSizeBytes } = latestBackup;
   if (!latestBackupArn) {
-    throw new Error(`latestBackupArn value is null`);
+    await sendDiscordMessage(makeErrorMessage('latestBackupArn value is null'));
+    return;
   }
   if (BackupSizeBytes === 0) {
-    throw new Error(`Backup ${latestBackupArn} is empty`);
+    await sendDiscordMessage(
+      makeErrorMessage(`Backup "${latestBackupArn}" is empty`),
+    );
+    return;
   }
 
   const deleteOutput = await dynamoDb
@@ -40,7 +62,11 @@ async function restoreBackup(tableName: string) {
       TableName: fullTableName,
     })
     .promise();
-  console.log(`Deleted table: ${deleteOutput.TableDescription?.TableName}\n`);
+  await sendDiscordMessage(
+    makeInProgressMessage(
+      `Deleted table "${deleteOutput.TableDescription?.TableName}"`,
+    ),
+  );
 
   // sleep for 2 secs for deletion process to propagate
   await sleep(2000);
@@ -48,26 +74,32 @@ async function restoreBackup(tableName: string) {
   const restoreOutput = await dynamoDb
     .restoreTableFromBackup({
       BackupArn: latestBackupArn,
-      TargetTableName: `${fullTableName}`,
+      TargetTableName: fullTableName,
     })
     .promise();
-  // prettier-ignore
-  console.log(
-    `Restored backup "${
-      restoreOutput.TableDescription?.RestoreSummary?.SourceBackupArn
-    }" created at "${
-      restoreOutput.TableDescription?.RestoreSummary?.RestoreDateTime
-    }" to table "${fullTableName}"\n`,
-  );
+  const restoreSummary = restoreOutput.TableDescription?.RestoreSummary;
+  const restoreMessage = `Restored backup "${
+    restoreSummary ? restoreSummary.SourceBackupArn : 'null'
+  }" created at "${
+    restoreSummary ? formatDateWithTime(restoreSummary.RestoreDateTime) : 'null'
+  }" to table "${fullTableName}"`;
+
+  await sendDiscordMessage(makeSuccessMessage(restoreMessage));
 }
 
-if (keyword === 'all') {
-  restoreBackup(TABLE_USERS);
-  restoreBackup(TABLE_FEEDBACK);
-} else if (keyword === 'users') {
-  restoreBackup(TABLE_USERS);
-} else if (keyword === 'feedback') {
-  restoreBackup(TABLE_FEEDBACK);
-} else {
-  throw new Error(`"${keyword}" is not an accepted keyword`);
+async function run() {
+  if (keyword === 'all') {
+    await restoreBackup(TABLE_USERS);
+    await restoreBackup(TABLE_FEEDBACK);
+  } else if (keyword === 'users') {
+    await restoreBackup(TABLE_USERS);
+  } else if (keyword === 'feedback') {
+    await restoreBackup(TABLE_FEEDBACK);
+  } else {
+    throw new Error(`"${keyword}" is not an accepted keyword`);
+  }
+
+  process.exit(0);
 }
+
+run();

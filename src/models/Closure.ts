@@ -4,6 +4,7 @@ import { Err, Ok, Result } from 'ts-results';
 import { initAWSConfig, TABLE_CLOSURES } from '../aws/config';
 import { getDynamoDBBillingDetails } from '../aws/dynamodb';
 import { AWSError } from '../errors/AWSError';
+import { sendDiscordMessage } from '../ext/discord';
 import { getStage } from '../utils';
 import { HawkerCentre } from './HawkerCentre';
 
@@ -79,8 +80,8 @@ export async function uploadClosures(closures: Closure[]): Promise<void> {
         .promise(),
     ),
   );
-  console.log(
-    `Uploaded ${closures.length} entries to table "${closuresTable}"`,
+  await sendDiscordMessage(
+    `SEEDING DB\n\nUploaded ${closures.length} entries to table "${closuresTable}"`,
   );
 }
 
