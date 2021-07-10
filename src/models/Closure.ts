@@ -87,9 +87,7 @@ export async function uploadClosures(closures: Closure[]): Promise<void> {
 
 export async function getAllClosures(): Promise<Result<Closure[], AWSError>> {
   const scanOutput = await dynamoDb
-    .scan({
-      TableName: ClosureObject.getTableName(),
-    })
+    .scan({ TableName: ClosureObject.getTableName() })
     .promise();
 
   if (scanOutput === null) {

@@ -92,9 +92,7 @@ export async function addUser(user: User): Promise<void> {
 
 export async function getAllUsers(): Promise<Result<User[], AWSError>> {
   const scanOutput = await dynamoDb
-    .scan({
-      TableName: User.getTableName(),
-    })
+    .scan({ TableName: User.getTableName() })
     .promise();
 
   if (scanOutput === null) {
@@ -113,9 +111,7 @@ export async function getUserById(
     const getResponse = await dynamoDb
       .get({
         TableName: User.getTableName(),
-        Key: {
-          userId,
-        },
+        Key: { userId },
       })
       .promise();
 
@@ -136,9 +132,7 @@ export async function updateUserFavourites(
   await dynamoDb
     .update({
       TableName: User.getTableName(),
-      Key: {
-        userId,
-      },
+      Key: { userId },
       UpdateExpression: 'set favourites = :fav, lastUpdated = :timestamp',
       ExpressionAttributeValues: {
         ':fav': favouritesUpdated,
@@ -155,9 +149,7 @@ export async function updateUserInFavouritesMode(
   await dynamoDb
     .update({
       TableName: User.getTableName(),
-      Key: {
-        userId,
-      },
+      Key: { userId },
       UpdateExpression:
         'set isInFavouritesMode = :favMode, lastUpdated = :timestamp',
       ExpressionAttributeValues: {
@@ -175,9 +167,7 @@ export async function updateUserNotifications(
   await dynamoDb
     .update({
       TableName: User.getTableName(),
-      Key: {
-        userId,
-      },
+      Key: { userId },
       UpdateExpression: 'set notifications = :notif, lastUpdated = :timestamp',
       ExpressionAttributeValues: {
         ':notif': notifications,
@@ -194,9 +184,7 @@ export async function updateUserLanguageCode(
   await dynamoDb
     .update({
       TableName: User.getTableName(),
-      Key: {
-        userId,
-      },
+      Key: { userId },
       UpdateExpression: 'set languageCode = :lang, lastUpdated = :timestamp',
       ExpressionAttributeValues: {
         ':lang': languageCode,
