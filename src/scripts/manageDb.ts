@@ -1,17 +1,25 @@
 import * as AWS from 'aws-sdk';
 
 import { initAWSConfig } from '../aws/config';
+import { sendDiscordMessage } from '../ext/discord';
 import { getAllClosures, ClosureObject } from '../models/Closure';
 import { Feedback } from '../models/Feedback';
 import { getAllHawkerCentres, HawkerCentre } from '../models/HawkerCentre';
 import { User } from '../models/User';
-import { sleep } from '../utils';
+import { notEmpty, sleep } from '../utils';
 
 const args = process.argv.slice(2);
 const [operation] = args;
 
 initAWSConfig();
 const dynamoDb = new AWS.DynamoDB();
+
+function makeTableNames(tableNames: (string | undefined)[]) {
+  return tableNames
+    .filter(notEmpty)
+    .map((tableName, idx) => `${idx + 1}. ${tableName}`)
+    .join('\n');
+}
 
 async function createTables() {
   const closuresTableCreateOutput = await dynamoDb
@@ -27,8 +35,8 @@ async function createTables() {
     .createTable(Feedback.getSchema())
     .promise();
 
-  console.log(
-    `Created tables:\n${makeTableNames([
+  await sendDiscordMessage(
+    `DB TABLES CREATED\n\n${makeTableNames([
       closuresTableCreateOutput.TableDescription?.TableName,
       hawkerCentreTableCreateOutput.TableDescription?.TableName,
       userTableCreateOutput.TableDescription?.TableName,
@@ -59,8 +67,8 @@ async function deleteTables() {
     })
     .promise();
 
-  console.log(
-    `Deleted tables:\n${makeTableNames([
+  await sendDiscordMessage(
+    `DB TABLES DELETED\n\n${makeTableNames([
       closuresTableDeleteOutput.TableDescription?.TableName,
       hawkerCentreTableDeleteOutput.TableDescription?.TableName,
       userTableDeleteOutput.TableDescription?.TableName,
@@ -92,8 +100,8 @@ async function resetTables() {
       TableName: HawkerCentre.getTableName(),
     })
     .promise();
-  console.log(
-    `Deleted tables:\n${[
+  await sendDiscordMessage(
+    `RESET IN PROGRESS\n\nDeleted tables:\n${[
       [
         closuresTableDeleteOutput.TableDescription?.TableName,
         numEntriesInClosuresTable,
@@ -107,7 +115,7 @@ async function resetTables() {
         ([tableName, numEntries], idx) =>
           `${idx + 1}. ${tableName} (${numEntries} entries)`,
       )
-      .join('\n')}\n`,
+      .join('\n')}`,
   );
 
   // sleep for 2 secs for deletion process to propagate else creation will throw an error
@@ -119,28 +127,27 @@ async function resetTables() {
   const hawkerCentreTableCreateOutput = await dynamoDb
     .createTable(HawkerCentre.getSchema())
     .promise();
-  console.log(
-    `Created tables:\n${makeTableNames([
+  await sendDiscordMessage(
+    `RESET IN PROGRESS\n\nCreated tables:\n${makeTableNames([
       closuresTableCreateOutput.TableDescription?.TableName,
       hawkerCentreTableCreateOutput.TableDescription?.TableName,
     ])}`,
   );
 }
 
-function makeTableNames(tableNames: (string | undefined)[]) {
-  return tableNames
-    .filter((entry) => Boolean(entry))
-    .map((tableName, idx) => `${idx + 1}. ${tableName}`)
-    .join('\n');
+async function run() {
+  console.log(`Selected AWS region: ${AWS.config.region}\n`);
+  if (operation === 'create') {
+    await createTables();
+  } else if (operation === 'delete') {
+    await deleteTables();
+  } else if (operation === 'reset') {
+    await resetTables();
+  } else {
+    throw new Error(`unrecognised operation name "${operation}"`);
+  }
+
+  process.exit(0);
 }
 
-console.log(`Selected AWS region: ${AWS.config.region}\n`);
-if (operation === 'create') {
-  createTables();
-} else if (operation === 'delete') {
-  deleteTables();
-} else if (operation === 'reset') {
-  resetTables();
-} else {
-  console.log(`Error: unrecognised operation name "${operation}"`);
-}
+run();

@@ -1,35 +1,14 @@
-import { ClosureReason, Closure, uploadClosures } from '../models/Closure';
-import { HawkerCentre, uploadHawkerCentres } from '../models/HawkerCentre';
-import { currentDateInYYYYMMDD } from '../utils/date';
+import { ClosureReason, Closure } from '../models/Closure';
+import { HawkerCentre } from '../models/HawkerCentre';
 import { HawkerCentreClosureRecord } from './types';
-import {
-  generateHash,
-  getRawRecords,
-  parseClosureDate,
-  parseHawkerCentreName,
-  writeFile,
-} from './utils';
+import { generateHash, parseClosureDate, parseHawkerCentreName } from './utils';
 
-const args = process.argv.slice(2);
-const [isUploadToAws] = args;
+export * from './types';
+export * from './utils';
 
-getRawRecords().then(async (recordsRaw) => {
-  const closures = generateClosures(recordsRaw);
-
-  const hawkerCentres: HawkerCentre[] = getHawkerCentresList(closures);
-
-  console.log(`${closures.length} closures found`);
-  console.log(`${hawkerCentres.length} hawker centres found`);
-  writeFile(closures, `closures-${currentDateInYYYYMMDD()}.json`);
-  writeFile(hawkerCentres, `hawkerCentres-${currentDateInYYYYMMDD()}.json`);
-
-  if (isUploadToAws !== 'false') {
-    await uploadClosures(closures);
-    await uploadHawkerCentres(hawkerCentres);
-  }
-});
-
-function generateClosures(recordsRaw: HawkerCentreClosureRecord[]): Closure[] {
+export function generateClosures(
+  recordsRaw: HawkerCentreClosureRecord[],
+): Closure[] {
   return recordsRaw.reduce((_closures: Closure[], recordRaw) => {
     const {
       _id: hawkerCentreId,
@@ -103,7 +82,7 @@ function generateClosure(props: {
   };
 }
 
-function getHawkerCentresList(closures: Closure[]) {
+export function getHawkerCentresList(closures: Closure[]): HawkerCentre[] {
   const hawkerCentres = closures.map((closure) => ({
     hawkerCentreId: closure.hawkerCentreId,
     name: closure.name,

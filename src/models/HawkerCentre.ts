@@ -4,6 +4,7 @@ import { Err, Ok, Result } from 'ts-results';
 import { initAWSConfig, TABLE_HC } from '../aws/config';
 import { getDynamoDBBillingDetails } from '../aws/dynamodb';
 import { AWSError } from '../errors/AWSError';
+import { sendDiscordMessage } from '../ext/discord';
 import { getStage } from '../utils';
 
 initAWSConfig();
@@ -65,7 +66,9 @@ export async function uploadHawkerCentres(
         .promise(),
     ),
   );
-  console.log(`Uploaded ${hawkerCentres.length} entries to table "${hcTable}"`);
+  await sendDiscordMessage(
+    `SEEDING DB\n\nUploaded ${hawkerCentres.length} entries to table "${hcTable}"`,
+  );
 }
 
 export async function getAllHawkerCentres(): Promise<
