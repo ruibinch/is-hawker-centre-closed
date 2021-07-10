@@ -10,17 +10,6 @@ export function currentDateInYYYYMMDD(): string {
   return format(currentDate(), 'yyyyMMdd');
 }
 
-export function isWithinDateBounds(
-  dateToCompare: Date,
-  startDate: Date,
-  endDate: Date,
-): boolean {
-  return (
-    dateToCompare.getTime() >= startDate.getTime() &&
-    dateToCompare.getTime() <= endDate.getTime()
-  );
-}
-
 /**
  * Formats the input date in YYYY-MM-DD format to dd-MMM format.
  * If displayTemporalPronoun is set to true, then return "yesterday", "today" or "tomorrow" when applicable.
