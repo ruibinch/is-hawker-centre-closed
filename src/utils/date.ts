@@ -44,3 +44,7 @@ export function formatDateDisplay(
 
   return format(date, t('common.time.date-format'));
 }
+
+export function formatDateWithTime(date: Date): string {
+  return format(date, 'yyyy-MM-dd HH:mm:ssXX');
+}
