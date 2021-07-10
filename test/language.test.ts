@@ -110,6 +110,7 @@ describe('Language module', () => {
         favourites: [],
         isInFavouritesMode: false,
         notifications: true,
+        createdAt: '2021-01-05T00:00:00Z',
       });
     });
 
@@ -127,6 +128,7 @@ describe('Language module', () => {
         favourites: [],
         isInFavouritesMode: false,
         notifications: true,
+        createdAt: '2021-01-05T00:00:00Z',
       });
     });
   });

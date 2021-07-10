@@ -45,6 +45,8 @@ export class User {
 
   notifications: boolean;
 
+  createdAt: string;
+
   private constructor(props: UserProps) {
     this.userId = props.userId;
     this.username = props.username;
@@ -52,6 +54,7 @@ export class User {
     this.favourites = props.favourites;
     this.isInFavouritesMode = props.isInFavouritesMode;
     this.notifications = props.notifications;
+    this.createdAt = formatISO(currentDate());
   }
 
   static create(props: UserProps): User {
@@ -81,10 +84,7 @@ export async function addUser(user: User): Promise<void> {
   await dynamoDb
     .put({
       TableName: User.getTableName(),
-      Item: {
-        ...user,
-        createdAt: formatISO(currentDate()),
-      },
+      Item: user,
       ConditionExpression: 'attribute_not_exists(userId)',
     })
     .promise();

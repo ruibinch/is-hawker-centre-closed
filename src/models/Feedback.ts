@@ -25,11 +25,14 @@ export class Feedback {
 
   text: string;
 
+  createdAt: string;
+
   private constructor(props: FeedbackProps) {
     this.feedbackId = props.feedbackId;
     this.userId = props.userId;
     this.username = props.username;
     this.text = props.text;
+    this.createdAt = formatISO(currentDate());
   }
 
   static create(props: FeedbackProps): Feedback {
@@ -61,10 +64,7 @@ export async function addFeedbackToDB(feedback: Feedback): Promise<void> {
   await dynamoDb
     .put({
       TableName: Feedback.getTableName(),
-      Item: {
-        ...feedback,
-        createdAt: formatISO(currentDate()),
-      },
+      Item: feedback,
       ConditionExpression: 'attribute_not_exists(feedbackId)',
     })
     .promise();
