@@ -1,8 +1,10 @@
 import * as AWS from 'aws-sdk';
 import { formatISO } from 'date-fns';
+import { Err, Ok, Result } from 'ts-results';
 
 import { initAWSConfig, TABLE_FEEDBACK } from '../aws/config';
 import { getDynamoDBBillingDetails } from '../aws/dynamodb';
+import { AWSError } from '../errors/AWSError';
 import { getStage } from '../utils';
 import { currentDate } from '../utils/date';
 
@@ -68,4 +70,16 @@ export async function addFeedbackToDB(feedback: Feedback): Promise<void> {
       ConditionExpression: 'attribute_not_exists(feedbackId)',
     })
     .promise();
+}
+
+export async function getAllFeedback(): Promise<Result<Feedback[], AWSError>> {
+  const scanOutput = await dynamoDb
+    .scan({ TableName: Feedback.getTableName() })
+    .promise();
+
+  if (scanOutput === null) {
+    return Err(new AWSError());
+  }
+
+  return Ok(scanOutput.Items as Feedback[]);
 }

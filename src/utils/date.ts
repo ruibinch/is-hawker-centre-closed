@@ -1,13 +1,28 @@
-import { format, isToday, isTomorrow, isYesterday, parseISO } from 'date-fns';
+import {
+  format,
+  isToday,
+  isTomorrow,
+  isWithinInterval,
+  isYesterday,
+  parseISO,
+  subDays,
+} from 'date-fns';
 
 import { t } from '../lang';
 
-export function currentDate(): Date {
-  return new Date(Date.now());
-}
+/**
+ * Returns if the input date string is "recent". This is used in the script to get new users/feedback entries.
+ *
+ * "recent" is a dynamic definition - for now, it will be defined as 1 week.
+ */
+export function isRecent(dateString: string): boolean {
+  const date = new Date(dateString);
+  const today = currentDate();
 
-export function currentDateInYYYYMMDD(): string {
-  return format(currentDate(), 'yyyyMMdd');
+  return isWithinInterval(date, {
+    start: subDays(today, 7),
+    end: today,
+  });
 }
 
 /**
@@ -32,6 +47,13 @@ export function formatDateDisplay(
   }
 
   return format(date, t('common.time.date-format'));
+}
+export function currentDate(): Date {
+  return new Date(Date.now());
+}
+
+export function currentDateInYYYYMMDD(): string {
+  return format(currentDate(), 'yyyyMMdd');
 }
 
 export function formatDateWithTime(date: Date): string {
