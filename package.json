@@ -68,6 +68,7 @@
     "@sentry/serverless": "^6.5.1",
     "axios": "^0.21.1",
     "date-fns": "^2.20.1",
+    "discord.js": "^12.5.3",
     "dotenv": "^8.2.0",
     "emoji-regex": "^9.2.2",
     "i18n-js": "^3.8.0",
