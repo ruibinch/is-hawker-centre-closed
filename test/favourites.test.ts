@@ -461,6 +461,7 @@ describe('Favourites module', () => {
           ],
           isInFavouritesMode: false,
           notifications: true,
+          createdAt: '2021-01-05T11:30:25Z',
         });
       });
 
@@ -484,6 +485,7 @@ describe('Favourites module', () => {
           favourites: [],
           isInFavouritesMode: true,
           notifications: true,
+          createdAt: '2021-01-05T11:30:25Z',
         });
       });
     });
@@ -535,6 +537,7 @@ describe('Favourites module', () => {
           favourites: [],
           isInFavouritesMode: false,
           notifications: true,
+          createdAt: '2021-01-05T11:30:25Z',
         });
       });
 
@@ -552,6 +555,7 @@ describe('Favourites module', () => {
           favourites: [],
           isInFavouritesMode: false,
           notifications: false,
+          createdAt: '2021-01-05T11:30:25Z',
         });
       });
     });

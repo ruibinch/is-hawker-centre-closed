@@ -1,10 +1,10 @@
-import { parseISO, startOfDay } from 'date-fns';
+import { isWithinInterval, parseISO, startOfDay } from 'date-fns';
 import { Err, Ok, Result } from 'ts-results';
 
 import { CustomError } from '../../errors/CustomError';
 import { getAllClosures } from '../../models/Closure';
 import { getAllUsers } from '../../models/User';
-import { currentDate, isWithinDateBounds } from '../../utils/date';
+import { currentDate } from '../../utils/date';
 import { UserWithClosure } from './types';
 
 /**
@@ -22,11 +22,10 @@ export async function getUsersWithFavsClosedToday(): Promise<
   const closuresAll = getAllClosuresResponse.val;
 
   const closuresCurrent = closuresAll.filter((closure) =>
-    isWithinDateBounds(
-      startOfDay(currentDate()),
-      parseISO(closure.startDate),
-      parseISO(closure.endDate),
-    ),
+    isWithinInterval(startOfDay(currentDate()), {
+      start: parseISO(closure.startDate),
+      end: parseISO(closure.endDate),
+    }),
   );
 
   const usersWithNotifications = usersAll.filter((user) => user.notifications);

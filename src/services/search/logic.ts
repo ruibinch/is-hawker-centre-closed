@@ -2,6 +2,7 @@ import {
   addDays,
   differenceInCalendarMonths,
   isSameMonth,
+  isWithinInterval,
   parseISO,
   startOfDay,
 } from 'date-fns';
@@ -10,7 +11,7 @@ import { Err, Ok, Result } from 'ts-results';
 import { CustomError } from '../../errors/CustomError';
 import { Closure, getAllClosures } from '../../models/Closure';
 import { notEmpty } from '../../utils';
-import { currentDate, isWithinDateBounds } from '../../utils/date';
+import { currentDate } from '../../utils/date';
 import {
   getNextOccurringClosure,
   sortInAlphabeticalOrder,
@@ -112,6 +113,11 @@ function filterByKeyword(closures: Closure[], keyword: string) {
  * Filters the list of closures by date based on the search modifier.
  */
 function filterByDate(closures: Closure[], modifier: SearchModifier) {
+  const makeInterval = (startDate: Date, endDate: Date) => ({
+    start: startDate,
+    end: endDate,
+  });
+
   const currDate = startOfDay(currentDate());
 
   return closures.filter((closure) => {
@@ -120,15 +126,15 @@ function filterByDate(closures: Closure[], modifier: SearchModifier) {
 
     return (() => {
       if (modifier === 'today') {
-        return isWithinDateBounds(currDate, startDate, endDate);
+        return isWithinInterval(currDate, makeInterval(startDate, endDate));
       }
       if (modifier === 'tomorrow') {
         const tomorrowDate = addDays(currDate, 1);
-        return isWithinDateBounds(tomorrowDate, startDate, endDate);
+        return isWithinInterval(tomorrowDate, makeInterval(startDate, endDate));
       }
       if (modifier === 'month') {
         return (
-          isWithinDateBounds(currDate, startDate, endDate) ||
+          isWithinInterval(currDate, makeInterval(startDate, endDate)) ||
           isSameMonth(currDate, startDate)
         );
       }

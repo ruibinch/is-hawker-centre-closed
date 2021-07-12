@@ -75,9 +75,7 @@ export async function getAllHawkerCentres(): Promise<
   Result<HawkerCentre[], AWSError>
 > {
   const scanOutput = await dynamoDb
-    .scan({
-      TableName: HawkerCentre.getTableName(),
-    })
+    .scan({ TableName: HawkerCentre.getTableName() })
     .promise();
 
   if (!scanOutput.Items) {
@@ -93,9 +91,7 @@ export async function getHawkerCentreById(
   const getOutput = await dynamoDb
     .get({
       TableName: HawkerCentre.getTableName(),
-      Key: {
-        hawkerCentreId,
-      },
+      Key: { hawkerCentreId },
     })
     .promise();
 

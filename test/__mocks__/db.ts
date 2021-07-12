@@ -223,6 +223,7 @@ export const mockUser: User = {
   ],
   isInFavouritesMode: false,
   notifications: true,
+  createdAt: '2021-01-01T00:00:00Z',
 };
 
 export const mockUserWithOneFav: User = {
@@ -237,6 +238,7 @@ export const mockUserWithOneFav: User = {
   ],
   isInFavouritesMode: false,
   notifications: true,
+  createdAt: '2021-01-01T00:00:00Z',
 };
 
 export const mockUserWithNoFavs: User = {
@@ -246,6 +248,7 @@ export const mockUserWithNoFavs: User = {
   favourites: [],
   isInFavouritesMode: false,
   notifications: false,
+  createdAt: '2021-01-01T00:00:00Z',
 };
 
 export const mockUserInFavMode: User = {
@@ -255,6 +258,7 @@ export const mockUserInFavMode: User = {
   favourites: [],
   isInFavouritesMode: true,
   notifications: true,
+  createdAt: '2021-01-01T00:00:00Z',
 };
 
 export const mockUsers: User[] = [
@@ -271,6 +275,7 @@ export const mockUsers: User[] = [
     ],
     isInFavouritesMode: false,
     notifications: true,
+    createdAt: '2021-01-01T00:00:00Z',
   },
 ];
 
