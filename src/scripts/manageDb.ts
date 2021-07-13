@@ -6,10 +6,10 @@ import { getAllClosures, ClosureObject } from '../models/Closure';
 import { Feedback } from '../models/Feedback';
 import { getAllHawkerCentres, HawkerCentre } from '../models/HawkerCentre';
 import { User } from '../models/User';
-import { notEmpty, sleep } from '../utils';
+import { getStage, notEmpty, sleep } from '../utils';
 
 const args = process.argv.slice(2);
-const [operation] = args;
+const [operationArg] = args;
 
 initAWSConfig();
 const dynamoDb = new AWS.DynamoDB();
@@ -36,7 +36,7 @@ async function createTables() {
     .promise();
 
   await sendDiscordMessage(
-    `DB TABLES CREATED\n\n${makeTableNames([
+    `[${getStage()}] DB TABLES CREATED\n\n${makeTableNames([
       closuresTableCreateOutput.TableDescription?.TableName,
       hawkerCentreTableCreateOutput.TableDescription?.TableName,
       userTableCreateOutput.TableDescription?.TableName,
@@ -68,7 +68,7 @@ async function deleteTables() {
     .promise();
 
   await sendDiscordMessage(
-    `DB TABLES DELETED\n\n${makeTableNames([
+    `[${getStage()}] DB TABLES DELETED\n\n${makeTableNames([
       closuresTableDeleteOutput.TableDescription?.TableName,
       hawkerCentreTableDeleteOutput.TableDescription?.TableName,
       userTableDeleteOutput.TableDescription?.TableName,
@@ -101,7 +101,7 @@ async function resetTables() {
     })
     .promise();
   await sendDiscordMessage(
-    `RESET IN PROGRESS\n\nDeleted tables:\n${[
+    `[${getStage()}] RESET IN PROGRESS\n\nDeleted tables:\n${[
       [
         closuresTableDeleteOutput.TableDescription?.TableName,
         numEntriesInClosuresTable,
@@ -128,14 +128,16 @@ async function resetTables() {
     .createTable(HawkerCentre.getSchema())
     .promise();
   await sendDiscordMessage(
-    `RESET IN PROGRESS\n\nCreated tables:\n${makeTableNames([
+    `[${getStage()}] RESET IN PROGRESS\n\nCreated tables:\n${makeTableNames([
       closuresTableCreateOutput.TableDescription?.TableName,
       hawkerCentreTableCreateOutput.TableDescription?.TableName,
     ])}`,
   );
 }
 
-async function run() {
+export async function run(operationInput?: string): Promise<void> {
+  const operation = operationInput ?? operationArg;
+
   if (operation === 'create') {
     await createTables();
   } else if (operation === 'delete') {
@@ -145,8 +147,10 @@ async function run() {
   } else {
     throw new Error(`unrecognised operation name "${operation}"`);
   }
-
-  process.exit(0);
 }
 
-run();
+if (require.main === module) {
+  run().then(() => {
+    process.exit(0);
+  });
+}
