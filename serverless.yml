@@ -45,11 +45,17 @@ provider:
         - Effect: Allow
           Action:
             - dynamodb:Scan
+            - dynamodb:CreateTable
+            - dynamodb:DeleteTable
+            - dynamodb:PutItem
           Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_CLOSURES}-${self:provider.stage}'
         - Effect: Allow
           Action:
             - dynamodb:Scan
+            - dynamodb:CreateTable
+            - dynamodb:DeleteTable
             - dynamodb:GetItem
+            - dynamodb:PutItem
           Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_HC}-${self:provider.stage}'
         - Effect: Allow
           Action:
@@ -106,3 +112,9 @@ functions:
     events:
       # runs every Sun at 20:05 UTC, or 4:05am SGT
       - schedule: cron(5 20 ? * sun *)
+  runResetAndSeedDb:
+    handler: ${self:custom.triggersFolder}/runResetAndSeedDbTrigger.handler
+    timeout: 60
+    events:
+      # runs every Sun at 20:10 UTC, or 4:10am SGT
+      - schedule: cron(10 20 ? * sun *)
