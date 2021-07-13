@@ -57,12 +57,26 @@ provider:
             - dynamodb:GetItem
             - dynamodb:PutItem
             - dynamodb:UpdateItem
+            - dynamodb:CreateBackup
           Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_USERS}-${self:provider.stage}'
         - Effect: Allow
           Action:
             - dynamodb:Scan
             - dynamodb:PutItem
+            - dynamodb:CreateBackup
           Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_FEEDBACK}-${self:provider.stage}'
+        - Effect: Allow
+          Action:
+            - dynamodb:ListBackups
+          Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/*/backup/*'
+        - Effect: Allow
+          Action:
+            - dynamodb:DeleteBackup
+          Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_USERS}-${self:provider.stage}/backup/*'
+        - Effect: Allow
+          Action:
+            - dynamodb:DeleteBackup
+          Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_FEEDBACK}-${self:provider.stage}/backup/*'
 
 package:
   patterns:
@@ -86,3 +100,9 @@ functions:
     events:
       # runs every Sun at 20:00 UTC, or 4am SGT
       - schedule: cron(0 20 ? * sun *)
+  runBackup:
+    handler: ${self:custom.triggersFolder}/runBackupTrigger.handler
+    timeout: 30
+    events:
+      # runs every Sun at 20:05 UTC, or 4:05am SGT
+      - schedule: cron(5 20 ? * sun *)
