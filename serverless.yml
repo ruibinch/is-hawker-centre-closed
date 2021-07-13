@@ -20,6 +20,7 @@ custom:
     packager: yarn
     includeModules: true
   botFolder: src/bot
+  triggersFolder: src/triggers
 
 plugins:
   - serverless-dotenv-plugin
@@ -59,6 +60,7 @@ provider:
           Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_USERS}-${self:provider.stage}'
         - Effect: Allow
           Action:
+            - dynamodb:Scan
             - dynamodb:PutItem
           Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_FEEDBACK}-${self:provider.stage}'
 
@@ -77,5 +79,10 @@ functions:
   notifications:
     handler: ${self:custom.botFolder}/handler.notifications
     events:
-      # runs at 22:00 UTC, or 6am SGT
+      # runs daily at 22:00 UTC, or 6am SGT
       - schedule: cron(0 22 * * ? *)
+  scanNewEntries:
+    handler: ${self:custom.triggersFolder}/scanNewEntriesTrigger.handler
+    events:
+      # runs every Sun at 20:00 UTC, or 4am SGT
+      - schedule: cron(0 20 ? * sun *)
