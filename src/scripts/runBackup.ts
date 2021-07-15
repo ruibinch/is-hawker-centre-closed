@@ -25,6 +25,66 @@ function generateBackupDetailsOutput(
   } bytes; created at ${formatDateWithTime(BackupCreationDateTime)})`;
 }
 
+type BackupEntry = {
+  backupArn: string;
+  backupCreationDateTime: Date;
+};
+
+function getBackupsForTables(backupSummaries: AWS.DynamoDB.BackupSummaries) {
+  const backupsForTables = backupSummaries.reduce(
+    (_backupsForTables: Record<string, BackupEntry[]>, summary) => {
+      if (
+        summary.BackupArn &&
+        summary.BackupCreationDateTime &&
+        summary.TableName?.endsWith(stage)
+      ) {
+        _backupsForTables[summary.TableName] = [
+          ...(_backupsForTables[summary.TableName] ?? []),
+          {
+            backupArn: summary.BackupArn,
+            backupCreationDateTime: summary.BackupCreationDateTime,
+          },
+        ];
+      }
+
+      return _backupsForTables;
+    },
+    {},
+  );
+
+  const backupsForTablesSorted = Object.entries(backupsForTables).reduce(
+    (
+      _backupsForTablesSorted: Record<string, BackupEntry[]>,
+      [tableName, backupsForTable],
+    ) => {
+      // sort in descending order of time
+      _backupsForTablesSorted[tableName] = [...backupsForTable].sort(
+        (a, b) =>
+          b.backupCreationDateTime.getTime() -
+          a.backupCreationDateTime.getTime(),
+      );
+      return _backupsForTablesSorted;
+    },
+    {},
+  );
+
+  return backupsForTablesSorted;
+}
+
+function getBackupsToDelete(backupsForTables: Record<string, BackupEntry[]>) {
+  return Object.values(backupsForTables).reduce(
+    (_backupsToDelete: string[], backupsForTable) => {
+      // keep the latest 3 backups, i.e. first 3 array entries
+      const backupsToDeleteForTable = backupsForTable
+        .slice(3)
+        .map((backupEntry) => backupEntry.backupArn);
+
+      return [..._backupsToDelete, ...backupsToDeleteForTable];
+    },
+    [],
+  );
+}
+
 async function deleteBackups() {
   const backupsList = await dynamoDb.listBackups().promise();
   if (!backupsList.BackupSummaries) {
@@ -34,19 +94,12 @@ async function deleteBackups() {
     return;
   }
 
-  // TODO: keep last 3 backups instead of deleting all
-  const backupsARN = backupsList.BackupSummaries.reduce(
-    (arr: string[], summary) => {
-      if (summary.BackupArn && summary.TableName?.endsWith(stage)) {
-        arr.push(summary.BackupArn);
-      }
-      return arr;
-    },
-    [],
-  );
+  const backupsForTables = getBackupsForTables(backupsList.BackupSummaries);
+
+  const backupsToDelete = getBackupsToDelete(backupsForTables);
 
   const responses = await Promise.all(
-    backupsARN.map((backupARN) =>
+    backupsToDelete.map((backupARN) =>
       dynamoDb
         .deleteBackup({
           BackupArn: backupARN,
