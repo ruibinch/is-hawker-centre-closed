@@ -1,6 +1,7 @@
 import { sendDiscordMessage } from '../ext/discord';
 import { getAllFeedback } from '../models/Feedback';
 import { getAllUsers } from '../models/User';
+import { getStage } from '../utils';
 import { formatDateWithTime, isRecent } from '../utils/date';
 
 function formatCreatedAtDate(dateString: string) {
@@ -36,7 +37,7 @@ async function scanNewEntries() {
   });
 
   await sendDiscordMessage(
-    `NEW ENTRIES IN THE PAST WEEK\n\n` +
+    `[${getStage()}] NEW ENTRIES IN THE PAST WEEK\n\n` +
       `Users:\n${
         newUsersOutput.length === 0 ? 'none' : newUsersOutput.join('\n')
       }\n\n` +
@@ -46,10 +47,12 @@ async function scanNewEntries() {
   );
 }
 
-async function run() {
+export async function run(): Promise<void> {
   await scanNewEntries();
-
-  process.exit(0);
 }
 
-run();
+if (require.main === module) {
+  run().then(() => {
+    process.exit(0);
+  });
+}

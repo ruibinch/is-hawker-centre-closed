@@ -20,6 +20,7 @@ custom:
     packager: yarn
     includeModules: true
   botFolder: src/bot
+  triggersFolder: src/triggers
 
 plugins:
   - serverless-dotenv-plugin
@@ -44,11 +45,17 @@ provider:
         - Effect: Allow
           Action:
             - dynamodb:Scan
+            - dynamodb:CreateTable
+            - dynamodb:DeleteTable
+            - dynamodb:PutItem
           Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_CLOSURES}-${self:provider.stage}'
         - Effect: Allow
           Action:
             - dynamodb:Scan
+            - dynamodb:CreateTable
+            - dynamodb:DeleteTable
             - dynamodb:GetItem
+            - dynamodb:PutItem
           Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_HC}-${self:provider.stage}'
         - Effect: Allow
           Action:
@@ -56,11 +63,26 @@ provider:
             - dynamodb:GetItem
             - dynamodb:PutItem
             - dynamodb:UpdateItem
+            - dynamodb:CreateBackup
           Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_USERS}-${self:provider.stage}'
         - Effect: Allow
           Action:
+            - dynamodb:Scan
             - dynamodb:PutItem
+            - dynamodb:CreateBackup
           Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_FEEDBACK}-${self:provider.stage}'
+        - Effect: Allow
+          Action:
+            - dynamodb:ListBackups
+          Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/*/backup/*'
+        - Effect: Allow
+          Action:
+            - dynamodb:DeleteBackup
+          Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_USERS}-${self:provider.stage}/backup/*'
+        - Effect: Allow
+          Action:
+            - dynamodb:DeleteBackup
+          Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_FEEDBACK}-${self:provider.stage}/backup/*'
 
 package:
   patterns:
@@ -77,5 +99,22 @@ functions:
   notifications:
     handler: ${self:custom.botFolder}/handler.notifications
     events:
-      # runs at 22:00 UTC, or 6am SGT
+      # runs daily at 22:00 UTC, or 6am SGT
       - schedule: cron(0 22 * * ? *)
+  scanNewEntries:
+    handler: ${self:custom.triggersFolder}/scanNewEntriesTrigger.handler
+    events:
+      # runs every Sun at 20:00 UTC, or 4am SGT
+      - schedule: cron(0 20 ? * sun *)
+  runBackup:
+    handler: ${self:custom.triggersFolder}/runBackupTrigger.handler
+    timeout: 30
+    events:
+      # runs every Sun at 20:05 UTC, or 4:05am SGT
+      - schedule: cron(5 20 ? * sun *)
+  runResetAndSeedDb:
+    handler: ${self:custom.triggersFolder}/runResetAndSeedDbTrigger.handler
+    timeout: 60
+    events:
+      # runs every Sun at 20:10 UTC, or 4:10am SGT
+      - schedule: cron(10 20 ? * sun *)
