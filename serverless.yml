@@ -25,7 +25,6 @@ custom:
 plugins:
   - serverless-dotenv-plugin
   - serverless-webpack
-  - serverless-offline-scheduler
   - serverless-offline
 
 provider:
