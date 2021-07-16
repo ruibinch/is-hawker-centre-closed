@@ -89,7 +89,7 @@ async function deleteBackups() {
   const backupsList = await dynamoDb.listBackups().promise();
   if (!backupsList.BackupSummaries) {
     await sendDiscordMessage(
-      `[${stage}] BACKUP DELETION UNSUCCESSFUL\n\nUnable to view list of backups`,
+      `[${stage}] BACKUP DELETION UNSUCCESSFUL\nUnable to view list of backups\n`,
     );
     return;
   }
@@ -118,9 +118,9 @@ async function deleteBackups() {
     .filter(notEmpty);
 
   await sendDiscordMessage(
-    `[${stage}] BACKUPS DELETED\n\n${
+    `[${stage}] BACKUPS DELETED\n${
       responsesOutput.length === 0 ? 'none' : responsesOutput.join('\n')
-    }`,
+    }\n`,
   );
 }
 
@@ -146,9 +146,9 @@ async function createBackups() {
     .filter(notEmpty);
 
   await sendDiscordMessage(
-    `[${stage}] BACKUPS CREATED\n\n${
+    `[${stage}] BACKUPS CREATED\n${
       responsesOutput.length === 0 ? 'none' : responsesOutput.join('\n')
-    }`,
+    }\n`,
   );
 }
 

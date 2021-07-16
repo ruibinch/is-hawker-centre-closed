@@ -22,11 +22,11 @@ export async function run(
   const hawkerCentres = getHawkerCentresList(closures);
 
   await sendDiscordMessage(
-    `[${getStage()}] SEEDING DB\n\n${[
+    `[${getStage()}] SEEDING DB\n${[
       'Data obtained from data.gov.sg API:',
       `1. ${closures.length} closures`,
       `2. ${hawkerCentres.length} hawker centres`,
-    ].join('\n')}`,
+    ].join('\n')}\n`,
   );
   if (props.shouldWriteFile) {
     writeFile(closures, `closures-${currentDateInYYYYMMDD()}.json`);

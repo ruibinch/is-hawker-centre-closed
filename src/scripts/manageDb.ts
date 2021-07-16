@@ -36,12 +36,12 @@ async function createTables() {
     .promise();
 
   await sendDiscordMessage(
-    `[${getStage()}] DB TABLES CREATED\n\n${makeTableNames([
+    `[${getStage()}] DB TABLES CREATED\n${makeTableNames([
       closuresTableCreateOutput.TableDescription?.TableName,
       hawkerCentreTableCreateOutput.TableDescription?.TableName,
       userTableCreateOutput.TableDescription?.TableName,
       feedbackTableCreateOutput.TableDescription?.TableName,
-    ])}`,
+    ])}\n`,
   );
 }
 
@@ -68,12 +68,12 @@ async function deleteTables() {
     .promise();
 
   await sendDiscordMessage(
-    `[${getStage()}] DB TABLES DELETED\n\n${makeTableNames([
+    `[${getStage()}] DB TABLES DELETED\n${makeTableNames([
       closuresTableDeleteOutput.TableDescription?.TableName,
       hawkerCentreTableDeleteOutput.TableDescription?.TableName,
       userTableDeleteOutput.TableDescription?.TableName,
       feedbackTableDeleteOutput.TableDescription?.TableName,
-    ])}`,
+    ])}\n`,
   );
 }
 
@@ -101,7 +101,7 @@ async function resetTables() {
     })
     .promise();
   await sendDiscordMessage(
-    `[${getStage()}] RESET IN PROGRESS\n\nDeleted tables:\n${[
+    `[${getStage()}] RESET IN PROGRESS\nDeleted tables:\n${[
       [
         closuresTableDeleteOutput.TableDescription?.TableName,
         numEntriesInClosuresTable,
@@ -115,7 +115,7 @@ async function resetTables() {
         ([tableName, numEntries], idx) =>
           `${idx + 1}. ${tableName} (${numEntries} entries)`,
       )
-      .join('\n')}`,
+      .join('\n')}\n`,
   );
 
   // sleep for 2 secs for deletion process to propagate else creation will throw an error
@@ -128,10 +128,10 @@ async function resetTables() {
     .createTable(HawkerCentre.getSchema())
     .promise();
   await sendDiscordMessage(
-    `[${getStage()}] RESET IN PROGRESS\n\nCreated tables:\n${makeTableNames([
+    `[${getStage()}] RESET IN PROGRESS\nCreated tables:\n${makeTableNames([
       closuresTableCreateOutput.TableDescription?.TableName,
       hawkerCentreTableCreateOutput.TableDescription?.TableName,
-    ])}`,
+    ])}\n`,
   );
 }
 

@@ -37,13 +37,13 @@ async function scanNewEntries() {
   });
 
   await sendDiscordMessage(
-    `[${getStage()}] NEW ENTRIES IN THE PAST WEEK\n\n` +
+    `[${getStage()}] NEW ENTRIES IN THE PAST WEEK\n` +
       `Users:\n${
         newUsersOutput.length === 0 ? 'none' : newUsersOutput.join('\n')
       }\n\n` +
       `Feedback:\n${
         newFeedbackOutput.length === 0 ? 'none' : newFeedbackOutput.join('\n')
-      }`,
+      }\n`,
   );
 }
 
