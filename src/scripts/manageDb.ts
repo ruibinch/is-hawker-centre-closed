@@ -68,14 +68,10 @@ async function resetTables() {
   const numEntriesInHCTable = getAllHCResponse.val.length;
 
   const closuresTableDeleteOutput = await dynamoDb
-    .deleteTable({
-      TableName: ClosureObject.getTableName(),
-    })
+    .deleteTable({ TableName: ClosureObject.getTableName() })
     .promise();
   const hawkerCentreTableDeleteOutput = await dynamoDb
-    .deleteTable({
-      TableName: HawkerCentre.getTableName(),
-    })
+    .deleteTable({ TableName: HawkerCentre.getTableName() })
     .promise();
   await sendDiscordMessage(
     `[${getStage()}] RESET IN PROGRESS\nDeleted tables:\n${[
@@ -98,17 +94,15 @@ async function resetTables() {
   // sleep for 2 secs for deletion process to propagate else creation will throw an error
   await sleep(2000);
 
-  const closuresTableCreateOutput = await dynamoDb
-    .createTable(ClosureObject.getSchema())
-    .promise();
-  const hawkerCentreTableCreateOutput = await dynamoDb
-    .createTable(HawkerCentre.getSchema())
-    .promise();
+  const createTableOutputs = await Promise.all([
+    dynamoDb.createTable(ClosureObject.getSchema()).promise(),
+    dynamoDb.createTable(HawkerCentre.getSchema()).promise(),
+  ]);
+
   await sendDiscordMessage(
-    `[${getStage()}] RESET IN PROGRESS\nCreated tables:\n${makeTableNames([
-      closuresTableCreateOutput.TableDescription?.TableName,
-      hawkerCentreTableCreateOutput.TableDescription?.TableName,
-    ])}\n`,
+    `[${getStage()}] RESET IN PROGRESS\nCreated tables:\n${makeTableNames(
+      createTableOutputs.map((output) => output.TableDescription?.TableName),
+    )}\n`,
   );
 }
 
