@@ -27,14 +27,14 @@ export function isRecent(dateString: string): boolean {
 
 /**
  * Formats the input date in YYYY-MM-DD format to dd-MMM format.
- * If displayTemporalPronoun is set to true, then return "yesterday", "today" or "tomorrow" when applicable.
+ * If shouldDisplayTemporalPronoun is set to true, then return "yesterday", "today" or "tomorrow" when applicable.
  */
 export function formatDateDisplay(
   dateString: string,
-  displayTemporalPronoun = false,
+  shouldDisplayTemporalPronoun = false,
 ): string {
   const date = parseISO(dateString);
-  if (displayTemporalPronoun) {
+  if (shouldDisplayTemporalPronoun) {
     if (isYesterday(date)) {
       return t('common.time.yesterday');
     }
@@ -48,6 +48,7 @@ export function formatDateDisplay(
 
   return format(date, t('common.time.date-format'));
 }
+
 export function currentDate(): Date {
   return new Date(Date.now());
 }
