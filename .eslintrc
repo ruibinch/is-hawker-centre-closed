@@ -40,7 +40,7 @@
         "devDependencies": [
           "**/models/*.ts",
           "**/scripts/*.ts",
-          "./src/aws/config.ts"
+          "./src/ext/aws/config.ts"
         ]
       }
     ]

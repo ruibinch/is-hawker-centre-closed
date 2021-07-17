@@ -1,7 +1,7 @@
 import * as AWS from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
 
-import { initAWSConfig } from '../aws/config';
+import { initAWSConfig } from '../ext/aws/config';
 import { sendDiscordMessage } from '../ext/discord';
 import { getAllClosures, ClosureObject } from '../models/Closure';
 import { Feedback } from '../models/Feedback';

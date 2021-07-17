@@ -1,8 +1,8 @@
 import * as AWS from 'aws-sdk';
 import { formatISO } from 'date-fns';
 
-import { initAWSConfig, TABLE_INPUTS } from '../aws/config';
-import { getDynamoDBBillingDetails } from '../aws/dynamodb';
+import { initAWSConfig, TABLE_INPUTS } from '../ext/aws/config';
+import { getDynamoDBBillingDetails } from '../ext/aws/dynamodb';
 import { getStage } from '../utils';
 import { currentDate } from '../utils/date';
 
