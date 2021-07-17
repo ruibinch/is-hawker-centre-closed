@@ -68,7 +68,7 @@ export async function uploadHawkerCentres(
   );
   await sendDiscordMessage(
     `[${getStage()}] SEEDING DB\n` +
-      `Uploaded ${hawkerCentres.length} entries to table "${hcTable}"\n`,
+      `Uploaded ${hawkerCentres.length} entries to table "${hcTable}"`,
   );
 }
 

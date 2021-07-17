@@ -81,7 +81,7 @@ async function createTables() {
       `Error creating the following tables:\n` +
       `${makeListOutput(
         createTableOutputsParsed.filter((result) => !result.success),
-      )}\n`,
+      )}`,
   );
 }
 
@@ -110,7 +110,7 @@ async function deleteTables() {
       `Error deleting the following tables:\n` +
       `${makeListOutput(
         deleteTableOutputsParsed.filter((result) => !result.success),
-      )}\n`,
+      )}`,
   );
 }
 
@@ -148,7 +148,7 @@ async function resetTables() {
         ([tableName, numEntries], idx) =>
           `${idx + 1}. ${tableName} (${numEntries} entries)`,
       )
-      .join('\n')}\n`,
+      .join('\n')}`,
   );
 
   // sleep for 2 secs for deletion process to propagate else creation will throw an error
@@ -172,7 +172,7 @@ async function resetTables() {
       `Error creating the following tables:\n` +
       `${makeListOutput(
         createTableOutputsParsed.filter((result) => !result.success),
-      )}\n`,
+      )}`,
   );
 }
 
