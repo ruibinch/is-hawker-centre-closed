@@ -248,10 +248,11 @@ describe('Search module', () => {
     it('["Next month"] returns all closures occurring in the next month', async () => {
       const inputMessage = 'Next month';
       const expectedMessage =
-        'There are *3* hawker centres that will be closed next month:\n\n' +
+        'There are *4* hawker centres that will be closed next month:\n\n' +
         '*Melville City*\n\\(01\\-Feb to 28\\-Feb; other works\\)\n\n' +
         '*Rustboro City*\n\\(02\\-Feb to 05\\-Feb\\)\n\n' +
-        '*Verdanturf Town*\n\\(08\\-Feb to 09\\-Feb\\)';
+        '*Verdanturf Town*\n\\(08\\-Feb to 09\\-Feb\\)\n\n' +
+        '*Fortree Market*\n\\(11\\-Feb to 25\\-Feb; deep cleaning\\)';
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);

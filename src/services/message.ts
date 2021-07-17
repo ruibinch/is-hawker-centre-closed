@@ -26,7 +26,11 @@ export function makeClosureReasonSnippet(
   switch (reason) {
     case 'others':
       return t('common.hc-item.closure-reason', {
-        reason: t('common.closure-reason.others'),
+        reason: t(`common.closure-reason.others`),
+      });
+    case 'deepCleaning':
+      return t('common.hc-item.closure-reason', {
+        reason: t(`common.closure-reason.deep-cleaning`),
       });
     default:
       return '';

@@ -15,7 +15,7 @@ export type Closure = HawkerCentre & ClosureObject;
 
 export type ClosurePartial = HawkerCentre & Partial<ClosureObject>;
 
-export type ClosureReason = 'cleaning' | 'others';
+export type ClosureReason = 'cleaning' | 'deepCleaning' | 'others';
 
 type HawkerCentreClosureProps = {
   id: string;
@@ -142,5 +142,6 @@ export async function getAllClosures(): Promise<Result<Closure[], AWSError>> {
 }
 
 export function isValidClosureReason(text: string): text is ClosureReason {
-  return text === 'cleaning' || text === 'others';
+  // TODO: explore on improving this
+  return text === 'cleaning' || text === 'deepCleaning' || text === 'others';
 }
