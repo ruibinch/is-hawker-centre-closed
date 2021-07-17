@@ -1,9 +1,5 @@
 import * as Sentry from '@sentry/serverless';
-import {
-  APIGatewayProxyEvent,
-  APIGatewayProxyHandler,
-  APIGatewayProxyResult,
-} from 'aws-lambda';
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import dotenv from 'dotenv';
 
 import { makeCallbackWrapper } from '../aws/lambda';
@@ -18,7 +14,6 @@ import { manageFeedback } from '../services/feedback';
 import { saveInput } from '../services/input';
 import { getUserLanguageCode, manageLanguage } from '../services/language';
 import { makeGenericErrorMessage } from '../services/message';
-import { constructNotifications } from '../services/notifications';
 import { runSearch } from '../services/search';
 import { TelegramMessage } from '../utils/telegram';
 import { BotResponse } from '../utils/types';
@@ -141,25 +136,3 @@ export const bot = Sentry.AWSLambda.wrapHandler(
     }
   },
 );
-
-export const notifications: APIGatewayProxyHandler = async (
-  _event,
-  _context,
-  callback,
-): Promise<APIGatewayProxyResult> => {
-  const callbackWrapper = makeCallbackWrapper(callback);
-
-  const notificationsOutput = await constructNotifications();
-  if (notificationsOutput.err) {
-    return callbackWrapper(400);
-  }
-
-  await Promise.all(
-    notificationsOutput.val.map((notification) => {
-      const { userId: chatId, message } = notification;
-      return sendMessage({ chatId, message });
-    }),
-  );
-
-  return callbackWrapper(204);
-};

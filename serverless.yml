@@ -101,7 +101,7 @@ functions:
           method: post
           path: /bot
   notifications:
-    handler: ${self:custom.botFolder}/handler.notifications
+    handler: ${self:custom.triggersFolder}/notificationsTrigger.handler
     events:
       # runs daily at 22:00 UTC, or 6am SGT
       - schedule: cron(0 22 * * ? *)
