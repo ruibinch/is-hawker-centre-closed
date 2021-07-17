@@ -150,10 +150,12 @@ export const notifications: APIGatewayProxyHandler = async (
     return callbackWrapper(400);
   }
 
-  notificationsOutput.val.forEach((notification) => {
-    const { userId: chatId, message } = notification;
-    sendMessage({ chatId, message });
-  });
+  await Promise.all(
+    notificationsOutput.val.map((notification) => {
+      const { userId: chatId, message } = notification;
+      return sendMessage({ chatId, message });
+    }),
+  );
 
   return callbackWrapper(204);
 };
