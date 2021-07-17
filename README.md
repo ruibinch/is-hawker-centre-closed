@@ -31,6 +31,7 @@ TABLE_CLOSURES=ihcc-closures
 TABLE_HC=ihcc-hawkerCentres
 TABLE_USERS=ihcc-users
 TABLE_FEEDBACK=ihcc-feedback
+TABLE_INPUTS=ihcc-inputs
 ```
 
 ## Setup
@@ -41,7 +42,7 @@ TABLE_FEEDBACK=ihcc-feedback
 # 1. Initialise DynamoDB
 yarn init:db
 
-# 2. Deploy Lambda functions
+# 2. Deploy Lambda functions to dev and prod envs
 yarn deploy:all
 
 # 3. Update APIG_* values in .env
@@ -68,15 +69,16 @@ This script executes 2 other scripts:
 
 1. `yarn run:db:{{env}}:create`
 
-   - Creates 4 tables in the specified region in the dev and prod environments:
+   - Creates 5 tables in the specified region in the dev and prod environments:
      1. CLOSURES
      1. HC
      1. USERS
      1. FEEDBACK
+     1. INPUTS
 
 2. `yarn run:db:{{env}}:seed`
 
-   - Populates the CLOSURES and HC tables in the dev and prod environments with the latest values obtained from data.gov.sg API.
+   - Populates the CLOSURES and HC tables in the dev and prod environments with the latest values obtained from data.gov.sg API
 
 ### Deploying Lambda functions
 
