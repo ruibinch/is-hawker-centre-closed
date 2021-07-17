@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.6.0] - 2021-07-17
+
+### Added
+
+- "deep cleaning" closure reason
+
 ## [0.5.0] - 2021-06-26
 
 ### Added
