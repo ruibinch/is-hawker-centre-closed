@@ -54,3 +54,15 @@ export const assertBotResponse = (
 
   expect(spy).toHaveBeenCalledWith(expect.objectContaining(expectedObject));
 };
+
+export const assertInputSaved = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  spy: jest.SpyInstance<any, any>,
+  inputMessage: string,
+): void => {
+  expect(spy).toHaveBeenCalledWith(
+    expect.objectContaining({
+      text: inputMessage,
+    }),
+  );
+};

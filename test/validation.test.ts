@@ -8,6 +8,7 @@ import { Err } from 'ts-results';
 import { bot } from '../src/bot/handler';
 import * as sender from '../src/bot/sender';
 import { AWSError } from '../src/errors/AWSError';
+import * as InputFile from '../src/models/Input';
 import * as UserFile from '../src/models/User';
 import * as searchFeature from '../src/services/search';
 import { assertBotResponse, makeBotWrapper } from './helpers/bot';
@@ -15,8 +16,10 @@ import { assertBotResponse, makeBotWrapper } from './helpers/bot';
 describe('Validation module', () => {
   const mockCallback = jest.fn();
   const callBot = makeBotWrapper(mockCallback);
+
   let sendMessageSpy: jest.SpyInstance;
   let getUserByIdSpy: jest.SpyInstance;
+  let addInputToDBSpy: jest.SpyInstance;
 
   beforeAll(() => {
     getUserByIdSpy = jest
@@ -26,14 +29,19 @@ describe('Validation module', () => {
 
   beforeEach(() => {
     sendMessageSpy = jest.spyOn(sender, 'sendMessage').mockImplementation();
+    addInputToDBSpy = jest
+      .spyOn(InputFile, 'addInputToDB')
+      .mockImplementation(() => Promise.resolve());
   });
 
   afterEach(() => {
     sendMessageSpy.mockRestore();
+    addInputToDBSpy.mockRestore();
   });
 
   afterAll(() => {
     mockCallback.mockRestore();
+
     getUserByIdSpy.mockRestore();
   });
 
@@ -44,6 +52,7 @@ describe('Validation module', () => {
         'Please try again with a text message\\.';
 
       await callBot('😊');
+      expect(addInputToDBSpy).not.toHaveBeenCalled();
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
@@ -53,6 +62,7 @@ describe('Validation module', () => {
         'Please try again with a text message\\.';
 
       await callBot('!@#$%^&*{}[]<>,.?\\|:;"-+=');
+      expect(addInputToDBSpy).not.toHaveBeenCalled();
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
@@ -65,6 +75,7 @@ describe('Validation module', () => {
         animation: { file: 'value' },
         document: { file: 'value' },
       });
+      expect(addInputToDBSpy).not.toHaveBeenCalled();
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
@@ -76,6 +87,7 @@ describe('Validation module', () => {
       await callBot(undefined, {
         animation: { file: 'value' },
       });
+      expect(addInputToDBSpy).not.toHaveBeenCalled();
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
@@ -87,6 +99,7 @@ describe('Validation module', () => {
       await callBot(undefined, {
         audio: { file: 'value' },
       });
+      expect(addInputToDBSpy).not.toHaveBeenCalled();
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
@@ -98,6 +111,7 @@ describe('Validation module', () => {
       await callBot(undefined, {
         voice: { file: 'value' },
       });
+      expect(addInputToDBSpy).not.toHaveBeenCalled();
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
@@ -109,6 +123,7 @@ describe('Validation module', () => {
       await callBot(undefined, {
         document: { file: 'value' },
       });
+      expect(addInputToDBSpy).not.toHaveBeenCalled();
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
@@ -120,6 +135,7 @@ describe('Validation module', () => {
       await callBot(undefined, {
         location: { file: 'value' },
       });
+      expect(addInputToDBSpy).not.toHaveBeenCalled();
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
@@ -131,6 +147,7 @@ describe('Validation module', () => {
       await callBot(undefined, {
         photo: { file: 'value' },
       });
+      expect(addInputToDBSpy).not.toHaveBeenCalled();
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
@@ -142,6 +159,7 @@ describe('Validation module', () => {
       await callBot(undefined, {
         sticker: { file: 'value' },
       });
+      expect(addInputToDBSpy).not.toHaveBeenCalled();
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
@@ -153,6 +171,7 @@ describe('Validation module', () => {
       await callBot(undefined, {
         video: { file: 'value' },
       });
+      expect(addInputToDBSpy).not.toHaveBeenCalled();
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
@@ -164,6 +183,7 @@ describe('Validation module', () => {
       await callBot(undefined, {
         contact: { file: 'value' },
       });
+      expect(addInputToDBSpy).not.toHaveBeenCalled();
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
   });
