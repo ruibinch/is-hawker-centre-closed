@@ -5,6 +5,7 @@ import { sendDiscordMessage } from '../ext/discord';
 import { getAllClosures, ClosureObject } from '../models/Closure';
 import { Feedback } from '../models/Feedback';
 import { getAllHawkerCentres, HawkerCentre } from '../models/HawkerCentre';
+import { Input } from '../models/Input';
 import { User } from '../models/User';
 import { getStage, notEmpty, sleep } from '../utils';
 
@@ -22,58 +23,34 @@ function makeTableNames(tableNames: (string | undefined)[]) {
 }
 
 async function createTables() {
-  const closuresTableCreateOutput = await dynamoDb
-    .createTable(ClosureObject.getSchema())
-    .promise();
-  const hawkerCentreTableCreateOutput = await dynamoDb
-    .createTable(HawkerCentre.getSchema())
-    .promise();
-  const userTableCreateOutput = await dynamoDb
-    .createTable(User.getSchema())
-    .promise();
-  const feedbackTableCreateOutput = await dynamoDb
-    .createTable(Feedback.getSchema())
-    .promise();
+  const createTableOutputs = await Promise.all([
+    dynamoDb.createTable(ClosureObject.getSchema()).promise(),
+    dynamoDb.createTable(HawkerCentre.getSchema()).promise(),
+    dynamoDb.createTable(User.getSchema()).promise(),
+    dynamoDb.createTable(Feedback.getSchema()).promise(),
+    dynamoDb.createTable(Input.getSchema()).promise(),
+  ]);
 
   await sendDiscordMessage(
-    `[${getStage()}] DB TABLES CREATED\n${makeTableNames([
-      closuresTableCreateOutput.TableDescription?.TableName,
-      hawkerCentreTableCreateOutput.TableDescription?.TableName,
-      userTableCreateOutput.TableDescription?.TableName,
-      feedbackTableCreateOutput.TableDescription?.TableName,
-    ])}\n`,
+    `[${getStage()}] DB TABLES CREATED\n${makeTableNames(
+      createTableOutputs.map((output) => output.TableDescription?.TableName),
+    )}\n`,
   );
 }
 
 async function deleteTables() {
-  const closuresTableDeleteOutput = await dynamoDb
-    .deleteTable({
-      TableName: ClosureObject.getTableName(),
-    })
-    .promise();
-  const hawkerCentreTableDeleteOutput = await dynamoDb
-    .deleteTable({
-      TableName: HawkerCentre.getTableName(),
-    })
-    .promise();
-  const userTableDeleteOutput = await dynamoDb
-    .deleteTable({
-      TableName: User.getTableName(),
-    })
-    .promise();
-  const feedbackTableDeleteOutput = await dynamoDb
-    .deleteTable({
-      TableName: Feedback.getTableName(),
-    })
-    .promise();
+  const deleteTableOutputs = await Promise.all([
+    dynamoDb.deleteTable({ TableName: ClosureObject.getTableName() }).promise(),
+    dynamoDb.deleteTable({ TableName: HawkerCentre.getTableName() }).promise(),
+    dynamoDb.deleteTable({ TableName: User.getTableName() }).promise(),
+    dynamoDb.deleteTable({ TableName: Feedback.getTableName() }).promise(),
+    dynamoDb.deleteTable({ TableName: Input.getTableName() }).promise(),
+  ]);
 
   await sendDiscordMessage(
-    `[${getStage()}] DB TABLES DELETED\n${makeTableNames([
-      closuresTableDeleteOutput.TableDescription?.TableName,
-      hawkerCentreTableDeleteOutput.TableDescription?.TableName,
-      userTableDeleteOutput.TableDescription?.TableName,
-      feedbackTableDeleteOutput.TableDescription?.TableName,
-    ])}\n`,
+    `[${getStage()}] DB TABLES DELETED\n${makeTableNames(
+      deleteTableOutputs.map((output) => output.TableDescription?.TableName),
+    )}\n`,
   );
 }
 
