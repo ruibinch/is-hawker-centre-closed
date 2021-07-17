@@ -58,9 +58,7 @@ async function restoreBackup(tableName: string) {
   }
 
   const deleteOutput = await dynamoDb
-    .deleteTable({
-      TableName: fullTableName,
-    })
+    .deleteTable({ TableName: fullTableName })
     .promise();
   await sendDiscordMessage(
     makeInProgressMessage(

@@ -100,11 +100,7 @@ async function deleteBackups() {
 
   const responses = await Promise.all(
     backupsToDelete.map((backupARN) =>
-      dynamoDb
-        .deleteBackup({
-          BackupArn: backupARN,
-        })
-        .promise(),
+      dynamoDb.deleteBackup({ BackupArn: backupARN }).promise(),
     ),
   );
 

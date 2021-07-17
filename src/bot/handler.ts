@@ -15,6 +15,7 @@ import {
   manageFavourites,
 } from '../services/favourites';
 import { manageFeedback } from '../services/feedback';
+import { saveInput } from '../services/input';
 import { getUserLanguageCode, manageLanguage } from '../services/language';
 import { makeGenericErrorMessage } from '../services/message';
 import { constructNotifications } from '../services/notifications';
@@ -69,6 +70,9 @@ export const bot = Sentry.AWSLambda.wrapHandler(
       }
 
       const { textSanitised } = validationResponse.val;
+
+      // tmp: save all incoming inputs for now for better usage understanding
+      await saveInput(textSanitised, telegramUser);
 
       if (isCommand(textSanitised)) {
         const commandMessage = makeCommandMessage(textSanitised);

@@ -6,6 +6,7 @@ import * as sender from '../src/bot/sender';
 import { AWSError } from '../src/errors/AWSError';
 import * as ClosureFile from '../src/models/Closure';
 import * as HawkerCentreFile from '../src/models/HawkerCentre';
+import * as InputFile from '../src/models/Input';
 import * as UserFile from '../src/models/User';
 import * as favouritesIndex from '../src/services/favourites/index';
 import * as feedbackIndex from '../src/services/feedback/index';
@@ -18,7 +19,11 @@ import {
   mockUserWithNoFavs,
   mockUserWithOneFav,
 } from './__mocks__/db';
-import { assertBotResponse, makeBotWrapper } from './helpers/bot';
+import {
+  assertBotResponse,
+  assertInputSaved,
+  makeBotWrapper,
+} from './helpers/bot';
 
 describe('Favourites module', () => {
   const mockCallback = jest.fn();
@@ -36,6 +41,7 @@ describe('Favourites module', () => {
   let updateUserInFavouritesModeSpy: jest.SpyInstance;
   let updateUserNotificationsSpy: jest.SpyInstance;
   let getAllClosuresSpy: jest.SpyInstance;
+  let addInputToDBSpy: jest.SpyInstance;
 
   beforeAll(() => {
     dateSpy = jest
@@ -45,15 +51,12 @@ describe('Favourites module', () => {
     getAllHawkerCentresSpy = jest
       .spyOn(HawkerCentreFile, 'getAllHawkerCentres')
       .mockImplementation(() => Promise.resolve(Ok(mockHawkerCentres)));
-
     getHawkerCentreByIdSpy = jest
       .spyOn(HawkerCentreFile, 'getHawkerCentreById')
       .mockImplementation(() => Promise.resolve(Ok(mockHawkerCentres[0])));
-
     getUserByIdSpy = jest
       .spyOn(UserFile, 'getUserById')
       .mockImplementation(() => Promise.resolve(Ok(mockUser)));
-
     getAllClosuresSpy = jest
       .spyOn(ClosureFile, 'getAllClosures')
       .mockImplementation(() => Promise.resolve(Ok(mockClosures)));
@@ -74,6 +77,9 @@ describe('Favourites module', () => {
     updateUserNotificationsSpy = jest
       .spyOn(UserFile, 'updateUserNotifications')
       .mockImplementation(() => Promise.resolve());
+    addInputToDBSpy = jest
+      .spyOn(InputFile, 'addInputToDB')
+      .mockImplementation(() => Promise.resolve());
   });
 
   afterEach(() => {
@@ -83,6 +89,7 @@ describe('Favourites module', () => {
     updateUserFavouritesSpy.mockRestore();
     updateUserInFavouritesModeSpy.mockRestore();
     updateUserNotificationsSpy.mockRestore();
+    addInputToDBSpy.mockRestore();
   });
 
   afterAll(() => {
@@ -97,31 +104,37 @@ describe('Favourites module', () => {
 
   describe('empty commands', () => {
     it('["/fav"] returns the explanatory message', async () => {
+      const inputMessage = '/fav';
       const expectedMessage =
         'Please specify some keyword to filter the list of hawker centres for you to add to your favourites\\.\n\n' +
         'e\\.g\\. _/fav bedok_';
 
-      await callBot('/fav');
+      await callBot(inputMessage);
+      assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
     it('["/del"] returns the explanatory message', async () => {
+      const inputMessage = '/del';
       const expectedMessage =
         'To delete a favourite hawker centre, specify an index number based on the favourites list displayed by the /list command\\.\n\n' +
         'e\\.g\\. _/del 3_';
 
-      await callBot('/del');
+      await callBot(inputMessage);
+      assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
   });
 
   describe('searching for a favourite hawker centre', () => {
     it('["/fav oldale"] returns a single result, and sets isInFavouritesMode to true', async () => {
+      const inputMessage = '/fav oldale';
       const expectedMessage =
         'Confirm that this is the hawker centre to be added?';
       const expectedChoices = ['Oldale Town'];
 
-      await callBot('/fav oldale');
+      await callBot(inputMessage);
+      assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(
         sendMessageWithChoicesSpy,
         expectedMessage,
@@ -132,10 +145,12 @@ describe('Favourites module', () => {
     });
 
     it('["/fav fortree"] returns multiple choices for selection, and sets isInFavouritesMode to true', async () => {
+      const inputMessage = '/fav fortree';
       const expectedMessage = 'Choose your favourite hawker centre:';
       const expectedChoices = ['Fortree Market', 'Fortree Gym'];
 
-      await callBot('/fav fortree');
+      await callBot(inputMessage);
+      assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(
         sendMessageWithChoicesSpy,
         expectedMessage,
@@ -146,11 +161,13 @@ describe('Favourites module', () => {
     });
 
     it('["/fav psychic"] searches on secondary name, and sets isInFavouritesMode to true', async () => {
+      const inputMessage = '/fav psychic';
       const expectedMessage =
         'Confirm that this is the hawker centre to be added?';
       const expectedChoices = ['Mossdeep Gym'];
 
-      await callBot('/fav psychic');
+      await callBot(inputMessage);
+      assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(
         sendMessageWithChoicesSpy,
         expectedMessage,
@@ -161,11 +178,13 @@ describe('Favourites module', () => {
     });
 
     it('["/fav melville 118"] searches across multiple words, and sets isInFavouritesMode to true', async () => {
+      const inputMessage = '/fav melville 118';
       const expectedMessage =
         'Confirm that this is the hawker centre to be added?';
       const expectedChoices = ['Route 118 near Melville City'];
 
-      await callBot('/fav melville 118');
+      await callBot(inputMessage);
+      assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(
         sendMessageWithChoicesSpy,
         expectedMessage,
@@ -176,20 +195,24 @@ describe('Favourites module', () => {
     });
 
     it('["/fav lilycove"] returns an error message when there are no results', async () => {
+      const inputMessage = '/fav lilycove';
       const expectedMessage =
         'No results found for keyword *lilycove*\\. Try again?';
 
-      await callBot('/fav lilycove');
+      await callBot(inputMessage);
+      assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
 
       expect(updateUserInFavouritesModeSpy).not.toHaveBeenCalled();
     });
 
     it('["/fav gym"] returns an error message when there are too many results', async () => {
+      const inputMessage = '/fav gym';
       const expectedMessage =
         'Too many results to be displayed, please further refine your search\\.';
 
-      await callBot('/fav gym');
+      await callBot(inputMessage);
+      assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
 
       expect(updateUserInFavouritesModeSpy).not.toHaveBeenCalled();
@@ -209,10 +232,12 @@ describe('Favourites module', () => {
 
     describe('adding a favourite hawker centre', () => {
       it('["/fav Slateport Market"] an exact match will add it to the favourites list', async () => {
+        const inputMessage = '/fav Slateport Market';
         const expectedMessage =
           'Great, adding *Slateport Market* to your list of favourites\\!';
 
-        await callBot('/fav Slateport Market');
+        await callBot(inputMessage);
+        assertInputSaved(addInputToDBSpy, inputMessage);
         assertBotResponse(sendMessageSpy, expectedMessage);
 
         expect(updateUserInFavouritesModeSpy).not.toHaveBeenCalled();
@@ -228,10 +253,12 @@ describe('Favourites module', () => {
       });
 
       it('["/fav Verdanturf Town"] returns a duplicate error message when hawker centre is already in the favourites list', async () => {
+        const inputMessage = '/fav Verdanturf Town';
         const expectedMessage =
           '*Verdanturf Town* is already in your favourites list\\!';
 
-        await callBot('/fav Verdanturf Town');
+        await callBot(inputMessage);
+        assertInputSaved(addInputToDBSpy, inputMessage);
         assertBotResponse(sendMessageSpy, expectedMessage);
 
         expect(updateUserInFavouritesModeSpy).not.toHaveBeenCalled();
@@ -241,10 +268,12 @@ describe('Favourites module', () => {
 
     describe('deleting a favourite hawker centre', () => {
       it('["/del 1"] (Littleroot Town) successfully deletes the hawker centre from the favourites list', async () => {
+        const inputMessage = '/del 1';
         const expectedMessage =
           '*Littleroot Town* has been deleted from your list of favourites\\.';
 
-        await callBot('/del 1');
+        await callBot(inputMessage);
+        assertInputSaved(addInputToDBSpy, inputMessage);
         assertBotResponse(sendMessageSpy, expectedMessage);
 
         expect(updateUserFavouritesSpy).toHaveBeenCalledWith(
@@ -259,33 +288,39 @@ describe('Favourites module', () => {
       });
 
       it('["/del 0"] (invalid) returns an error message when index number is out of bounds', async () => {
+        const inputMessage = '/del 0';
         const expectedMessage =
           'That is not a valid index number\\. ' +
           'Try again with a value from 1 to 3\\.';
 
-        await callBot('/del 0');
+        await callBot(inputMessage);
+        assertInputSaved(addInputToDBSpy, inputMessage);
         assertBotResponse(sendMessageSpy, expectedMessage);
 
         expect(updateUserFavouritesSpy).not.toHaveBeenCalled();
       });
 
       it('["/del 5"] (invalid) returns an error message when index number is out of bounds', async () => {
+        const inputMessage = '/del 5';
         const expectedMessage =
           'That is not a valid index number\\. ' +
           'Try again with a value from 1 to 3\\.';
 
-        await callBot('/del 5');
+        await callBot(inputMessage);
+        assertInputSaved(addInputToDBSpy, inputMessage);
         assertBotResponse(sendMessageSpy, expectedMessage);
 
         expect(updateUserFavouritesSpy).not.toHaveBeenCalled();
       });
 
       it('["/del invalidValue"] (invalid) returns an error message when index number is not a valid number', async () => {
+        const inputMessage = '/del invalidValue';
         const expectedMessage =
           'That is not a valid index number\\. ' +
           'Try again with a value from 1 to 3\\.';
 
-        await callBot('/del invalidValue');
+        await callBot(inputMessage);
+        assertInputSaved(addInputToDBSpy, inputMessage);
         assertBotResponse(sendMessageSpy, expectedMessage);
 
         expect(updateUserFavouritesSpy).not.toHaveBeenCalled();
@@ -294,6 +329,7 @@ describe('Favourites module', () => {
 
     describe("getting list of user's favourites", () => {
       it('["/list"] correctly returns the user\'s favourite hawker centres with results', async () => {
+        const inputMessage = '/list';
         const expectedMessage =
           'Your favourite hawker centres and their next closure dates are:\n\n' +
           '1\\. *Littleroot Town*\n' +
@@ -302,44 +338,53 @@ describe('Favourites module', () => {
           '3\\. *Mossdeep Gym*\n' +
           '    _\\(today\\)_';
 
-        await callBot('/list');
+        await callBot(inputMessage);
+        assertInputSaved(addInputToDBSpy, inputMessage);
         assertBotResponse(sendMessageSpy, expectedMessage);
       });
     });
 
     describe('viewing/toggling the notification setting', () => {
       it('["/notify"] returns the user\'s current notification setting', async () => {
+        const inputMessage = '/notify';
         const expectedMessage =
           'Your notification setting is currently on\\.\n\n' +
           'To turn it off, type in "_/notify off_"\\.';
 
-        await callBot('/notify');
+        await callBot(inputMessage);
+        assertInputSaved(addInputToDBSpy, inputMessage);
         assertBotResponse(sendMessageSpy, expectedMessage);
       });
 
       it('["/notify on"] sets the user\'s notification setting to on', async () => {
+        const inputMessage = '/notify on';
         const expectedMessage = 'Notifications are now *on*\\.';
 
-        await callBot('/notify on');
+        await callBot(inputMessage);
+        assertInputSaved(addInputToDBSpy, inputMessage);
         assertBotResponse(sendMessageSpy, expectedMessage);
 
         expect(updateUserNotificationsSpy).toHaveBeenCalledWith(1, true);
       });
 
       it('["/notify off"] sets the user\'s notification setting to off', async () => {
+        const inputMessage = '/notify off';
         const expectedMessage = 'Notifications are now *off*\\.';
 
-        await callBot('/notify off');
+        await callBot(inputMessage);
+        assertInputSaved(addInputToDBSpy, inputMessage);
         assertBotResponse(sendMessageSpy, expectedMessage);
 
         expect(updateUserNotificationsSpy).toHaveBeenCalledWith(1, false);
       });
 
       it('["/notify invalidValue"] returns an error message when notification keyword is invalid', async () => {
+        const inputMessage = '/notify invalidValue';
         const expectedMessage =
           'Invalid toggle keyword\\.\nPlease try again with either _on_ or _off_\\.';
 
-        await callBot('/notify invalidValue');
+        await callBot(inputMessage);
+        assertInputSaved(addInputToDBSpy, inputMessage);
         assertBotResponse(sendMessageSpy, expectedMessage);
 
         expect(updateUserNotificationsSpy).not.toHaveBeenCalledWith();
@@ -360,11 +405,13 @@ describe('Favourites module', () => {
 
     describe('deleting a favourite hawker centre', () => {
       it('["/del 0"] (invalid) returns an error message stating that there is only one valid value when index number is out of bounds', async () => {
+        const inputMessage = '/del 0';
         const expectedMessage =
           'That is not a valid index number\\. ' +
           'The only valid value is 1\\.';
 
-        await callBot('/del 0');
+        await callBot(inputMessage);
+        assertInputSaved(addInputToDBSpy, inputMessage);
         assertBotResponse(sendMessageSpy, expectedMessage);
 
         expect(updateUserFavouritesSpy).not.toHaveBeenCalled();
@@ -385,20 +432,24 @@ describe('Favourites module', () => {
 
     describe("getting list of user's favourites", () => {
       it('["/list"] returns a message prompting to add some favourites', async () => {
+        const inputMessage = '/list';
         const expectedMessage =
           "You've not added any favourites yet\\. Try adding some using the /fav command\\.";
 
-        await callBot('/list');
+        await callBot(inputMessage);
+        assertInputSaved(addInputToDBSpy, inputMessage);
         assertBotResponse(sendMessageSpy, expectedMessage);
       });
     });
 
     describe('deleting a favourite hawker centre', () => {
       it('["/del 0"] returns a message prompting to add some favourites', async () => {
+        const inputMessage = '/del 0';
         const expectedMessage =
           "You've not added any favourites yet\\. Try adding some using the /fav command\\.";
 
-        await callBot('/del 0');
+        await callBot(inputMessage);
+        assertInputSaved(addInputToDBSpy, inputMessage);
         assertBotResponse(sendMessageSpy, expectedMessage);
 
         expect(updateUserFavouritesSpy).not.toHaveBeenCalled();
@@ -407,11 +458,13 @@ describe('Favourites module', () => {
 
     describe('viewing the notification setting', () => {
       it('["/notify"] returns the user\'s current notification setting', async () => {
+        const inputMessage = '/notify';
         const expectedMessage =
           'Your notification setting is currently off\\.\n\n' +
           'To turn it on, type in "_/notify on_"\\.';
 
-        await callBot('/notify');
+        await callBot(inputMessage);
+        assertInputSaved(addInputToDBSpy, inputMessage);
         assertBotResponse(sendMessageSpy, expectedMessage);
       });
     });
@@ -442,10 +495,12 @@ describe('Favourites module', () => {
 
     describe('adding a favourite hawker centre', () => {
       it('["/fav Slateport Market"] creates a new user with the saved favourite', async () => {
+        const inputMessage = '/fav Slateport Market';
         const expectedMessage =
           'Great, adding *Slateport Market* to your list of favourites\\!';
 
-        await callBot('/fav Slateport Market');
+        await callBot(inputMessage);
+        assertInputSaved(addInputToDBSpy, inputMessage);
         assertBotResponse(sendMessageSpy, expectedMessage);
 
         expect(updateUserInFavouritesModeSpy).not.toHaveBeenCalled();
@@ -466,11 +521,13 @@ describe('Favourites module', () => {
       });
 
       it('["/fav oldale"] returns a single result, and creates a new user with isInFavouritesMode set to true', async () => {
+        const inputMessage = '/fav oldale';
         const expectedMessage =
           'Confirm that this is the hawker centre to be added?';
         const expectedChoices = ['Oldale Town'];
 
-        await callBot('/fav oldale');
+        await callBot(inputMessage);
+        assertInputSaved(addInputToDBSpy, inputMessage);
         assertBotResponse(
           sendMessageWithChoicesSpy,
           expectedMessage,
@@ -492,20 +549,24 @@ describe('Favourites module', () => {
 
     describe("getting list of user's favourites", () => {
       it('["/list"] returns a message prompting to add some favourites', async () => {
+        const inputMessage = '/list';
         const expectedMessage =
           "You've not added any favourites yet\\. Try adding some using the /fav command\\.";
 
-        await callBot('/list');
+        await callBot(inputMessage);
+        assertInputSaved(addInputToDBSpy, inputMessage);
         assertBotResponse(sendMessageSpy, expectedMessage);
       });
     });
 
     describe('deleting a favourite hawker centre', () => {
       it('["/del 0"] returns a message prompting to add some favourites', async () => {
+        const inputMessage = '/del 0';
         const expectedMessage =
           "You've not added any favourites yet\\. Try adding some using the /fav command\\.";
 
-        await callBot('/del 0');
+        await callBot(inputMessage);
+        assertInputSaved(addInputToDBSpy, inputMessage);
         assertBotResponse(sendMessageSpy, expectedMessage);
 
         expect(updateUserFavouritesSpy).not.toHaveBeenCalled();
@@ -514,19 +575,23 @@ describe('Favourites module', () => {
 
     describe('viewing/toggling the notification setting', () => {
       it('["/notify"] returns an error message when no notification setting is specified', async () => {
+        const inputMessage = '/notify';
         const expectedMessage =
           'You currently do not have a notification setting specified\\.\n\n' +
           'To toggle your notification setting, specify either the _on_ or _off_ keyword\\.\n' +
           'e\\.g\\. _/notify on_';
 
-        await callBot('/notify');
+        await callBot(inputMessage);
+        assertInputSaved(addInputToDBSpy, inputMessage);
         assertBotResponse(sendMessageSpy, expectedMessage);
       });
 
       it('["/notify on"] creates a new user with notification setting set to on', async () => {
+        const inputMessage = '/notify on';
         const expectedMessage = 'Notifications are now *on*\\.';
 
-        await callBot('/notify on');
+        await callBot(inputMessage);
+        assertInputSaved(addInputToDBSpy, inputMessage);
         assertBotResponse(sendMessageSpy, expectedMessage);
 
         expect(updateUserNotificationsSpy).not.toHaveBeenCalledWith();
@@ -542,9 +607,11 @@ describe('Favourites module', () => {
       });
 
       it('["/notify off"] creates a new user with notification setting set to off', async () => {
+        const inputMessage = '/notify off';
         const expectedMessage = 'Notifications are now *off*\\.';
 
-        await callBot('/notify off');
+        await callBot(inputMessage);
+        assertInputSaved(addInputToDBSpy, inputMessage);
         assertBotResponse(sendMessageSpy, expectedMessage);
 
         expect(updateUserNotificationsSpy).not.toHaveBeenCalledWith();
@@ -574,10 +641,12 @@ describe('Favourites module', () => {
 
     describe('user selects one of the displayed choices', () => {
       it('["Sootopolis Gym"] adds to the favourites list', async () => {
+        const inputMessage = 'Sootopolis Gym';
         const expectedMessage =
           'Great, adding *Sootopolis Gym* to your list of favourites\\!';
 
-        await callBot('Sootopolis Gym');
+        await callBot(inputMessage);
+        assertInputSaved(addInputToDBSpy, inputMessage);
         assertBotResponse(sendMessageSpy, expectedMessage);
 
         expect(updateUserInFavouritesModeSpy).toHaveBeenCalledWith(1, false);
@@ -617,43 +686,55 @@ describe('Favourites module', () => {
       });
 
       it('["sootopolis"] performs a normal search query', async () => {
-        await callBot('sootopolis');
+        const inputMessage = 'sootopolis';
+        await callBot(inputMessage);
 
+        assertInputSaved(addInputToDBSpy, inputMessage);
         expect(updateUserInFavouritesModeSpy).toHaveBeenCalledWith(1, false);
         expect(runSearchSpy).toHaveBeenCalled();
       });
 
       it('["/fav lavaridge"] performs a normal /fav command', async () => {
-        await callBot('/fav lavaridge');
+        const inputMessage = '/fav lavaridge';
+        await callBot(inputMessage);
 
+        assertInputSaved(addInputToDBSpy, inputMessage);
         expect(updateUserInFavouritesModeSpy).toHaveBeenCalledWith(1, false);
         expect(manageFavouritesSpy).toHaveBeenCalled();
       });
 
       it('["/del 1"] performs a normal /del command', async () => {
-        await callBot('/del 2');
+        const inputMessage = '/del 2';
+        await callBot(inputMessage);
 
+        assertInputSaved(addInputToDBSpy, inputMessage);
         expect(updateUserInFavouritesModeSpy).toHaveBeenCalledWith(1, false);
         expect(manageFavouritesSpy).toHaveBeenCalled();
       });
 
       it('["/list"] performs a normal /list command', async () => {
-        await callBot('/list');
+        const inputMessage = '/list';
+        await callBot(inputMessage);
 
+        assertInputSaved(addInputToDBSpy, inputMessage);
         expect(updateUserInFavouritesModeSpy).toHaveBeenCalledWith(1, false);
         expect(manageFavouritesSpy).toHaveBeenCalled();
       });
 
       it('["/notify"] performs a normal /notify command', async () => {
-        await callBot('/notify');
+        const inputMessage = '/notify';
+        await callBot(inputMessage);
 
+        assertInputSaved(addInputToDBSpy, inputMessage);
         expect(updateUserInFavouritesModeSpy).toHaveBeenCalledWith(1, false);
         expect(manageFavouritesSpy).toHaveBeenCalled();
       });
 
       it('["/feedback great job"] performs a normal /feedback command', async () => {
-        await callBot('/feedback great job');
+        const inputMessage = '/feedback great job';
+        await callBot(inputMessage);
 
+        assertInputSaved(addInputToDBSpy, inputMessage);
         expect(updateUserInFavouritesModeSpy).toHaveBeenCalledWith(1, false);
         expect(manageFeedbackSpy).toHaveBeenCalled();
       });

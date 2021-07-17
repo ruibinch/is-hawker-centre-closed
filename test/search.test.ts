@@ -5,10 +5,15 @@ import { Err, Ok } from 'ts-results';
 import * as sender from '../src/bot/sender';
 import { AWSError } from '../src/errors/AWSError';
 import * as ClosureFile from '../src/models/Closure';
+import * as InputFile from '../src/models/Input';
 import * as UserFile from '../src/models/User';
 import * as favouritesIndex from '../src/services/favourites/index';
 import { mockClosures } from './__mocks__/db';
-import { assertBotResponse, makeBotWrapper } from './helpers/bot';
+import {
+  assertBotResponse,
+  assertInputSaved,
+  makeBotWrapper,
+} from './helpers/bot';
 
 describe('Search module', () => {
   const mockCallback = jest.fn();
@@ -19,16 +24,15 @@ describe('Search module', () => {
   let getUserByIdSpy: jest.SpyInstance;
   let maybeHandleFavouriteSelectionSpy: jest.SpyInstance;
   let getAllClosuresSpy: jest.SpyInstance;
+  let addInputToDBSpy: jest.SpyInstance;
 
   beforeAll(() => {
     getUserByIdSpy = jest
       .spyOn(UserFile, 'getUserById')
       .mockImplementation(() => Promise.resolve(Err(new AWSError())));
-
     maybeHandleFavouriteSelectionSpy = jest
       .spyOn(favouritesIndex, 'maybeHandleFavouriteSelection')
       .mockImplementation(() => Promise.resolve(Err.EMPTY));
-
     getAllClosuresSpy = jest
       .spyOn(ClosureFile, 'getAllClosures')
       .mockImplementation(() => Promise.resolve(Ok(mockClosures)));
@@ -36,15 +40,20 @@ describe('Search module', () => {
 
   beforeEach(() => {
     sendMessageSpy = jest.spyOn(sender, 'sendMessage').mockImplementation();
+    addInputToDBSpy = jest
+      .spyOn(InputFile, 'addInputToDB')
+      .mockImplementation(() => Promise.resolve());
   });
 
   afterEach(() => {
     sendMessageSpy.mockRestore();
+    addInputToDBSpy.mockRestore();
   });
 
   afterAll(() => {
     mockCallback.mockRestore();
     dateSpy.mockRestore();
+
     getUserByIdSpy.mockRestore();
     maybeHandleFavouriteSelectionSpy.mockRestore();
     getAllClosuresSpy.mockRestore();
@@ -62,139 +71,168 @@ describe('Search module', () => {
     });
 
     it('["littleroot"] returns a single closure occurring today', async () => {
+      const inputMessage = 'littleroot';
       const expectedMessage =
         'Here are the hawker centres containing the keyword *littleroot* that are closed today:\n\n' +
         '*Littleroot Town*\n\\(today to tomorrow\\)';
 
-      await callBot('littleroot');
+      await callBot(inputMessage);
+      assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
     it('["littleroot today"] returns a single closure occurring today', async () => {
+      const inputMessage = 'littleroot today';
       const expectedMessage =
         'Here are the hawker centres containing the keyword *littleroot* that are closed today:\n\n' +
         '*Littleroot Town*\n\\(today to tomorrow\\)';
 
-      await callBot('littleroot today');
+      await callBot(inputMessage);
+      assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
     it('["rustboro"] does not return any closure if there is no closure occurring today', async () => {
+      const inputMessage = 'rustboro';
       const expectedMessage =
         'All good\\! No hawker centres containing the keyword *rustboro* are undergoing cleaning today\\.';
 
-      await callBot('rustboro');
+      await callBot(inputMessage);
+      assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
     it('["slateport tmr"] returns all closures occurring tomorrow', async () => {
+      const inputMessage = 'slateport tmr';
       const expectedMessage =
         'Here are the hawker centres containing the keyword *slateport* that will be closed tomorrow:\n\n' +
         '*Slateport City*\n\\(tomorrow\\)';
 
-      await callBot('slateport tmr');
+      await callBot(inputMessage);
+      assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
     it('["slateport tomorrow"] returns all closures occurring tomorrow', async () => {
+      const inputMessage = 'slateport tomorrow';
       const expectedMessage =
         'Here are the hawker centres containing the keyword *slateport* that will be closed tomorrow:\n\n' +
         '*Slateport City*\n\\(tomorrow\\)';
 
-      await callBot('slateport tomorrow');
+      await callBot(inputMessage);
+      assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
     it('["oldale month"] returns closures occurring in the current month', async () => {
+      const inputMessage = 'oldale month';
       const expectedMessage =
         'Here are the hawker centres containing the keyword *oldale* that are closed this month:\n\n' +
         '*Oldale Town*\n\\(15\\-Jan to 18\\-Jan\\)\n\n' +
         '*Oldale Town*\n\\(30\\-Jan to 31\\-Jan\\)';
 
-      await callBot('oldale month');
+      await callBot(inputMessage);
+      assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
     it('["melville 118 month"] searches across multiple words', async () => {
+      const inputMessage = 'melville 118 month';
       const expectedMessage =
         'Here are the hawker centres containing the keyword *melville 118* that are closed this month:\n\n' +
         '*Route 118 near Melville City*\n\\(21\\-Jan to 24\\-Jan\\)';
 
-      await callBot('melville 118 month');
+      await callBot(inputMessage);
+      assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
     it('["psychic month"] searches on secondary name', async () => {
+      const inputMessage = 'psychic month';
       const expectedMessage =
         'Here are the hawker centres containing the keyword *psychic* that are closed this month:\n\n' +
         '*Mossdeep Gym*\n\\(05\\-Jan\\)';
 
-      await callBot('psychic month');
+      await callBot(inputMessage);
+      assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
     it('["verdanturf next month"] returns closures occurring in the next month', async () => {
+      const inputMessage = 'verdanturf next month';
       const expectedMessage =
         'Here are the hawker centres containing the keyword *verdanturf* that will be closed next month:\n\n' +
         '*Verdanturf Town*\n\\(08\\-Feb to 09\\-Feb\\)';
 
-      await callBot('verdanturf next month');
+      await callBot(inputMessage);
+      assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
     it('["melville next month"] returns closures occurring in the next month with the other works suffix', async () => {
+      const inputMessage = 'melville next month';
       const expectedMessage =
         'Here are the hawker centres containing the keyword *melville* that will be closed next month:\n\n' +
         '*Melville City*\n\\(01\\-Feb to 28\\-Feb; other works\\)';
 
-      await callBot('melville next month');
+      await callBot(inputMessage);
+      assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
     it('["melville next"] returns the next closure dates for hawker centres containing the keyword "melville"', async () => {
+      const inputMessage = 'melville next';
       const expectedMessage =
         'Here are the hawker centres containing the keyword *melville* and their next closure dates:\n\n' +
         '*Melville City*\n\\(today\\)\n\n' +
         '*Route 118 near Melville City*\n\\(21\\-Jan to 24\\-Jan\\)';
 
-      await callBot('melville next');
+      await callBot(inputMessage);
+      assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
     it('["Today"] returns all closures occurring today', async () => {
+      const inputMessage = 'Today';
       const expectedMessage =
         'There are *3* hawker centres that are closed today:\n\n' +
         '*Devon Corporation*\n\\(01\\-Nov to 30\\-Apr; other works\\)\n\n' +
         '*Melville City*\n\\(today\\)\n\n' +
         '*Littleroot Town*\n\\(today to tomorrow\\)';
 
-      await callBot('Today');
+      await callBot(inputMessage);
+      assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
     it('["Tmr"] returns all closures occurring tomorrow', async () => {
+      const inputMessage = 'Tmr';
       const expectedMessage =
         'There are *3* hawker centres that will be closed tomorrow:\n\n' +
         '*Devon Corporation*\n\\(01\\-Nov to 30\\-Apr; other works\\)\n\n' +
         '*Littleroot Town*\n\\(today to tomorrow\\)\n\n' +
         '*Slateport City*\n\\(tomorrow\\)';
 
-      await callBot('Tmr');
+      await callBot(inputMessage);
+      assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
     it('["Tomorrow"] returns all closures occurring tomorrow', async () => {
+      const inputMessage = 'Tomorrow';
       const expectedMessage =
         'There are *3* hawker centres that will be closed tomorrow:\n\n' +
         '*Devon Corporation*\n\\(01\\-Nov to 30\\-Apr; other works\\)\n\n' +
         '*Littleroot Town*\n\\(today to tomorrow\\)\n\n' +
         '*Slateport City*\n\\(tomorrow\\)';
 
-      await callBot('Tomorrow');
+      await callBot(inputMessage);
+      assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
     it('["Month"] returns all closures occurring in the current month', async () => {
+      const inputMessage = 'Month';
       const expectedMessage =
         'There are *8* hawker centres that are closed this month:\n\n' +
         '*Devon Corporation*\n\\(01\\-Nov to 30\\-Apr; other works\\)\n\n' +
@@ -206,18 +244,21 @@ describe('Search module', () => {
         '*Route 118 near Melville City*\n\\(21\\-Jan to 24\\-Jan\\)\n\n' +
         '*Oldale Town*\n\\(30\\-Jan to 31\\-Jan\\)';
 
-      await callBot('Month');
+      await callBot(inputMessage);
+      assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
     it('["Next month"] returns all closures occurring in the next month', async () => {
+      const inputMessage = 'Next month';
       const expectedMessage =
         'There are *3* hawker centres that will be closed next month:\n\n' +
         '*Melville City*\n\\(01\\-Feb to 28\\-Feb; other works\\)\n\n' +
         '*Rustboro City*\n\\(02\\-Feb to 05\\-Feb\\)\n\n' +
         '*Verdanturf Town*\n\\(08\\-Feb to 09\\-Feb\\)';
 
-      await callBot('Next month');
+      await callBot(inputMessage);
+      assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
   });
@@ -237,42 +278,54 @@ describe('Search module', () => {
       const expectedMessage =
         'There are no hawker centres containing the keyword *pallet*\\. Please try again with another keyword\\.';
 
-      await callBot('pallet');
+      let inputMessage = 'pallet';
+      await callBot(inputMessage);
+      assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
 
-      await callBot('pallet next');
+      inputMessage = 'pallet next';
+      await callBot(inputMessage);
+      assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
     it('["Today"] returns no closures', async () => {
+      const inputMessage = 'Today';
       const expectedMessage =
         'All good\\! No hawker centres are undergoing cleaning today\\.';
 
-      await callBot('Today');
+      await callBot(inputMessage);
+      assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
     it('["Tmr"] returns no closures', async () => {
+      const inputMessage = 'Tmr';
       const expectedMessage =
         'All good\\! No hawker centres will be undergoing cleaning tomorrow\\.';
 
-      await callBot('Tmr');
+      await callBot(inputMessage);
+      assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
     it('["Tomorrow"] returns no closures', async () => {
+      const inputMessage = 'Tomorrow';
       const expectedMessage =
         'All good\\! No hawker centres will be undergoing cleaning tomorrow\\.';
 
-      await callBot('Tomorrow');
+      await callBot(inputMessage);
+      assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
     it('["Month"] returns no closures', async () => {
+      const inputMessage = 'Month';
       const expectedMessage =
         'All good\\! No hawker centres are undergoing cleaning this month\\.';
 
-      await callBot('Month');
+      await callBot(inputMessage);
+      assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
   });
