@@ -5,7 +5,7 @@ import { AWSError } from '../errors/AWSError';
 import { initAWSConfig, TABLE_CLOSURES } from '../ext/aws/config';
 import { getDynamoDBBillingDetails } from '../ext/aws/dynamodb';
 import { sendDiscordMessage } from '../ext/discord';
-import { getStage } from '../utils';
+import { getStage, prettifyJSON } from '../utils';
 import { HawkerCentre } from './HawkerCentre';
 
 initAWSConfig();
@@ -38,6 +38,10 @@ export class ClosureObject {
     this.reason = props.reason;
     this.startDate = props.startDate;
     this.endDate = props.endDate;
+  }
+
+  static create(props: HawkerCentreClosureProps): ClosureObject {
+    return new ClosureObject(props);
   }
 
   static getTableName(): string {
@@ -86,6 +90,45 @@ export async function uploadClosures(closures: Closure[]): Promise<void> {
   );
 }
 
+export async function addClosure(closure: Closure): Promise<void> {
+  await dynamoDb
+    .put({
+      TableName: ClosureObject.getTableName(),
+      Item: closure,
+      ConditionExpression: 'attribute_not_exists(id)',
+    })
+    .promise();
+  await sendDiscordMessage(
+    `[${getStage()}] ADDED CLOSURE ENTRY\n${prettifyJSON(closure)}`,
+  );
+}
+
+export async function deleteClosure(
+  closureId: string,
+  hawkerCentreId: number,
+): Promise<Result<Closure, AWSError | void>> {
+  const deleteOutput = await dynamoDb
+    .delete({
+      TableName: ClosureObject.getTableName(),
+      Key: { id: closureId, hawkerCentreId },
+      ReturnValues: 'ALL_OLD',
+    })
+    .promise();
+
+  if (deleteOutput === null) {
+    return Err(new AWSError());
+  }
+  if (!deleteOutput.Attributes) {
+    return Err.EMPTY;
+  }
+
+  const closure = deleteOutput.Attributes;
+  await sendDiscordMessage(
+    `[${getStage()}] DELETED CLOSURE ENTRY\n${prettifyJSON(closure)}`,
+  );
+  return Ok(closure as Closure);
+}
+
 export async function getAllClosures(): Promise<Result<Closure[], AWSError>> {
   const scanOutput = await dynamoDb
     .scan({ TableName: ClosureObject.getTableName() })
@@ -96,4 +139,8 @@ export async function getAllClosures(): Promise<Result<Closure[], AWSError>> {
   }
 
   return Ok(scanOutput.Items as Closure[]);
+}
+
+export function isValidClosureReason(text: string): text is ClosureReason {
+  return text === 'cleaning' || text === 'others';
 }

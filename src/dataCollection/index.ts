@@ -68,7 +68,12 @@ function generateClosure(props: {
 }): Closure {
   const { hawkerCentreId, name, startDate, endDate, reason } = props;
 
-  const id = generateHash(name, reason, startDate, endDate);
+  const id = generateHash(
+    hawkerCentreId.toString(),
+    reason,
+    startDate,
+    endDate,
+  );
   const [namePrimary, nameSecondary] = parseHawkerCentreName(name);
 
   return {
