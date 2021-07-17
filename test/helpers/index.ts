@@ -1,6 +1,7 @@
 import { APIGatewayProxyEvent, Context } from 'aws-lambda';
 
-import { bot, notifications } from '../../src/bot/handler';
+import { bot } from '../../src/bot/handler';
+import { handler as notificationsTriggerHandler } from '../../src/triggers/notificationsTrigger';
 import { TelegramMessage } from '../../src/utils/telegram';
 import { makeTelegramMessage } from '../__mocks__/telegram';
 
@@ -31,7 +32,7 @@ export const makeNotificationsWrapper =
     mockCallback: jest.Mock<any, any>,
   ) =>
   async (): Promise<void> => {
-    await notifications(
+    await notificationsTriggerHandler(
       {} as APIGatewayProxyEvent,
       {} as Context,
       mockCallback,

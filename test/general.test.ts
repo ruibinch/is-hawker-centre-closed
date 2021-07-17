@@ -5,11 +5,7 @@ import * as sender from '../src/bot/sender';
 import { AWSError } from '../src/errors/AWSError';
 import * as InputFile from '../src/models/Input';
 import * as UserFile from '../src/models/User';
-import {
-  assertBotResponse,
-  assertInputSaved,
-  makeBotWrapper,
-} from './helpers/bot';
+import { assertBotResponse, assertInputSaved, makeBotWrapper } from './helpers';
 
 describe('General module', () => {
   const mockCallback = jest.fn();

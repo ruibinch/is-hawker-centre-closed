@@ -7,7 +7,7 @@ import { AWSError } from '../src/errors/AWSError';
 import * as ClosureFile from '../src/models/Closure';
 import * as UserFile from '../src/models/User';
 import { mockClosures, mockUsers } from './__mocks__/db';
-import { assertBotResponse, makeNotificationsWrapper } from './helpers/bot';
+import { assertBotResponse, makeNotificationsWrapper } from './helpers';
 
 describe('Notifications module', () => {
   const mockCallback = jest.fn();

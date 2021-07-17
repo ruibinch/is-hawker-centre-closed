@@ -7,11 +7,7 @@ import * as Feedback from '../src/models/Feedback';
 import * as InputFile from '../src/models/Input';
 import * as UserFile from '../src/models/User';
 import * as favouritesIndex from '../src/services/favourites/index';
-import {
-  assertBotResponse,
-  assertInputSaved,
-  makeBotWrapper,
-} from './helpers/bot';
+import { assertBotResponse, assertInputSaved, makeBotWrapper } from './helpers';
 
 describe('Feedback module', () => {
   const mockCallback = jest.fn();

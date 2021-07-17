@@ -19,11 +19,7 @@ import {
   mockUserWithNoFavs,
   mockUserWithOneFav,
 } from './__mocks__/db';
-import {
-  assertBotResponse,
-  assertInputSaved,
-  makeBotWrapper,
-} from './helpers/bot';
+import { assertBotResponse, assertInputSaved, makeBotWrapper } from './helpers';
 
 describe('Favourites module', () => {
   const mockCallback = jest.fn();

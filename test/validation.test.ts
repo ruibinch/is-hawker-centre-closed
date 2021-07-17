@@ -11,7 +11,7 @@ import { AWSError } from '../src/errors/AWSError';
 import * as InputFile from '../src/models/Input';
 import * as UserFile from '../src/models/User';
 import * as searchFeature from '../src/services/search';
-import { assertBotResponse, makeBotWrapper } from './helpers/bot';
+import { assertBotResponse, makeBotWrapper } from './helpers';
 
 describe('Validation module', () => {
   const mockCallback = jest.fn();
