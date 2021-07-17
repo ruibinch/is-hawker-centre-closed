@@ -82,10 +82,13 @@ This script executes 2 other scripts:
 
 ### Deploying Lambda functions
 
-There are 2 Lambda functions to be deployed:
+There are 5 Lambda functions to be deployed:
 
 1. `bot`
-1. `notifications`
+1. `notificationsTrigger`
+1. `scanNewEntriesTrigger`
+1. `runBackupTrigger`
+1. `runResetAndSeedDbTrigger`
 
 To install a fresh deployment,
 
