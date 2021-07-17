@@ -1,7 +1,7 @@
 import { APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
 
-import { makeCallbackWrapper } from '../aws/lambda';
 import { sendMessage } from '../bot/sender';
+import { makeCallbackWrapper } from '../ext/aws/lambda';
 import { constructNotifications } from '../services/notifications';
 
 export const handler: APIGatewayProxyHandler = async (

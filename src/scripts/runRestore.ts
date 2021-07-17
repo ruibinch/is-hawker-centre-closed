@@ -1,6 +1,6 @@
 import * as AWS from 'aws-sdk';
 
-import { initAWSConfig, TABLE_FEEDBACK, TABLE_USERS } from '../aws/config';
+import { initAWSConfig, TABLE_FEEDBACK, TABLE_USERS } from '../ext/aws/config';
 import { sendDiscordMessage } from '../ext/discord';
 import { getStage, sleep } from '../utils';
 import { formatDateWithTime } from '../utils/date';

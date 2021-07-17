@@ -2,9 +2,9 @@ import * as AWS from 'aws-sdk';
 import { formatISO } from 'date-fns';
 import { Err, Ok, Result } from 'ts-results';
 
-import { initAWSConfig, TABLE_FEEDBACK } from '../aws/config';
-import { getDynamoDBBillingDetails } from '../aws/dynamodb';
 import { AWSError } from '../errors/AWSError';
+import { initAWSConfig, TABLE_FEEDBACK } from '../ext/aws/config';
+import { getDynamoDBBillingDetails } from '../ext/aws/dynamodb';
 import { getStage } from '../utils';
 import { currentDate } from '../utils/date';
 

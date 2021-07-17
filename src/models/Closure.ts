@@ -1,9 +1,9 @@
 import * as AWS from 'aws-sdk';
 import { Err, Ok, Result } from 'ts-results';
 
-import { initAWSConfig, TABLE_CLOSURES } from '../aws/config';
-import { getDynamoDBBillingDetails } from '../aws/dynamodb';
 import { AWSError } from '../errors/AWSError';
+import { initAWSConfig, TABLE_CLOSURES } from '../ext/aws/config';
+import { getDynamoDBBillingDetails } from '../ext/aws/dynamodb';
 import { sendDiscordMessage } from '../ext/discord';
 import { getStage } from '../utils';
 import { HawkerCentre } from './HawkerCentre';

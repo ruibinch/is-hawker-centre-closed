@@ -1,6 +1,6 @@
 import { APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
 
-import { makeCallbackWrapper } from '../aws/lambda';
+import { makeCallbackWrapper } from '../ext/aws/lambda';
 import { run as executeRunBackup } from '../scripts/runBackup';
 
 export const handler: APIGatewayProxyHandler = async (

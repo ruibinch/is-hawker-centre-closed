@@ -2,9 +2,9 @@ import * as Sentry from '@sentry/serverless';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import dotenv from 'dotenv';
 
-import { makeCallbackWrapper } from '../aws/lambda';
 import { AWSError } from '../errors/AWSError';
 import { ServiceError } from '../errors/ServiceError';
+import { makeCallbackWrapper } from '../ext/aws/lambda';
 import { initDictionary } from '../lang';
 import {
   maybeHandleFavouriteSelection,
