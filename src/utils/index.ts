@@ -6,6 +6,10 @@ export async function sleep(durationInMs: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, durationInMs));
 }
 
+export function prettifyJSON(obj: unknown): string {
+  return JSON.stringify(obj, null, 4);
+}
+
 export function getStage(): Stage {
   const stageFromEnv = process.env.STAGE;
   if (stageFromEnv !== undefined) {
