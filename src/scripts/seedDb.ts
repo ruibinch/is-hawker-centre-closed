@@ -26,7 +26,7 @@ export async function run(
       'Data obtained from data.gov.sg API:',
       `1. ${closures.length} closures`,
       `2. ${hawkerCentres.length} hawker centres`,
-    ].join('\n')}\n`,
+    ].join('\n')}`,
   );
   if (props.shouldWriteFile) {
     writeFile(closures, `closures-${currentDateInYYYYMMDD()}.json`);

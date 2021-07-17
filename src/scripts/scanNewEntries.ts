@@ -43,7 +43,7 @@ async function scanNewEntries() {
       }\n\n` +
       `Feedback:\n${
         newFeedbackOutput.length === 0 ? 'none' : newFeedbackOutput.join('\n')
-      }\n`,
+      }`,
   );
 }
 

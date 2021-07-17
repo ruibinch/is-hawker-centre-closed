@@ -81,7 +81,8 @@ export async function uploadClosures(closures: Closure[]): Promise<void> {
     ),
   );
   await sendDiscordMessage(
-    `SEEDING DB\n\nUploaded ${closures.length} entries to table "${closuresTable}"`,
+    `[${getStage()}] SEEDING DB\n` +
+      `Uploaded ${closures.length} entries to table "${closuresTable}"`,
   );
 }
 
