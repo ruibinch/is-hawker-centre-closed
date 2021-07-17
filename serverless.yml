@@ -100,23 +100,23 @@ functions:
       - http:
           method: post
           path: /bot
-  notifications:
+  notificationsTrigger:
     handler: ${self:custom.triggersFolder}/notificationsTrigger.handler
     events:
       # runs daily at 22:00 UTC, or 6am SGT
       - schedule: cron(0 22 * * ? *)
-  scanNewEntries:
+  scanNewEntriesTrigger:
     handler: ${self:custom.triggersFolder}/scanNewEntriesTrigger.handler
     events:
       # runs every Sun at 20:00 UTC, or 4am SGT
       - schedule: cron(0 20 ? * sun *)
-  runBackup:
+  runBackupTrigger:
     handler: ${self:custom.triggersFolder}/runBackupTrigger.handler
     timeout: 30
     events:
       # runs every Sun at 20:05 UTC, or 4:05am SGT
       - schedule: cron(5 20 ? * sun *)
-  runResetAndSeedDb:
+  runResetAndSeedDbTrigger:
     handler: ${self:custom.triggersFolder}/runResetAndSeedDbTrigger.handler
     timeout: 60
     events:
