@@ -48,6 +48,7 @@ provider:
             - dynamodb:CreateTable
             - dynamodb:DeleteTable
             - dynamodb:PutItem
+            - dynamodb:DeleteItem
           Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_CLOSURES}-${self:provider.stage}'
         - Effect: Allow
           Action:

@@ -2,10 +2,12 @@ import readline from 'readline';
 import { Err, Ok } from 'ts-results';
 
 import { generateHash } from '../dataCollection';
+import { AWSError } from '../errors/AWSError';
 import {
   addClosure,
   Closure,
   ClosureObject,
+  deleteClosure,
   isValidClosureReason,
 } from '../models/Closure';
 import { getHawkerCentreById } from '../models/HawkerCentre';
@@ -58,7 +60,6 @@ export async function addEntry(): Promise<void> {
     console.error(makeErrorMessage(validateResult.val));
     return;
   }
-
   const { hawkerCentreId, reason, startDate, endDate } = validateResult.val;
 
   const getHawkerCentreByIdResponse = await getHawkerCentreById(
@@ -70,8 +71,8 @@ export async function addEntry(): Promise<void> {
     );
     return;
   }
-
   const hawkerCentre = getHawkerCentreByIdResponse.val;
+
   const closureId = generateHash(hawkerCentreId, reason, startDate, endDate);
   const closureObject = ClosureObject.create({
     id: closureId,
@@ -102,9 +103,39 @@ export async function addEntry(): Promise<void> {
   }
 }
 
+export async function deleteEntry(): Promise<void> {
+  const validateResult = validateInputArgs();
+  if (validateResult.err) {
+    console.error(makeErrorMessage(validateResult.val));
+    return;
+  }
+  const { hawkerCentreId, reason, startDate, endDate } = validateResult.val;
+
+  const closureId = generateHash(hawkerCentreId, reason, startDate, endDate);
+  const deleteClosureResult = await deleteClosure(
+    closureId,
+    Number(hawkerCentreId),
+  );
+  if (deleteClosureResult.err) {
+    const deleteClosureResultError = deleteClosureResult.val;
+    console.error(
+      makeErrorMessage(
+        deleteClosureResultError instanceof AWSError
+          ? 'Invalid response from getHawkerCentreById'
+          : 'No closure entry found for the input arguments',
+      ),
+    );
+    return;
+  }
+
+  console.info('Closure entry deleted');
+}
+
 export async function run(): Promise<void> {
   if (operation === 'add') {
     await addEntry();
+  } else if (operation === 'delete') {
+    await deleteEntry();
   } else {
     throw new Error(`unrecognised operation name "${operation}"`);
   }

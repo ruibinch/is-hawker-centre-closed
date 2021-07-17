@@ -99,8 +99,34 @@ export async function addClosure(closure: Closure): Promise<void> {
     })
     .promise();
   await sendDiscordMessage(
-    `[${getStage()}] ADDED CLOSURE ENTRY\n` + prettifyJSON(closure),
+    `[${getStage()}] ADDED CLOSURE ENTRY\n${prettifyJSON(closure)}`,
   );
+}
+
+export async function deleteClosure(
+  closureId: string,
+  hawkerCentreId: number,
+): Promise<Result<Closure, AWSError | void>> {
+  const deleteOutput = await dynamoDb
+    .delete({
+      TableName: ClosureObject.getTableName(),
+      Key: { id: closureId, hawkerCentreId },
+      ReturnValues: 'ALL_OLD',
+    })
+    .promise();
+
+  if (deleteOutput === null) {
+    return Err(new AWSError());
+  }
+  if (!deleteOutput.Attributes) {
+    return Err.EMPTY;
+  }
+
+  const closure = deleteOutput.Attributes;
+  await sendDiscordMessage(
+    `[${getStage()}] DELETED CLOSURE ENTRY\n${prettifyJSON(closure)}`,
+  );
+  return Ok(closure as Closure);
 }
 
 export async function getAllClosures(): Promise<Result<Closure[], AWSError>> {
