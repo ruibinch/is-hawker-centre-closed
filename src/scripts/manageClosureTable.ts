@@ -3,6 +3,7 @@ import { Err, Ok } from 'ts-results';
 
 import { generateHash } from '../dataCollection';
 import { AWSError } from '../errors/AWSError';
+import { sendDiscordClosuresAdminMessage } from '../ext/discord';
 import {
   addClosure,
   Closure,
@@ -11,7 +12,7 @@ import {
   isValidClosureReason,
 } from '../models/Closure';
 import { getHawkerCentreById } from '../models/HawkerCentre';
-import { prettifyJSON } from '../utils';
+import { getStage, prettifyJSON } from '../utils';
 
 const args = process.argv.slice(2);
 const [operation, ...inputArgs] = args;
@@ -97,6 +98,11 @@ export async function addEntry(): Promise<void> {
 
   if (answer.toLowerCase() === 'y') {
     await addClosure(closure);
+    await sendDiscordClosuresAdminMessage(
+      `[${getStage()}] ADDED CLOSURE ENTRY\n${Object.values(
+        validateResult.val,
+      ).join(' ')}`,
+    );
     console.info('Closure entry added');
   } else {
     console.info('Closure entry not added');
@@ -128,6 +134,11 @@ export async function deleteEntry(): Promise<void> {
     return;
   }
 
+  await sendDiscordClosuresAdminMessage(
+    `[${getStage()}] DELETED CLOSURE ENTRY\n${Object.values(
+      validateResult.val,
+    ).join(' ')}`,
+  );
   console.info('Closure entry deleted');
 }
 
