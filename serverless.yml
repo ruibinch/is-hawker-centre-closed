@@ -101,6 +101,8 @@ functions:
       - http:
           method: post
           path: /bot
+    maximumEventAge: 60
+    maximumRetryAttempts: 0
   notificationsTrigger:
     handler: ${self:custom.triggersFolder}/notificationsTrigger.handler
     events:
