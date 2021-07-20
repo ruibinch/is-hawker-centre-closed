@@ -5,20 +5,20 @@ import { makeTelegramApiBase, WebhookInfoResponse } from '../utils/telegram';
 
 dotenv.config();
 
-const token = process.env.BOT_TOKEN;
 const [apiGatewayId, region, slsStage] = (() =>
   process.env.NODE_ENV === 'production'
     ? [process.env.APIG_PROD, process.env.REGION, 'prod']
     : [process.env.APIG_DEV, process.env.REGION, 'dev'])();
+const token = process.env[`BOT_TOKEN_${slsStage}`];
 
-if (token === undefined) {
-  throw new Error('BOT_TOKEN missing');
-}
 if (apiGatewayId === undefined) {
   throw new Error('APIG missing');
 }
 if (region === undefined) {
   throw new Error('REGION missing');
+}
+if (token === undefined) {
+  throw new Error('BOT_TOKEN missing');
 }
 
 axios
