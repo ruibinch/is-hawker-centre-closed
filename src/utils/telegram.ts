@@ -1,6 +1,8 @@
 // Ref: https://core.telegram.org/bots/api
 // NOTE: not a comprehensive type definition, the less-used fields are ignored
 
+import { TelegramUpdateError } from '../errors/TelegramUpdateError';
+
 export type TelegramResponseBase = {
   ok: boolean;
   description?: string;
@@ -23,6 +25,12 @@ export type TelegramChat = {
   username?: string;
   first_name?: string;
   last_name?: string;
+};
+
+export type TelegramUpdate = {
+  update_id: number;
+  message?: TelegramMessage;
+  edited_message?: TelegramMessage;
 };
 
 export type TelegramMessage = {
@@ -54,4 +62,17 @@ export type WebhookInfoResponse = TelegramResponseBase & {
 
 export function makeTelegramApiBase(token: string): string {
   return `https://api.telegram.org/bot${token}`;
+}
+
+export function extractTelegramMessage(
+  telegramUpdate: TelegramUpdate,
+): TelegramMessage {
+  if (telegramUpdate.message) {
+    return telegramUpdate.message;
+  }
+  if (telegramUpdate.edited_message) {
+    return telegramUpdate.edited_message;
+  }
+
+  throw new TelegramUpdateError();
 }
