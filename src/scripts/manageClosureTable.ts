@@ -26,14 +26,16 @@ function makeErrorMessage(s: string) {
 }
 
 function validateInputArgs() {
-  if (inputArgs.length !== 4) {
+  if (inputArgs.length !== 4 && inputArgs.length !== 5) {
+    // shouldSkipConfirmation argument is optional
     return Err(
       `Incorrect number of arguments.\n\n` +
         `Input arguments should be:\n` +
         `{{hawkerCentreId}} {{reason}} {{startDate}} {{endDate}}`,
     );
   }
-  const [hawkerCentreId, reason, startDate, endDate] = inputArgs;
+  const [hawkerCentreId, reason, startDate, endDate, shouldSkipConfirmation] =
+    inputArgs;
 
   // validate inputs
   if (!isValidClosureReason(reason)) {
@@ -52,6 +54,7 @@ function validateInputArgs() {
     reason,
     startDate,
     endDate,
+    shouldSkipConfirmation,
   });
 }
 
@@ -61,7 +64,8 @@ export async function addEntry(): Promise<void> {
     console.error(makeErrorMessage(validateResult.val));
     return;
   }
-  const { hawkerCentreId, reason, startDate, endDate } = validateResult.val;
+  const { hawkerCentreId, reason, startDate, endDate, shouldSkipConfirmation } =
+    validateResult.val;
 
   const getHawkerCentreByIdResponse = await getHawkerCentreById(
     Number(hawkerCentreId),
@@ -87,14 +91,17 @@ export async function addEntry(): Promise<void> {
     ...closureObject,
   };
 
-  const answer: string = await new Promise((resolve) => {
-    rl.question(
-      `Confirm addition of this closure entry?\n${prettifyJSON(
-        closure,
-      )}\n\nAnswer (y/n): `,
-      (_answer) => resolve(_answer),
-    );
-  });
+  const answer: string =
+    shouldSkipConfirmation === 'true'
+      ? 'y'
+      : await new Promise((resolve) => {
+          rl.question(
+            `Confirm addition of this closure entry?\n${prettifyJSON(
+              closure,
+            )}\n\nAnswer (y/n): `,
+            (_answer) => resolve(_answer),
+          );
+        });
 
   if (answer.toLowerCase() === 'y') {
     await addClosure(closure);
