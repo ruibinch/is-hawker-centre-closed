@@ -15,7 +15,7 @@ import { saveInput } from '../services/input';
 import { getUserLanguageCode, manageLanguage } from '../services/language';
 import { makeGenericErrorMessage } from '../services/message';
 import { runSearch } from '../services/search';
-import { TelegramMessage } from '../utils/telegram';
+import { extractTelegramMessage, TelegramUpdate } from '../utils/telegram';
 import { BotResponse } from '../utils/types';
 import { validateToken } from './auth';
 import { isCommand, isCommandInModule, makeCommandMessage } from './commands';
@@ -44,19 +44,19 @@ export const bot = Sentry.AWSLambda.wrapHandler(
       return callbackWrapper(400);
     }
 
-    const reqBody = JSON.parse(event.body);
-    const inputMessage = reqBody.message as TelegramMessage;
+    const telegramUpdate = JSON.parse(event.body) as TelegramUpdate;
+    const telegramMessage = extractTelegramMessage(telegramUpdate);
     const {
       from: telegramUser,
       chat: { id: chatId },
-    } = inputMessage;
+    } = telegramMessage;
 
     // this try-catch loop will catch all the errors that have bubbled up from the child functions
     try {
       const { languageCode } = await getUserLanguageCode(telegramUser);
       initDictionary(languageCode);
 
-      const validationResponse = validateInputMessage(inputMessage);
+      const validationResponse = validateInputMessage(telegramMessage);
 
       if (validationResponse.err) {
         const { errorMessage } = validationResponse.val;
