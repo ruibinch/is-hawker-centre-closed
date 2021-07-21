@@ -36,23 +36,23 @@ export const bot = Sentry.AWSLambda.wrapHandler(
     callback,
   ): Promise<APIGatewayProxyResult> => {
     const callbackWrapper = makeCallbackWrapper(callback);
-    if (!validateToken(event.queryStringParameters)) {
-      return callbackWrapper(403);
-    }
-
-    if (!event.body) {
-      return callbackWrapper(400);
-    }
-
-    const telegramUpdate = JSON.parse(event.body) as TelegramUpdate;
-    const telegramMessage = extractTelegramMessage(telegramUpdate);
-    const {
-      from: telegramUser,
-      chat: { id: chatId },
-    } = telegramMessage;
+    let chatId: number | undefined;
 
     // this try-catch loop will catch all the errors that have bubbled up from the child functions
     try {
+      if (!validateToken(event.queryStringParameters)) {
+        return callbackWrapper(403);
+      }
+
+      if (!event.body) {
+        return callbackWrapper(400);
+      }
+
+      const telegramUpdate = JSON.parse(event.body) as TelegramUpdate;
+      const telegramMessage = extractTelegramMessage(telegramUpdate);
+      const { from: telegramUser } = telegramMessage;
+      chatId = telegramMessage.chat.id;
+
       const { languageCode } = await getUserLanguageCode(telegramUser);
       initDictionary(languageCode);
 
@@ -131,7 +131,10 @@ export const bot = Sentry.AWSLambda.wrapHandler(
         Sentry.captureException(error);
       }
 
-      sendMessage({ chatId, message: makeGenericErrorMessage() });
+      if (chatId !== undefined) {
+        sendMessage({ chatId, message: makeGenericErrorMessage() });
+      }
+
       return callbackWrapper(204);
     }
   },
