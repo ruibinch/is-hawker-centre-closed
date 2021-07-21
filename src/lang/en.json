@@ -83,7 +83,7 @@
   "feedback.error-adding-feedback": "Woops, couldn't handle saving your feedback for some unexpected reason\\. Try again?",
   "notifications.overview.singular": "{{emoji}} Heads up\\! {{numHC}} of your favourite hawker centres will be closed today\\.\n\n",
   "notifications.overview.plural": "{{emoji}} Heads up\\! {{numHC}} of your favourite hawker centres will be closed today\\.\n\n",
-  "common.hc-item": "*{{hcName}}*\n\\({{closurePeriod}}{{closureReason}}\\)",
+  "common.hc-item": "*{{hcName}}*\n_{{closurePeriod}}{{closureReason}}_",
   "common.hc-item.closure-reason": "; {{reason}}",
   "common.closure-reason.deep-cleaning": "deep cleaning",
   "common.closure-reason.others": "other works",
