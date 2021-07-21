@@ -1,9 +1,24 @@
 import { t } from '../lang';
-import { ClosureReason } from '../models/Closure';
+import { Closure, ClosureReason } from '../models/Closure';
 import { formatDateDisplay } from '../utils/date';
 
 export function makeGenericErrorMessage(): string {
   return t('validation.error.generic');
+}
+
+export function makeClosureListItem(closure: Closure): string {
+  return t('common.hc-item', {
+    hcName: makeHawkerCentreName(closure.name, closure.nameSecondary),
+    closurePeriod: makeClosurePeriodSnippet(closure.startDate, closure.endDate),
+    closureReason: makeClosureReasonSnippet(closure.reason),
+  });
+}
+
+function makeHawkerCentreName(
+  name: string,
+  nameSecondary: string | undefined,
+): string {
+  return `${name}${nameSecondary ? ` \\(${nameSecondary}\\)` : ''}`;
 }
 
 export function makeClosurePeriodSnippet(

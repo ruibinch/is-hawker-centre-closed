@@ -147,7 +147,7 @@ describe('Search module', () => {
       const inputMessage = 'psychic month';
       const expectedMessage =
         'Here are the hawker centres containing the keyword *psychic* that are closed this month:\n\n' +
-        '*Mossdeep Gym*\n\\(05\\-Jan\\)';
+        '*Mossdeep Gym \\(Psychics in space\\)*\n\\(05\\-Jan\\)';
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
@@ -235,7 +235,7 @@ describe('Search module', () => {
         '*Melville City*\n\\(today\\)\n\n' +
         '*Littleroot Town*\n\\(today to tomorrow\\)\n\n' +
         '*Slateport City*\n\\(tomorrow\\)\n\n' +
-        '*Mossdeep Gym*\n\\(05\\-Jan\\)\n\n' +
+        '*Mossdeep Gym \\(Psychics in space\\)*\n\\(05\\-Jan\\)\n\n' +
         '*Oldale Town*\n\\(15\\-Jan to 18\\-Jan\\)\n\n' +
         '*Route 118 near Melville City*\n\\(21\\-Jan to 24\\-Jan\\)\n\n' +
         '*Oldale Town*\n\\(30\\-Jan to 31\\-Jan\\)';
