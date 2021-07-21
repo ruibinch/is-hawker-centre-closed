@@ -1,9 +1,17 @@
 import { t } from '../lang';
-import { ClosureReason } from '../models/Closure';
+import { Closure, ClosureReason } from '../models/Closure';
 import { formatDateDisplay } from '../utils/date';
 
 export function makeGenericErrorMessage(): string {
   return t('validation.error.generic');
+}
+
+export function makeClosureListItem(closure: Closure): string {
+  return t('common.hc-item', {
+    hcName: closure.name,
+    closurePeriod: makeClosurePeriodSnippet(closure.startDate, closure.endDate),
+    closureReason: makeClosureReasonSnippet(closure.reason),
+  });
 }
 
 export function makeClosurePeriodSnippet(

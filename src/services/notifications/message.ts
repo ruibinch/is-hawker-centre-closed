@@ -1,6 +1,6 @@
 import { t } from '../../lang';
 import { Closure } from '../../models/Closure';
-import { makeClosurePeriodSnippet, makeClosureReasonSnippet } from '../message';
+import { makeClosureListItem } from '../message';
 
 export function makeNotificationMessage(closures: Closure[]): string {
   let reply = t(
@@ -14,14 +14,7 @@ export function makeNotificationMessage(closures: Closure[]): string {
   );
 
   const closuresInText = closures.map((closure) =>
-    t('common.hc-item', {
-      hcName: closure.name,
-      closurePeriod: makeClosurePeriodSnippet(
-        closure.startDate,
-        closure.endDate,
-      ),
-      closureReason: makeClosureReasonSnippet(closure.reason),
-    }),
+    makeClosureListItem(closure),
   );
 
   reply += closuresInText.join('\n\n');

@@ -1,6 +1,6 @@
 import { t } from '../../lang';
 import { Closure } from '../../models/Closure';
-import { makeClosurePeriodSnippet, makeClosureReasonSnippet } from '../message';
+import { makeClosureListItem } from '../message';
 import { isSearchModifierTimeBased } from './searchModifier';
 import { SearchModifier, SearchResponse } from './types';
 
@@ -118,18 +118,7 @@ function makeTimePeriodSnippet(modifier: SearchModifier) {
 }
 
 function makeClosuresListOutput(closures: Closure[]) {
-  return closures
-    .map((closure) =>
-      t('common.hc-item', {
-        hcName: closure.name,
-        closurePeriod: makeClosurePeriodSnippet(
-          closure.startDate,
-          closure.endDate,
-        ),
-        closureReason: makeClosureReasonSnippet(closure.reason),
-      }),
-    )
-    .join('\n\n');
+  return closures.map((closure) => makeClosureListItem(closure)).join('\n\n');
 }
 
 function isSearchModifierInFuture(modifier: SearchModifier) {
