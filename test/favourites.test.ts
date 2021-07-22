@@ -330,9 +330,9 @@ describe('Favourites module', () => {
           'Your favourite hawker centres and their next closure dates are:\n\n' +
           '1\\. *Littleroot Town*\n' +
           '2\\. *Verdanturf Town*\n' +
-          '    _\\(08\\-Feb to 09\\-Feb\\)_\n' +
-          '3\\. *Mossdeep Gym*\n' +
-          '    _\\(today\\)_';
+          '    _08\\-Feb to 09\\-Feb_\n' +
+          '3\\. *Mossdeep Gym \\(Psychics in space\\)*\n' +
+          '    _today_';
 
         await callBot(inputMessage);
         assertInputSaved(addInputToDBSpy, inputMessage);
