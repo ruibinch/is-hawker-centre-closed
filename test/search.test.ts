@@ -70,7 +70,7 @@ describe('Search module', () => {
       const inputMessage = 'littleroot';
       const expectedMessage =
         'Here are the hawker centres containing the keyword *littleroot* that are closed today:\n\n' +
-        '*Littleroot Town*\n\\(today to tomorrow\\)';
+        '*Littleroot Town*\n_today to tomorrow_';
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
@@ -81,7 +81,7 @@ describe('Search module', () => {
       const inputMessage = 'littleroot today';
       const expectedMessage =
         'Here are the hawker centres containing the keyword *littleroot* that are closed today:\n\n' +
-        '*Littleroot Town*\n\\(today to tomorrow\\)';
+        '*Littleroot Town*\n_today to tomorrow_';
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
@@ -102,7 +102,7 @@ describe('Search module', () => {
       const inputMessage = 'slateport tmr';
       const expectedMessage =
         'Here are the hawker centres containing the keyword *slateport* that will be closed tomorrow:\n\n' +
-        '*Slateport City*\n\\(tomorrow\\)';
+        '*Slateport City*\n_tomorrow_';
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
@@ -113,7 +113,7 @@ describe('Search module', () => {
       const inputMessage = 'slateport tomorrow';
       const expectedMessage =
         'Here are the hawker centres containing the keyword *slateport* that will be closed tomorrow:\n\n' +
-        '*Slateport City*\n\\(tomorrow\\)';
+        '*Slateport City*\n_tomorrow_';
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
@@ -124,8 +124,8 @@ describe('Search module', () => {
       const inputMessage = 'oldale month';
       const expectedMessage =
         'Here are the hawker centres containing the keyword *oldale* that are closed this month:\n\n' +
-        '*Oldale Town*\n\\(15\\-Jan to 18\\-Jan\\)\n\n' +
-        '*Oldale Town*\n\\(30\\-Jan to 31\\-Jan\\)';
+        '*Oldale Town*\n_15\\-Jan to 18\\-Jan_\n\n' +
+        '*Oldale Town*\n_30\\-Jan to 31\\-Jan_';
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
@@ -136,7 +136,7 @@ describe('Search module', () => {
       const inputMessage = 'melville 118 month';
       const expectedMessage =
         'Here are the hawker centres containing the keyword *melville 118* that are closed this month:\n\n' +
-        '*Route 118 near Melville City*\n\\(21\\-Jan to 24\\-Jan\\)';
+        '*Route 118 near Melville City*\n_21\\-Jan to 24\\-Jan_';
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
@@ -147,7 +147,7 @@ describe('Search module', () => {
       const inputMessage = 'psychic month';
       const expectedMessage =
         'Here are the hawker centres containing the keyword *psychic* that are closed this month:\n\n' +
-        '*Mossdeep Gym \\(Psychics in space\\)*\n\\(05\\-Jan\\)';
+        '*Mossdeep Gym \\(Psychics in space\\)*\n_05\\-Jan_';
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
@@ -158,7 +158,7 @@ describe('Search module', () => {
       const inputMessage = 'verdanturf next month';
       const expectedMessage =
         'Here are the hawker centres containing the keyword *verdanturf* that will be closed next month:\n\n' +
-        '*Verdanturf Town*\n\\(08\\-Feb to 09\\-Feb\\)';
+        '*Verdanturf Town*\n_08\\-Feb to 09\\-Feb_';
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
@@ -169,7 +169,7 @@ describe('Search module', () => {
       const inputMessage = 'melville next month';
       const expectedMessage =
         'Here are the hawker centres containing the keyword *melville* that will be closed next month:\n\n' +
-        '*Melville City*\n\\(01\\-Feb to 28\\-Feb; other works\\)';
+        '*Melville City*\n_01\\-Feb to 28\\-Feb; other works_';
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
@@ -180,8 +180,8 @@ describe('Search module', () => {
       const inputMessage = 'melville next';
       const expectedMessage =
         'Here are the hawker centres containing the keyword *melville* and their next closure dates:\n\n' +
-        '*Melville City*\n\\(today\\)\n\n' +
-        '*Route 118 near Melville City*\n\\(21\\-Jan to 24\\-Jan\\)';
+        '*Melville City*\n_today_\n\n' +
+        '*Route 118 near Melville City*\n_21\\-Jan to 24\\-Jan_';
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
@@ -192,9 +192,9 @@ describe('Search module', () => {
       const inputMessage = 'Today';
       const expectedMessage =
         'There are *3* hawker centres that are closed today:\n\n' +
-        '*Devon Corporation*\n\\(01\\-Nov to 30\\-Apr; other works\\)\n\n' +
-        '*Melville City*\n\\(today\\)\n\n' +
-        '*Littleroot Town*\n\\(today to tomorrow\\)';
+        '*Devon Corporation*\n_01\\-Nov to 30\\-Apr; other works_\n\n' +
+        '*Melville City*\n_today_\n\n' +
+        '*Littleroot Town*\n_today to tomorrow_';
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
@@ -205,9 +205,9 @@ describe('Search module', () => {
       const inputMessage = 'Tmr';
       const expectedMessage =
         'There are *3* hawker centres that will be closed tomorrow:\n\n' +
-        '*Devon Corporation*\n\\(01\\-Nov to 30\\-Apr; other works\\)\n\n' +
-        '*Littleroot Town*\n\\(today to tomorrow\\)\n\n' +
-        '*Slateport City*\n\\(tomorrow\\)';
+        '*Devon Corporation*\n_01\\-Nov to 30\\-Apr; other works_\n\n' +
+        '*Littleroot Town*\n_today to tomorrow_\n\n' +
+        '*Slateport City*\n_tomorrow_';
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
@@ -218,9 +218,9 @@ describe('Search module', () => {
       const inputMessage = 'Tomorrow';
       const expectedMessage =
         'There are *3* hawker centres that will be closed tomorrow:\n\n' +
-        '*Devon Corporation*\n\\(01\\-Nov to 30\\-Apr; other works\\)\n\n' +
-        '*Littleroot Town*\n\\(today to tomorrow\\)\n\n' +
-        '*Slateport City*\n\\(tomorrow\\)';
+        '*Devon Corporation*\n_01\\-Nov to 30\\-Apr; other works_\n\n' +
+        '*Littleroot Town*\n_today to tomorrow_\n\n' +
+        '*Slateport City*\n_tomorrow_';
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
@@ -231,14 +231,14 @@ describe('Search module', () => {
       const inputMessage = 'Month';
       const expectedMessage =
         'There are *8* hawker centres that are closed this month:\n\n' +
-        '*Devon Corporation*\n\\(01\\-Nov to 30\\-Apr; other works\\)\n\n' +
-        '*Melville City*\n\\(today\\)\n\n' +
-        '*Littleroot Town*\n\\(today to tomorrow\\)\n\n' +
-        '*Slateport City*\n\\(tomorrow\\)\n\n' +
-        '*Mossdeep Gym \\(Psychics in space\\)*\n\\(05\\-Jan\\)\n\n' +
-        '*Oldale Town*\n\\(15\\-Jan to 18\\-Jan\\)\n\n' +
-        '*Route 118 near Melville City*\n\\(21\\-Jan to 24\\-Jan\\)\n\n' +
-        '*Oldale Town*\n\\(30\\-Jan to 31\\-Jan\\)';
+        '*Devon Corporation*\n_01\\-Nov to 30\\-Apr; other works_\n\n' +
+        '*Melville City*\n_today_\n\n' +
+        '*Littleroot Town*\n_today to tomorrow_\n\n' +
+        '*Slateport City*\n_tomorrow_\n\n' +
+        '*Mossdeep Gym \\(Psychics in space\\)*\n_05\\-Jan_\n\n' +
+        '*Oldale Town*\n_15\\-Jan to 18\\-Jan_\n\n' +
+        '*Route 118 near Melville City*\n_21\\-Jan to 24\\-Jan_\n\n' +
+        '*Oldale Town*\n_30\\-Jan to 31\\-Jan_';
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
@@ -249,10 +249,10 @@ describe('Search module', () => {
       const inputMessage = 'Next month';
       const expectedMessage =
         'There are *4* hawker centres that will be closed next month:\n\n' +
-        '*Melville City*\n\\(01\\-Feb to 28\\-Feb; other works\\)\n\n' +
-        '*Rustboro City*\n\\(02\\-Feb to 05\\-Feb\\)\n\n' +
-        '*Verdanturf Town*\n\\(08\\-Feb to 09\\-Feb\\)\n\n' +
-        '*Fortree Market*\n\\(11\\-Feb to 25\\-Feb; deep cleaning\\)';
+        '*Melville City*\n_01\\-Feb to 28\\-Feb; other works_\n\n' +
+        '*Rustboro City*\n_02\\-Feb to 05\\-Feb_\n\n' +
+        '*Verdanturf Town*\n_08\\-Feb to 09\\-Feb_\n\n' +
+        '*Fortree Market*\n_11\\-Feb to 25\\-Feb; deep cleaning_';
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);

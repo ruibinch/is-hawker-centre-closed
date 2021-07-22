@@ -59,7 +59,7 @@
   "favourites.error.invalid-delete-index.second.multiple-favs": "有效索引是1到{{numFavourites}}。",
   "favourites.list": "您的喜爱小贩中心和接着关闭时期是：\n\n{{hcOutput}}",
   "favourites.item": "{{index}}\\. *{{hcName}}*{{nextClosureDetails}}",
-  "favourites.item.closure-details": "\n  _（{{closurePeriod}}{{closureReason}}）_",
+  "favourites.item.closure-details": "\n    _{{closurePeriod}}{{closureReason}}_",
   "favourites.error.no-saved-favourites": "喜爱列表失控。试使用“/fav”命令添加条目。",
   "favourites.snippet.keyword": "*{{keyword}}*",
   "favourites.notifications.not-specified.first": "您当前没有指定通知设置。\n\n",

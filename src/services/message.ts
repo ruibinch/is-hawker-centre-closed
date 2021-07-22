@@ -14,7 +14,7 @@ export function makeClosureListItem(closure: Closure): string {
   });
 }
 
-function makeHawkerCentreName(
+export function makeHawkerCentreName(
   name: string,
   nameSecondary: string | undefined,
 ): string {
