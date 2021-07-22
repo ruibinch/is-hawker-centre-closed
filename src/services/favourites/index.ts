@@ -5,6 +5,7 @@ import { CustomError } from '../../errors/CustomError';
 import { HawkerCentre } from '../../models/HawkerCentre';
 import { TelegramUser } from '../../utils/telegram';
 import { BotResponse, ServiceResponse } from '../../utils/types';
+import { makeHawkerCentreName } from '../message';
 import {
   addHCToFavourites,
   deleteHCFromFavourites,
@@ -51,7 +52,9 @@ export async function manageFavourites(
 
       let choices: string[] | undefined;
       if (!isFindError) {
-        choices = hawkerCentres.map((hc) => hc.name);
+        choices = hawkerCentres.map((hc) =>
+          makeHawkerCentreName(hc.name, hc.nameSecondary),
+        );
         // only toggle fav mode when user is presented with the choices screen
         await toggleUserInFavouritesMode(telegramUser, true);
       }
