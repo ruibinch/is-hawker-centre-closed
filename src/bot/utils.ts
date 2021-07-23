@@ -76,19 +76,28 @@ export function validateInputMessage(
 }
 
 /**
- * Removes all enclosing brackets and its contents, then filters by whitelist.
+ * 3 parts:
+ * 1. If entire string is enclosed within brackets, then remove the brackets alone.
+ * 2. For any remaining brackets within the string, remove the brackets along with its enclosed text.
+ * 3. Remove other non-whitelisted characters.
  *
  * Whitelisted characters:
- * alphanumeric characters, numbers, /, ', whitespace, underscore
+ * alphanumeric, /, ', whitespace, underscore
  */
 export function sanitiseInputText(text: string): string {
   let sanitisedText = text;
 
+  const fullStringEnclosedInBracketsRegex = /^\(.*?\)$/g;
+  if (fullStringEnclosedInBracketsRegex.test(text)) {
+    const bracketsRegex = /[()]/g;
+    sanitisedText = sanitisedText.replace(bracketsRegex, '');
+  }
+
   const enclosedInBracketsRegex = /\(.*?\)/g;
   sanitisedText = sanitisedText.replace(enclosedInBracketsRegex, '');
 
-  const filterRegex = /[^a-zA-Z0-9/'\s_]/g;
-  sanitisedText = sanitisedText.replace(filterRegex, '').trim();
+  const nonWhitelistFilterRegex = /[^a-zA-Z0-9/'\s_]/g;
+  sanitisedText = sanitisedText.replace(nonWhitelistFilterRegex, '').trim();
 
   return sanitisedText;
 }
