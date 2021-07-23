@@ -53,7 +53,7 @@ export async function manageFavourites(
       let choices: string[] | undefined;
       if (!isFindError) {
         choices = hawkerCentres.map((hc) =>
-          makeHawkerCentreName(hc.name, hc.nameSecondary),
+          makeHawkerCentreName(hc.name, hc.nameSecondary, false),
         );
         // only toggle fav mode when user is presented with the choices screen
         await toggleUserInFavouritesMode(telegramUser, true);

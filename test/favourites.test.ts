@@ -145,7 +145,7 @@ describe('Favourites module', () => {
       const expectedMessage = 'Choose your favourite hawker centre:';
       const expectedChoices = [
         'Fortree Market',
-        'Fortree Gym \\(Treehouse living\\)',
+        'Fortree Gym (Treehouse living)',
       ];
 
       await callBot(inputMessage);
@@ -163,7 +163,7 @@ describe('Favourites module', () => {
       const inputMessage = '/fav psychic';
       const expectedMessage =
         'Confirm that this is the hawker centre to be added?';
-      const expectedChoices = ['Mossdeep Gym \\(Psychics in space\\)'];
+      const expectedChoices = ['Mossdeep Gym (Psychics in space)'];
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
