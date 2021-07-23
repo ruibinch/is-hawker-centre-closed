@@ -7,7 +7,8 @@ describe('bot > utils', () => {
       ['/help', '/help'],
       ['bedok', 'bedok'],
       ["people's park", "people's park"],
-      ['(ang mo kio)', '(ang mo kio)'],
+      ['(ang mo kio)', 'ang mo kio'],
+      ['upper cross st (hong lim)', 'upper cross st'],
       ['clementi!@#$%^&*', 'clementi'],
       ['telok blangah{}[]<>,.?\\|:;"-+=', 'telok blangah'],
     ])('%s -> %s', (input, expected) => {

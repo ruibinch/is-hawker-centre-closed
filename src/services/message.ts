@@ -17,8 +17,14 @@ export function makeClosureListItem(closure: Closure): string {
 export function makeHawkerCentreName(
   name: string,
   nameSecondary: string | undefined,
+  shouldEscapeBrackets = true,
 ): string {
-  return `${name}${nameSecondary ? ` \\(${nameSecondary}\\)` : ''}`;
+  const bracketOpening = `${shouldEscapeBrackets ? '\\' : ''}(`;
+  const bracketClosing = `${shouldEscapeBrackets ? '\\' : ''})`;
+
+  return `${name}${
+    nameSecondary ? ` ${bracketOpening}${nameSecondary}${bracketClosing}` : ''
+  }`;
 }
 
 export function makeClosurePeriodSnippet(
