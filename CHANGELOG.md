@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.7.0] - 2021-07-23
+
+### Added
+
+- Displayed hawker centre secondary name in enclosing brackets in addition to the primary name
+
 ## [0.6.0] - 2021-07-17
 
 ### Added
