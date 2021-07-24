@@ -8,7 +8,7 @@ export type Command = {
 };
 
 export type ValidateResponseOk = {
-  textSanitised: string;
+  textSanitised: string | null;
 };
 
 export type ValidateResponseError = {

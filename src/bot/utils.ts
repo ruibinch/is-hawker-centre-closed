@@ -16,6 +16,11 @@ export function validateInputMessage(
   let textSanitised = '';
 
   if (message.text === undefined) {
+    if (message.new_chat_members || message.left_chat_member) {
+      // represents the bot being added/removed to a group channel; ignore in such instances
+      return Ok({ textSanitised: null });
+    }
+
     switch (true) {
       case isDefined(message.animation, message.document):
         errorMessage = t('validation.error.message-type-gif');
@@ -70,9 +75,7 @@ export function validateInputMessage(
     });
   }
 
-  return Ok({
-    textSanitised,
-  });
+  return Ok({ textSanitised });
 }
 
 /**
