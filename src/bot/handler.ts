@@ -64,7 +64,7 @@ export const bot = Sentry.AWSLambda.wrapHandler(
       if (validationResponse.err) {
         const { errorMessage } = validationResponse.val;
         await sendMessage({ chatId, message: errorMessage });
-        return callbackWrapper(204);
+        return callbackWrapper(200);
       }
 
       const { textSanitised } = validationResponse.val;
@@ -79,7 +79,7 @@ export const bot = Sentry.AWSLambda.wrapHandler(
         const commandMessage = makeCommandMessage(textSanitised);
         if (commandMessage) {
           await sendMessage({ chatId, message: commandMessage });
-          return callbackWrapper(204);
+          return callbackWrapper(200);
         }
       }
 
@@ -130,7 +130,7 @@ export const bot = Sentry.AWSLambda.wrapHandler(
         await sendMessage({ chatId, message });
       }
 
-      return callbackWrapper(204);
+      return callbackWrapper(200);
     } catch (error) {
       if (process.env.NODE_ENV !== 'test') {
         console.error('[bot > handler]', error);
@@ -139,6 +139,7 @@ export const bot = Sentry.AWSLambda.wrapHandler(
 
       if (chatId !== undefined) {
         sendMessage({ chatId, message: makeGenericErrorMessage() });
+        return callbackWrapper(200);
       }
 
       return callbackWrapper(204);
