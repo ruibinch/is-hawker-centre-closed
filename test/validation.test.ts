@@ -45,6 +45,24 @@ describe('Validation module', () => {
     getUserByIdSpy.mockRestore();
   });
 
+  describe('non-direct messages', () => {
+    it('does not send a reply when the message represents the bot being added to a group channel', async () => {
+      await callBot(undefined, {
+        new_chat_members: [{ data: 'value' }],
+      });
+
+      expect(sendMessageSpy).not.toHaveBeenCalled();
+    });
+
+    it('does not send a reply when the message represents the bot being removed from a group channel', async () => {
+      await callBot(undefined, {
+        left_chat_member: [{ data: 'value' }],
+      });
+
+      expect(sendMessageSpy).not.toHaveBeenCalled();
+    });
+  });
+
   describe('non-text messages', () => {
     it('sends an emoji', async () => {
       const expectedMessage =

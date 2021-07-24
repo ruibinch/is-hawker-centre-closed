@@ -31,6 +31,8 @@ export type TelegramUpdate = {
   update_id: number;
   message?: TelegramMessage;
   edited_message?: TelegramMessage;
+  my_chat_member?: unknown;
+  chat_member?: unknown;
 };
 
 export type TelegramMessage = {
@@ -50,6 +52,8 @@ export type TelegramMessage = {
   sticker?: unknown;
   video?: unknown;
   voice?: unknown;
+  new_chat_members?: unknown;
+  left_chat_member?: unknown;
 };
 
 export type WebhookInfoResponse = TelegramResponseBase & {
@@ -66,7 +70,12 @@ export function makeTelegramApiBase(token: string): string {
 
 export function extractTelegramMessage(
   telegramUpdate: TelegramUpdate,
-): TelegramMessage {
+): TelegramMessage | null {
+  // represents the bot being added to a group channel; ignore in such instances
+  if (telegramUpdate.my_chat_member || telegramUpdate.chat_member) {
+    return null;
+  }
+
   if (telegramUpdate.message) {
     return telegramUpdate.message;
   }
@@ -74,5 +83,5 @@ export function extractTelegramMessage(
     return telegramUpdate.edited_message;
   }
 
-  throw new TelegramUpdateError();
+  throw new TelegramUpdateError(JSON.stringify(telegramUpdate));
 }

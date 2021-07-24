@@ -50,6 +50,10 @@ export const bot = Sentry.AWSLambda.wrapHandler(
 
       const telegramUpdate = JSON.parse(event.body) as TelegramUpdate;
       const telegramMessage = extractTelegramMessage(telegramUpdate);
+      if (telegramMessage === null) {
+        return callbackWrapper(204);
+      }
+
       const { from: telegramUser } = telegramMessage;
       chatId = telegramMessage.chat.id;
 
@@ -57,7 +61,6 @@ export const bot = Sentry.AWSLambda.wrapHandler(
       initDictionary(languageCode);
 
       const validationResponse = validateInputMessage(telegramMessage);
-
       if (validationResponse.err) {
         const { errorMessage } = validationResponse.val;
         await sendMessage({ chatId, message: errorMessage });
@@ -65,6 +68,9 @@ export const bot = Sentry.AWSLambda.wrapHandler(
       }
 
       const { textSanitised } = validationResponse.val;
+      if (textSanitised === null) {
+        return callbackWrapper(204);
+      }
 
       // tmp: save all incoming inputs for now for better usage understanding
       await saveInput(textSanitised, telegramUser);
