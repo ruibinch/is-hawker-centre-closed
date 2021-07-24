@@ -74,5 +74,5 @@ export function extractTelegramMessage(
     return telegramUpdate.edited_message;
   }
 
-  throw new TelegramUpdateError();
+  throw new TelegramUpdateError(JSON.stringify(telegramUpdate));
 }
