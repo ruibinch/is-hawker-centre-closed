@@ -16,13 +16,17 @@ export const handler: APIGatewayProxyHandler = async (
 ): Promise<APIGatewayProxyResult> => {
   const callbackWrapper = makeCallbackWrapper(callback);
 
+  await executeRunAndSeedDb();
+
+  return callbackWrapper(204);
+};
+
+async function executeRunAndSeedDb() {
   const resetDbResult = await executeManageDb('reset');
   const seedDbResult = await executeSeedDb({ shouldWriteFile: false });
 
   await findResetAndSeedDbDiffs(resetDbResult, seedDbResult);
-
-  return callbackWrapper(204);
-};
+}
 
 async function findResetAndSeedDbDiffs(
   resetDbResult: NEAData | null,
@@ -88,4 +92,10 @@ function findDiffs<T extends (Closure | HawkerCentre)[]>(
   });
 
   return { addedEntries, deletedEntries };
+}
+
+if (require.main === module) {
+  executeRunAndSeedDb().then(() => {
+    process.exit(0);
+  });
 }
