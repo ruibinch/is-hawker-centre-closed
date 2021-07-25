@@ -1,7 +1,7 @@
 import * as AWS from 'aws-sdk';
 
 import { initAWSConfig, TABLE_FEEDBACK, TABLE_USERS } from '../ext/aws/config';
-import { sendDiscordMessage } from '../ext/discord';
+import { sendDiscordAdminMessage } from '../ext/discord';
 import { getStage, sleep } from '../utils';
 import { formatDateWithTime } from '../utils/date';
 
@@ -26,7 +26,7 @@ function makeInProgressMessage(s: string) {
 async function restoreBackup(tableName: string) {
   const backupsList = await dynamoDb.listBackups().promise();
   if (!backupsList.BackupSummaries) {
-    await sendDiscordMessage(
+    await sendDiscordAdminMessage(
       makeErrorMessage('Unable to view list of backups'),
     );
     return;
@@ -37,7 +37,7 @@ async function restoreBackup(tableName: string) {
     (backupEntry) => backupEntry.TableName === fullTableName,
   );
   if (backupsForTable.length === 0) {
-    await sendDiscordMessage(
+    await sendDiscordAdminMessage(
       makeErrorMessage(`No backups found for table ${fullTableName}`),
     );
     return;
@@ -47,11 +47,13 @@ async function restoreBackup(tableName: string) {
   const [latestBackup] = backupsForTable;
   const { BackupArn: latestBackupArn, BackupSizeBytes } = latestBackup;
   if (!latestBackupArn) {
-    await sendDiscordMessage(makeErrorMessage('latestBackupArn value is null'));
+    await sendDiscordAdminMessage(
+      makeErrorMessage('latestBackupArn value is null'),
+    );
     return;
   }
   if (BackupSizeBytes === 0) {
-    await sendDiscordMessage(
+    await sendDiscordAdminMessage(
       makeErrorMessage(`Backup "${latestBackupArn}" is empty`),
     );
     return;
@@ -60,7 +62,7 @@ async function restoreBackup(tableName: string) {
   const deleteOutput = await dynamoDb
     .deleteTable({ TableName: fullTableName })
     .promise();
-  await sendDiscordMessage(
+  await sendDiscordAdminMessage(
     makeInProgressMessage(
       `Deleted table "${deleteOutput.TableDescription?.TableName}"`,
     ),
@@ -82,7 +84,7 @@ async function restoreBackup(tableName: string) {
     restoreSummary ? formatDateWithTime(restoreSummary.RestoreDateTime) : 'null'
   }" to table "${fullTableName}"`;
 
-  await sendDiscordMessage(makeSuccessMessage(restoreMessage));
+  await sendDiscordAdminMessage(makeSuccessMessage(restoreMessage));
 }
 
 async function run() {

@@ -7,7 +7,7 @@ const adminChannelId = process.env.DISCORD_ADMIN_CHANNEL_ID ?? '';
 const closuresAdminChannelId =
   process.env.DISCORD_CLOSURES_ADMIN_CHANNEL_ID ?? '';
 
-export async function sendDiscordMessage(message: string): Promise<void> {
+export async function sendDiscordAdminMessage(message: string): Promise<void> {
   await executeBotLogin();
 
   const channel = await client.channels.fetch(adminChannelId);

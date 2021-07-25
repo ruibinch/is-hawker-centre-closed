@@ -4,7 +4,7 @@ import {
   getRawRecords,
   writeFile,
 } from '../dataCollection';
-import { sendDiscordMessage } from '../ext/discord';
+import { sendDiscordAdminMessage } from '../ext/discord';
 import { uploadClosures } from '../models/Closure';
 import { uploadHawkerCentres } from '../models/HawkerCentre';
 import { getStage } from '../utils';
@@ -21,7 +21,7 @@ export async function run(
   const closures = generateClosures(getRawRecordsResponse);
   const hawkerCentres = getHawkerCentresList(closures);
 
-  await sendDiscordMessage(
+  await sendDiscordAdminMessage(
     `[${getStage()}] SEEDING DB\n${[
       'Data obtained from data.gov.sg API:',
       `1. ${closures.length} closures`,
