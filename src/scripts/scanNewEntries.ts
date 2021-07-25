@@ -1,4 +1,4 @@
-import { sendDiscordMessage } from '../ext/discord';
+import { sendDiscordAdminMessage } from '../ext/discord';
 import { getAllFeedback } from '../models/Feedback';
 import { getAllUsers } from '../models/User';
 import { getStage } from '../utils';
@@ -36,7 +36,7 @@ async function scanNewEntries() {
     }${userId} at ${formatCreatedAtDate(createdAt)})`;
   });
 
-  await sendDiscordMessage(
+  await sendDiscordAdminMessage(
     `[${getStage()}] NEW ENTRIES IN THE PAST WEEK\n` +
       `Users:\n${
         newUsersOutput.length === 0 ? 'none' : newUsersOutput.join('\n')

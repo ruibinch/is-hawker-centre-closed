@@ -4,7 +4,7 @@ import { Err, Ok, Result } from 'ts-results';
 import { AWSError } from '../errors/AWSError';
 import { initAWSConfig, TABLE_CLOSURES } from '../ext/aws/config';
 import { getDynamoDBBillingDetails } from '../ext/aws/dynamodb';
-import { sendDiscordMessage } from '../ext/discord';
+import { sendDiscordAdminMessage } from '../ext/discord';
 import { getStage, prettifyJSON } from '../utils';
 import { HawkerCentre } from './HawkerCentre';
 
@@ -84,7 +84,7 @@ export async function uploadClosures(closures: Closure[]): Promise<void> {
         .promise(),
     ),
   );
-  await sendDiscordMessage(
+  await sendDiscordAdminMessage(
     `[${getStage()}] SEEDING DB\n` +
       `Uploaded ${closures.length} entries to table "${closuresTable}"`,
   );
@@ -98,7 +98,7 @@ export async function addClosure(closure: Closure): Promise<void> {
       ConditionExpression: 'attribute_not_exists(id)',
     })
     .promise();
-  await sendDiscordMessage(
+  await sendDiscordAdminMessage(
     `[${getStage()}] ADDED CLOSURE ENTRY\n${prettifyJSON(closure)}`,
   );
 }
@@ -123,7 +123,7 @@ export async function deleteClosure(
   }
 
   const closure = deleteOutput.Attributes;
-  await sendDiscordMessage(
+  await sendDiscordAdminMessage(
     `[${getStage()}] DELETED CLOSURE ENTRY\n${prettifyJSON(closure)}`,
   );
   return Ok(closure as Closure);

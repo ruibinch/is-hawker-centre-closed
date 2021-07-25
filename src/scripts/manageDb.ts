@@ -2,7 +2,7 @@ import * as AWS from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
 
 import { initAWSConfig } from '../ext/aws/config';
-import { sendDiscordMessage } from '../ext/discord';
+import { sendDiscordAdminMessage } from '../ext/discord';
 import { getAllClosures, ClosureObject } from '../models/Closure';
 import { Feedback } from '../models/Feedback';
 import { getAllHawkerCentres, HawkerCentre } from '../models/HawkerCentre';
@@ -73,7 +73,7 @@ async function createTables() {
 
   const createTableOutputsParsed = parseDynamoDBPromises(createTableOutputs);
 
-  await sendDiscordMessage(
+  await sendDiscordAdminMessage(
     `[${getStage()}] DB TABLES CREATED\n` +
       `${makeListOutput(
         createTableOutputsParsed.filter((result) => result.success),
@@ -102,7 +102,7 @@ async function deleteTables() {
 
   const deleteTableOutputsParsed = parseDynamoDBPromises(deleteTableOutputs);
 
-  await sendDiscordMessage(
+  await sendDiscordAdminMessage(
     `[${getStage()}] DB TABLES DELETED\n` +
       `${makeListOutput(
         deleteTableOutputsParsed.filter((result) => result.success),
@@ -133,7 +133,7 @@ async function resetTables() {
   const hawkerCentreTableDeleteOutput = await dynamoDb
     .deleteTable({ TableName: HawkerCentre.getTableName() })
     .promise();
-  await sendDiscordMessage(
+  await sendDiscordAdminMessage(
     `[${getStage()}] RESET IN PROGRESS\nDeleted tables:\n${[
       [
         closuresTableDeleteOutput.TableDescription?.TableName,
@@ -163,7 +163,7 @@ async function resetTables() {
 
   const createTableOutputsParsed = parseDynamoDBPromises(createTableOutputs);
 
-  await sendDiscordMessage(
+  await sendDiscordAdminMessage(
     `[${getStage()}] RESET IN PROGRESS\n` +
       `Created tables:\n` +
       `${makeListOutput(
