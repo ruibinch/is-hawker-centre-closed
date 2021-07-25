@@ -2,6 +2,7 @@ import {
   generateClosures,
   getHawkerCentresList,
   getRawRecords,
+  NEAData,
   writeFile,
 } from '../dataCollection';
 import { sendDiscordAdminMessage } from '../ext/discord';
@@ -15,7 +16,7 @@ const [isUploadToAws] = args;
 
 export async function run(
   props: { shouldWriteFile: boolean } = { shouldWriteFile: true },
-): Promise<void> {
+): Promise<NEAData> {
   const getRawRecordsResponse = await getRawRecords();
 
   const closures = generateClosures(getRawRecordsResponse);
@@ -37,6 +38,8 @@ export async function run(
     await uploadClosures(closures);
     await uploadHawkerCentres(hawkerCentres);
   }
+
+  return { closures, hawkerCentres };
 }
 
 if (require.main === module) {
