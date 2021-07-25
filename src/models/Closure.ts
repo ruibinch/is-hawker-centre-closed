@@ -145,6 +145,10 @@ export async function getAllClosures(): Promise<Result<Closure[], Error>> {
   }
 }
 
+export function isClosure(obj: Closure | HawkerCentre): obj is Closure {
+  return ['id', 'reason', 'startDate', 'endDate'].every((key) => key in obj);
+}
+
 export function isValidClosureReason(text: string): text is ClosureReason {
   // TODO: explore on improving this
   return text === 'cleaning' || text === 'deepCleaning' || text === 'others';
