@@ -138,7 +138,7 @@ export const bot = Sentry.AWSLambda.wrapHandler(
       }
 
       if (chatId !== undefined) {
-        sendMessage({ chatId, message: makeGenericErrorMessage() });
+        await sendMessage({ chatId, message: makeGenericErrorMessage() });
         return callbackWrapper(200);
       }
 
