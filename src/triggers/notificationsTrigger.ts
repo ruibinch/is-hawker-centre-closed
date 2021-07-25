@@ -2,7 +2,9 @@ import { APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
 
 import { sendMessage } from '../bot/sender';
 import { makeCallbackWrapper } from '../ext/aws/lambda';
+import { sendDiscordAdminMessage } from '../ext/discord';
 import { constructNotifications } from '../services/notifications';
+import { getStage } from '../utils';
 
 export const handler: APIGatewayProxyHandler = async (
   _event,
@@ -16,11 +18,18 @@ export const handler: APIGatewayProxyHandler = async (
     return callbackWrapper(400);
   }
 
+  const notifications = notificationsOutput.val;
   await Promise.all(
-    notificationsOutput.val.map((notification) => {
+    notifications.map((notification) => {
       const { userId: chatId, message } = notification;
       return sendMessage({ chatId, message });
     }),
+  );
+
+  await sendDiscordAdminMessage(
+    `[${getStage()}] NOTIFICATIONS\nNotifications sent to ${
+      notifications.length
+    } users`,
   );
 
   return callbackWrapper(204);

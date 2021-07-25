@@ -4,6 +4,7 @@ import { Err, Ok } from 'ts-results';
 
 import * as sender from '../src/bot/sender';
 import { AWSError } from '../src/errors/AWSError';
+import * as discord from '../src/ext/discord';
 import * as ClosureFile from '../src/models/Closure';
 import * as UserFile from '../src/models/User';
 import { mockClosures, mockUsers } from './__mocks__/db';
@@ -15,6 +16,7 @@ describe('Notifications module', () => {
 
   let dateSpy: jest.SpyInstance;
   let sendMessageSpy: jest.SpyInstance;
+  let sendDiscordAdminMessageSpy: jest.SpyInstance;
 
   // dynamodb mocks
   let getUserByIdSpy: jest.SpyInstance;
@@ -29,6 +31,9 @@ describe('Notifications module', () => {
 
   beforeEach(() => {
     sendMessageSpy = jest.spyOn(sender, 'sendMessage').mockImplementation();
+    sendDiscordAdminMessageSpy = jest
+      .spyOn(discord, 'sendDiscordAdminMessage')
+      .mockImplementation();
 
     getUserByIdSpy = jest
       .spyOn(UserFile, 'getUserById')
@@ -46,6 +51,7 @@ describe('Notifications module', () => {
   afterEach(() => {
     mockCallback.mockRestore();
     sendMessageSpy.mockRestore();
+    sendDiscordAdminMessageSpy.mockRestore();
 
     getAllUsersSpy.mockRestore();
     getAllClosuresSpy.mockRestore();
@@ -67,6 +73,7 @@ describe('Notifications module', () => {
     await callNotifications();
 
     expect(sendMessageSpy).toHaveBeenCalledTimes(2);
+    expect(sendDiscordAdminMessageSpy).toHaveBeenCalled();
     expectedMessages.forEach((expectedMessage) => {
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
@@ -80,6 +87,7 @@ describe('Notifications module', () => {
     await callNotifications();
 
     expect(sendMessageSpy).not.toHaveBeenCalled();
+    expect(sendDiscordAdminMessageSpy).not.toHaveBeenCalled();
     expect(mockCallback).toHaveBeenCalledWith(null, {
       body: '',
       statusCode: 400,
@@ -94,6 +102,7 @@ describe('Notifications module', () => {
     await callNotifications();
 
     expect(sendMessageSpy).not.toHaveBeenCalled();
+    expect(sendDiscordAdminMessageSpy).not.toHaveBeenCalled();
     expect(mockCallback).toHaveBeenCalledWith(null, {
       body: '',
       statusCode: 400,
