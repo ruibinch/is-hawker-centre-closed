@@ -5,6 +5,7 @@ import * as sender from '../src/bot/sender';
 import { AWSError } from '../src/errors/AWSError';
 import * as InputFile from '../src/models/Input';
 import * as UserFile from '../src/models/User';
+import * as searchLogic from '../src/services/search/logic';
 import { assertBotResponse, assertInputSaved, makeBotWrapper } from './helpers';
 
 describe('General module', () => {
@@ -86,6 +87,34 @@ describe('General module', () => {
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
+    });
+  });
+
+  describe('expandable inputs', () => {
+    let processSearchSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      processSearchSpy = jest
+        .spyOn(searchLogic, 'processSearch')
+        .mockReturnValue(Promise.resolve(Err(new AWSError())));
+    });
+
+    afterEach(() => {
+      processSearchSpy.mockRestore();
+    });
+
+    test('"tpy" should expand to "toa payoh"', async () => {
+      const inputMessage = 'tpy lorong 5';
+
+      await callBot(inputMessage);
+      expect(processSearchSpy).toHaveBeenCalledWith('toa payoh lorong 5');
+    });
+
+    test('"amk" should expand to "ang mo kio"', async () => {
+      const inputMessage = '10 amk';
+
+      await callBot(inputMessage);
+      expect(processSearchSpy).toHaveBeenCalledWith('10 ang mo kio');
     });
   });
 

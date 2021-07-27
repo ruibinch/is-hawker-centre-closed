@@ -20,7 +20,7 @@ import { BotResponse } from '../utils/types';
 import { validateToken } from './auth';
 import { isCommand, isCommandInModule, makeCommandMessage } from './commands';
 import { sendMessage, sendMessageWithChoices } from './sender';
-import { validateInputMessage } from './utils';
+import { expandAcronymsInText, validateInputMessage } from './utils';
 
 dotenv.config();
 
@@ -83,20 +83,22 @@ export const bot = Sentry.AWSLambda.wrapHandler(
         }
       }
 
-      let botResponse: BotResponse | undefined;
+      const textExpanded = expandAcronymsInText(textSanitised);
 
       // eslint-disable-next-line max-len
       // must always first check if the user is in favourites mode so that isInFavouritesMode can be toggled back to false if applicable
       const maybeHandleFavouriteSelectionResult =
-        await maybeHandleFavouriteSelection(textSanitised, telegramUser);
+        await maybeHandleFavouriteSelection(textExpanded, telegramUser);
+
+      let botResponse: BotResponse | undefined;
 
       if (maybeHandleFavouriteSelectionResult.ok) {
         botResponse = maybeHandleFavouriteSelectionResult.val;
       } else {
         // If favourites flow is not applicable, perform customary handling
-        const executionFn = getExecutionFn(textSanitised);
+        const executionFn = getExecutionFn(textExpanded);
         const executionFnResponse = await executionFn(
-          textSanitised,
+          textExpanded,
           telegramUser,
         );
 

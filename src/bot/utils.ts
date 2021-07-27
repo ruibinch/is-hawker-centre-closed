@@ -104,3 +104,20 @@ export function sanitiseInputText(text: string): string {
 
   return textSanitised;
 }
+
+const ACRONYMS: [string, string][] = [
+  ['amk', 'ang mo kio'],
+  ['tpy', 'toa payoh'],
+];
+
+export function expandAcronymsInText(text: string): string {
+  let textSplit = text.split(' ');
+
+  ACRONYMS.forEach(([acronym, acronymExpanded]) => {
+    textSplit = textSplit.map((word) =>
+      word.toLowerCase() === acronym ? acronymExpanded : word,
+    );
+  });
+
+  return textSplit.join(' ');
+}
