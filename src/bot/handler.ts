@@ -20,7 +20,7 @@ import { BotResponse } from '../utils/types';
 import { validateToken } from './auth';
 import { isCommand, isCommandInModule, makeCommandMessage } from './commands';
 import { sendMessage, sendMessageWithChoices } from './sender';
-import { validateInputMessage } from './utils';
+import { expandAcronymsInText, validateInputMessage } from './utils';
 
 dotenv.config();
 
@@ -83,34 +83,22 @@ export const bot = Sentry.AWSLambda.wrapHandler(
         }
       }
 
-      const makeExecutionFn = (_textSanitised: string) => {
-        if (isCommandInModule(_textSanitised, 'favourites')) {
-          return manageFavourites;
-        }
-        if (isCommandInModule(_textSanitised, 'language')) {
-          return manageLanguage;
-        }
-        if (isCommandInModule(_textSanitised, 'feedback')) {
-          return manageFeedback;
-        }
-
-        return runSearch;
-      };
-
-      let botResponse: BotResponse | undefined;
+      const textExpanded = expandAcronymsInText(textSanitised);
 
       // eslint-disable-next-line max-len
       // must always first check if the user is in favourites mode so that isInFavouritesMode can be toggled back to false if applicable
       const maybeHandleFavouriteSelectionResult =
-        await maybeHandleFavouriteSelection(textSanitised, telegramUser);
+        await maybeHandleFavouriteSelection(textExpanded, telegramUser);
+
+      let botResponse: BotResponse | undefined;
 
       if (maybeHandleFavouriteSelectionResult.ok) {
         botResponse = maybeHandleFavouriteSelectionResult.val;
       } else {
         // If favourites flow is not applicable, perform customary handling
-        const executionFn = makeExecutionFn(textSanitised);
+        const executionFn = getExecutionFn(textExpanded);
         const executionFnResponse = await executionFn(
-          textSanitised,
+          textExpanded,
           telegramUser,
         );
 
@@ -146,3 +134,17 @@ export const bot = Sentry.AWSLambda.wrapHandler(
     }
   },
 );
+
+const getExecutionFn = (_textSanitised: string) => {
+  if (isCommandInModule(_textSanitised, 'favourites')) {
+    return manageFavourites;
+  }
+  if (isCommandInModule(_textSanitised, 'language')) {
+    return manageLanguage;
+  }
+  if (isCommandInModule(_textSanitised, 'feedback')) {
+    return manageFeedback;
+  }
+
+  return runSearch;
+};

@@ -88,19 +88,36 @@ export function validateInputMessage(
  * alphanumeric, /, ', whitespace, underscore
  */
 export function sanitiseInputText(text: string): string {
-  let sanitisedText = text;
+  let textSanitised = text;
 
   const fullStringEnclosedInBracketsRegex = /^\(.*?\)$/g;
   if (fullStringEnclosedInBracketsRegex.test(text)) {
     const bracketsRegex = /[()]/g;
-    sanitisedText = sanitisedText.replace(bracketsRegex, '');
+    textSanitised = textSanitised.replace(bracketsRegex, '');
   }
 
   const enclosedInBracketsRegex = /\(.*?\)/g;
-  sanitisedText = sanitisedText.replace(enclosedInBracketsRegex, '');
+  textSanitised = textSanitised.replace(enclosedInBracketsRegex, '');
 
   const nonWhitelistFilterRegex = /[^a-zA-Z0-9/'\s_]/g;
-  sanitisedText = sanitisedText.replace(nonWhitelistFilterRegex, '').trim();
+  textSanitised = textSanitised.replace(nonWhitelistFilterRegex, '').trim();
 
-  return sanitisedText;
+  return textSanitised;
+}
+
+const ACRONYMS: [string, string][] = [
+  ['amk', 'ang mo kio'],
+  ['tpy', 'toa payoh'],
+];
+
+export function expandAcronymsInText(text: string): string {
+  let textSplit = text.split(' ');
+
+  ACRONYMS.forEach(([acronym, acronymExpanded]) => {
+    textSplit = textSplit.map((word) =>
+      word.toLowerCase() === acronym ? acronymExpanded : word,
+    );
+  });
+
+  return textSplit.join(' ');
 }
