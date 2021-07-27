@@ -128,22 +128,22 @@ async function resetTables(): Promise<NEAData | null> {
   const numEntriesInClosuresTable = getAllClosuresResponse.val.length;
   const numEntriesInHCTable = getAllHCResponse.val.length;
 
-  const closuresTableDeleteOutput = await dynamoDb
-    .deleteTable({ TableName: ClosureObject.getTableName() })
-    .promise();
-  const hawkerCentreTableDeleteOutput = await dynamoDb
-    .deleteTable({ TableName: HawkerCentre.getTableName() })
-    .promise();
+  const deleteTableOutputs = await Promise.all(
+    [
+      dynamoDb
+        .deleteTable({ TableName: ClosureObject.getTableName() })
+        .promise(),
+      dynamoDb
+        .deleteTable({ TableName: HawkerCentre.getTableName() })
+        .promise(),
+    ].map(wrapPromise),
+  );
+  const deleteTableOutputsParsed = parseDynamoDBPromises(deleteTableOutputs);
+
   await sendDiscordAdminMessage(
     `[${getStage()}] RESET IN PROGRESS\nDeleted tables:\n${[
-      [
-        closuresTableDeleteOutput.TableDescription?.TableName,
-        numEntriesInClosuresTable,
-      ],
-      [
-        hawkerCentreTableDeleteOutput.TableDescription?.TableName,
-        numEntriesInHCTable,
-      ],
+      [deleteTableOutputsParsed[0].message, numEntriesInClosuresTable],
+      [deleteTableOutputsParsed[1].message, numEntriesInHCTable],
     ]
       .map(
         ([tableName, numEntries], idx) =>
@@ -161,7 +161,6 @@ async function resetTables(): Promise<NEAData | null> {
       dynamoDb.createTable(HawkerCentre.getSchema()).promise(),
     ].map(wrapPromise),
   );
-
   const createTableOutputsParsed = parseDynamoDBPromises(createTableOutputs);
 
   await sendDiscordAdminMessage(
