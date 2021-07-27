@@ -39,8 +39,8 @@ describe('General module', () => {
     getUserByIdSpy.mockRestore();
   });
 
-  describe('/start', () => {
-    it('returns the correct message', async () => {
+  describe('commands', () => {
+    it('["/start"] returns the correct message', async () => {
       const inputMessage = '/start';
       const expectedMessage =
         'An easy way to check if your favourite hawker centre is closed today\\! \u{1F35C}\u{1F35B}\u{1F367}\n\n' +
@@ -51,10 +51,8 @@ describe('General module', () => {
       assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
-  });
 
-  describe('/help', () => {
-    it('returns the correct message', async () => {
+    it('["/help"] returns the correct message', async () => {
       const inputMessage = '/help';
       const expectedMessage =
         '\u{1F50D} *Search*\n\n' +
@@ -77,22 +75,8 @@ describe('General module', () => {
       assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
-  });
 
-  describe('empty input', () => {
-    it('returns the correct message', async () => {
-      const inputMessage = '';
-      const expectedMessage =
-        '\u{2757} No text found\\.\n\nPlease try again with a text message\\.';
-
-      await callBot(inputMessage);
-      expect(addInputToDBSpy).not.toHaveBeenCalled();
-      assertBotResponse(sendMessageSpy, expectedMessage);
-    });
-  });
-
-  describe('an unsupported command', () => {
-    it('returns the correct message', async () => {
+    it('returns the correct prompt when an unsupported command is sent', async () => {
       const inputMessage = '/invalid';
       const expectedMessage =
         "Woops, that isn't a supported command\\.\n\n" +
@@ -101,6 +85,18 @@ describe('General module', () => {
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
+      assertBotResponse(sendMessageSpy, expectedMessage);
+    });
+  });
+
+  describe('empty input', () => {
+    it('returns the correct error message', async () => {
+      const inputMessage = '';
+      const expectedMessage =
+        '\u{2757} No text found\\.\n\nPlease try again with a text message\\.';
+
+      await callBot(inputMessage);
+      expect(addInputToDBSpy).not.toHaveBeenCalled();
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
   });
