@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.8.0] - 2021-07-28
+
+### Added
+
+- Auto-expansion of recognised acronyms, e.g. "amk" to "ang mo kio"
+
 ## [0.7.0] - 2021-07-23
 
 ### Added
