@@ -120,6 +120,7 @@ export const bot = Sentry.AWSLambda.wrapHandler(
 
       return callbackWrapper(200);
     } catch (error) {
+      /* istanbul ignore next */
       if (process.env.NODE_ENV !== 'test') {
         console.error('[bot > handler]', error);
         Sentry.captureException(error);

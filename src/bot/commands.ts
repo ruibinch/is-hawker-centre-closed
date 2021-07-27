@@ -204,5 +204,6 @@ function generateRandomInt(min: number, max: number) {
   // for cleaner testing instead of relying on numerous mocks
   if (process.env.NODE_ENV === 'test') return min;
 
+  /* istanbul ignore next */
   return Math.floor(Math.random() * (max - min) + min);
 }
