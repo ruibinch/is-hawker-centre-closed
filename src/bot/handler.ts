@@ -83,20 +83,6 @@ export const bot = Sentry.AWSLambda.wrapHandler(
         }
       }
 
-      const makeExecutionFn = (_textSanitised: string) => {
-        if (isCommandInModule(_textSanitised, 'favourites')) {
-          return manageFavourites;
-        }
-        if (isCommandInModule(_textSanitised, 'language')) {
-          return manageLanguage;
-        }
-        if (isCommandInModule(_textSanitised, 'feedback')) {
-          return manageFeedback;
-        }
-
-        return runSearch;
-      };
-
       let botResponse: BotResponse | undefined;
 
       // eslint-disable-next-line max-len
@@ -108,7 +94,7 @@ export const bot = Sentry.AWSLambda.wrapHandler(
         botResponse = maybeHandleFavouriteSelectionResult.val;
       } else {
         // If favourites flow is not applicable, perform customary handling
-        const executionFn = makeExecutionFn(textSanitised);
+        const executionFn = getExecutionFn(textSanitised);
         const executionFnResponse = await executionFn(
           textSanitised,
           telegramUser,
@@ -146,3 +132,17 @@ export const bot = Sentry.AWSLambda.wrapHandler(
     }
   },
 );
+
+const getExecutionFn = (_textSanitised: string) => {
+  if (isCommandInModule(_textSanitised, 'favourites')) {
+    return manageFavourites;
+  }
+  if (isCommandInModule(_textSanitised, 'language')) {
+    return manageLanguage;
+  }
+  if (isCommandInModule(_textSanitised, 'feedback')) {
+    return manageFeedback;
+  }
+
+  return runSearch;
+};
