@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.9.0] - 2021-07-28
+
+### Added
+
+- /updates command to check the latest updates
+
 ## [0.8.0] - 2021-07-28
 
 ### Added

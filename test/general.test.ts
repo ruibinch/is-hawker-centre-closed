@@ -93,9 +93,13 @@ describe('General module', () => {
   describe('updates module', () => {
     it('["/updates"] returns the latest updates', async () => {
       const inputMessage = '/updates';
-      const expectedMessage =
+      const updateEntries = [
+        '*\\[0\\.9\\.0\\] 2021\\-07\\-28*\n' +
+          '\u{00B7} Added /updates command to check the latest updates',
         '*\\[0\\.8\\.0\\] 2021\\-07\\-28*\n' +
-        '\u{00B7} Added auto\\-expansion of recognised acronyms, e\\.g\\. "amk" to "ang mo kio", "tpy" to "toa payoh"';
+          '\u{00B7} Added auto\\-expansion of recognised acronyms, e\\.g\\. "amk" to "ang mo kio", "tpy" to "toa payoh"',
+      ];
+      const expectedMessage = updateEntries.join('\n\n');
 
       await callBot(inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
