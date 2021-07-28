@@ -82,10 +82,22 @@ describe('General module', () => {
       const expectedMessage =
         "Woops, that isn't a supported command\\.\n\n" +
         'Please try again with one of the following:\n' +
-        '/start, /help, /list, /fav, /del, /notify, /language, /feedback';
+        '/start, /help, /list, /fav, /del, /notify, /language, /feedback, /updates';
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
+      assertBotResponse(sendMessageSpy, expectedMessage);
+    });
+  });
+
+  describe('updates module', () => {
+    it('["/updates"] returns the latest updates', async () => {
+      const inputMessage = '/updates';
+      const expectedMessage =
+        '*\\[0\\.8\\.0\\] 2021\\-07\\-28*\n' +
+        '\u{00B7} Added auto\\-expansion of recognised acronyms, e\\.g\\. "amk" to "ang mo kio", "tpy" to "toa payoh"';
+
+      await callBot(inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
   });

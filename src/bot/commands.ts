@@ -52,6 +52,12 @@ export const COMMANDS: Command[] = [
     hasExplanation: true,
     description: 'Submit your feedback!',
   },
+  {
+    module: 'general',
+    endpoint: '/updates',
+    hasExplanation: false,
+    description: 'Check the latest updates',
+  },
 ];
 
 /**
