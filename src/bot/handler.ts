@@ -11,6 +11,7 @@ import {
   manageFavourites,
 } from '../services/favourites';
 import { manageFeedback } from '../services/feedback';
+import { manageGeneral } from '../services/general';
 import { saveInput } from '../services/input';
 import { getUserLanguageCode, manageLanguage } from '../services/language';
 import { makeGenericErrorMessage } from '../services/message';
@@ -145,6 +146,9 @@ const getExecutionFn = (_textSanitised: string) => {
   }
   if (isCommandInModule(_textSanitised, 'feedback')) {
     return manageFeedback;
+  }
+  if (isCommandInModule(_textSanitised, 'general')) {
+    return manageGeneral;
   }
 
   return runSearch;
