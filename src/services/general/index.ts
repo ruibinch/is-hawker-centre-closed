@@ -9,7 +9,7 @@ export async function manageGeneral(): Promise<ServiceResponse> {
     const { version, date, details } = changelogEntry;
     return (
       `*${version} ${date}*\n` +
-      `${details.map((detail) => `\u{00B7} ${detail}`)}`
+      `${details.map((detail) => `\u{00B7} ${detail}`).join('\n')}`
     );
   });
 
