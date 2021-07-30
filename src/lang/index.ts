@@ -29,7 +29,7 @@ const normaliseDictionary = (dictionary: Dictionary) =>
     },
   );
 
-const dictionary: Dictionary = {
+export const dictionary: Dictionary = {
   en: enDict,
   zh: zhDict,
 };
