@@ -6,7 +6,7 @@ import {
   parseISO,
   startOfDay,
 } from 'date-fns';
-import { Err, Ok, Result } from 'ts-results';
+import { Ok, Result } from 'ts-results';
 
 import { CustomError } from '../../errors/CustomError';
 import { Closure, getAllClosures } from '../../models/Closure';
@@ -27,7 +27,7 @@ export async function processSearch(
   const { keyword, modifier } = searchParams;
 
   const getAllClosuresResponse = await getAllClosures();
-  if (getAllClosuresResponse.err) return Err(getAllClosuresResponse.val);
+  if (getAllClosuresResponse.err) return getAllClosuresResponse;
   const closuresAll = getAllClosuresResponse.val;
 
   const closuresFilteredByKeyword = filterByKeyword(closuresAll, keyword);

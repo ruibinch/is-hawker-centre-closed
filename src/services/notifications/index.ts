@@ -1,4 +1,4 @@
-import { Err, Ok, Result } from 'ts-results';
+import { Ok, Result } from 'ts-results';
 
 import { CustomError } from '../../errors/CustomError';
 import { initDictionary } from '../../lang';
@@ -11,7 +11,7 @@ export async function constructNotifications(): Promise<
 > {
   const usersWithFavsClosedTodayResponse = await getUsersWithFavsClosedToday();
   if (usersWithFavsClosedTodayResponse.err)
-    return Err(usersWithFavsClosedTodayResponse.val);
+    return usersWithFavsClosedTodayResponse;
 
   const notifications = usersWithFavsClosedTodayResponse.val
     .filter((userWithClosure) => userWithClosure.closures.length > 0)

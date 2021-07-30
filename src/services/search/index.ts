@@ -1,4 +1,4 @@
-import { Err, Ok } from 'ts-results';
+import { Ok } from 'ts-results';
 
 import { ServiceResponse } from '../../utils/types';
 import { processSearch } from './logic';
@@ -13,7 +13,7 @@ export async function runSearch(
   textSanitised: string,
 ): Promise<ServiceResponse> {
   const searchResponse = await processSearch(textSanitised);
-  if (searchResponse.err) return Err(searchResponse.val);
+  if (searchResponse.err) return searchResponse;
 
   return Ok({
     message: makeMessage(searchResponse.val),

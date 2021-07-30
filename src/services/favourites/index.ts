@@ -39,7 +39,7 @@ export async function manageFavourites(
   switch (command) {
     case '/fav': {
       const findHCResponse = await findHCByKeyword(keyword);
-      if (findHCResponse.err) return Err(findHCResponse.val);
+      if (findHCResponse.err) return findHCResponse;
 
       const { isExactMatch, isFindError, hawkerCentres } = findHCResponse.val;
 
@@ -89,8 +89,7 @@ export async function manageFavourites(
       const getFavResponseWithClosures = await getUserFavouritesWithClosures(
         telegramUser,
       );
-      if (getFavResponseWithClosures.err)
-        return Err(getFavResponseWithClosures.val);
+      if (getFavResponseWithClosures.err) return getFavResponseWithClosures;
 
       return Ok({
         message: makeFavouritesListMessage(
@@ -136,7 +135,7 @@ export async function maybeHandleFavouriteSelection(
   );
 
   if (isUserInFavouritesModeResponse.err) {
-    return Err(isUserInFavouritesModeResponse.val);
+    return isUserInFavouritesModeResponse;
   }
   if (!isUserInFavouritesModeResponse.val.isInFavouritesMode) {
     return Err.EMPTY;
@@ -161,7 +160,7 @@ async function handleFavouriteSelection(
   if (isCommand(keyword)) return Err.EMPTY;
 
   const findHCResponse = await findHCByKeyword(keyword);
-  if (findHCResponse.err) return Err(findHCResponse.val);
+  if (findHCResponse.err) return findHCResponse;
 
   const { isExactMatch, hawkerCentres } = findHCResponse.val;
 
@@ -195,7 +194,7 @@ async function executeAddHCToFavourites(props: {
     hawkerCentre,
     telegramUser,
   });
-  if (addHCResponse.err) return Err(addHCResponse.val);
+  if (addHCResponse.err) return addHCResponse;
 
   const { isDuplicate } = addHCResponse.val;
 

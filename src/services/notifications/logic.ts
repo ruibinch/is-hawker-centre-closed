@@ -1,5 +1,5 @@
 import { isWithinInterval, parseISO, startOfDay } from 'date-fns';
-import { Err, Ok, Result } from 'ts-results';
+import { Ok, Result } from 'ts-results';
 
 import { CustomError } from '../../errors/CustomError';
 import { getAllClosures } from '../../models/Closure';
@@ -14,11 +14,11 @@ export async function getUsersWithFavsClosedToday(): Promise<
   Result<UserWithClosure[], CustomError>
 > {
   const getAllUsersResponse = await getAllUsers();
-  if (getAllUsersResponse.err) return Err(getAllUsersResponse.val);
+  if (getAllUsersResponse.err) return getAllUsersResponse;
   const usersAll = getAllUsersResponse.val;
 
   const getAllClosuresResponse = await getAllClosures();
-  if (getAllClosuresResponse.err) return Err(getAllClosuresResponse.val);
+  if (getAllClosuresResponse.err) return getAllClosuresResponse;
   const closuresAll = getAllClosuresResponse.val;
 
   const closuresCurrent = closuresAll.filter((closure) =>

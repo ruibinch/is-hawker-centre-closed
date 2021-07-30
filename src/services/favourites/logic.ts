@@ -40,7 +40,7 @@ export async function findHCByKeyword(
   keyword: string,
 ): Promise<Result<FindHCResponse, CustomError>> {
   const getAllHCResponse = await getAllHawkerCentres();
-  if (getAllHCResponse.err) return Err(getAllHCResponse.val);
+  if (getAllHCResponse.err) return getAllHCResponse;
 
   const hawkerCentres = getAllHCResponse.val;
   const hcFilteredByKeyword = filterByKeyword(hawkerCentres, keyword);
@@ -153,7 +153,7 @@ export async function deleteHCFromFavourites(props: {
   // get details of HC to be deleted
   const delHawkerCentreId = user.favourites[deleteIdx].hawkerCentreId;
   const getHCByIdResponse = await getHawkerCentreById(delHawkerCentreId);
-  if (getHCByIdResponse.err) return Err(getHCByIdResponse.val);
+  if (getHCByIdResponse.err) return getHCByIdResponse;
 
   const delHawkerCentre = getHCByIdResponse.val;
 
@@ -186,11 +186,11 @@ export async function getUserFavouritesWithClosures(
   const userFavHCIds = user.favourites.map((fav) => fav.hawkerCentreId);
 
   const getAllClosuresResponse = await getAllClosures();
-  if (getAllClosuresResponse.err) return Err(getAllClosuresResponse.val);
+  if (getAllClosuresResponse.err) return getAllClosuresResponse;
   const closuresAll = getAllClosuresResponse.val;
 
   const getAllHCResponse = await getAllHawkerCentres();
-  if (getAllHCResponse.err) return Err(getAllHCResponse.val);
+  if (getAllHCResponse.err) return getAllHCResponse;
   const hawkerCentres = getAllHCResponse.val;
 
   const userFavsWithClosures = userFavHCIds.map((favHCId) => {
@@ -235,7 +235,7 @@ export async function isUserInFavouritesMode(
 
   if (getUserResponse.err) {
     // user does not exist in DB
-    return Err(getUserResponse.val);
+    return getUserResponse;
   }
 
   const user = getUserResponse.val;
