@@ -324,6 +324,21 @@ describe('[integration] Favourites module', () => {
 
         expect(updateUserFavouritesSpy).not.toHaveBeenCalled();
       });
+
+      it('[error] returns an unexpected error message when attempting to delete a saved hawker centre, but getHawkerCentreById returns an error', async () => {
+        getHawkerCentreByIdSpy = jest
+          .spyOn(HawkerCentreFile, 'getHawkerCentreById')
+          .mockImplementation(() => Promise.resolve(Err(new AWSError())));
+
+        const inputMessage = '/del 1';
+        const expectedMessage =
+          "Woops, couldn't handle deleting your entry for some unexpected reason\\. Try again?";
+
+        await callBot(inputMessage);
+        assertBotResponse(sendMessageSpy, expectedMessage);
+
+        getHawkerCentreByIdSpy.mockRestore();
+      });
     });
 
     describe("getting list of user's favourites", () => {

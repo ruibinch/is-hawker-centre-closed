@@ -49,6 +49,10 @@ export function makeSuccessfullyDeletedMessage(
   return t('favourites.hawker-centre-removed', { hcName: hawkerCentre.name });
 }
 
+export function makeDeleteUnexpectedErrorMessage(): string {
+  return t('favourites.error.delete-fav');
+}
+
 export function makeDeleteErrorMessage(numFavourites: number): string {
   if (numFavourites === 0) {
     return makeNoSavedFavouritesMessage();

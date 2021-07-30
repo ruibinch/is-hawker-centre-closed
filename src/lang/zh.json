@@ -54,6 +54,7 @@
   "favourites.hawker-centre-added": "好，将”*{{hcName}}*“添加到喜爱列表中！",
   "favourites.error.duplicate-hawker-centres": "已将”*{{hcName}}*“添加到喜爱列表中！",
   "favourites.hawker-centre-removed": "”*{{hcName}}*“已从喜爱列表中删除。",
+  "favourites.error.delete-fav": "将删除输入项时发生了意外错误，请再试一次。",
   "favourites.error.invalid-delete-index.first": "索引无效。",
   "favourites.error.invalid-delete-index.second.one-fav": "唯一的有效索引是1。",
   "favourites.error.invalid-delete-index.second.multiple-favs": "有效索引是1到{{numFavourites}}。",

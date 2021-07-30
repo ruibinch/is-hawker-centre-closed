@@ -24,6 +24,7 @@ import {
   makeDeleteErrorMessage,
   makeWriteNotificationsSettingMessage,
   makeReadNotificationsSettingMessage,
+  makeDeleteUnexpectedErrorMessage,
 } from './message';
 
 export * from './logic';
@@ -71,11 +72,11 @@ export async function manageFavourites(
       });
 
       if (deleteHCResponse.err) {
-        if (deleteHCResponse.val instanceof CustomError)
-          return Err(deleteHCResponse.val);
-
         return Ok({
-          message: makeDeleteErrorMessage(deleteHCResponse.val.numFavourites),
+          message:
+            deleteHCResponse.val instanceof CustomError
+              ? makeDeleteUnexpectedErrorMessage()
+              : makeDeleteErrorMessage(deleteHCResponse.val.numFavourites),
         });
       }
 
