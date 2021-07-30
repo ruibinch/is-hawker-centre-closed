@@ -3,12 +3,11 @@ import i18n, { TranslateOptions } from 'i18n-js';
 import enDict from './en.json';
 import zhDict from './zh.json';
 
-// FIXME: figure out how to best utilise this type in Dictionary
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export type Language = 'en' | 'zh';
 
 type Dictionary = {
-  [lang: string]: Record<string, string>;
+  [lang in Language]: Record<string, string>;
 };
 
 const normaliseKey = (key: string) => key.replace(/\./g, '-');
@@ -24,10 +23,13 @@ const normaliseDictionary = (dictionary: Dictionary) =>
       );
       return newDict;
     },
-    {},
+    {
+      en: {},
+      zh: {},
+    },
   );
 
-const dictionary: Dictionary = {
+export const dictionary: Dictionary = {
   en: enDict,
   zh: zhDict,
 };

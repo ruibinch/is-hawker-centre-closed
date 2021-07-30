@@ -1,6 +1,6 @@
 import { validateToken } from '../../../src/bot/auth';
 
-describe('bot > auth', () => {
+describe('[unit] bot > auth', () => {
   it('returns true when the input token matches the bot token', () => {
     const queryStringParams = {
       token: 'pokemongottacatchthemall',

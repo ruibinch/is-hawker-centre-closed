@@ -5,15 +5,15 @@ import {
 } from 'aws-lambda';
 import { Err } from 'ts-results';
 
-import { bot } from '../src/bot/handler';
-import * as sender from '../src/bot/sender';
-import { AWSError } from '../src/errors/AWSError';
-import * as InputFile from '../src/models/Input';
-import * as UserFile from '../src/models/User';
-import * as searchFeature from '../src/services/search';
+import { bot } from '../../src/bot/handler';
+import * as sender from '../../src/bot/sender';
+import { AWSError } from '../../src/errors/AWSError';
+import * as InputFile from '../../src/models/Input';
+import * as UserFile from '../../src/models/User';
+import * as searchFeature from '../../src/services/search';
 import { assertBotResponse, makeBotWrapper } from './helpers';
 
-describe('Validation module', () => {
+describe('[integration] Validation module', () => {
   const mockCallback = jest.fn();
   const callBot = makeBotWrapper(mockCallback);
 

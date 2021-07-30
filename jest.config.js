@@ -2,7 +2,7 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   roots: ['<rootDir>'],
-  setupFiles: ['<rootDir>/test/helpers/setEnvVars.js'],
+  setupFiles: ['<rootDir>/test/setEnvVars.js'],
   coveragePathIgnorePatterns: ['/node_modules/'],
   collectCoverageFrom: [
     '<rootDir>/src/bot/*.ts',

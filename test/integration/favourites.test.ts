@@ -2,15 +2,15 @@
 import { parseISO } from 'date-fns';
 import { Err, Ok } from 'ts-results';
 
-import * as sender from '../src/bot/sender';
-import { AWSError } from '../src/errors/AWSError';
-import * as ClosureFile from '../src/models/Closure';
-import * as HawkerCentreFile from '../src/models/HawkerCentre';
-import * as InputFile from '../src/models/Input';
-import * as UserFile from '../src/models/User';
-import * as favouritesIndex from '../src/services/favourites/index';
-import * as feedbackIndex from '../src/services/feedback/index';
-import * as searchIndex from '../src/services/search/index';
+import * as sender from '../../src/bot/sender';
+import { AWSError } from '../../src/errors/AWSError';
+import * as ClosureFile from '../../src/models/Closure';
+import * as HawkerCentreFile from '../../src/models/HawkerCentre';
+import * as InputFile from '../../src/models/Input';
+import * as UserFile from '../../src/models/User';
+import * as favouritesIndex from '../../src/services/favourites/index';
+import * as feedbackIndex from '../../src/services/feedback/index';
+import * as searchIndex from '../../src/services/search/index';
 import {
   mockHawkerCentres,
   mockClosures,
@@ -21,7 +21,7 @@ import {
 } from './__mocks__/db';
 import { assertBotResponse, assertInputSaved, makeBotWrapper } from './helpers';
 
-describe('Favourites module', () => {
+describe('[integration] Favourites module', () => {
   const mockCallback = jest.fn();
   const callBot = makeBotWrapper(mockCallback);
 

@@ -1,15 +1,15 @@
 import { parseISO } from 'date-fns';
 import { Err } from 'ts-results';
 
-import * as sender from '../src/bot/sender';
-import { AWSError } from '../src/errors/AWSError';
-import * as Feedback from '../src/models/Feedback';
-import * as InputFile from '../src/models/Input';
-import * as UserFile from '../src/models/User';
-import * as favouritesIndex from '../src/services/favourites/index';
+import * as sender from '../../src/bot/sender';
+import { AWSError } from '../../src/errors/AWSError';
+import * as Feedback from '../../src/models/Feedback';
+import * as InputFile from '../../src/models/Input';
+import * as UserFile from '../../src/models/User';
+import * as favouritesIndex from '../../src/services/favourites/index';
 import { assertBotResponse, assertInputSaved, makeBotWrapper } from './helpers';
 
-describe('Feedback module', () => {
+describe('[integration] Feedback module', () => {
   const mockCallback = jest.fn();
   const callBot = makeBotWrapper(mockCallback);
 
