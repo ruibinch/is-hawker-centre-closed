@@ -2,7 +2,7 @@ import {
   TelegramChat,
   TelegramMessage,
   TelegramUser,
-} from '../../src/utils/telegram';
+} from '../../../src/utils/telegram';
 
 export const mockTelegramUser: TelegramUser = {
   id: 1,

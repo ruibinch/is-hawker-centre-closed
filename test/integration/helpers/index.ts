@@ -1,8 +1,8 @@
 import { APIGatewayProxyEvent, Context } from 'aws-lambda';
 
-import { bot } from '../../src/bot/handler';
-import { handler as notificationsTriggerHandler } from '../../src/triggers/notificationsTrigger';
-import { TelegramMessage } from '../../src/utils/telegram';
+import { bot } from '../../../src/bot/handler';
+import { handler as notificationsTriggerHandler } from '../../../src/triggers/notificationsTrigger';
+import { TelegramMessage } from '../../../src/utils/telegram';
 import { makeTelegramMessage } from '../__mocks__/telegram';
 
 export const makeBotWrapper =

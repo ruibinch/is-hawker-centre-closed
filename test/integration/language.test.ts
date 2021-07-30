@@ -1,15 +1,15 @@
 import { parseISO } from 'date-fns';
 import { Err, Ok } from 'ts-results';
 
-import * as sender from '../src/bot/sender';
-import { AWSError } from '../src/errors/AWSError';
-import * as InputFile from '../src/models/Input';
-import * as UserFile from '../src/models/User';
-import * as favouritesIndex from '../src/services/favourites/index';
+import * as sender from '../../src/bot/sender';
+import { AWSError } from '../../src/errors/AWSError';
+import * as InputFile from '../../src/models/Input';
+import * as UserFile from '../../src/models/User';
+import * as favouritesIndex from '../../src/services/favourites/index';
 import { mockUser } from './__mocks__/db';
 import { assertBotResponse, assertInputSaved, makeBotWrapper } from './helpers';
 
-describe('Language module', () => {
+describe('[integration] Language module', () => {
   const mockCallback = jest.fn();
   const callBot = makeBotWrapper(mockCallback);
 

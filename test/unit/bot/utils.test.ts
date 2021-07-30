@@ -1,6 +1,6 @@
 import { sanitiseInputText } from '../../../src/bot/utils';
 
-describe('bot > utils', () => {
+describe('[unit] bot > utils', () => {
   describe('sanitiseInputText', () => {
     it.each([
       ['/start', '/start'],
