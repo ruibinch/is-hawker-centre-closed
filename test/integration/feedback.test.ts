@@ -1,5 +1,5 @@
 import { parseISO } from 'date-fns';
-import { Err } from 'ts-results';
+import { Err, Ok } from 'ts-results';
 
 import * as sender from '../../src/bot/sender';
 import { AWSError } from '../../src/errors/AWSError';
@@ -37,7 +37,7 @@ describe('[integration] Feedback module', () => {
     sendMessageSpy = jest.spyOn(sender, 'sendMessage').mockImplementation();
     addFeedbackToDBSpy = jest
       .spyOn(Feedback, 'addFeedbackToDB')
-      .mockImplementation(() => Promise.resolve());
+      .mockImplementation(() => Promise.resolve(Ok.EMPTY));
     addInputToDBSpy = jest
       .spyOn(InputFile, 'addInputToDB')
       .mockImplementation(() => Promise.resolve());
@@ -83,5 +83,19 @@ describe('[integration] Feedback module', () => {
       text: 'great bot',
       createdAt: '2021-01-05T00:00:00Z',
     });
+  });
+
+  it('[error] returns an error message when addFeedbackToDB returns an error', async () => {
+    addFeedbackToDBSpy = jest
+      .spyOn(Feedback, 'addFeedbackToDB')
+      .mockImplementation(() => Promise.resolve(Err(new AWSError())));
+
+    const inputMessage = '/feedback great bot';
+    const expectedMessage =
+      "Woops, couldn't handle saving your feedback for some unexpected reason\\. Try again?";
+
+    await callBot(inputMessage);
+    assertInputSaved(addInputToDBSpy, inputMessage);
+    assertBotResponse(sendMessageSpy, expectedMessage);
   });
 });

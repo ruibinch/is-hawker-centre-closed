@@ -62,14 +62,22 @@ export class Feedback {
   }
 }
 
-export async function addFeedbackToDB(feedback: Feedback): Promise<void> {
-  await dynamoDb
+export async function addFeedbackToDB(
+  feedback: Feedback,
+): Promise<Result<void, AWSError>> {
+  const putItemOutput = await dynamoDb
     .put({
       TableName: Feedback.getTableName(),
       Item: feedback,
       ConditionExpression: 'attribute_not_exists(feedbackId)',
     })
     .promise();
+
+  if (putItemOutput.$response.error) {
+    return Err(new AWSError());
+  }
+
+  return Ok.EMPTY;
 }
 
 export async function getAllFeedback(): Promise<Result<Feedback[], AWSError>> {

@@ -324,6 +324,21 @@ describe('[integration] Favourites module', () => {
 
         expect(updateUserFavouritesSpy).not.toHaveBeenCalled();
       });
+
+      it('[error] returns an unexpected error message when attempting to delete a saved hawker centre, but getHawkerCentreById returns an error', async () => {
+        getHawkerCentreByIdSpy = jest
+          .spyOn(HawkerCentreFile, 'getHawkerCentreById')
+          .mockImplementation(() => Promise.resolve(Err(new AWSError())));
+
+        const inputMessage = '/del 1';
+        const expectedMessage =
+          "Woops, couldn't handle deleting your entry for some unexpected reason\\. Try again?";
+
+        await callBot(inputMessage);
+        assertBotResponse(sendMessageSpy, expectedMessage);
+
+        getHawkerCentreByIdSpy.mockRestore();
+      });
     });
 
     describe("getting list of user's favourites", () => {
@@ -481,7 +496,7 @@ describe('[integration] Favourites module', () => {
     beforeEach(() => {
       addUserSpy = jest
         .spyOn(UserFile, 'addUser')
-        .mockImplementation(() => Promise.resolve());
+        .mockImplementation(() => Promise.resolve(Ok.EMPTY));
     });
 
     afterEach(() => {
@@ -543,6 +558,19 @@ describe('[integration] Favourites module', () => {
           notifications: true,
           createdAt: '2021-01-05T11:30:25Z',
         });
+      });
+
+      it('[error] returns an unexpected error message when attempting to create a user, but addUser returns an error', async () => {
+        addUserSpy = jest
+          .spyOn(UserFile, 'addUser')
+          .mockImplementationOnce(() => Promise.resolve(Err(new AWSError())));
+
+        const inputMessage = '/fav Slateport Market';
+        const expectedMessage =
+          "Woops, couldn't handle adding your entry for some unexpected reason\\. Try again?";
+
+        await callBot(inputMessage);
+        assertBotResponse(sendMessageSpy, expectedMessage);
       });
     });
 

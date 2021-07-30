@@ -80,14 +80,20 @@ export class User {
   }
 }
 
-export async function addUser(user: User): Promise<void> {
-  await dynamoDb
+export async function addUser(user: User): Promise<Result<void, AWSError>> {
+  const putItemOutput = await dynamoDb
     .put({
       TableName: User.getTableName(),
       Item: user,
       ConditionExpression: 'attribute_not_exists(userId)',
     })
     .promise();
+
+  if (putItemOutput.$response.error) {
+    return Err(new AWSError());
+  }
+
+  return Ok.EMPTY;
 }
 
 export async function getAllUsers(): Promise<Result<User[], AWSError>> {

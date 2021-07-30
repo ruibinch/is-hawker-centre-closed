@@ -92,7 +92,7 @@ describe('[integration] Language module', () => {
     beforeEach(() => {
       addUserSpy = jest
         .spyOn(UserFile, 'addUser')
-        .mockImplementation(() => Promise.resolve());
+        .mockImplementation(() => Promise.resolve(Ok.EMPTY));
     });
 
     afterEach(() => {

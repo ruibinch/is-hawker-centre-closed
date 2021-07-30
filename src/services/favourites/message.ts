@@ -43,10 +43,18 @@ export function makeDuplicateHCErrorMessage(
   return t('favourites.error.duplicate-hawker-centres', { hcName });
 }
 
+export function makeAddUnexpectedErrorMessage(): string {
+  return t('favourites.error.add-fav');
+}
+
 export function makeSuccessfullyDeletedMessage(
   hawkerCentre: HawkerCentre,
 ): string {
   return t('favourites.hawker-centre-removed', { hcName: hawkerCentre.name });
+}
+
+export function makeDeleteUnexpectedErrorMessage(): string {
+  return t('favourites.error.delete-fav');
 }
 
 export function makeDeleteErrorMessage(numFavourites: number): string {

@@ -24,6 +24,8 @@ import {
   makeDeleteErrorMessage,
   makeWriteNotificationsSettingMessage,
   makeReadNotificationsSettingMessage,
+  makeDeleteUnexpectedErrorMessage,
+  makeAddUnexpectedErrorMessage,
 } from './message';
 
 export * from './logic';
@@ -39,7 +41,7 @@ export async function manageFavourites(
   switch (command) {
     case '/fav': {
       const findHCResponse = await findHCByKeyword(keyword);
-      if (findHCResponse.err) return Err(findHCResponse.val);
+      if (findHCResponse.err) return findHCResponse;
 
       const { isExactMatch, isFindError, hawkerCentres } = findHCResponse.val;
 
@@ -71,11 +73,11 @@ export async function manageFavourites(
       });
 
       if (deleteHCResponse.err) {
-        if (deleteHCResponse.val instanceof CustomError)
-          return Err(deleteHCResponse.val);
-
         return Ok({
-          message: makeDeleteErrorMessage(deleteHCResponse.val.numFavourites),
+          message:
+            deleteHCResponse.val instanceof CustomError
+              ? makeDeleteUnexpectedErrorMessage()
+              : makeDeleteErrorMessage(deleteHCResponse.val.numFavourites),
         });
       }
 
@@ -89,8 +91,7 @@ export async function manageFavourites(
       const getFavResponseWithClosures = await getUserFavouritesWithClosures(
         telegramUser,
       );
-      if (getFavResponseWithClosures.err)
-        return Err(getFavResponseWithClosures.val);
+      if (getFavResponseWithClosures.err) return getFavResponseWithClosures;
 
       return Ok({
         message: makeFavouritesListMessage(
@@ -136,7 +137,7 @@ export async function maybeHandleFavouriteSelection(
   );
 
   if (isUserInFavouritesModeResponse.err) {
-    return Err(isUserInFavouritesModeResponse.val);
+    return isUserInFavouritesModeResponse;
   }
   if (!isUserInFavouritesModeResponse.val.isInFavouritesMode) {
     return Err.EMPTY;
@@ -154,28 +155,22 @@ export async function maybeHandleFavouriteSelection(
 async function handleFavouriteSelection(
   keyword: string,
   telegramUser: TelegramUser,
-): Promise<Result<BotResponse, CustomError | void>> {
+): Promise<ServiceResponse> {
   // set isInFavouritesMode back to false upon handling
   await toggleUserInFavouritesMode(telegramUser, false);
 
   if (isCommand(keyword)) return Err.EMPTY;
 
   const findHCResponse = await findHCByKeyword(keyword);
-  if (findHCResponse.err) return Err(findHCResponse.val);
+  if (findHCResponse.err) return findHCResponse;
 
   const { isExactMatch, hawkerCentres } = findHCResponse.val;
 
   if (isExactMatch) {
-    const addHCToFavouritesResponse = await executeAddHCToFavourites({
+    return executeAddHCToFavourites({
       hawkerCentre: hawkerCentres[0],
       telegramUser,
     });
-
-    if (addHCToFavouritesResponse.err) {
-      return Err.EMPTY;
-    }
-
-    return Ok(addHCToFavouritesResponse.val);
   }
 
   return Err.EMPTY;
@@ -195,7 +190,10 @@ async function executeAddHCToFavourites(props: {
     hawkerCentre,
     telegramUser,
   });
-  if (addHCResponse.err) return Err(addHCResponse.val);
+  if (addHCResponse.err)
+    return Ok({
+      message: makeAddUnexpectedErrorMessage(),
+    });
 
   const { isDuplicate } = addHCResponse.val;
 
