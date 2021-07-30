@@ -97,7 +97,9 @@ export async function addHCToFavourites(props: {
       notifications: true,
     });
 
-    await addUser(newUser);
+    const addUserResponse = await addUser(newUser);
+    if (addUserResponse.err) return addUserResponse;
+
     return Ok({});
   }
 
