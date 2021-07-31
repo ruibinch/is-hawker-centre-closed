@@ -264,7 +264,7 @@ describe('[integration] Search module', () => {
     beforeAll(() => {
       dateSpy = jest
         .spyOn(Date, 'now')
-        .mockImplementation(() => parseISO('2021-05-01T11:30:25').valueOf());
+        .mockImplementation(() => parseISO('2021-07-01T11:30:25').valueOf());
     });
 
     afterAll(() => {

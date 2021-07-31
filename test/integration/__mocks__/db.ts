@@ -101,6 +101,30 @@ export const mockClosures: Closure[] = [
     startDate: '2020-11-01',
     endDate: '2021-04-30',
   },
+  {
+    id: '111',
+    hawkerCentreId: 34,
+    reason: 'others',
+    name: 'Lavaridge Gym',
+    startDate: '2021-04-01',
+    endDate: '2021-05-05',
+  },
+  {
+    id: '111',
+    hawkerCentreId: 39,
+    reason: 'cleaning',
+    name: 'Sidney Gym',
+    startDate: '2021-04-05',
+    endDate: '2021-04-06',
+  },
+  {
+    id: '111',
+    hawkerCentreId: 35,
+    reason: 'others',
+    name: 'Petalburg Gym',
+    startDate: '2021-03-30',
+    endDate: '2021-06-02',
+  },
 ];
 
 export const mockHawkerCentres: HawkerCentre[] = [
