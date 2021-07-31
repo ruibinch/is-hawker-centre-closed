@@ -75,7 +75,7 @@ describe('[integration] Favourites module', () => {
       .mockImplementation(() => Promise.resolve());
     addInputToDBSpy = jest
       .spyOn(InputFile, 'addInputToDB')
-      .mockImplementation(() => Promise.resolve());
+      .mockImplementation(() => Promise.resolve(Ok.EMPTY));
   });
 
   afterEach(() => {

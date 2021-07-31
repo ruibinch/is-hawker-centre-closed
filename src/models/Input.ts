@@ -1,6 +1,8 @@
 import * as AWS from 'aws-sdk';
 import { formatISO } from 'date-fns';
+import { Err, Ok, Result } from 'ts-results';
 
+import { AWSError } from '../errors/AWSError';
 import { initAWSConfig, TABLE_INPUTS } from '../ext/aws/config';
 import { getDynamoDBBillingDetails } from '../ext/aws/dynamodb';
 import { getStage } from '../utils';
@@ -58,12 +60,22 @@ export class Input {
   }
 }
 
-export async function addInputToDB(input: Input): Promise<void> {
-  await dynamoDb
-    .put({
-      TableName: Input.getTableName(),
-      Item: input,
-      ConditionExpression: 'attribute_not_exists(inputId)',
-    })
-    .promise();
+export async function addInputToDB(input: Input): Promise<Result<void, Error>> {
+  try {
+    const putOutput = await dynamoDb
+      .put({
+        TableName: Input.getTableName(),
+        Item: input,
+        ConditionExpression: 'attribute_not_exists(inputId)',
+      })
+      .promise();
+
+    if (putOutput.$response.error) {
+      return Err(new AWSError());
+    }
+
+    return Ok.EMPTY;
+  } catch (err) {
+    return Err(err);
+  }
 }

@@ -3,7 +3,7 @@ import {
   APIGatewayProxyResult,
   Context,
 } from 'aws-lambda';
-import { Err } from 'ts-results';
+import { Err, Ok } from 'ts-results';
 
 import { bot } from '../../src/bot/handler';
 import * as sender from '../../src/bot/sender';
@@ -31,7 +31,7 @@ describe('[integration] Validation module', () => {
     sendMessageSpy = jest.spyOn(sender, 'sendMessage').mockImplementation();
     addInputToDBSpy = jest
       .spyOn(InputFile, 'addInputToDB')
-      .mockImplementation(() => Promise.resolve());
+      .mockImplementation(() => Promise.resolve(Ok.EMPTY));
   });
 
   afterEach(() => {

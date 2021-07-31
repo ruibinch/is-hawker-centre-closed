@@ -38,7 +38,7 @@ describe('[integration] Search module', () => {
     sendMessageSpy = jest.spyOn(sender, 'sendMessage').mockImplementation();
     addInputToDBSpy = jest
       .spyOn(InputFile, 'addInputToDB')
-      .mockImplementation(() => Promise.resolve());
+      .mockImplementation(() => Promise.resolve(Ok.EMPTY));
   });
 
   afterEach(() => {
