@@ -227,7 +227,7 @@ describe('[integration] Search module', () => {
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
-    it('["Month"] returns all closures occurring in the current month', async () => {
+    it('["Month"] returns all closures occurring in the current month, when there are multiple closures', async () => {
       const inputMessage = 'Month';
       const expectedMessage =
         'There are *8* hawker centres that are closed this month:\n\n' +
@@ -243,6 +243,23 @@ describe('[integration] Search module', () => {
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
+    });
+
+    it('["Month"] returns all closures occurring in the current month, when there is a single closure', async () => {
+      dateSpy = jest
+        .spyOn(Date, 'now')
+        .mockImplementation(() => parseISO('2021-06-05T00:00:00').valueOf());
+
+      const inputMessage = 'Month';
+      const expectedMessage =
+        'There is *1* hawker centre that is closed this month:\n\n' +
+        '*Petalburg Gym*\n_30\\-Mar to 02\\-Jun; other works_';
+
+      await callBot(inputMessage);
+      assertInputSaved(addInputToDBSpy, inputMessage);
+      assertBotResponse(sendMessageSpy, expectedMessage);
+
+      dateSpy.mockRestore();
     });
 
     it('["Next month"] returns all closures occurring in the next month, when there are multiple closures', async () => {
@@ -268,7 +285,7 @@ describe('[integration] Search module', () => {
     it('["Next month"] returns all closures occurring in the next month, when there is a single closure', async () => {
       dateSpy = jest
         .spyOn(Date, 'now')
-        .mockImplementation(() => parseISO('2021-05-01T00:00:00').valueOf());
+        .mockImplementation(() => parseISO('2021-05-15T00:00:00').valueOf());
 
       const inputMessage = 'Next month';
       const expectedMessage =

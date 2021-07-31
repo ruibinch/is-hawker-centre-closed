@@ -6,6 +6,7 @@ import {
   isWithinInterval,
   parseISO,
   startOfDay,
+  startOfMonth,
 } from 'date-fns';
 import { Ok, Result } from 'ts-results';
 
@@ -135,11 +136,12 @@ function filterByDate(closures: Closure[], modifier: SearchModifier) {
       if (modifier === 'month') {
         return (
           isWithinInterval(currDate, makeInterval(startDate, endDate)) ||
-          isSameMonth(currDate, startDate)
+          isSameMonth(currDate, startDate) ||
+          isSameMonth(currDate, endDate)
         );
       }
       if (modifier === 'nextMonth') {
-        const nextMonthDate = addMonths(currDate, 1);
+        const nextMonthDate = startOfMonth(addMonths(currDate, 1));
         return (
           isWithinInterval(nextMonthDate, makeInterval(startDate, endDate)) ||
           differenceInCalendarMonths(startDate, currDate) === 1
