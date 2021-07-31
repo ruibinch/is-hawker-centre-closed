@@ -223,7 +223,7 @@ describe('[integration] Favourites module', () => {
 
       const inputMessage = '/fav oldale';
       const expectedMessage =
-        "Woops, couldn't handle adding your entry for some unexpected reason\\. Try again?";
+        "Woops, couldn't add your entry for some unexpected reason\\. Try again?";
 
       await callBot(inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
@@ -283,7 +283,7 @@ describe('[integration] Favourites module', () => {
 
         const inputMessage = '/fav Slateport Market';
         const expectedMessage =
-          "Woops, couldn't handle adding your entry for some unexpected reason\\. Try again?";
+          "Woops, couldn't add your entry for some unexpected reason\\. Try again?";
 
         await callBot(inputMessage);
         assertBotResponse(sendMessageSpy, expectedMessage);
@@ -296,7 +296,7 @@ describe('[integration] Favourites module', () => {
 
         const inputMessage = '/fav oldale';
         const expectedMessage =
-          "Woops, couldn't handle adding your entry for some unexpected reason\\. Try again?";
+          "Woops, couldn't add your entry for some unexpected reason\\. Try again?";
 
         await callBot(inputMessage);
         assertBotResponse(sendMessageSpy, expectedMessage);
@@ -370,7 +370,7 @@ describe('[integration] Favourites module', () => {
 
         const inputMessage = '/del 1';
         const expectedMessage =
-          "Woops, couldn't handle deleting your entry for some unexpected reason\\. Try again?";
+          "Woops, couldn't delete your entry for some unexpected reason\\. Try again?";
 
         await callBot(inputMessage);
         assertBotResponse(sendMessageSpy, expectedMessage);
@@ -383,7 +383,7 @@ describe('[integration] Favourites module', () => {
 
         const inputMessage = '/del 1';
         const expectedMessage =
-          "Woops, couldn't handle deleting your entry for some unexpected reason\\. Try again?";
+          "Woops, couldn't delete your entry for some unexpected reason\\. Try again?";
 
         await callBot(inputMessage);
         assertBotResponse(sendMessageSpy, expectedMessage);
@@ -642,7 +642,7 @@ describe('[integration] Favourites module', () => {
 
         const inputMessage = '/fav Slateport Market';
         const expectedMessage =
-          "Woops, couldn't handle adding your entry for some unexpected reason\\. Try again?";
+          "Woops, couldn't add your entry for some unexpected reason\\. Try again?";
 
         await callBot(inputMessage);
         assertBotResponse(sendMessageSpy, expectedMessage);
@@ -655,7 +655,7 @@ describe('[integration] Favourites module', () => {
 
         const inputMessage = '/fav oldale';
         const expectedMessage =
-          "Woops, couldn't handle adding your entry for some unexpected reason\\. Try again?";
+          "Woops, couldn't add your entry for some unexpected reason\\. Try again?";
 
         await callBot(inputMessage);
         assertBotResponse(sendMessageSpy, expectedMessage);

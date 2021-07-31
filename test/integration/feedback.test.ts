@@ -92,7 +92,7 @@ describe('[integration] Feedback module', () => {
 
     const inputMessage = '/feedback great bot';
     const expectedMessage =
-      "Woops, couldn't handle saving your feedback for some unexpected reason\\. Try again?";
+      "Woops, couldn't save your feedback for some unexpected reason\\. Try again?";
 
     await callBot(inputMessage);
     assertInputSaved(addInputToDBSpy, inputMessage);
