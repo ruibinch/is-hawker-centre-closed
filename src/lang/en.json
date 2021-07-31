@@ -43,6 +43,7 @@
   "search.hawker-centres-closed.with-keyword.future": "Here are the hawker centres{{keyword}} that will be closed {{timePeriod}}:\n\n",
   "search.hawker-centres-next-closure": "Here are the hawker centres{{keyword}} and their next closure dates:\n\n",
   "search.snippet.keyword": " containing the keyword *{{keyword}}*",
+  "search.error": "Woops, couldn't perform the search for some unexpected reason\\. Try again?",
   "favourites.command-fav.explanation.first": "Please specify some keyword to filter the list of hawker centres for you to add to your favourites\\.\n\n",
   "favourites.command-fav.explanation.second": "e\\.g\\. _/fav {{example}}_",
   "favourites.command-del.explanation.first": "To delete a favourite hawker centre, specify an index number based on the favourites list displayed by the /list command\\.\n\n",

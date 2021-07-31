@@ -366,4 +366,29 @@ describe('[integration] Search module', () => {
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
   });
+
+  describe('error scenarios', () => {
+    beforeAll(() => {
+      dateSpy = jest
+        .spyOn(Date, 'now')
+        .mockImplementation(() => parseISO('2021-01-01T11:30:25').valueOf());
+      getAllClosuresSpy = jest
+        .spyOn(ClosureFile, 'getAllClosures')
+        .mockImplementationOnce(() => Promise.resolve(Err(new AWSError())));
+    });
+
+    afterAll(() => {
+      dateSpy.mockRestore();
+      getAllClosuresSpy.mockRestore();
+    });
+
+    it('returns an unexpected error message when getAllClosures returns an error', async () => {
+      const inputMessage = 'littleroot';
+      const expectedMessage =
+        "Woops, couldn't perform the search for some unexpected reason\\. Try again?";
+
+      await callBot(inputMessage);
+      assertBotResponse(sendMessageSpy, expectedMessage);
+    });
+  });
 });
