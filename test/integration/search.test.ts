@@ -285,7 +285,7 @@ describe('[integration] Search module', () => {
     it('["Next month"] returns all closures occurring in the next month, when there is a single closure', async () => {
       dateSpy = jest
         .spyOn(Date, 'now')
-        .mockImplementation(() => parseISO('2021-05-01T00:00:00').valueOf());
+        .mockImplementation(() => parseISO('2021-05-15T00:00:00').valueOf());
 
       const inputMessage = 'Next month';
       const expectedMessage =
