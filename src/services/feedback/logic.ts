@@ -1,6 +1,5 @@
 import { Ok, Result } from 'ts-results';
 
-import { CustomError } from '../../errors/CustomError';
 import { addFeedbackToDB, Feedback } from '../../models/Feedback';
 import { currentDate } from '../../utils/date';
 import { TelegramUser } from '../../utils/telegram';
@@ -8,7 +7,7 @@ import { TelegramUser } from '../../utils/telegram';
 export async function addFeedback(props: {
   text: string;
   telegramUser: TelegramUser;
-}): Promise<Result<void, CustomError>> {
+}): Promise<Result<void, Error>> {
   const {
     text,
     telegramUser: { id: userId, username },

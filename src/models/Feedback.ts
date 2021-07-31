@@ -64,30 +64,38 @@ export class Feedback {
 
 export async function addFeedbackToDB(
   feedback: Feedback,
-): Promise<Result<void, AWSError>> {
-  const putItemOutput = await dynamoDb
-    .put({
-      TableName: Feedback.getTableName(),
-      Item: feedback,
-      ConditionExpression: 'attribute_not_exists(feedbackId)',
-    })
-    .promise();
+): Promise<Result<void, Error>> {
+  try {
+    const putOutput = await dynamoDb
+      .put({
+        TableName: Feedback.getTableName(),
+        Item: feedback,
+        ConditionExpression: 'attribute_not_exists(feedbackId)',
+      })
+      .promise();
 
-  if (putItemOutput.$response.error) {
-    return Err(new AWSError());
+    if (putOutput.$response.error) {
+      return Err(new AWSError());
+    }
+
+    return Ok.EMPTY;
+  } catch (err) {
+    return Err(err);
   }
-
-  return Ok.EMPTY;
 }
 
-export async function getAllFeedback(): Promise<Result<Feedback[], AWSError>> {
-  const scanOutput = await dynamoDb
-    .scan({ TableName: Feedback.getTableName() })
-    .promise();
+export async function getAllFeedback(): Promise<Result<Feedback[], Error>> {
+  try {
+    const scanOutput = await dynamoDb
+      .scan({ TableName: Feedback.getTableName() })
+      .promise();
 
-  if (scanOutput === null) {
-    return Err(new AWSError());
+    if (!scanOutput.Items) {
+      return Err(new AWSError());
+    }
+
+    return Ok(scanOutput.Items as Feedback[]);
+  } catch (err) {
+    return Err(err);
   }
-
-  return Ok(scanOutput.Items as Feedback[]);
 }
