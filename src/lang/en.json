@@ -56,6 +56,7 @@
   "favourites.hawker-centre-removed": "*{{hcName}}* has been deleted from your list of favourites\\.",
   "favourites.error.add-fav": "Woops, couldn't handle adding your entry for some unexpected reason\\. Try again?",
   "favourites.error.delete-fav": "Woops, couldn't handle deleting your entry for some unexpected reason\\. Try again?",
+  "favourites.error.list-favs": "Woops, couldn't display your favourites list for some unexpected reason\\. Try again?",
   "favourites.error.invalid-delete-index.first": "That is not a valid index number\\. ",
   "favourites.error.invalid-delete-index.second.one-fav": "The only valid value is 1\\.",
   "favourites.error.invalid-delete-index.second.multiple-favs": "Try again with a value from 1 to {{numFavourites}}\\.",

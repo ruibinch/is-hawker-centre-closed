@@ -26,6 +26,7 @@ import {
   makeReadNotificationsSettingMessage,
   makeDeleteUnexpectedErrorMessage,
   makeAddUnexpectedErrorMessage,
+  makeListUnexpectedErrorMessage,
 } from './message';
 
 export * from './logic';
@@ -41,7 +42,11 @@ export async function manageFavourites(
   switch (command) {
     case '/fav': {
       const findHCResponse = await findHCByKeyword(keyword);
-      if (findHCResponse.err) return findHCResponse;
+      if (findHCResponse.err) {
+        return Ok({
+          message: makeAddUnexpectedErrorMessage(),
+        });
+      }
 
       const { isExactMatch, isFindError, hawkerCentres } = findHCResponse.val;
 
@@ -57,8 +62,17 @@ export async function manageFavourites(
         choices = hawkerCentres.map((hc) =>
           makeHawkerCentreName(hc.name, hc.nameSecondary, false),
         );
+
         // only toggle fav mode when user is presented with the choices screen
-        await toggleUserInFavouritesMode(telegramUser, true);
+        const toggleUserInFavModeResponse = await toggleUserInFavouritesMode(
+          telegramUser,
+          true,
+        );
+        if (toggleUserInFavModeResponse.err) {
+          return Ok({
+            message: makeAddUnexpectedErrorMessage(),
+          });
+        }
       }
 
       return Ok({
@@ -91,7 +105,10 @@ export async function manageFavourites(
       const getFavResponseWithClosures = await getUserFavouritesWithClosures(
         telegramUser,
       );
-      if (getFavResponseWithClosures.err) return getFavResponseWithClosures;
+      if (getFavResponseWithClosures.err)
+        return Ok({
+          message: makeListUnexpectedErrorMessage(),
+        });
 
       return Ok({
         message: makeFavouritesListMessage(
