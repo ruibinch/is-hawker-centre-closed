@@ -66,13 +66,13 @@ describe('[integration] Favourites module', () => {
 
     updateUserFavouritesSpy = jest
       .spyOn(UserFile, 'updateUserFavourites')
-      .mockImplementation(() => Promise.resolve());
+      .mockImplementation(() => Promise.resolve(Ok.EMPTY));
     updateUserInFavouritesModeSpy = jest
       .spyOn(UserFile, 'updateUserInFavouritesMode')
-      .mockImplementation(() => Promise.resolve());
+      .mockImplementation(() => Promise.resolve(Ok.EMPTY));
     updateUserNotificationsSpy = jest
       .spyOn(UserFile, 'updateUserNotifications')
-      .mockImplementation(() => Promise.resolve());
+      .mockImplementation(() => Promise.resolve(Ok.EMPTY));
     addInputToDBSpy = jest
       .spyOn(InputFile, 'addInputToDB')
       .mockImplementation(() => Promise.resolve(Ok.EMPTY));

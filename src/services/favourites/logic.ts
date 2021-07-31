@@ -2,7 +2,6 @@
 import { formatISO } from 'date-fns';
 import { Err, Ok, Result } from 'ts-results';
 
-import { CustomError } from '../../errors/CustomError';
 import { getAllClosures } from '../../models/Closure';
 import {
   getAllHawkerCentres,
@@ -74,7 +73,7 @@ export async function findHCByKeyword(
 export async function addHCToFavourites(props: {
   hawkerCentre: HawkerCentre;
   telegramUser: TelegramUser;
-}): Promise<Result<AddHCResponse, CustomError>> {
+}): Promise<Result<AddHCResponse, Error>> {
   const {
     hawkerCentre: { hawkerCentreId },
     telegramUser: { id: userId, username },
@@ -118,7 +117,12 @@ export async function addHCToFavourites(props: {
     (a, b) => a.hawkerCentreId - b.hawkerCentreId,
   );
 
-  await updateUserFavourites(userId, favouritesUpdated);
+  const updateUserResponse = await updateUserFavourites(
+    userId,
+    favouritesUpdated,
+  );
+  if (updateUserResponse.err) return updateUserResponse;
+
   return Ok({});
 }
 
@@ -162,7 +166,12 @@ export async function deleteHCFromFavourites(props: {
   const favouritesUpdated = [...user.favourites];
   favouritesUpdated.splice(deleteIdx, 1);
 
-  await updateUserFavourites(userId, favouritesUpdated);
+  const updateUserResponse = await updateUserFavourites(
+    userId,
+    favouritesUpdated,
+  );
+  if (updateUserResponse.err) return updateUserResponse;
+
   return Ok({
     hawkerCentre: delHawkerCentre,
   });
@@ -230,7 +239,7 @@ export async function getUserFavouritesWithClosures(
  */
 export async function isUserInFavouritesMode(
   telegramUser: TelegramUser,
-): Promise<Result<IsUserInFavModeResponse, CustomError>> {
+): Promise<Result<IsUserInFavModeResponse, Error>> {
   const { id: userId } = telegramUser;
 
   const getUserResponse = await getUserById(userId);

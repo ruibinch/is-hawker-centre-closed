@@ -36,7 +36,7 @@ describe('[integration] Language module', () => {
       .mockImplementation(() => Promise.resolve(Err(new AWSError())));
     updateUserLanguageCodeSpy = jest
       .spyOn(UserFile, 'updateUserLanguageCode')
-      .mockImplementation(() => Promise.resolve());
+      .mockImplementation(() => Promise.resolve(Ok.EMPTY));
     addInputToDBSpy = jest
       .spyOn(InputFile, 'addInputToDB')
       .mockImplementation(() => Promise.resolve(Ok.EMPTY));
