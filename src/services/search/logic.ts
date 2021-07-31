@@ -135,7 +135,8 @@ function filterByDate(closures: Closure[], modifier: SearchModifier) {
       if (modifier === 'month') {
         return (
           isWithinInterval(currDate, makeInterval(startDate, endDate)) ||
-          isSameMonth(currDate, startDate)
+          isSameMonth(currDate, startDate) ||
+          isSameMonth(currDate, endDate)
         );
       }
       if (modifier === 'nextMonth') {
