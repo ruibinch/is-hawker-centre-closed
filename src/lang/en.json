@@ -11,7 +11,7 @@
   "validation.error.message-type-emoji": "That's a cute emoji but this bot has no idea which hawker centre that could refer to\\.",
   "validation.error.message-empty": "No text found\\.",
   "validation.error.base-message-format": "{{emoji}} {{errorMessage}}\n\nPlease try again with a text message\\.",
-  "validation.error.generic": "Woops, an unexpected error occurred\\. You can report this issue using the /feedback command\\.",
+  "validation.error.generic": "Woops, an unexpected error occurred\\. Try again?",
   "general.error.unsupported-command.first": "Woops, that isn't a supported command\\.\n\n",
   "general.error.unsupported-command.second": "Please try again with one of the following:\n{{commands}}",
   "general.command-start.explanation.first": "An easy way to check if your favourite hawker centre is closed today\\! {{emojis}}\n\n",

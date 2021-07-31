@@ -11,7 +11,7 @@
   "validation.error.message-type-emoji": "表情符号好可爱但是代表哪个小贩中心呢？",
   "validation.error.message-empty": "发送的信息是空的。",
   "validation.error.base-message-format": "{{emoji}} {{errorMessage}}\n\n请再重试一次。",
-  "validation.error.generic": "发生意外错误，请使用“/feedback”命令报告问题。",
+  "validation.error.generic": "发生意外错误，请再重试一次。",
   "general.error.unsupported-command.first": "无法了解您发送的命令。\n\n",
   "general.error.unsupported-command.second": "请使用其中一个支持的命令：\n{{commands}}",
   "general.command-start.explanation.first": "查看一下您喜爱的小贩中心今天是否关闭！{{emojis}}\n\n",

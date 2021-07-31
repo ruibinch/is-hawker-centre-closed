@@ -253,7 +253,7 @@ describe('[integration] Validation module', () => {
 
     it('returns the defined generic error message', async () => {
       const expectedMessage =
-        'Woops, an unexpected error occurred\\. You can report this issue using the /feedback command\\.';
+        'Woops, an unexpected error occurred\\. Try again?';
 
       await callBot('any input');
       assertBotResponse(sendMessageSpy, expectedMessage);
