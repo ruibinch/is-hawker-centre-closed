@@ -132,6 +132,7 @@ export const bot = Sentry.AWSLambda.wrapHandler(
         return callbackWrapper(200);
       }
 
+      /* istanbul ignore next */
       return callbackWrapper(204);
     }
   },

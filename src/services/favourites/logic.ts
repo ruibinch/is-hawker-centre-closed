@@ -218,6 +218,7 @@ export async function getUserFavouritesWithClosures(
       const hawkerCentre = hawkerCentres.find(
         (hc) => hc.hawkerCentreId === favHCId,
       );
+      /* istanbul ignore next */
       if (!hawkerCentre) {
         throw new Error(
           `Missing hawker centre entry for hawkerCentreId ${favHCId}`,

@@ -26,6 +26,7 @@ export function extractSearchModifier(
   if (matches === null) return Err.EMPTY;
 
   const searchModifier = parseSearchModifier(matches[0]);
+  /* istanbul ignore next */
   if (!searchModifier) return Err.EMPTY;
 
   return Ok({

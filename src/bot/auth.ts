@@ -7,6 +7,7 @@ type QueryParams = {
 /**
  * Naive method of cross-checking the `token` value sent in the HTTP request with the saved BOT_TOKEN.
  */
+/* istanbul ignore next */
 export function validateToken(
   queryStringParameters: APIGatewayProxyEventQueryStringParameters | null,
 ): boolean {
