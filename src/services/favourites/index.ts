@@ -75,9 +75,9 @@ export async function manageFavourites(
       if (deleteHCResponse.err) {
         return Ok({
           message:
-            deleteHCResponse.val instanceof CustomError
-              ? makeDeleteUnexpectedErrorMessage()
-              : makeDeleteErrorMessage(deleteHCResponse.val.numFavourites),
+            'numFavourites' in deleteHCResponse.val
+              ? makeDeleteErrorMessage(deleteHCResponse.val.numFavourites)
+              : makeDeleteUnexpectedErrorMessage(),
         });
       }
 

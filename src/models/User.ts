@@ -80,52 +80,64 @@ export class User {
   }
 }
 
-export async function addUser(user: User): Promise<Result<void, AWSError>> {
-  const putItemOutput = await dynamoDb
-    .put({
-      TableName: User.getTableName(),
-      Item: user,
-      ConditionExpression: 'attribute_not_exists(userId)',
-    })
-    .promise();
+export async function addUser(user: User): Promise<Result<void, Error>> {
+  try {
+    const putOutput = await dynamoDb
+      .put({
+        TableName: User.getTableName(),
+        Item: user,
+        ConditionExpression: 'attribute_not_exists(userId)',
+      })
+      .promise();
 
-  if (putItemOutput.$response.error) {
-    return Err(new AWSError());
+    if (putOutput.$response.error) {
+      return Err(new AWSError());
+    }
+
+    return Ok.EMPTY;
+  } catch (err) {
+    return Err(err);
   }
-
-  return Ok.EMPTY;
 }
 
-export async function getAllUsers(): Promise<Result<User[], AWSError>> {
-  const scanOutput = await dynamoDb
-    .scan({ TableName: User.getTableName() })
-    .promise();
+export async function getAllUsers(): Promise<Result<User[], Error>> {
+  try {
+    const scanOutput = await dynamoDb
+      .scan({ TableName: User.getTableName() })
+      .promise();
 
-  if (scanOutput === null) {
-    return Err(new AWSError());
+    if (!scanOutput.Items) {
+      return Err(new AWSError());
+    }
+
+    return Ok(scanOutput.Items as User[]);
+  } catch (err) {
+    return Err(err);
   }
-
-  return Ok(scanOutput.Items as User[]);
 }
 
 export async function getUserById(
   userId: number,
-): Promise<Result<User, AWSError>> {
+): Promise<Result<User, Error>> {
   let user = userCache.get(userId);
 
   if (user === undefined) {
-    const getResponse = await dynamoDb
-      .get({
-        TableName: User.getTableName(),
-        Key: { userId },
-      })
-      .promise();
+    try {
+      const getOutput = await dynamoDb
+        .get({
+          TableName: User.getTableName(),
+          Key: { userId },
+        })
+        .promise();
 
-    if (!getResponse.Item) {
-      return Err(new AWSError());
+      if (!getOutput.Item) {
+        return Err(new AWSError());
+      }
+
+      user = getOutput.Item;
+    } catch (err) {
+      return Err(err);
     }
-
-    user = getResponse.Item;
   }
 
   return Ok(user as User);
@@ -134,68 +146,109 @@ export async function getUserById(
 export async function updateUserFavourites(
   userId: number,
   favouritesUpdated: UserFavourite[],
-): Promise<void> {
-  await dynamoDb
-    .update({
-      TableName: User.getTableName(),
-      Key: { userId },
-      UpdateExpression: 'set favourites = :fav, lastUpdated = :timestamp',
-      ExpressionAttributeValues: {
-        ':fav': favouritesUpdated,
-        ':timestamp': formatISO(currentDate()),
-      },
-    })
-    .promise();
+): Promise<Result<void, Error>> {
+  try {
+    const updateOutput = await dynamoDb
+      .update({
+        TableName: User.getTableName(),
+        Key: { userId },
+        UpdateExpression: 'set favourites = :fav, lastUpdated = :timestamp',
+        ExpressionAttributeValues: {
+          ':fav': favouritesUpdated,
+          ':timestamp': formatISO(currentDate()),
+        },
+      })
+      .promise();
+
+    if (updateOutput.$response.error) {
+      return Err(new AWSError());
+    }
+
+    return Ok.EMPTY;
+  } catch (err) {
+    return Err(err);
+  }
 }
 
 export async function updateUserInFavouritesMode(
   userId: number,
   isInFavouritesMode: boolean,
-): Promise<void> {
-  await dynamoDb
-    .update({
-      TableName: User.getTableName(),
-      Key: { userId },
-      UpdateExpression:
-        'set isInFavouritesMode = :favMode, lastUpdated = :timestamp',
-      ExpressionAttributeValues: {
-        ':favMode': isInFavouritesMode,
-        ':timestamp': formatISO(currentDate()),
-      },
-    })
-    .promise();
+): Promise<Result<void, Error>> {
+  try {
+    const updateOutput = await dynamoDb
+      .update({
+        TableName: User.getTableName(),
+        Key: { userId },
+        UpdateExpression:
+          'set isInFavouritesMode = :favMode, lastUpdated = :timestamp',
+        ExpressionAttributeValues: {
+          ':favMode': isInFavouritesMode,
+          ':timestamp': formatISO(currentDate()),
+        },
+      })
+      .promise();
+
+    if (updateOutput.$response.error) {
+      return Err(new AWSError());
+    }
+
+    return Ok.EMPTY;
+  } catch (err) {
+    return Err(err);
+  }
 }
 
 export async function updateUserNotifications(
   userId: number,
   notifications: boolean,
-): Promise<void> {
-  await dynamoDb
-    .update({
-      TableName: User.getTableName(),
-      Key: { userId },
-      UpdateExpression: 'set notifications = :notif, lastUpdated = :timestamp',
-      ExpressionAttributeValues: {
-        ':notif': notifications,
-        ':timestamp': formatISO(currentDate()),
-      },
-    })
-    .promise();
+): Promise<Result<void, Error>> {
+  try {
+    const updateOutput = await dynamoDb
+      .update({
+        TableName: User.getTableName(),
+        Key: { userId },
+        UpdateExpression:
+          'set notifications = :notif, lastUpdated = :timestamp',
+        ExpressionAttributeValues: {
+          ':notif': notifications,
+          ':timestamp': formatISO(currentDate()),
+        },
+      })
+      .promise();
+
+    if (updateOutput.$response.error) {
+      return Err(new AWSError());
+    }
+
+    return Ok.EMPTY;
+  } catch (err) {
+    return Err(err);
+  }
 }
 
 export async function updateUserLanguageCode(
   userId: number,
   languageCode: Language,
-): Promise<void> {
-  await dynamoDb
-    .update({
-      TableName: User.getTableName(),
-      Key: { userId },
-      UpdateExpression: 'set languageCode = :lang, lastUpdated = :timestamp',
-      ExpressionAttributeValues: {
-        ':lang': languageCode,
-        ':timestamp': formatISO(currentDate()),
-      },
-    })
-    .promise();
+): Promise<Result<void, Error>> {
+  try {
+    const updateOutput = await dynamoDb
+      .update({
+        TableName: User.getTableName(),
+        Key: { userId },
+        UpdateExpression: 'set languageCode = :lang, lastUpdated = :timestamp',
+        ExpressionAttributeValues: {
+          ':lang': languageCode,
+          ':timestamp': formatISO(currentDate()),
+        },
+      })
+      .promise();
+
+    if (updateOutput.$response.error) {
+      return Err(new AWSError());
+    }
+
+    return Ok.EMPTY;
+  } catch (err) {
+    return Err(err);
+  }
 }

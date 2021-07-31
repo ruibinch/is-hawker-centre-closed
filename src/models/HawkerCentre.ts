@@ -73,32 +73,40 @@ export async function uploadHawkerCentres(
 }
 
 export async function getAllHawkerCentres(): Promise<
-  Result<HawkerCentre[], AWSError>
+  Result<HawkerCentre[], Error>
 > {
-  const scanOutput = await dynamoDb
-    .scan({ TableName: HawkerCentre.getTableName() })
-    .promise();
+  try {
+    const scanOutput = await dynamoDb
+      .scan({ TableName: HawkerCentre.getTableName() })
+      .promise();
 
-  if (!scanOutput.Items) {
-    return Err(new AWSError());
+    if (!scanOutput.Items) {
+      return Err(new AWSError());
+    }
+
+    return Ok(scanOutput.Items as HawkerCentre[]);
+  } catch (err) {
+    return Err(err);
   }
-
-  return Ok(scanOutput.Items as HawkerCentre[]);
 }
 
 export async function getHawkerCentreById(
   hawkerCentreId: number,
-): Promise<Result<HawkerCentre, AWSError>> {
-  const getOutput = await dynamoDb
-    .get({
-      TableName: HawkerCentre.getTableName(),
-      Key: { hawkerCentreId },
-    })
-    .promise();
+): Promise<Result<HawkerCentre, Error>> {
+  try {
+    const getOutput = await dynamoDb
+      .get({
+        TableName: HawkerCentre.getTableName(),
+        Key: { hawkerCentreId },
+      })
+      .promise();
 
-  if (getOutput === null) {
-    return Err(new AWSError());
+    if (!getOutput.Item) {
+      return Err(new AWSError());
+    }
+
+    return Ok(getOutput.Item as HawkerCentre);
+  } catch (err) {
+    return Err(err);
   }
-
-  return Ok(getOutput.Item as HawkerCentre);
 }

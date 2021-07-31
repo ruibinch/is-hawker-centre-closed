@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { Err } from 'ts-results';
+import { Err, Ok } from 'ts-results';
 
 import * as sender from '../../src/bot/sender';
 import { AWSError } from '../../src/errors/AWSError';
@@ -26,7 +26,7 @@ describe('[integration] General module', () => {
     sendMessageSpy = jest.spyOn(sender, 'sendMessage').mockImplementation();
     addInputToDBSpy = jest
       .spyOn(InputFile, 'addInputToDB')
-      .mockImplementation(() => Promise.resolve());
+      .mockImplementation(() => Promise.resolve(Ok.EMPTY));
   });
 
   afterEach(() => {
