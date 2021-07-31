@@ -1,5 +1,6 @@
 import {
   addDays,
+  addMonths,
   differenceInCalendarMonths,
   isSameMonth,
   isWithinInterval,
@@ -138,7 +139,11 @@ function filterByDate(closures: Closure[], modifier: SearchModifier) {
         );
       }
       if (modifier === 'nextMonth') {
-        return differenceInCalendarMonths(startDate, currDate) === 1;
+        const nextMonthDate = addMonths(currDate, 1);
+        return (
+          isWithinInterval(nextMonthDate, makeInterval(startDate, endDate)) ||
+          differenceInCalendarMonths(startDate, currDate) === 1
+        );
       }
       /* istanbul ignore next */
       return false;

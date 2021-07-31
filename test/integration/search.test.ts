@@ -245,18 +245,41 @@ describe('[integration] Search module', () => {
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
-    it('["Next month"] returns all closures occurring in the next month', async () => {
+    it('["Next month"] returns all closures occurring in the next month, when there are multiple closures', async () => {
+      dateSpy = jest
+        .spyOn(Date, 'now')
+        .mockImplementation(() => parseISO('2021-03-01T00:00:00').valueOf());
+
       const inputMessage = 'Next month';
       const expectedMessage =
         'There are *4* hawker centres that will be closed next month:\n\n' +
-        '*Melville City*\n_01\\-Feb to 28\\-Feb; other works_\n\n' +
-        '*Rustboro City*\n_02\\-Feb to 05\\-Feb_\n\n' +
-        '*Verdanturf Town*\n_08\\-Feb to 09\\-Feb_\n\n' +
-        '*Fortree Market*\n_11\\-Feb to 25\\-Feb; deep cleaning_';
+        '*Devon Corporation*\n_01\\-Nov to 30\\-Apr; other works_\n\n' +
+        '*Petalburg Gym*\n_30\\-Mar to 02\\-Jun; other works_\n\n' +
+        '*Lavaridge Gym*\n_01\\-Apr to 05\\-May; other works_\n\n' +
+        '*Sidney Gym*\n_05\\-Apr to 06\\-Apr_';
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
+
+      dateSpy.mockRestore();
+    });
+
+    it('["Next month"] returns all closures occurring in the next month, when there is a single closure', async () => {
+      dateSpy = jest
+        .spyOn(Date, 'now')
+        .mockImplementation(() => parseISO('2021-05-01T00:00:00').valueOf());
+
+      const inputMessage = 'Next month';
+      const expectedMessage =
+        'There is *1* hawker centre that will be closed next month:\n\n' +
+        '*Petalburg Gym*\n_30\\-Mar to 02\\-Jun; other works_';
+
+      await callBot(inputMessage);
+      assertInputSaved(addInputToDBSpy, inputMessage);
+      assertBotResponse(sendMessageSpy, expectedMessage);
+
+      dateSpy.mockRestore();
     });
   });
 
