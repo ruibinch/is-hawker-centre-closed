@@ -38,7 +38,7 @@ import {
 
 export async function findHCByKeyword(
   keyword: string,
-): Promise<Result<FindHCResponse, CustomError>> {
+): Promise<Result<FindHCResponse, Error>> {
   const getAllHCResponse = await getAllHawkerCentres();
   if (getAllHCResponse.err) return getAllHCResponse;
 
@@ -125,7 +125,7 @@ export async function addHCToFavourites(props: {
 export async function deleteHCFromFavourites(props: {
   deleteIdx: number;
   telegramUser: TelegramUser;
-}): Promise<Result<DeleteHCResponseOk, CustomError | DeleteHCResponseError>> {
+}): Promise<Result<DeleteHCResponseOk, Error | DeleteHCResponseError>> {
   const {
     deleteIdx,
     telegramUser: { id: userId },
