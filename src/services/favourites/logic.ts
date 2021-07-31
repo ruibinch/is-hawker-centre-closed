@@ -173,7 +173,7 @@ export async function deleteHCFromFavourites(props: {
  */
 export async function getUserFavouritesWithClosures(
   telegramUser: TelegramUser,
-): Promise<Result<GetUserFavsWithClosuresResponse, CustomError>> {
+): Promise<Result<GetUserFavsWithClosuresResponse, Error>> {
   const { id: userId } = telegramUser;
 
   const getUserResponse = await getUserById(userId);

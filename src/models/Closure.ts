@@ -129,16 +129,20 @@ export async function deleteClosure(
   return Ok(closure as Closure);
 }
 
-export async function getAllClosures(): Promise<Result<Closure[], AWSError>> {
-  const scanOutput = await dynamoDb
-    .scan({ TableName: ClosureObject.getTableName() })
-    .promise();
+export async function getAllClosures(): Promise<Result<Closure[], Error>> {
+  try {
+    const scanOutput = await dynamoDb
+      .scan({ TableName: ClosureObject.getTableName() })
+      .promise();
 
-  if (scanOutput === null) {
-    return Err(new AWSError());
+    if (!scanOutput.Items) {
+      return Err(new AWSError());
+    }
+
+    return Ok(scanOutput.Items as Closure[]);
+  } catch (err) {
+    return Err(err);
   }
-
-  return Ok(scanOutput.Items as Closure[]);
 }
 
 export function isValidClosureReason(text: string): text is ClosureReason {

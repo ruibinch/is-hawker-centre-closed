@@ -8,7 +8,6 @@ import {
 } from 'date-fns';
 import { Ok, Result } from 'ts-results';
 
-import { CustomError } from '../../errors/CustomError';
 import { Closure, getAllClosures } from '../../models/Closure';
 import { notEmpty } from '../../utils';
 import { currentDate } from '../../utils/date';
@@ -22,7 +21,7 @@ import { SearchModifier, SearchObject, SearchResponse } from './types';
 
 export async function processSearch(
   term: string,
-): Promise<Result<SearchResponse, CustomError>> {
+): Promise<Result<SearchResponse, Error>> {
   const searchParams = parseSearchTerm(term);
   const { keyword, modifier } = searchParams;
 

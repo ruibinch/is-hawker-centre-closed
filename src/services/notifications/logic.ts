@@ -1,7 +1,6 @@
 import { isWithinInterval, parseISO, startOfDay } from 'date-fns';
 import { Ok, Result } from 'ts-results';
 
-import { CustomError } from '../../errors/CustomError';
 import { getAllClosures } from '../../models/Closure';
 import { getAllUsers } from '../../models/User';
 import { currentDate } from '../../utils/date';
@@ -11,7 +10,7 @@ import { UserWithClosure } from './types';
  * Returns a list of users along with their saved favourite hawker centres that are closed today.
  */
 export async function getUsersWithFavsClosedToday(): Promise<
-  Result<UserWithClosure[], CustomError>
+  Result<UserWithClosure[], Error>
 > {
   const getAllUsersResponse = await getAllUsers();
   if (getAllUsersResponse.err) return getAllUsersResponse;
