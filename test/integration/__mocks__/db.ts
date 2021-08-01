@@ -294,7 +294,11 @@ export const mockUserInFavMode: User = {
 };
 
 export const mockUsers: User[] = [
+  // user has 1 favourite HC closed today, language en
   mockUser,
+  // user has 0 favourite HCs closed today
+  mockUserInFavMode,
+  // user has 2 favourite HCs closed today, language zh
   {
     userId: 5,
     username: 'meowth',
@@ -303,6 +307,10 @@ export const mockUsers: User[] = [
       {
         hawkerCentreId: 5,
         dateAdded: '2021-01-08T09:05:12+08:00',
+      },
+      {
+        hawkerCentreId: 6,
+        dateAdded: '2021-01-08T09:05:45+08:00',
       },
     ],
     isInFavouritesMode: false,

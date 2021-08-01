@@ -19,7 +19,6 @@ describe('[integration] Notifications module', () => {
   let sendDiscordAdminMessageSpy: jest.SpyInstance;
 
   // dynamodb mocks
-  let getUserByIdSpy: jest.SpyInstance;
   let getAllUsersSpy: jest.SpyInstance;
   let getAllClosuresSpy: jest.SpyInstance;
 
@@ -34,10 +33,6 @@ describe('[integration] Notifications module', () => {
     sendDiscordAdminMessageSpy = jest
       .spyOn(discord, 'sendDiscordAdminMessage')
       .mockImplementation();
-
-    getUserByIdSpy = jest
-      .spyOn(UserFile, 'getUserById')
-      .mockImplementation(() => Promise.resolve(Err(new AWSError())));
 
     getAllUsersSpy = jest
       .spyOn(UserFile, 'getAllUsers')
@@ -59,14 +54,14 @@ describe('[integration] Notifications module', () => {
 
   afterAll(() => {
     dateSpy.mockRestore();
-    getUserByIdSpy.mockRestore();
   });
 
-  it('sends a notification to users in their preferred language with a favourite hawker centre that is closed today', async () => {
+  it('sends a notification to users in their preferred language regarding their favourite hawker centre(s) that is/are closed today', async () => {
     const expectedMessages = [
       '\u{1F4A1} Heads up\\! 1 of your favourite hawker centres will be closed today\\.\n\n' +
         '*Verdanturf Town*\n_today to tomorrow_',
-      '\u{1F4A1} 注意！今天有1个您喜爱的小贩中心关闭。\n\n' +
+      '\u{1F4A1} 注意！今天有2个您喜爱的小贩中心关闭。\n\n' +
+        '*Verdanturf Town*\n _今天至明天_\n\n' +
         '*Melville City*\n _2月1日至2月28日; 其他工程_',
     ];
 
