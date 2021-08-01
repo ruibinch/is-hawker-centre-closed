@@ -2,7 +2,6 @@ import * as Sentry from '@sentry/serverless';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import dotenv from 'dotenv';
 
-import { AWSError } from '../errors/AWSError';
 import { ServiceError } from '../errors/ServiceError';
 import { makeCallbackWrapper } from '../ext/aws/lambda';
 import { initDictionary } from '../lang';
@@ -105,8 +104,6 @@ export const bot = Sentry.AWSLambda.wrapHandler(
 
         if (executionFnResponse.ok) {
           botResponse = executionFnResponse.val;
-        } else if (executionFnResponse.val instanceof AWSError) {
-          throw executionFnResponse.val;
         }
       }
 

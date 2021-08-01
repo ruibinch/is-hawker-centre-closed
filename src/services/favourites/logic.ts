@@ -313,8 +313,7 @@ export async function manageNotifications(props: {
     let currentValue: boolean | undefined;
 
     if (getUserResponse.ok) {
-      const user = getUserResponse.val;
-      currentValue = user.notifications;
+      currentValue = getUserResponse.val.notifications;
     }
 
     return {

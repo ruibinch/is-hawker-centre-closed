@@ -1,10 +1,9 @@
-import { Err, Ok, Result } from 'ts-results';
+import { Err, Ok } from 'ts-results';
 
 import { isCommand } from '../../bot/commands';
-import { CustomError } from '../../errors/CustomError';
 import { HawkerCentre } from '../../models/HawkerCentre';
 import { TelegramUser } from '../../utils/telegram';
-import { BotResponse, ServiceResponse } from '../../utils/types';
+import { ServiceResponse } from '../../utils/types';
 import { makeHawkerCentreName } from '../message';
 import {
   addHCToFavourites,
@@ -148,15 +147,15 @@ export async function manageFavourites(
 export async function maybeHandleFavouriteSelection(
   text: string,
   telegramUser: TelegramUser,
-): Promise<Result<BotResponse, CustomError | void>> {
+): Promise<ServiceResponse> {
   const isUserInFavouritesModeResponse = await isUserInFavouritesMode(
     telegramUser,
   );
 
-  if (isUserInFavouritesModeResponse.err) {
-    return isUserInFavouritesModeResponse;
-  }
-  if (!isUserInFavouritesModeResponse.val.isInFavouritesMode) {
+  if (
+    isUserInFavouritesModeResponse.err ||
+    !isUserInFavouritesModeResponse.val.isInFavouritesMode
+  ) {
     return Err.EMPTY;
   }
 
@@ -174,12 +173,16 @@ async function handleFavouriteSelection(
   telegramUser: TelegramUser,
 ): Promise<ServiceResponse> {
   // set isInFavouritesMode back to false upon handling
-  await toggleUserInFavouritesMode(telegramUser, false);
+  const toggleUserResponse = await toggleUserInFavouritesMode(
+    telegramUser,
+    false,
+  );
+  if (toggleUserResponse.err) return Err.EMPTY;
 
   if (isCommand(keyword)) return Err.EMPTY;
 
   const findHCResponse = await findHCByKeyword(keyword);
-  if (findHCResponse.err) return findHCResponse;
+  if (findHCResponse.err) return Err.EMPTY;
 
   const { isExactMatch, hawkerCentres } = findHCResponse.val;
 
