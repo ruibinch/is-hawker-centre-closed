@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.9.1] - 2021-08-01
+
+### Fixed
+
+- Incomplete results being returned when searching by "month" or "next month"
+
 ## [0.9.0] - 2021-07-28
 
 ### Added

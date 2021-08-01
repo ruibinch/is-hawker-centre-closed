@@ -25,6 +25,13 @@ type ChangelogEntry = {
 function getLatestUpdates(): ChangelogEntry[] {
   return [
     {
+      version: '\\[0\\.9\\.1\\]',
+      date: '2021\\-09\\-01',
+      details: [
+        'Fixed incomplete results being returned when searching by "month" or "next month"',
+      ],
+    },
+    {
       version: '\\[0\\.9\\.0\\]',
       date: '2021\\-07\\-28',
       details: ['Added /updates command to check the latest updates'],
