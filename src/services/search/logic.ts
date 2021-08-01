@@ -119,7 +119,7 @@ function filterByDate(closures: Closure[], modifier: SearchModifier) {
     end: endDate,
   });
 
-  const currDate = startOfDay(currentDate());
+  const today = startOfDay(currentDate());
 
   return closures.filter((closure) => {
     const startDate = parseISO(closure.startDate);
@@ -127,24 +127,24 @@ function filterByDate(closures: Closure[], modifier: SearchModifier) {
 
     return (() => {
       if (modifier === 'today') {
-        return isWithinInterval(currDate, makeInterval(startDate, endDate));
+        return isWithinInterval(today, makeInterval(startDate, endDate));
       }
       if (modifier === 'tomorrow') {
-        const tomorrowDate = addDays(currDate, 1);
+        const tomorrowDate = addDays(today, 1);
         return isWithinInterval(tomorrowDate, makeInterval(startDate, endDate));
       }
       if (modifier === 'month') {
         return (
-          isWithinInterval(currDate, makeInterval(startDate, endDate)) ||
-          isSameMonth(currDate, startDate) ||
-          isSameMonth(currDate, endDate)
+          isWithinInterval(today, makeInterval(startDate, endDate)) ||
+          isSameMonth(today, startDate) ||
+          isSameMonth(today, endDate)
         );
       }
       if (modifier === 'nextMonth') {
-        const nextMonthDate = startOfMonth(addMonths(currDate, 1));
+        const nextMonthDate = startOfMonth(addMonths(today, 1));
         return (
           isWithinInterval(nextMonthDate, makeInterval(startDate, endDate)) ||
-          differenceInCalendarMonths(startDate, currDate) === 1
+          differenceInCalendarMonths(startDate, today) === 1
         );
       }
       /* istanbul ignore next */
