@@ -72,6 +72,10 @@ export function makeDeleteErrorMessage(numFavourites: number): string {
   );
 }
 
+export function makeListUnexpectedErrorMessage(): string {
+  return t('favourites.error.list-favs');
+}
+
 export function makeFavouritesListMessage(
   hawkerCentresWithClosures: ClosurePartial[],
 ): string {

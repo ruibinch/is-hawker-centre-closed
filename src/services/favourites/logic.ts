@@ -218,6 +218,7 @@ export async function getUserFavouritesWithClosures(
       const hawkerCentre = hawkerCentres.find(
         (hc) => hc.hawkerCentreId === favHCId,
       );
+      /* istanbul ignore next */
       if (!hawkerCentre) {
         throw new Error(
           `Missing hawker centre entry for hawkerCentreId ${favHCId}`,
@@ -261,7 +262,7 @@ export async function isUserInFavouritesMode(
 export async function toggleUserInFavouritesMode(
   telegramUser: TelegramUser,
   isInFavouritesMode: boolean,
-): Promise<Result<void, void>> {
+): Promise<Result<void, Error>> {
   const { id: userId, username } = telegramUser;
 
   // TODO: potentially improve this flow
@@ -277,9 +278,14 @@ export async function toggleUserInFavouritesMode(
       notifications: true,
     });
 
-    await addUser(newUser);
+    const addUserResponse = await addUser(newUser);
+    if (addUserResponse.err) return addUserResponse;
   } else {
-    await updateUserInFavouritesMode(userId, isInFavouritesMode);
+    const updateUserResponse = await updateUserInFavouritesMode(
+      userId,
+      isInFavouritesMode,
+    );
+    if (updateUserResponse.err) return updateUserResponse;
   }
 
   return Ok.EMPTY;
@@ -307,8 +313,7 @@ export async function manageNotifications(props: {
     let currentValue: boolean | undefined;
 
     if (getUserResponse.ok) {
-      const user = getUserResponse.val;
-      currentValue = user.notifications;
+      currentValue = getUserResponse.val.notifications;
     }
 
     return {

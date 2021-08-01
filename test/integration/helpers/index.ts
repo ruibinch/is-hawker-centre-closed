@@ -2,7 +2,7 @@ import { APIGatewayProxyEvent, Context } from 'aws-lambda';
 
 import { bot } from '../../../src/bot/handler';
 import { handler as notificationsTriggerHandler } from '../../../src/triggers/notificationsTrigger';
-import { TelegramMessage } from '../../../src/utils/telegram';
+import { TelegramMessage, TelegramUpdate } from '../../../src/utils/telegram';
 import { makeTelegramMessage } from '../__mocks__/telegram';
 
 export const makeBotWrapper =
@@ -13,10 +13,12 @@ export const makeBotWrapper =
   async (
     inputText?: string,
     otherMessageParams: Partial<TelegramMessage> = {},
+    telegramUpdateParams?: TelegramUpdate,
   ): Promise<void> => {
-    const event: APIGatewayProxyEvent = {
+    const event = {
       body: JSON.stringify(
-        makeTelegramMessage({ text: inputText, ...otherMessageParams }),
+        telegramUpdateParams ??
+          makeTelegramMessage({ text: inputText, ...otherMessageParams }),
       ),
       queryStringParameters: {
         token: 'pokemongottacatchthemall',

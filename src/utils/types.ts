@@ -1,7 +1,5 @@
 import { Result } from 'ts-results';
 
-import { AWSError } from '../errors/AWSError';
-
 export type Stage = 'dev' | 'prod';
 
 export type Module =
@@ -20,7 +18,7 @@ export type BotResponse = {
   choices?: string[];
 };
 
-export type ServiceResponse = Result<BotResponse, AWSError | void>;
+export type ServiceResponse = Result<BotResponse, void>;
 
 export function notEmpty<T>(value: T | null | undefined): value is T {
   if (value === null || value === undefined) return false;

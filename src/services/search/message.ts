@@ -25,6 +25,10 @@ export function makeMessage(searchResponse: SearchResponse): string {
   return reply;
 }
 
+export function makeSearchUnexpectedErrorMessage(): string {
+  return t('search.error');
+}
+
 function makeMessageForTimeBasedModifier(
   searchResponse: SearchResponse,
 ): string {

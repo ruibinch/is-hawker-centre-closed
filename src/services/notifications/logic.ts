@@ -20,8 +20,9 @@ export async function getUsersWithFavsClosedToday(): Promise<
   if (getAllClosuresResponse.err) return getAllClosuresResponse;
   const closuresAll = getAllClosuresResponse.val;
 
+  const today = startOfDay(currentDate());
   const closuresCurrent = closuresAll.filter((closure) =>
-    isWithinInterval(startOfDay(currentDate()), {
+    isWithinInterval(today, {
       start: parseISO(closure.startDate),
       end: parseISO(closure.endDate),
     }),

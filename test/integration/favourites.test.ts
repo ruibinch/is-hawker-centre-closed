@@ -44,18 +44,9 @@ describe('[integration] Favourites module', () => {
       .spyOn(Date, 'now')
       .mockImplementation(() => parseISO('2021-01-05T11:30:25').valueOf());
 
-    getAllHawkerCentresSpy = jest
-      .spyOn(HawkerCentreFile, 'getAllHawkerCentres')
-      .mockImplementation(() => Promise.resolve(Ok(mockHawkerCentres)));
-    getHawkerCentreByIdSpy = jest
-      .spyOn(HawkerCentreFile, 'getHawkerCentreById')
-      .mockImplementation(() => Promise.resolve(Ok(mockHawkerCentres[0])));
     getUserByIdSpy = jest
       .spyOn(UserFile, 'getUserById')
       .mockImplementation(() => Promise.resolve(Ok(mockUser)));
-    getAllClosuresSpy = jest
-      .spyOn(ClosureFile, 'getAllClosures')
-      .mockImplementation(() => Promise.resolve(Ok(mockClosures)));
   });
 
   beforeEach(() => {
@@ -63,7 +54,12 @@ describe('[integration] Favourites module', () => {
     sendMessageWithChoicesSpy = jest
       .spyOn(sender, 'sendMessageWithChoices')
       .mockImplementation();
-
+    getAllHawkerCentresSpy = jest
+      .spyOn(HawkerCentreFile, 'getAllHawkerCentres')
+      .mockImplementation(() => Promise.resolve(Ok(mockHawkerCentres)));
+    getHawkerCentreByIdSpy = jest
+      .spyOn(HawkerCentreFile, 'getHawkerCentreById')
+      .mockImplementation(() => Promise.resolve(Ok(mockHawkerCentres[0])));
     updateUserFavouritesSpy = jest
       .spyOn(UserFile, 'updateUserFavourites')
       .mockImplementation(() => Promise.resolve(Ok.EMPTY));
@@ -73,6 +69,9 @@ describe('[integration] Favourites module', () => {
     updateUserNotificationsSpy = jest
       .spyOn(UserFile, 'updateUserNotifications')
       .mockImplementation(() => Promise.resolve(Ok.EMPTY));
+    getAllClosuresSpy = jest
+      .spyOn(ClosureFile, 'getAllClosures')
+      .mockImplementation(() => Promise.resolve(Ok(mockClosures)));
     addInputToDBSpy = jest
       .spyOn(InputFile, 'addInputToDB')
       .mockImplementation(() => Promise.resolve(Ok.EMPTY));
@@ -82,9 +81,12 @@ describe('[integration] Favourites module', () => {
     sendMessageSpy.mockRestore();
     sendMessageWithChoicesSpy.mockRestore();
 
+    getAllHawkerCentresSpy.mockRestore();
+    getHawkerCentreByIdSpy.mockRestore();
     updateUserFavouritesSpy.mockRestore();
     updateUserInFavouritesModeSpy.mockRestore();
     updateUserNotificationsSpy.mockRestore();
+    getAllClosuresSpy.mockRestore();
     addInputToDBSpy.mockRestore();
   });
 
@@ -92,10 +94,7 @@ describe('[integration] Favourites module', () => {
     mockCallback.mockRestore();
     dateSpy.mockRestore();
 
-    getAllHawkerCentresSpy.mockRestore();
-    getHawkerCentreByIdSpy.mockRestore();
     getUserByIdSpy.mockRestore();
-    getAllClosuresSpy.mockRestore();
   });
 
   describe('empty commands', () => {
@@ -216,6 +215,19 @@ describe('[integration] Favourites module', () => {
 
       expect(updateUserInFavouritesModeSpy).not.toHaveBeenCalled();
     });
+
+    it('[error] returns an unexpected error message when attempting to add a favourite, but getAllHawkerCentres returns an error', async () => {
+      getAllHawkerCentresSpy = jest
+        .spyOn(HawkerCentreFile, 'getAllHawkerCentres')
+        .mockImplementationOnce(() => Promise.resolve(Err(new AWSError())));
+
+      const inputMessage = '/fav oldale';
+      const expectedMessage =
+        "Woops, couldn't add your entry for some unexpected reason\\. Try again?";
+
+      await callBot(inputMessage);
+      assertBotResponse(sendMessageSpy, expectedMessage);
+    });
   });
 
   describe('existing user with multiple saved favourites', () => {
@@ -262,6 +274,32 @@ describe('[integration] Favourites module', () => {
 
         expect(updateUserInFavouritesModeSpy).not.toHaveBeenCalled();
         expect(updateUserFavouritesSpy).not.toHaveBeenCalled();
+      });
+
+      it('[error] returns an unexpected error message when an exact match is found, but updateUserFavourites returns an error', async () => {
+        updateUserInFavouritesModeSpy = jest
+          .spyOn(UserFile, 'updateUserFavourites')
+          .mockImplementationOnce(() => Promise.resolve(Err(new AWSError())));
+
+        const inputMessage = '/fav Slateport Market';
+        const expectedMessage =
+          "Woops, couldn't add your entry for some unexpected reason\\. Try again?";
+
+        await callBot(inputMessage);
+        assertBotResponse(sendMessageSpy, expectedMessage);
+      });
+
+      it('[error] returns an unexpected error message when a result is found, and toggling isInFavouritesMode is attempted, but updateUserInFavouritesMode returns an error', async () => {
+        updateUserInFavouritesModeSpy = jest
+          .spyOn(UserFile, 'updateUserInFavouritesMode')
+          .mockImplementationOnce(() => Promise.resolve(Err(new AWSError())));
+
+        const inputMessage = '/fav oldale';
+        const expectedMessage =
+          "Woops, couldn't add your entry for some unexpected reason\\. Try again?";
+
+        await callBot(inputMessage);
+        assertBotResponse(sendMessageSpy, expectedMessage);
       });
     });
 
@@ -332,12 +370,23 @@ describe('[integration] Favourites module', () => {
 
         const inputMessage = '/del 1';
         const expectedMessage =
-          "Woops, couldn't handle deleting your entry for some unexpected reason\\. Try again?";
+          "Woops, couldn't delete your entry for some unexpected reason\\. Try again?";
 
         await callBot(inputMessage);
         assertBotResponse(sendMessageSpy, expectedMessage);
+      });
 
-        getHawkerCentreByIdSpy.mockRestore();
+      it('[error] returns an unexpected error message when attempting to delete a saved hawker centre, but updateUserFavourites returns an error', async () => {
+        updateUserInFavouritesModeSpy = jest
+          .spyOn(UserFile, 'updateUserFavourites')
+          .mockImplementationOnce(() => Promise.resolve(Err(new AWSError())));
+
+        const inputMessage = '/del 1';
+        const expectedMessage =
+          "Woops, couldn't delete your entry for some unexpected reason\\. Try again?";
+
+        await callBot(inputMessage);
+        assertBotResponse(sendMessageSpy, expectedMessage);
       });
     });
 
@@ -354,6 +403,32 @@ describe('[integration] Favourites module', () => {
 
         await callBot(inputMessage);
         assertInputSaved(addInputToDBSpy, inputMessage);
+        assertBotResponse(sendMessageSpy, expectedMessage);
+      });
+
+      it('[error] returns an unexpected error message when attempting to display the favourites list, but getAllClosures returns an error', async () => {
+        getAllClosuresSpy = jest
+          .spyOn(ClosureFile, 'getAllClosures')
+          .mockImplementationOnce(() => Promise.resolve(Err(new AWSError())));
+
+        const inputMessage = '/list';
+        const expectedMessage =
+          "Woops, couldn't display your favourites list for some unexpected reason\\. Try again?";
+
+        await callBot(inputMessage);
+        assertBotResponse(sendMessageSpy, expectedMessage);
+      });
+
+      it('[error] returns an unexpected error message when attempting to display the favourites list, but getAllHawkerCentres returns an error', async () => {
+        getAllHawkerCentresSpy = jest
+          .spyOn(HawkerCentreFile, 'getAllHawkerCentres')
+          .mockImplementationOnce(() => Promise.resolve(Err(new AWSError())));
+
+        const inputMessage = '/list';
+        const expectedMessage =
+          "Woops, couldn't display your favourites list for some unexpected reason\\. Try again?";
+
+        await callBot(inputMessage);
         assertBotResponse(sendMessageSpy, expectedMessage);
       });
     });
@@ -560,14 +635,27 @@ describe('[integration] Favourites module', () => {
         });
       });
 
-      it('[error] returns an unexpected error message when attempting to create a user, but addUser returns an error', async () => {
+      it('[error] returns an unexpected error message when an exact match is found, and user creation with the match in the favourites list is attempted, but addUser returns an error', async () => {
         addUserSpy = jest
           .spyOn(UserFile, 'addUser')
           .mockImplementationOnce(() => Promise.resolve(Err(new AWSError())));
 
         const inputMessage = '/fav Slateport Market';
         const expectedMessage =
-          "Woops, couldn't handle adding your entry for some unexpected reason\\. Try again?";
+          "Woops, couldn't add your entry for some unexpected reason\\. Try again?";
+
+        await callBot(inputMessage);
+        assertBotResponse(sendMessageSpy, expectedMessage);
+      });
+
+      it('[error] returns an unexpected error message when a result is found, and user creation with isInFavouritesMode set to true is attempted, but addUser returns an error', async () => {
+        addUserSpy = jest
+          .spyOn(UserFile, 'addUser')
+          .mockImplementationOnce(() => Promise.resolve(Err(new AWSError())));
+
+        const inputMessage = '/fav oldale';
+        const expectedMessage =
+          "Woops, couldn't add your entry for some unexpected reason\\. Try again?";
 
         await callBot(inputMessage);
         assertBotResponse(sendMessageSpy, expectedMessage);

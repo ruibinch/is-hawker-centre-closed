@@ -1,6 +1,4 @@
-import { CustomError } from './CustomError';
-
-export class AWSError extends CustomError {
+export class AWSError extends Error {
   constructor() {
     super('AWS operation error');
 

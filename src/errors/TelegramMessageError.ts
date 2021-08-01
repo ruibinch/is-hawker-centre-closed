@@ -1,6 +1,4 @@
-import { CustomError } from './CustomError';
-
-export class TelegramMessageError extends CustomError {
+export class TelegramMessageError extends Error {
   constructor() {
     super('Error in Telegram message format');
 

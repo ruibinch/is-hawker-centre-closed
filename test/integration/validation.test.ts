@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {
   APIGatewayProxyEvent,
   APIGatewayProxyResult,
@@ -43,24 +44,6 @@ describe('[integration] Validation module', () => {
     mockCallback.mockRestore();
 
     getUserByIdSpy.mockRestore();
-  });
-
-  describe('non-direct messages', () => {
-    it('does not send a reply when the message represents the bot being added to a group channel', async () => {
-      await callBot(undefined, {
-        new_chat_members: [{ data: 'value' }],
-      });
-
-      expect(sendMessageSpy).not.toHaveBeenCalled();
-    });
-
-    it('does not send a reply when the message represents the bot being removed from a group channel', async () => {
-      await callBot(undefined, {
-        left_chat_member: [{ data: 'value' }],
-      });
-
-      expect(sendMessageSpy).not.toHaveBeenCalled();
-    });
   });
 
   describe('non-text messages', () => {
@@ -235,6 +218,42 @@ describe('[integration] Validation module', () => {
         // type assertion required as Sentry.wrapHandler prevents the return result from being correctly inferred
         expect((result as APIGatewayProxyResult).statusCode).toStrictEqual(400);
       }
+    });
+  });
+
+  describe('non-direct messages', () => {
+    it('does not send a reply when the update represents the bot being added to a group channel (my_chat_member is defined)', async () => {
+      await callBot(undefined, undefined, {
+        update_id: 111,
+        my_chat_member: { data: 'value' },
+      });
+
+      expect(sendMessageSpy).not.toHaveBeenCalled();
+    });
+
+    it('does not send a reply when the update represents the bot being added to a group channel (chat_member is defined)', async () => {
+      await callBot(undefined, undefined, {
+        update_id: 111,
+        chat_member: { data: 'value' },
+      });
+
+      expect(sendMessageSpy).not.toHaveBeenCalled();
+    });
+
+    it('does not send a reply when the message represents the bot being added to a group channel', async () => {
+      await callBot(undefined, {
+        new_chat_members: [{ data: 'value' }],
+      });
+
+      expect(sendMessageSpy).not.toHaveBeenCalled();
+    });
+
+    it('does not send a reply when the message represents the bot being removed from a group channel', async () => {
+      await callBot(undefined, {
+        left_chat_member: [{ data: 'value' }],
+      });
+
+      expect(sendMessageSpy).not.toHaveBeenCalled();
     });
   });
 
