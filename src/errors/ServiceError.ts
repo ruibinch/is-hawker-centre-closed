@@ -1,6 +1,4 @@
-import { CustomError } from './CustomError';
-
-export class ServiceError extends CustomError {
+export class ServiceError extends Error {
   constructor() {
     super('No response obtained from service');
 
