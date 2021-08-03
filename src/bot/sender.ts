@@ -33,13 +33,13 @@ export async function sendMessage(props: {
   const telegramMessages =
     message.length > TELEGRAM_MESSAGE_MAX_LENGTH
       ? (() => {
-          const messageSplit = message.split('\n\n');
+          const delimiter = '\n\n';
+          const messageSplit = message.split(delimiter);
 
           let firstMessageLength = 0;
           let splitIndex = 0;
           for (let i = 0; i < messageSplit.length; i += 1) {
-            // 2 represents the length of \n\n delimiter
-            const entryLength = messageSplit[i].length + 2;
+            const entryLength = messageSplit[i].length + delimiter.length;
 
             if (
               firstMessageLength + entryLength >
@@ -52,7 +52,7 @@ export async function sendMessage(props: {
             splitIndex = i;
           }
 
-          // Assumption: message.length will never exceed 4096 * 2
+          // Assumption: message.length will never exceed 4096 * 2, i.e. at most 2 Telegram messages are required
           const firstMessage = messageSplit
             .slice(0, splitIndex + 1)
             .join('\n\n');
@@ -62,19 +62,27 @@ export async function sendMessage(props: {
         })()
       : [message];
 
-  const responses: TelegramResponseBase[] = await Promise.all(
-    telegramMessages.map((telegramMessage) =>
-      axios.get(telegramSendMessageUrl, makeSendMessageParams(telegramMessage)),
-    ),
-  )
-    .then((_responses) => _responses.map((res) => res.data))
-    .catch((error) => {
-      console.error('[bot > sender > sendMessage]', {
-        telegramResponse: error.response.data,
-        message,
-      });
-      return error.response.data;
-    });
+  // Execute promises sequentially
+  const responses = await telegramMessages.reduce(
+    (promise, telegramMessage) =>
+      promise.then((_responses) =>
+        axios
+          .get(telegramSendMessageUrl, makeSendMessageParams(telegramMessage))
+          .then((res) => res.data)
+          .catch((error) => {
+            console.error('[bot > sender > sendMessage]', {
+              telegramResponse: error.response.data,
+              message,
+            });
+            return error.response.data;
+          })
+          .then((_response: TelegramResponseBase) => [
+            ..._responses,
+            _response,
+          ]),
+      ),
+    Promise.resolve([] as TelegramResponseBase[]),
+  );
 
   if (responses.some((res) => !res.ok)) {
     throw new TelegramMessageError();
