@@ -7,7 +7,7 @@ import {
   TELEGRAM_MESSAGE_MAX_LENGTH,
 } from '../utils/telegram';
 
-const BOT_TOKEN = process.env.BOT_TOKEN || '';
+const BOT_TOKEN = process.env.BOT_TOKEN ?? '';
 
 export async function sendMessage(props: {
   chatId: number;
