@@ -3,6 +3,8 @@
 
 import { TelegramUpdateError } from '../errors/TelegramUpdateError';
 
+export const TELEGRAM_MESSAGE_MAX_LENGTH = 4096;
+
 export type TelegramResponseBase = {
   ok: boolean;
   description?: string;
