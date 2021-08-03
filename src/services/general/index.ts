@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { Ok } from 'ts-results';
 
 import { ServiceResponse } from '../../utils';
@@ -25,8 +26,15 @@ type ChangelogEntry = {
 function getLatestUpdates(): ChangelogEntry[] {
   return [
     {
+      version: '\\[0\\.9\\.2\\]',
+      date: '2021\\-08\\-04',
+      details: [
+        'Fixed error with messages exceeding the maximum Telegram message length of 4096 by splitting them into separate messages',
+      ],
+    },
+    {
       version: '\\[0\\.9\\.1\\]',
-      date: '2021\\-09\\-01',
+      date: '2021\\-08\\-01',
       details: [
         'Fixed incomplete results being returned when searching by "month" or "next month"',
       ],

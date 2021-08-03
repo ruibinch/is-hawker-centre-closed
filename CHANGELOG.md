@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.9.2] - 2021-08-04
+
+### Fixed
+
+- Split messages exceeding the maximum Telegram message length of 4096 into separate messages
+
 ## [0.9.1] - 2021-08-01
 
 ### Fixed
