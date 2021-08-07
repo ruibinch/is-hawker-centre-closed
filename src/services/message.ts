@@ -1,6 +1,6 @@
 import { t } from '../lang';
 import { Closure, ClosureReason } from '../models/Closure';
-import { formatDateDisplay } from '../utils/date';
+import { formatDateDisplay, isIndefiniteEndDate } from '../utils/date';
 
 export function makeGenericErrorMessage(): string {
   return t('validation.error.generic');
@@ -31,6 +31,12 @@ export function makeClosurePeriodSnippet(
   startDate: string,
   endDate: string,
 ): string {
+  if (isIndefiniteEndDate(endDate)) {
+    return t('common.time.time-period.indefinite-end-date', {
+      startDate: formatDateDisplay(startDate, true),
+    });
+  }
+
   if (startDate === endDate) {
     return formatDateDisplay(startDate, true);
   }

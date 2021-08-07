@@ -253,7 +253,7 @@ describe('[integration] Search module', () => {
       const inputMessage = 'Month';
       const expectedMessage =
         'There is *1* hawker centre that is closed this month:\n\n' +
-        '*Petalburg Gym*\n_30\\-Mar to 02\\-Jun; other works_';
+        '*Petalburg Gym*\n_30\\-Mar till indefinitely; other works_';
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
@@ -271,7 +271,7 @@ describe('[integration] Search module', () => {
       const expectedMessage =
         'There are *4* hawker centres that will be closed next month:\n\n' +
         '*Devon Corporation*\n_01\\-Nov to 30\\-Apr; other works_\n\n' +
-        '*Petalburg Gym*\n_30\\-Mar to 02\\-Jun; other works_\n\n' +
+        '*Petalburg Gym*\n_30\\-Mar till indefinitely; other works_\n\n' +
         '*Lavaridge Gym*\n_01\\-Apr to 05\\-May; other works_\n\n' +
         '*Sidney Gym*\n_05\\-Apr to 06\\-Apr_';
 
@@ -290,7 +290,7 @@ describe('[integration] Search module', () => {
       const inputMessage = 'Next month';
       const expectedMessage =
         'There is *1* hawker centre that will be closed next month:\n\n' +
-        '*Petalburg Gym*\n_30\\-Mar to 02\\-Jun; other works_';
+        '*Petalburg Gym*\n_30\\-Mar till indefinitely; other works_';
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
@@ -304,7 +304,7 @@ describe('[integration] Search module', () => {
     beforeAll(() => {
       dateSpy = jest
         .spyOn(Date, 'now')
-        .mockImplementation(() => parseISO('2021-07-01T11:30:25').valueOf());
+        .mockImplementation(() => parseISO('2020-07-01T11:30:25').valueOf());
     });
 
     afterAll(() => {
