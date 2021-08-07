@@ -1,30 +1,35 @@
 import { NEAData } from '../dataCollection';
 import { sendDiscordAdminMessage } from '../ext/discord';
-import { Closure, isClosure } from '../models/Closure';
-import { HawkerCentre } from '../models/HawkerCentre';
+import { Closure, getAllClosures, isClosure } from '../models/Closure';
+import { getAllHawkerCentres, HawkerCentre } from '../models/HawkerCentre';
 import { getStage, prettifyJSON } from '../utils';
+import { run as executeFixDb } from './fixDb';
 import { run as executeManageDb } from './manageDb';
 import { run as executeSeedDb } from './seedDb';
 
 export async function run(): Promise<void> {
   const resetDbResult = await executeManageDb('reset');
-  const seedDbResult = await executeSeedDb({ shouldWriteFile: false });
+  await executeSeedDb({ shouldWriteFile: false });
+  await executeFixDb();
 
-  await findResetAndSeedDbDiffs(resetDbResult, seedDbResult);
+  await findPreAndPostResetDiffs(resetDbResult);
 }
 
-async function findResetAndSeedDbDiffs(
-  resetDbResult: NEAData | null,
-  seedDbResult: NEAData,
-) {
+async function findPreAndPostResetDiffs(resetDbResult: NEAData | null) {
   if (resetDbResult === null) {
+    return;
+  }
+
+  const getAllClosuresResponse = await getAllClosures();
+  const getAllHCResponse = await getAllHawkerCentres();
+  if (getAllClosuresResponse.err || getAllHCResponse.err) {
     return;
   }
 
   const { closures: closuresBefore, hawkerCentres: hawkerCentresBefore } =
     resetDbResult;
-  const { closures: closuresAfter, hawkerCentres: hawkerCentresAfter } =
-    seedDbResult;
+  const closuresAfter = getAllClosuresResponse.val;
+  const hawkerCentresAfter = getAllHCResponse.val;
 
   const { addedEntries: closuresAdded, deletedEntries: closuresDeleted } =
     findDiffs(closuresBefore, closuresAfter);
@@ -34,14 +39,22 @@ async function findResetAndSeedDbDiffs(
   } = findDiffs(hawkerCentresBefore, hawkerCentresAfter);
 
   const outputMessage =
-    `CLOSURES ADDED\n${prettifyJSON(closuresAdded)}\n\n` +
-    `CLOSURES DELETED\n${prettifyJSON(closuresDeleted)}\n\n` +
-    `HAWKER CENTRES ADDED\n${prettifyJSON(hawkerCentresAdded)}\n\n` +
-    `HAWKER CENTRES DELETED\n${prettifyJSON(hawkerCentresDeleted)}\n\n`;
+    `${closuresAdded.length} CLOSURES ADDED\n${prettifyJSON(
+      closuresAdded,
+    )}\n\n` +
+    `${closuresDeleted.length} CLOSURES DELETED\n${prettifyJSON(
+      closuresDeleted,
+    )}\n\n` +
+    `${hawkerCentresAdded.length} HAWKER CENTRES ADDED\n${prettifyJSON(
+      hawkerCentresAdded,
+    )}\n\n` +
+    `${hawkerCentresDeleted.length} HAWKER CENTRES DELETED\n${prettifyJSON(
+      hawkerCentresDeleted,
+    )}\n\n`;
 
   try {
     await sendDiscordAdminMessage(
-      `[${getStage()}] RESET SUMMARY\n${outputMessage}`,
+      `[${getStage()}] RESET AND UPDATE SUMMARY\n${outputMessage}`,
     );
   } catch (e) {
     console.info(outputMessage);

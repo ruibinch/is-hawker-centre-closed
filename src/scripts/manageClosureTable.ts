@@ -25,8 +25,13 @@ function makeErrorMessage(s: string) {
   return `ERROR: ${s}`;
 }
 
-function validateInputArgs() {
-  if (inputArgs.length !== 4 && inputArgs.length !== 5) {
+function validateEntry(inputEntryString?: string) {
+  // If inputEntryString is specified, then shouldSkipConfirmation should be set to true
+  const entryProps = inputEntryString
+    ? [...inputEntryString.split(' '), 'true']
+    : inputArgs;
+
+  if (entryProps.length !== 4 && entryProps.length !== 5) {
     // shouldSkipConfirmation argument is optional
     return Err(
       `Incorrect number of arguments.\n\n` +
@@ -34,8 +39,9 @@ function validateInputArgs() {
         `{{hawkerCentreId}} {{reason}} {{startDate}} {{endDate}}`,
     );
   }
+
   const [hawkerCentreId, reason, startDate, endDate, shouldSkipConfirmation] =
-    inputArgs;
+    entryProps;
 
   // validate inputs
   if (!isValidClosureReason(reason)) {
@@ -58,8 +64,8 @@ function validateInputArgs() {
   });
 }
 
-export async function addEntry(): Promise<void> {
-  const validateResult = validateInputArgs();
+export async function addEntry(inputEntryString?: string): Promise<void> {
+  const validateResult = validateEntry(inputEntryString);
   if (validateResult.err) {
     console.error(makeErrorMessage(validateResult.val));
     return;
@@ -104,7 +110,11 @@ export async function addEntry(): Promise<void> {
         });
 
   if (answer.toLowerCase() === 'y') {
-    await addClosure(closure);
+    // skip sending message to admin channel when inputEntryString is undefined, i.e. DB fixing in progress
+    await addClosure({
+      closure,
+      shouldSendMessage: inputEntryString === undefined,
+    });
     await sendDiscordClosuresAdminMessage(
       `[${getStage()}] ADDED CLOSURE ENTRY\n${Object.values(
         validateResult.val,
@@ -116,8 +126,8 @@ export async function addEntry(): Promise<void> {
   }
 }
 
-export async function deleteEntry(): Promise<void> {
-  const validateResult = validateInputArgs();
+export async function deleteEntry(inputEntryString?: string): Promise<void> {
+  const validateResult = validateEntry(inputEntryString);
   if (validateResult.err) {
     console.error(makeErrorMessage(validateResult.val));
     return;
@@ -125,10 +135,12 @@ export async function deleteEntry(): Promise<void> {
   const { hawkerCentreId, reason, startDate, endDate } = validateResult.val;
 
   const closureId = generateHash(hawkerCentreId, reason, startDate, endDate);
-  const deleteClosureResult = await deleteClosure(
+  // skip sending message to admin channel when inputEntryString is undefined, i.e. DB fixing in progress
+  const deleteClosureResult = await deleteClosure({
     closureId,
-    Number(hawkerCentreId),
-  );
+    hawkerCentreId: Number(hawkerCentreId),
+    shouldSendMessage: inputEntryString === undefined,
+  });
   if (deleteClosureResult.err) {
     const deleteClosureResultError = deleteClosureResult.val;
     console.error(
