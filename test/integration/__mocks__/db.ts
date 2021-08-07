@@ -87,14 +87,6 @@ export const mockClosures: Closure[] = [
   },
   {
     id: '111',
-    hawkerCentreId: 13,
-    reason: 'deepCleaning',
-    name: 'Fortree Market',
-    startDate: '2021-02-11',
-    endDate: '2021-02-25',
-  },
-  {
-    id: '111',
     hawkerCentreId: 11,
     reason: 'others',
     name: 'Devon Corporation',
@@ -112,10 +104,10 @@ export const mockClosures: Closure[] = [
   {
     id: '111',
     hawkerCentreId: 39,
-    reason: 'cleaning',
+    reason: 'deepCleaning',
     name: 'Sidney Gym',
     startDate: '2021-04-05',
-    endDate: '2021-04-06',
+    endDate: '2021-04-19',
   },
   {
     id: '111',
