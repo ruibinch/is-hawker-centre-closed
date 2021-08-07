@@ -66,10 +66,10 @@ describe('[integration] Search module', () => {
       dateSpy.mockRestore();
     });
 
-    it('["littleroot"] returns a single closure occurring today', async () => {
+    it('["littleroot"] returns the next closure dates for hawker centres containing the keyword "littleroot" by default', async () => {
       const inputMessage = 'littleroot';
       const expectedMessage =
-        'Here are the hawker centres containing the keyword *littleroot* that are closed today:\n\n' +
+        'Here are the hawker centres containing the keyword *littleroot* and their next closure dates:\n\n' +
         '*Littleroot Town*\n_today to tomorrow_';
 
       await callBot(inputMessage);
@@ -82,16 +82,6 @@ describe('[integration] Search module', () => {
       const expectedMessage =
         'Here are the hawker centres containing the keyword *littleroot* that are closed today:\n\n' +
         '*Littleroot Town*\n_today to tomorrow_';
-
-      await callBot(inputMessage);
-      assertInputSaved(addInputToDBSpy, inputMessage);
-      assertBotResponse(sendMessageSpy, expectedMessage);
-    });
-
-    it('["rustboro"] does not return any closure if there is no closure occurring today', async () => {
-      const inputMessage = 'rustboro';
-      const expectedMessage =
-        'All good\\! No hawker centres containing the keyword *rustboro* are undergoing cleaning today\\.';
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);

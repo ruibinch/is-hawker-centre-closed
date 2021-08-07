@@ -76,7 +76,7 @@ function parseSearchTerm(term: string): SearchObject {
   if (modifierResult.err) {
     return {
       keyword: term,
-      modifier: 'today', // defaults to today if no modifier
+      modifier: 'next', // defaults to next if no modifier
     };
   }
 
