@@ -20,7 +20,7 @@
     "remove:prod": "sls remove -s prod",
     "run:db:dev:create": "ts-node src/scripts/manageDb.ts create",
     "run:db:dev:delete": "ts-node src/scripts/manageDb.ts delete",
-    "run:db:dev:reset": "ts-node src/triggers/runResetAndSeedDbTrigger.ts",
+    "run:db:dev:reset": "ts-node src/scripts/resetAndSeedDb.ts",
     "run:db:dev:seed": "ts-node src/scripts/seedDb.ts",
     "run:db:prod:create": "NODE_ENV=production yarn run:db:dev:create",
     "run:db:prod:delete": "NODE_ENV=production yarn run:db:dev:delete",
