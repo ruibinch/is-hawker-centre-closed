@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.10.0] - 2021-08-07
+
+### Added
+
+- Indefinite end date option
+
 ## [0.9.2] - 2021-08-04
 
 ### Fixed
