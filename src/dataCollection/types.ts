@@ -1,3 +1,6 @@
+import { Closure } from '../models/Closure';
+import { HawkerCentre } from '../models/HawkerCentre';
+
 type DataGovSGResponseBase = {
   help: string;
   success: boolean;
@@ -36,4 +39,11 @@ export type HawkerCentreClosureRecord = {
   other_works_startdate: string;
   other_works_enddate: string;
   remarks_other_works: string;
+};
+
+// Parsed data
+
+export type NEAData = {
+  hawkerCentres: HawkerCentre[];
+  closures: Closure[];
 };

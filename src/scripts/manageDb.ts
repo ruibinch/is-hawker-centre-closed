@@ -1,6 +1,7 @@
 import * as AWS from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
 
+import { NEAData } from '../dataCollection';
 import { initAWSConfig } from '../ext/aws/config';
 import { sendDiscordAdminMessage } from '../ext/discord';
 import { getAllClosures, ClosureObject } from '../models/Closure';
@@ -117,32 +118,32 @@ async function deleteTables() {
 /**
  * Deletes and recreates the Closures and HawkerCentre tables.
  */
-async function resetTables() {
+async function resetTables(): Promise<NEAData | null> {
   const getAllHCResponse = await getAllHawkerCentres();
   const getAllClosuresResponse = await getAllClosures();
   if (getAllHCResponse.err || getAllClosuresResponse.err) {
-    return;
+    return null;
   }
 
   const numEntriesInClosuresTable = getAllClosuresResponse.val.length;
   const numEntriesInHCTable = getAllHCResponse.val.length;
 
-  const closuresTableDeleteOutput = await dynamoDb
-    .deleteTable({ TableName: ClosureObject.getTableName() })
-    .promise();
-  const hawkerCentreTableDeleteOutput = await dynamoDb
-    .deleteTable({ TableName: HawkerCentre.getTableName() })
-    .promise();
+  const deleteTableOutputs = await Promise.all(
+    [
+      dynamoDb
+        .deleteTable({ TableName: ClosureObject.getTableName() })
+        .promise(),
+      dynamoDb
+        .deleteTable({ TableName: HawkerCentre.getTableName() })
+        .promise(),
+    ].map(wrapPromise),
+  );
+  const deleteTableOutputsParsed = parseDynamoDBPromises(deleteTableOutputs);
+
   await sendDiscordAdminMessage(
     `[${getStage()}] RESET IN PROGRESS\nDeleted tables:\n${[
-      [
-        closuresTableDeleteOutput.TableDescription?.TableName,
-        numEntriesInClosuresTable,
-      ],
-      [
-        hawkerCentreTableDeleteOutput.TableDescription?.TableName,
-        numEntriesInHCTable,
-      ],
+      [deleteTableOutputsParsed[0].message, numEntriesInClosuresTable],
+      [deleteTableOutputsParsed[1].message, numEntriesInHCTable],
     ]
       .map(
         ([tableName, numEntries], idx) =>
@@ -160,7 +161,6 @@ async function resetTables() {
       dynamoDb.createTable(HawkerCentre.getSchema()).promise(),
     ].map(wrapPromise),
   );
-
   const createTableOutputsParsed = parseDynamoDBPromises(createTableOutputs);
 
   await sendDiscordAdminMessage(
@@ -174,9 +174,14 @@ async function resetTables() {
         createTableOutputsParsed.filter((result) => !result.success),
       )}`,
   );
+
+  return {
+    closures: getAllClosuresResponse.val,
+    hawkerCentres: getAllHCResponse.val,
+  };
 }
 
-export async function run(operationInput?: string): Promise<void> {
+export async function run(operationInput?: string): Promise<NEAData | null> {
   const operation = operationInput ?? operationArg;
 
   if (operation === 'create') {
@@ -184,10 +189,13 @@ export async function run(operationInput?: string): Promise<void> {
   } else if (operation === 'delete') {
     await deleteTables();
   } else if (operation === 'reset') {
-    await resetTables();
+    const resetResult = await resetTables();
+    return resetResult;
   } else {
     throw new Error(`unrecognised operation name "${operation}"`);
   }
+
+  return null;
 }
 
 if (require.main === module) {
