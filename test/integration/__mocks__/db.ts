@@ -123,7 +123,7 @@ export const mockClosures: Closure[] = [
     reason: 'others',
     name: 'Petalburg Gym',
     startDate: '2021-03-30',
-    endDate: '2021-06-02',
+    endDate: '2100-01-01',
   },
 ];
 
