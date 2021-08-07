@@ -90,7 +90,13 @@ export async function uploadClosures(closures: Closure[]): Promise<void> {
   );
 }
 
-export async function addClosure(closure: Closure): Promise<void> {
+export async function addClosure(props: {
+  closure: Closure;
+  shouldSendMessage?: boolean;
+}): Promise<void> {
+  const { closure } = props;
+  const shouldSendMessage = props.shouldSendMessage ?? true;
+
   await dynamoDb
     .put({
       TableName: ClosureObject.getTableName(),
@@ -98,15 +104,22 @@ export async function addClosure(closure: Closure): Promise<void> {
       ConditionExpression: 'attribute_not_exists(id)',
     })
     .promise();
-  await sendDiscordAdminMessage(
-    `[${getStage()}] ADDED CLOSURE ENTRY\n${prettifyJSON(closure)}`,
-  );
+
+  if (shouldSendMessage) {
+    await sendDiscordAdminMessage(
+      `[${getStage()}] ADDED CLOSURE ENTRY\n${prettifyJSON(closure)}`,
+    );
+  }
 }
 
-export async function deleteClosure(
-  closureId: string,
-  hawkerCentreId: number,
-): Promise<Result<Closure, AWSError | void>> {
+export async function deleteClosure(props: {
+  closureId: string;
+  hawkerCentreId: number;
+  shouldSendMessage?: boolean;
+}): Promise<Result<Closure, AWSError | void>> {
+  const { closureId, hawkerCentreId } = props;
+  const shouldSendMessage = props.shouldSendMessage ?? true;
+
   const deleteOutput = await dynamoDb
     .delete({
       TableName: ClosureObject.getTableName(),
@@ -123,9 +136,12 @@ export async function deleteClosure(
   }
 
   const closure = deleteOutput.Attributes;
-  await sendDiscordAdminMessage(
-    `[${getStage()}] DELETED CLOSURE ENTRY\n${prettifyJSON(closure)}`,
-  );
+  if (shouldSendMessage) {
+    await sendDiscordAdminMessage(
+      `[${getStage()}] DELETED CLOSURE ENTRY\n${prettifyJSON(closure)}`,
+    );
+  }
+
   return Ok(closure as Closure);
 }
 

@@ -110,7 +110,11 @@ export async function addEntry(inputEntryString?: string): Promise<void> {
         });
 
   if (answer.toLowerCase() === 'y') {
-    await addClosure(closure);
+    // skip sending message to admin channel when inputEntryString is undefined, i.e. DB fixing in progress
+    await addClosure({
+      closure,
+      shouldSendMessage: inputEntryString === undefined,
+    });
     await sendDiscordClosuresAdminMessage(
       `[${getStage()}] ADDED CLOSURE ENTRY\n${Object.values(
         validateResult.val,
@@ -131,10 +135,12 @@ export async function deleteEntry(inputEntryString?: string): Promise<void> {
   const { hawkerCentreId, reason, startDate, endDate } = validateResult.val;
 
   const closureId = generateHash(hawkerCentreId, reason, startDate, endDate);
-  const deleteClosureResult = await deleteClosure(
+  // skip sending message to admin channel when inputEntryString is undefined, i.e. DB fixing in progress
+  const deleteClosureResult = await deleteClosure({
     closureId,
-    Number(hawkerCentreId),
-  );
+    hawkerCentreId: Number(hawkerCentreId),
+    shouldSendMessage: inputEntryString === undefined,
+  });
   if (deleteClosureResult.err) {
     const deleteClosureResultError = deleteClosureResult.val;
     console.error(
