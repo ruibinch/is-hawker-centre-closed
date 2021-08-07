@@ -94,6 +94,8 @@ describe('[integration] General module', () => {
     it('["/updates"] returns the latest updates', async () => {
       const inputMessage = '/updates';
       const updateEntries = [
+        '*\\[0\\.11\\.0\\] 2021\\-08\\-08*\n' +
+          '\u{00B7} Changed default timeframe from "today" to "next" to return more useful information by default',
         '*\\[0\\.10\\.0\\] 2021\\-08\\-07*\n' +
           '\u{00B7} Added indefinite end date option',
         '*\\[0\\.9\\.2\\] 2021\\-08\\-04*\n' +

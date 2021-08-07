@@ -26,6 +26,13 @@ type ChangelogEntry = {
 function getLatestUpdates(): ChangelogEntry[] {
   return [
     {
+      version: '\\[0\\.11\\.0\\]',
+      date: '2021\\-08\\-08',
+      details: [
+        'Changed default timeframe from "today" to "next" to return more useful information by default',
+      ],
+    },
+    {
       version: '\\[0\\.10\\.0\\]',
       date: '2021\\-08\\-07',
       details: ['Added indefinite end date option'],

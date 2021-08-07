@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.11.0] - 2021-08-08
+
+### Changed
+
+- Default timeframe from "today" to "next" to return more useful information by default
+
 ## [0.10.0] - 2021-08-07
 
 ### Added
