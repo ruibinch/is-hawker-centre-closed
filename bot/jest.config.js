@@ -3,7 +3,7 @@ module.exports = {
   testEnvironment: 'node',
   roots: ['<rootDir>'],
   setupFiles: ['<rootDir>/test/setEnvVars.js'],
-  coveragePathIgnorePatterns: ['/node_modules/'],
+  coveragePathIgnorePatterns: ['../node_modules/'],
   collectCoverageFrom: [
     '<rootDir>/src/bot/*.ts',
     '!<rootDir>/src/bot/sender.ts',
