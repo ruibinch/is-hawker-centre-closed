@@ -36,11 +36,14 @@
     "run:delete-closure:prod": "NODE_ENV=production yarn run:delete-closure:dev",
     "run:scan-new": "NODE_ENV=production ts-node src/scripts/scanNewEntries.ts",
     "run:print-commands": "ts-node src/scripts/printCommands.ts",
-    "run:test-api": "ts-node src/scripts/testApi.ts"
+    "run:test-api": "ts-node src/scripts/testApi.ts",
+    "test": "TZ=UTC jest"
   },
   "devDependencies": {
     "@types/i18n-js": "^3.8.0",
-    "i18n-extract": "^0.6.7"
+    "i18n-extract": "^0.6.7",
+    "jest": "^27.0.6",
+    "ts-jest": "^27.0.4"
   },
   "dependencies": {
     "@sentry/serverless": "^6.5.1",

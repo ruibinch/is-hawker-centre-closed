@@ -1,14 +1,15 @@
-const base = require('../jest.config.js');
-
 module.exports = {
-  ...base,
-  rootDir: './',
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+  roots: ['<rootDir>'],
   setupFiles: ['<rootDir>/test/setEnvVars.js'],
+  coveragePathIgnorePatterns: ['/node_modules/'],
   collectCoverageFrom: [
     '<rootDir>/src/bot/*.ts',
     '!<rootDir>/src/bot/sender.ts',
     '<rootDir>/src/services/**/*.ts',
   ],
+  collectCoverage: true,
   coverageThreshold: {
     global: {
       branches: 95,
@@ -17,4 +18,5 @@ module.exports = {
       statements: 95,
     },
   },
+  coverageReporters: ['text', 'text-summary'],
 };
