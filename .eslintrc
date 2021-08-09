@@ -2,7 +2,7 @@
   "root": true,
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": ["./tsconfig.json"]
+    "project": ["./tsconfig.json", "./bot/tsconfig.json"]
   },
   "plugins": ["@typescript-eslint", "prettier", "jest"],
   "extends": [
@@ -42,7 +42,8 @@
           "**/scripts/*.ts",
           "./bot/src/ext/aws/config.ts",
           "./bot/test/unit/lang/lang.test.ts"
-        ]
+        ],
+        "packageDir": ["./", "./bot"]
       }
     ]
   },
