@@ -62,7 +62,6 @@
     "emoji-regex": "^9.2.2",
     "i18n-js": "^3.8.0",
     "jshashes": "^1.0.8",
-    "node-cache": "^5.1.2",
-    "ts-results": "^3.3.0"
+    "node-cache": "^5.1.2"
   }
 }
