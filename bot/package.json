@@ -54,7 +54,7 @@
     "webpack-node-externals": "^3.0.0"
   },
   "dependencies": {
-    "@sentry/serverless": "^6.5.1",
+    "@sentry/serverless": "^6.11.0",
     "axios": "^0.21.1",
     "date-fns": "^2.23.0",
     "discord.js": "^12.5.3",

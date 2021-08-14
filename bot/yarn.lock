@@ -878,7 +878,7 @@
     lru_map "^0.3.3"
     tslib "^1.9.3"
 
-"@sentry/serverless@^6.5.1":
+"@sentry/serverless@^6.11.0":
   version "6.11.0"
   resolved "https://registry.yarnpkg.com/@sentry/serverless/-/serverless-6.11.0.tgz#e25b9a483eabe2ee727724aeae5ff67359cd99f4"
   integrity sha512-TZSb7RqlwxkSsnmWD8IC1ihI544umda9IqQASB0NRepT+RE3qsuPIQ7LRaflzmnO32h8bGObuzE44lPmJb6png==
