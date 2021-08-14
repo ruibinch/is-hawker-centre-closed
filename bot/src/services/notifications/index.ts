@@ -1,19 +1,18 @@
-import { Ok, Result } from 'ts-results';
-
+import { Result, ResultType } from '../../../../lib/Result';
 import { initDictionary } from '../../lang';
 import { getUsersWithFavsClosedToday } from './logic';
 import { makeNotificationMessage } from './message';
 import { NotificationMessage } from './types';
 
 export async function constructNotifications(): Promise<
-  Result<NotificationMessage[], Error>
+  ResultType<NotificationMessage[], Error>
 > {
   const usersWithFavsClosedTodayResponse = await getUsersWithFavsClosedToday();
-  if (usersWithFavsClosedTodayResponse.err) {
+  if (usersWithFavsClosedTodayResponse.isErr) {
     return usersWithFavsClosedTodayResponse;
   }
 
-  const notifications = usersWithFavsClosedTodayResponse.val
+  const notifications = usersWithFavsClosedTodayResponse.value
     .filter((userWithClosure) => userWithClosure.closures.length > 0)
     .map((userWithClosure) => {
       const { userId, languageCode, closures } = userWithClosure;
@@ -25,5 +24,5 @@ export async function constructNotifications(): Promise<
       };
     });
 
-  return Ok(notifications);
+  return Result.Ok(notifications);
 }

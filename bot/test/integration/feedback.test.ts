@@ -1,6 +1,6 @@
 import { parseISO } from 'date-fns';
-import { Err, Ok } from 'ts-results';
 
+import { Result } from '../../../lib/Result';
 import * as sender from '../../src/bot/sender';
 import { AWSError } from '../../src/errors/AWSError';
 import * as Feedback from '../../src/models/Feedback';
@@ -27,20 +27,20 @@ describe('[integration] Feedback module', () => {
 
     getUserByIdSpy = jest
       .spyOn(UserFile, 'getUserById')
-      .mockImplementation(() => Promise.resolve(Err(new AWSError())));
+      .mockImplementation(() => Promise.resolve(Result.Err(new AWSError())));
     maybeHandleFavouriteSelectionSpy = jest
       .spyOn(favouritesIndex, 'maybeHandleFavouriteSelection')
-      .mockImplementation(() => Promise.resolve(Err.EMPTY));
+      .mockImplementation(() => Promise.resolve(Result.Err()));
   });
 
   beforeEach(() => {
     sendMessageSpy = jest.spyOn(sender, 'sendMessage').mockImplementation();
     addFeedbackToDBSpy = jest
       .spyOn(Feedback, 'addFeedbackToDB')
-      .mockImplementation(() => Promise.resolve(Ok.EMPTY));
+      .mockImplementation(() => Promise.resolve(Result.Ok()));
     addInputToDBSpy = jest
       .spyOn(InputFile, 'addInputToDB')
-      .mockImplementation(() => Promise.resolve(Ok.EMPTY));
+      .mockImplementation(() => Promise.resolve(Result.Ok()));
   });
 
   afterEach(() => {
@@ -88,7 +88,7 @@ describe('[integration] Feedback module', () => {
   it('[error] returns an error message when addFeedbackToDB returns an error', async () => {
     addFeedbackToDBSpy = jest
       .spyOn(Feedback, 'addFeedbackToDB')
-      .mockImplementation(() => Promise.resolve(Err(new AWSError())));
+      .mockImplementation(() => Promise.resolve(Result.Err(new AWSError())));
 
     const inputMessage = '/feedback great bot';
     const expectedMessage =

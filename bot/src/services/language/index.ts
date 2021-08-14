@@ -1,5 +1,4 @@
-import { Ok } from 'ts-results';
-
+import { Result } from '../../../../lib/Result';
 import { TelegramUser } from '../../utils/telegram';
 import { ServiceResponse } from '../../utils/types';
 import { updateLanguage } from './logic';
@@ -23,13 +22,13 @@ export async function manageLanguage(
     telegramUser,
   });
 
-  if (updateLanguageResponse.ok) {
-    return Ok({
+  if (updateLanguageResponse.isOk) {
+    return Result.Ok({
       message: makeLanguageUpdatedMessage(),
     });
   }
 
-  return Ok({
+  return Result.Ok({
     message: makeErrorUpdatingLanguageMessage(),
   });
 }

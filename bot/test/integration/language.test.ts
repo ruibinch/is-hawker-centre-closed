@@ -1,6 +1,6 @@
 import { parseISO } from 'date-fns';
-import { Err, Ok } from 'ts-results';
 
+import { Result } from '../../../lib/Result';
 import * as sender from '../../src/bot/sender';
 import { AWSError } from '../../src/errors/AWSError';
 import * as InputFile from '../../src/models/Input';
@@ -26,20 +26,20 @@ describe('[integration] Language module', () => {
       .mockImplementation(() => parseISO('2021-01-05').valueOf());
     maybeHandleFavouriteSelectionSpy = jest
       .spyOn(favouritesIndex, 'maybeHandleFavouriteSelection')
-      .mockImplementation(() => Promise.resolve(Err.EMPTY));
+      .mockImplementation(() => Promise.resolve(Result.Err()));
   });
 
   beforeEach(() => {
     sendMessageSpy = jest.spyOn(sender, 'sendMessage').mockImplementation();
     getUserByIdSpy = jest
       .spyOn(UserFile, 'getUserById')
-      .mockImplementation(() => Promise.resolve(Err(new AWSError())));
+      .mockImplementation(() => Promise.resolve(Result.Err(new AWSError())));
     updateUserLanguageCodeSpy = jest
       .spyOn(UserFile, 'updateUserLanguageCode')
-      .mockImplementation(() => Promise.resolve(Ok.EMPTY));
+      .mockImplementation(() => Promise.resolve(Result.Ok()));
     addInputToDBSpy = jest
       .spyOn(InputFile, 'addInputToDB')
-      .mockImplementation(() => Promise.resolve(Ok.EMPTY));
+      .mockImplementation(() => Promise.resolve(Result.Ok()));
   });
 
   afterEach(() => {
@@ -86,13 +86,13 @@ describe('[integration] Language module', () => {
     beforeAll(() => {
       getUserByIdSpy = jest
         .spyOn(UserFile, 'getUserById')
-        .mockImplementation(() => Promise.resolve(Err(new AWSError())));
+        .mockImplementation(() => Promise.resolve(Result.Err(new AWSError())));
     });
 
     beforeEach(() => {
       addUserSpy = jest
         .spyOn(UserFile, 'addUser')
-        .mockImplementation(() => Promise.resolve(Ok.EMPTY));
+        .mockImplementation(() => Promise.resolve(Result.Ok()));
     });
 
     afterEach(() => {
@@ -149,7 +149,7 @@ describe('[integration] Language module', () => {
     beforeEach(() => {
       getUserByIdSpy = jest
         .spyOn(UserFile, 'getUserById')
-        .mockImplementation(() => Promise.resolve(Ok(mockUser)));
+        .mockImplementation(() => Promise.resolve(Result.Ok(mockUser)));
     });
 
     afterEach(() => {

@@ -1,6 +1,6 @@
 import * as AWS from 'aws-sdk';
-import { Err, Ok, Result } from 'ts-results';
 
+import { Result, ResultType } from '../../../lib/Result';
 import { AWSError } from '../errors/AWSError';
 import { initAWSConfig, TABLE_CLOSURES } from '../ext/aws/config';
 import { getDynamoDBBillingDetails } from '../ext/aws/dynamodb';
@@ -116,7 +116,7 @@ export async function deleteClosure(props: {
   closureId: string;
   hawkerCentreId: number;
   shouldSendMessage?: boolean;
-}): Promise<Result<Closure, AWSError | void>> {
+}): Promise<ResultType<Closure, AWSError | void>> {
   const { closureId, hawkerCentreId } = props;
   const shouldSendMessage = props.shouldSendMessage ?? true;
 
@@ -129,10 +129,10 @@ export async function deleteClosure(props: {
     .promise();
 
   if (deleteOutput === null) {
-    return Err(new AWSError());
+    return Result.Err(new AWSError());
   }
   if (!deleteOutput.Attributes) {
-    return Err.EMPTY;
+    return Result.Err();
   }
 
   const closure = deleteOutput.Attributes;
@@ -142,22 +142,22 @@ export async function deleteClosure(props: {
     );
   }
 
-  return Ok(closure as Closure);
+  return Result.Ok(closure as Closure);
 }
 
-export async function getAllClosures(): Promise<Result<Closure[], Error>> {
+export async function getAllClosures(): Promise<ResultType<Closure[], Error>> {
   try {
     const scanOutput = await dynamoDb
       .scan({ TableName: ClosureObject.getTableName() })
       .promise();
 
     if (!scanOutput.Items) {
-      return Err(new AWSError());
+      return Result.Err(new AWSError());
     }
 
-    return Ok(scanOutput.Items as Closure[]);
+    return Result.Ok(scanOutput.Items as Closure[]);
   } catch (err) {
-    return Err(err);
+    return Result.Err(err);
   }
 }
 

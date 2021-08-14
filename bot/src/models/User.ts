@@ -1,8 +1,8 @@
 import * as AWS from 'aws-sdk';
 import { formatISO } from 'date-fns';
 import NodeCache from 'node-cache';
-import { Err, Ok, Result } from 'ts-results';
 
+import { Result, ResultType } from '../../../lib/Result';
 import { AWSError } from '../errors/AWSError';
 import { initAWSConfig, TABLE_USERS } from '../ext/aws/config';
 import { getDynamoDBBillingDetails } from '../ext/aws/dynamodb';
@@ -80,7 +80,7 @@ export class User {
   }
 }
 
-export async function addUser(user: User): Promise<Result<void, Error>> {
+export async function addUser(user: User): Promise<ResultType<void, Error>> {
   try {
     const putOutput = await dynamoDb
       .put({
@@ -91,34 +91,34 @@ export async function addUser(user: User): Promise<Result<void, Error>> {
       .promise();
 
     if (putOutput.$response.error) {
-      return Err(new AWSError());
+      return Result.Err(new AWSError());
     }
 
-    return Ok.EMPTY;
+    return Result.Ok();
   } catch (err) {
-    return Err(err);
+    return Result.Err(err);
   }
 }
 
-export async function getAllUsers(): Promise<Result<User[], Error>> {
+export async function getAllUsers(): Promise<ResultType<User[], Error>> {
   try {
     const scanOutput = await dynamoDb
       .scan({ TableName: User.getTableName() })
       .promise();
 
     if (!scanOutput.Items) {
-      return Err(new AWSError());
+      return Result.Err(new AWSError());
     }
 
-    return Ok(scanOutput.Items as User[]);
+    return Result.Ok(scanOutput.Items as User[]);
   } catch (err) {
-    return Err(err);
+    return Result.Err(err);
   }
 }
 
 export async function getUserById(
   userId: number,
-): Promise<Result<User, Error>> {
+): Promise<ResultType<User, Error>> {
   let user = userCache.get(userId);
 
   if (user === undefined) {
@@ -131,22 +131,22 @@ export async function getUserById(
         .promise();
 
       if (!getOutput.Item) {
-        return Err(new AWSError());
+        return Result.Err(new AWSError());
       }
 
       user = getOutput.Item;
     } catch (err) {
-      return Err(err);
+      return Result.Err(err);
     }
   }
 
-  return Ok(user as User);
+  return Result.Ok(user as User);
 }
 
 export async function updateUserFavourites(
   userId: number,
   favouritesUpdated: UserFavourite[],
-): Promise<Result<void, Error>> {
+): Promise<ResultType<void, Error>> {
   try {
     const updateOutput = await dynamoDb
       .update({
@@ -161,19 +161,19 @@ export async function updateUserFavourites(
       .promise();
 
     if (updateOutput.$response.error) {
-      return Err(new AWSError());
+      return Result.Err(new AWSError());
     }
 
-    return Ok.EMPTY;
+    return Result.Ok();
   } catch (err) {
-    return Err(err);
+    return Result.Err(err);
   }
 }
 
 export async function updateUserInFavouritesMode(
   userId: number,
   isInFavouritesMode: boolean,
-): Promise<Result<void, Error>> {
+): Promise<ResultType<void, Error>> {
   try {
     const updateOutput = await dynamoDb
       .update({
@@ -189,19 +189,19 @@ export async function updateUserInFavouritesMode(
       .promise();
 
     if (updateOutput.$response.error) {
-      return Err(new AWSError());
+      return Result.Err(new AWSError());
     }
 
-    return Ok.EMPTY;
+    return Result.Ok();
   } catch (err) {
-    return Err(err);
+    return Result.Err(err);
   }
 }
 
 export async function updateUserNotifications(
   userId: number,
   notifications: boolean,
-): Promise<Result<void, Error>> {
+): Promise<ResultType<void, Error>> {
   try {
     const updateOutput = await dynamoDb
       .update({
@@ -217,19 +217,19 @@ export async function updateUserNotifications(
       .promise();
 
     if (updateOutput.$response.error) {
-      return Err(new AWSError());
+      return Result.Err(new AWSError());
     }
 
-    return Ok.EMPTY;
+    return Result.Ok();
   } catch (err) {
-    return Err(err);
+    return Result.Err(err);
   }
 }
 
 export async function updateUserLanguageCode(
   userId: number,
   languageCode: Language,
-): Promise<Result<void, Error>> {
+): Promise<ResultType<void, Error>> {
   try {
     const updateOutput = await dynamoDb
       .update({
@@ -244,11 +244,11 @@ export async function updateUserLanguageCode(
       .promise();
 
     if (updateOutput.$response.error) {
-      return Err(new AWSError());
+      return Result.Err(new AWSError());
     }
 
-    return Ok.EMPTY;
+    return Result.Ok();
   } catch (err) {
-    return Err(err);
+    return Result.Err(err);
   }
 }

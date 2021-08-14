@@ -1,5 +1,4 @@
-import { Err, Ok, Result } from 'ts-results';
-
+import { Result, ResultType } from '../../../../lib/Result';
 import { initDictionary, Language } from '../../lang';
 import {
   addUser,
@@ -13,20 +12,20 @@ import { GetUserLanguageCodeResponse } from './types';
 export async function updateLanguage(props: {
   text: string;
   telegramUser: TelegramUser;
-}): Promise<Result<void, void>> {
+}): Promise<ResultType<void, void>> {
   const {
     text,
     telegramUser: { id: userId, username },
   } = props;
 
   if (!isValidLanguageCode(text)) {
-    return Err.EMPTY;
+    return Result.Err();
   }
 
   const languageCode = text;
 
   const getUserResponse = await getUserById(userId);
-  if (getUserResponse.err) {
+  if (getUserResponse.isErr) {
     // user does not exist yet in DB
     const newUser = User.create({
       userId,
@@ -43,7 +42,7 @@ export async function updateLanguage(props: {
   }
 
   initDictionary(languageCode);
-  return Ok.EMPTY;
+  return Result.Ok();
 }
 
 function isValidLanguageCode(langCode: string): langCode is Language {
@@ -60,12 +59,12 @@ export async function getUserLanguageCode(
 
   const getUserResponse = await getUserById(userId);
 
-  if (getUserResponse.err) {
+  if (getUserResponse.isErr) {
     // user does not exist in DB, return 'en' by default
     return { languageCode: 'en' };
   }
 
-  const user = getUserResponse.val;
+  const user = getUserResponse.value;
   return {
     languageCode: user.languageCode,
   };

@@ -1,5 +1,4 @@
-import { Ok } from 'ts-results';
-
+import { Result } from '../../../../lib/Result';
 import { TelegramUser } from '../../utils/telegram';
 import { ServiceResponse } from '../../utils/types';
 import { addFeedback } from './logic';
@@ -23,13 +22,13 @@ export async function manageFeedback(
     telegramUser,
   });
 
-  if (addFeedbackResponse.ok) {
-    return Ok({
+  if (addFeedbackResponse.isOk) {
+    return Result.Ok({
       message: makeFeedbackAddedMessage(),
     });
   }
 
-  return Ok({
+  return Result.Ok({
     message: makeErrorAddingFeedbackMessage(),
   });
 }

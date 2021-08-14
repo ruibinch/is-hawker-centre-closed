@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { parseISO } from 'date-fns';
-import { Err, Ok } from 'ts-results';
 
+import { Result } from '../../../lib/Result';
 import * as sender from '../../src/bot/sender';
 import { AWSError } from '../../src/errors/AWSError';
 import * as discord from '../../src/ext/discord';
@@ -36,11 +36,11 @@ describe('[integration] Notifications module', () => {
 
     getAllUsersSpy = jest
       .spyOn(UserFile, 'getAllUsers')
-      .mockImplementation(() => Promise.resolve(Ok(mockUsers)));
+      .mockImplementation(() => Promise.resolve(Result.Ok(mockUsers)));
 
     getAllClosuresSpy = jest
       .spyOn(ClosureFile, 'getAllClosures')
-      .mockImplementation(() => Promise.resolve(Ok(mockClosures)));
+      .mockImplementation(() => Promise.resolve(Result.Ok(mockClosures)));
   });
 
   afterEach(() => {
@@ -77,7 +77,7 @@ describe('[integration] Notifications module', () => {
   it('returns an error 400 when getAllUsers fails', async () => {
     getAllUsersSpy = jest
       .spyOn(UserFile, 'getAllUsers')
-      .mockImplementation(() => Promise.resolve(Err(new AWSError())));
+      .mockImplementation(() => Promise.resolve(Result.Err(new AWSError())));
 
     await callNotifications();
 
@@ -92,7 +92,7 @@ describe('[integration] Notifications module', () => {
   it('returns an error 400 when getAllClosures fails', async () => {
     getAllClosuresSpy = jest
       .spyOn(ClosureFile, 'getAllClosures')
-      .mockImplementation(() => Promise.resolve(Err(new AWSError())));
+      .mockImplementation(() => Promise.resolve(Result.Err(new AWSError())));
 
     await callNotifications();
 

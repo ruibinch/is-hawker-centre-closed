@@ -22,14 +22,14 @@ async function findPreAndPostResetDiffs(resetDbResult: NEAData | null) {
 
   const getAllClosuresResponse = await getAllClosures();
   const getAllHCResponse = await getAllHawkerCentres();
-  if (getAllClosuresResponse.err || getAllHCResponse.err) {
+  if (getAllClosuresResponse.isErr || getAllHCResponse.isErr) {
     return;
   }
 
   const { closures: closuresBefore, hawkerCentres: hawkerCentresBefore } =
     resetDbResult;
-  const closuresAfter = getAllClosuresResponse.val;
-  const hawkerCentresAfter = getAllHCResponse.val;
+  const closuresAfter = getAllClosuresResponse.value;
+  const hawkerCentresAfter = getAllHCResponse.value;
 
   const { addedEntries: closuresAdded, deletedEntries: closuresDeleted } =
     findDiffs(closuresBefore, closuresAfter);

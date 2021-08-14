@@ -61,13 +61,13 @@ export const bot = Sentry.AWSLambda.wrapHandler(
       initDictionary(languageCode);
 
       const validationResponse = validateInputMessage(telegramMessage);
-      if (validationResponse.err) {
-        const { errorMessage } = validationResponse.val;
+      if (validationResponse.isErr) {
+        const { errorMessage } = validationResponse.value;
         await sendMessage({ chatId, message: errorMessage });
         return callbackWrapper(200);
       }
 
-      const { textSanitised } = validationResponse.val;
+      const { textSanitised } = validationResponse.value;
       if (textSanitised === null) {
         return callbackWrapper(204);
       }
@@ -92,8 +92,8 @@ export const bot = Sentry.AWSLambda.wrapHandler(
 
       let botResponse: BotResponse | undefined;
 
-      if (maybeHandleFavouriteSelectionResult.ok) {
-        botResponse = maybeHandleFavouriteSelectionResult.val;
+      if (maybeHandleFavouriteSelectionResult.isOk) {
+        botResponse = maybeHandleFavouriteSelectionResult.value;
       } else {
         // If favourites flow is not applicable, perform customary handling
         const executionFn = getExecutionFn(textExpanded);
@@ -102,8 +102,8 @@ export const bot = Sentry.AWSLambda.wrapHandler(
           telegramUser,
         );
 
-        if (executionFnResponse.ok) {
-          botResponse = executionFnResponse.val;
+        if (executionFnResponse.isOk) {
+          botResponse = executionFnResponse.value;
         }
       }
 

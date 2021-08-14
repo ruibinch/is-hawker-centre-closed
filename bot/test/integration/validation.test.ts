@@ -4,8 +4,8 @@ import {
   APIGatewayProxyResult,
   Context,
 } from 'aws-lambda';
-import { Err, Ok } from 'ts-results';
 
+import { Result } from '../../../lib/Result';
 import { bot } from '../../src/bot/handler';
 import * as sender from '../../src/bot/sender';
 import { AWSError } from '../../src/errors/AWSError';
@@ -25,14 +25,14 @@ describe('[integration] Validation module', () => {
   beforeAll(() => {
     getUserByIdSpy = jest
       .spyOn(UserFile, 'getUserById')
-      .mockImplementation(() => Promise.resolve(Err(new AWSError())));
+      .mockImplementation(() => Promise.resolve(Result.Err(new AWSError())));
   });
 
   beforeEach(() => {
     sendMessageSpy = jest.spyOn(sender, 'sendMessage').mockImplementation();
     addInputToDBSpy = jest
       .spyOn(InputFile, 'addInputToDB')
-      .mockImplementation(() => Promise.resolve(Ok.EMPTY));
+      .mockImplementation(() => Promise.resolve(Result.Ok()));
   });
 
   afterEach(() => {
@@ -263,7 +263,7 @@ describe('[integration] Validation module', () => {
     beforeEach(() => {
       runSearchSpy = jest
         .spyOn(searchFeature, 'runSearch')
-        .mockReturnValue(Promise.resolve(Err.EMPTY));
+        .mockReturnValue(Promise.resolve(Result.Err()));
     });
 
     afterEach(() => {

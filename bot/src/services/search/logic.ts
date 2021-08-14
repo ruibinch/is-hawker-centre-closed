@@ -8,8 +8,8 @@ import {
   startOfDay,
   startOfMonth,
 } from 'date-fns';
-import { Ok, Result } from 'ts-results';
 
+import { Result, ResultType } from '../../../../lib/Result';
 import { Closure, getAllClosures } from '../../models/Closure';
 import { notEmpty } from '../../utils';
 import { currentDate } from '../../utils/date';
@@ -23,18 +23,18 @@ import { SearchModifier, SearchObject, SearchResponse } from './types';
 
 export async function processSearch(
   term: string,
-): Promise<Result<SearchResponse, Error>> {
+): Promise<ResultType<SearchResponse, Error>> {
   const searchParams = parseSearchTerm(term);
   const { keyword, modifier } = searchParams;
 
   const getAllClosuresResponse = await getAllClosures();
-  if (getAllClosuresResponse.err) return getAllClosuresResponse;
-  const closuresAll = getAllClosuresResponse.val;
+  if (getAllClosuresResponse.isErr) return getAllClosuresResponse;
+  const closuresAll = getAllClosuresResponse.value;
 
   const closuresFilteredByKeyword = filterByKeyword(closuresAll, keyword);
 
   if (closuresFilteredByKeyword.length === 0) {
-    return Ok({
+    return Result.Ok({
       params: searchParams,
       hasResults: false,
       closures: [],
@@ -58,7 +58,7 @@ export async function processSearch(
     return sortInDateAscThenAlphabeticalOrder(closuresFilteredByKeywordAndDate);
   })();
 
-  return Ok({
+  return Result.Ok({
     params: searchParams,
     hasResults: true,
     closures,
@@ -73,14 +73,14 @@ export async function processSearch(
 function parseSearchTerm(term: string): SearchObject {
   const modifierResult = extractSearchModifier(term);
 
-  if (modifierResult.err) {
+  if (modifierResult.isErr) {
     return {
       keyword: term,
       modifier: 'next', // defaults to next if no modifier
     };
   }
 
-  const { modifier, index: modifierStartIndex } = modifierResult.val;
+  const { modifier, index: modifierStartIndex } = modifierResult.value;
   return {
     keyword: term.slice(0, modifierStartIndex).trim(),
     modifier,

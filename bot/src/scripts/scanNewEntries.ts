@@ -11,14 +11,14 @@ function formatCreatedAtDate(dateString: string) {
 async function scanNewEntries() {
   const getAllUsersResponse = await getAllUsers();
   const getAllFeedbackResponse = await getAllFeedback();
-  if (getAllUsersResponse.err || getAllFeedbackResponse.err) {
+  if (getAllUsersResponse.isErr || getAllFeedbackResponse.isErr) {
     return;
   }
 
-  const newUsers = getAllUsersResponse.val.filter((entry) =>
+  const newUsers = getAllUsersResponse.value.filter((entry) =>
     isRecent(entry.createdAt),
   );
-  const newFeedback = getAllFeedbackResponse.val.filter((entry) =>
+  const newFeedback = getAllFeedbackResponse.value.filter((entry) =>
     isRecent(entry.createdAt),
   );
 

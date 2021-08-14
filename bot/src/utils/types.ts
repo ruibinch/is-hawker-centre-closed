@@ -1,4 +1,4 @@
-import { Result } from 'ts-results';
+import { ResultType } from '../../../lib/Result';
 
 export type Stage = 'dev' | 'prod';
 
@@ -18,7 +18,7 @@ export type BotResponse = {
   choices?: string[];
 };
 
-export type ServiceResponse = Result<BotResponse, void>;
+export type ServiceResponse = ResultType<BotResponse, void>;
 
 export function notEmpty<T>(value: T | null | undefined): value is T {
   if (value === null || value === undefined) return false;

@@ -1,6 +1,6 @@
 import * as AWS from 'aws-sdk';
-import { Err, Ok, Result } from 'ts-results';
 
+import { Result, ResultType } from '../../../lib/Result';
 import { AWSError } from '../errors/AWSError';
 import { initAWSConfig, TABLE_HC } from '../ext/aws/config';
 import { getDynamoDBBillingDetails } from '../ext/aws/dynamodb';
@@ -73,7 +73,7 @@ export async function uploadHawkerCentres(
 }
 
 export async function getAllHawkerCentres(): Promise<
-  Result<HawkerCentre[], Error>
+  ResultType<HawkerCentre[], Error>
 > {
   try {
     const scanOutput = await dynamoDb
@@ -81,18 +81,18 @@ export async function getAllHawkerCentres(): Promise<
       .promise();
 
     if (!scanOutput.Items) {
-      return Err(new AWSError());
+      return Result.Err(new AWSError());
     }
 
-    return Ok(scanOutput.Items as HawkerCentre[]);
+    return Result.Ok(scanOutput.Items as HawkerCentre[]);
   } catch (err) {
-    return Err(err);
+    return Result.Err(err);
   }
 }
 
 export async function getHawkerCentreById(
   hawkerCentreId: number,
-): Promise<Result<HawkerCentre, Error>> {
+): Promise<ResultType<HawkerCentre, Error>> {
   try {
     const getOutput = await dynamoDb
       .get({
@@ -102,11 +102,11 @@ export async function getHawkerCentreById(
       .promise();
 
     if (!getOutput.Item) {
-      return Err(new AWSError());
+      return Result.Err(new AWSError());
     }
 
-    return Ok(getOutput.Item as HawkerCentre);
+    return Result.Ok(getOutput.Item as HawkerCentre);
   } catch (err) {
-    return Err(err);
+    return Result.Err(err);
   }
 }

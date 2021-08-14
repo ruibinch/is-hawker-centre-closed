@@ -121,12 +121,12 @@ async function deleteTables() {
 async function resetTables(): Promise<NEAData | null> {
   const getAllHCResponse = await getAllHawkerCentres();
   const getAllClosuresResponse = await getAllClosures();
-  if (getAllHCResponse.err || getAllClosuresResponse.err) {
+  if (getAllHCResponse.isErr || getAllClosuresResponse.isErr) {
     return null;
   }
 
-  const numEntriesInClosuresTable = getAllClosuresResponse.val.length;
-  const numEntriesInHCTable = getAllHCResponse.val.length;
+  const numEntriesInClosuresTable = getAllClosuresResponse.value.length;
+  const numEntriesInHCTable = getAllHCResponse.value.length;
 
   const deleteTableOutputs = await Promise.all(
     [
@@ -176,8 +176,8 @@ async function resetTables(): Promise<NEAData | null> {
   );
 
   return {
-    closures: getAllClosuresResponse.val,
-    hawkerCentres: getAllHCResponse.val,
+    closures: getAllClosuresResponse.value,
+    hawkerCentres: getAllHCResponse.value,
   };
 }
 

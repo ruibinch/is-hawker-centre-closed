@@ -1,6 +1,6 @@
 import readline from 'readline';
-import { Err, Ok } from 'ts-results';
 
+import { Result } from '../../../lib/Result';
 import { generateHash } from '../dataCollection';
 import { AWSError } from '../errors/AWSError';
 import { sendDiscordClosuresAdminMessage } from '../ext/discord';
@@ -33,7 +33,7 @@ function validateEntry(inputEntryString?: string) {
 
   if (entryProps.length !== 4 && entryProps.length !== 5) {
     // shouldSkipConfirmation argument is optional
-    return Err(
+    return Result.Err(
       `Incorrect number of arguments.\n\n` +
         `Input arguments should be:\n` +
         `{{hawkerCentreId}} {{reason}} {{startDate}} {{endDate}}`,
@@ -45,17 +45,17 @@ function validateEntry(inputEntryString?: string) {
 
   // validate inputs
   if (!isValidClosureReason(reason)) {
-    return Err(`Invalid closure reason "${reason}"`);
+    return Result.Err(`Invalid closure reason "${reason}"`);
   }
   const dateISO8601Regex = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
   if (!dateISO8601Regex.test(startDate)) {
-    return Err(`Invalid start date "${startDate}`);
+    return Result.Err(`Invalid start date "${startDate}`);
   }
   if (!dateISO8601Regex.test(endDate)) {
-    return Err(`Invalid end date "${endDate}`);
+    return Result.Err(`Invalid end date "${endDate}`);
   }
 
-  return Ok({
+  return Result.Ok({
     hawkerCentreId,
     reason,
     startDate,
@@ -66,23 +66,23 @@ function validateEntry(inputEntryString?: string) {
 
 export async function addEntry(inputEntryString?: string): Promise<void> {
   const validateResult = validateEntry(inputEntryString);
-  if (validateResult.err) {
-    console.error(makeErrorMessage(validateResult.val));
+  if (validateResult.isErr) {
+    console.error(makeErrorMessage(validateResult.value));
     return;
   }
   const { hawkerCentreId, reason, startDate, endDate, shouldSkipConfirmation } =
-    validateResult.val;
+    validateResult.value;
 
   const getHawkerCentreByIdResponse = await getHawkerCentreById(
     Number(hawkerCentreId),
   );
-  if (getHawkerCentreByIdResponse.err) {
+  if (getHawkerCentreByIdResponse.isErr) {
     console.error(
       makeErrorMessage('Invalid response from getHawkerCentreById'),
     );
     return;
   }
-  const hawkerCentre = getHawkerCentreByIdResponse.val;
+  const hawkerCentre = getHawkerCentreByIdResponse.value;
 
   const closureId = generateHash(hawkerCentreId, reason, startDate, endDate);
   const closureObject = ClosureObject.create({
@@ -117,7 +117,7 @@ export async function addEntry(inputEntryString?: string): Promise<void> {
     });
     await sendDiscordClosuresAdminMessage(
       `[${getStage()}] ADDED CLOSURE ENTRY\n${Object.values(
-        validateResult.val,
+        validateResult.value,
       ).join(' ')}`,
     );
     console.info('Closure entry added');
@@ -128,11 +128,11 @@ export async function addEntry(inputEntryString?: string): Promise<void> {
 
 export async function deleteEntry(inputEntryString?: string): Promise<void> {
   const validateResult = validateEntry(inputEntryString);
-  if (validateResult.err) {
-    console.error(makeErrorMessage(validateResult.val));
+  if (validateResult.isErr) {
+    console.error(makeErrorMessage(validateResult.value));
     return;
   }
-  const { hawkerCentreId, reason, startDate, endDate } = validateResult.val;
+  const { hawkerCentreId, reason, startDate, endDate } = validateResult.value;
 
   const closureId = generateHash(hawkerCentreId, reason, startDate, endDate);
   // skip sending message to admin channel when inputEntryString is undefined, i.e. DB fixing in progress
@@ -141,8 +141,8 @@ export async function deleteEntry(inputEntryString?: string): Promise<void> {
     hawkerCentreId: Number(hawkerCentreId),
     shouldSendMessage: inputEntryString === undefined,
   });
-  if (deleteClosureResult.err) {
-    const deleteClosureResultError = deleteClosureResult.val;
+  if (deleteClosureResult.isErr) {
+    const deleteClosureResultError = deleteClosureResult.value;
     console.error(
       makeErrorMessage(
         deleteClosureResultError instanceof AWSError
@@ -155,7 +155,7 @@ export async function deleteEntry(inputEntryString?: string): Promise<void> {
 
   await sendDiscordClosuresAdminMessage(
     `[${getStage()}] DELETED CLOSURE ENTRY\n${Object.values(
-      validateResult.val,
+      validateResult.value,
     ).join(' ')}`,
   );
   console.info('Closure entry deleted');

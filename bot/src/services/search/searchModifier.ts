@@ -1,5 +1,4 @@
-import { Err, Ok, Result } from 'ts-results';
-
+import { Result, ResultType } from '../../../../lib/Result';
 import { ExtractSearchModifierResult, SearchModifier } from './types';
 
 // List of accepted search modifiers
@@ -18,18 +17,18 @@ export function isSearchModifierTimeBased(modifier: SearchModifier): boolean {
 
 export function extractSearchModifier(
   term: string,
-): Result<ExtractSearchModifierResult, void> {
+): ResultType<ExtractSearchModifierResult, void> {
   const modifierRegex = new RegExp(`(${SEARCH_MODIFIERS.join('|')})$`);
 
   // ref: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/exec
   const matches = modifierRegex.exec(term.toLowerCase());
-  if (matches === null) return Err.EMPTY;
+  if (matches === null) return Result.Err();
 
   const searchModifier = parseSearchModifier(matches[0]);
   /* istanbul ignore next */
-  if (!searchModifier) return Err.EMPTY;
+  if (!searchModifier) return Result.Err();
 
-  return Ok({
+  return Result.Ok({
     modifier: searchModifier,
     index: matches.index,
   });

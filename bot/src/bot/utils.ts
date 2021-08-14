@@ -1,6 +1,6 @@
 import emojiRegexFactory from 'emoji-regex/RGI_Emoji';
-import { Err, Ok, Result } from 'ts-results';
 
+import { Result, ResultType } from '../../../lib/Result';
 import { t } from '../lang';
 import { TelegramMessage } from '../utils/telegram';
 import { ValidateResponseError, ValidateResponseOk } from './types';
@@ -11,14 +11,14 @@ function isDefined(...variables: unknown[]) {
 
 export function validateInputMessage(
   message: TelegramMessage,
-): Result<ValidateResponseOk, ValidateResponseError> {
+): ResultType<ValidateResponseOk, ValidateResponseError> {
   let errorMessage = '';
   let textSanitised = '';
 
   if (message.text === undefined) {
     if (message.new_chat_members || message.left_chat_member) {
       // represents the bot being added/removed to a group channel; ignore in such instances
-      return Ok({ textSanitised: null });
+      return Result.Ok({ textSanitised: null });
     }
 
     switch (true) {
@@ -67,7 +67,7 @@ export function validateInputMessage(
   }
 
   if (errorMessage !== '') {
-    return Err({
+    return Result.Err({
       errorMessage: t('validation.error.base-message-format', {
         emoji: '\u{2757}',
         errorMessage,
@@ -75,7 +75,7 @@ export function validateInputMessage(
     });
   }
 
-  return Ok({ textSanitised });
+  return Result.Ok({ textSanitised });
 }
 
 /**

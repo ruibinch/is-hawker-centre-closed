@@ -1,7 +1,7 @@
 import * as AWS from 'aws-sdk';
 import { formatISO } from 'date-fns';
-import { Err, Ok, Result } from 'ts-results';
 
+import { Result, ResultType } from '../../../lib/Result';
 import { AWSError } from '../errors/AWSError';
 import { initAWSConfig, TABLE_INPUTS } from '../ext/aws/config';
 import { getDynamoDBBillingDetails } from '../ext/aws/dynamodb';
@@ -60,7 +60,9 @@ export class Input {
   }
 }
 
-export async function addInputToDB(input: Input): Promise<Result<void, Error>> {
+export async function addInputToDB(
+  input: Input,
+): Promise<ResultType<void, Error>> {
   try {
     const putOutput = await dynamoDb
       .put({
@@ -71,11 +73,11 @@ export async function addInputToDB(input: Input): Promise<Result<void, Error>> {
       .promise();
 
     if (putOutput.$response.error) {
-      return Err(new AWSError());
+      return Result.Err(new AWSError());
     }
 
-    return Ok.EMPTY;
+    return Result.Ok();
   } catch (err) {
-    return Err(err);
+    return Result.Err(err);
   }
 }

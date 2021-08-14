@@ -14,11 +14,11 @@ export const handler: APIGatewayProxyHandler = async (
   const callbackWrapper = makeCallbackWrapper(callback);
 
   const notificationsOutput = await constructNotifications();
-  if (notificationsOutput.err) {
+  if (notificationsOutput.isErr) {
     return callbackWrapper(400);
   }
 
-  const notifications = notificationsOutput.val;
+  const notifications = notificationsOutput.value;
   await Promise.all(
     notifications.map((notification) => {
       const { userId: chatId, message } = notification;

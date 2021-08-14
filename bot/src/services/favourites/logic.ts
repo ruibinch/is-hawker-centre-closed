@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { formatISO } from 'date-fns';
-import { Err, Ok, Result } from 'ts-results';
 
+import { Result, ResultType } from '../../../../lib/Result';
 import { getAllClosures } from '../../models/Closure';
 import {
   getAllHawkerCentres,
@@ -37,17 +37,17 @@ import {
 
 export async function findHCByKeyword(
   keyword: string,
-): Promise<Result<FindHCResponse, Error>> {
+): Promise<ResultType<FindHCResponse, Error>> {
   const getAllHCResponse = await getAllHawkerCentres();
-  if (getAllHCResponse.err) return getAllHCResponse;
+  if (getAllHCResponse.isErr) return getAllHCResponse;
 
-  const hawkerCentres = getAllHCResponse.val;
+  const hawkerCentres = getAllHCResponse.value;
   const hcFilteredByKeyword = filterByKeyword(hawkerCentres, keyword);
 
   // if there is only 1 HC result and the keyword is an exact match, return `isExactMatch` set to true
   if (hcFilteredByKeyword.length === 1) {
     if (keyword === hcFilteredByKeyword[0].name) {
-      return Ok({
+      return Result.Ok({
         isExactMatch: true,
         hawkerCentres: hcFilteredByKeyword,
       });
@@ -58,7 +58,7 @@ export async function findHCByKeyword(
     hcFilteredByKeyword.length === 0 ||
     hcFilteredByKeyword.length > MAX_CHOICES;
 
-  return Ok({
+  return Result.Ok({
     isFindError,
     hawkerCentres: hcFilteredByKeyword,
   });
@@ -73,7 +73,7 @@ export async function findHCByKeyword(
 export async function addHCToFavourites(props: {
   hawkerCentre: HawkerCentre;
   telegramUser: TelegramUser;
-}): Promise<Result<AddHCResponse, Error>> {
+}): Promise<ResultType<AddHCResponse, Error>> {
   const {
     hawkerCentre: { hawkerCentreId },
     telegramUser: { id: userId, username },
@@ -85,7 +85,7 @@ export async function addHCToFavourites(props: {
   };
 
   const getUserResponse = await getUserById(userId);
-  if (getUserResponse.err) {
+  if (getUserResponse.isErr) {
     // user does not exist yet in DB
     const newUser = User.create({
       userId,
@@ -97,17 +97,17 @@ export async function addHCToFavourites(props: {
     });
 
     const addUserResponse = await addUser(newUser);
-    if (addUserResponse.err) return addUserResponse;
+    if (addUserResponse.isErr) return addUserResponse;
 
-    return Ok({});
+    return Result.Ok({});
   }
 
-  const user = getUserResponse.val;
+  const user = getUserResponse.value;
   const userFavourites = user.favourites.map((fav) => fav.hawkerCentreId);
 
   // Check if hawker centre already exists in the favourites list
   if (userFavourites.includes(addFavHC.hawkerCentreId)) {
-    return Ok({
+    return Result.Ok({
       isDuplicate: true,
     });
   }
@@ -121,29 +121,29 @@ export async function addHCToFavourites(props: {
     userId,
     favouritesUpdated,
   );
-  if (updateUserResponse.err) return updateUserResponse;
+  if (updateUserResponse.isErr) return updateUserResponse;
 
-  return Ok({});
+  return Result.Ok({});
 }
 
 export async function deleteHCFromFavourites(props: {
   deleteIdx: number;
   telegramUser: TelegramUser;
-}): Promise<Result<DeleteHCResponseOk, Error | DeleteHCResponseError>> {
+}): Promise<ResultType<DeleteHCResponseOk, Error | DeleteHCResponseError>> {
   const {
     deleteIdx,
     telegramUser: { id: userId },
   } = props;
 
   const getUserResponse = await getUserById(userId);
-  if (getUserResponse.err) {
+  if (getUserResponse.isErr) {
     // user does not exist
-    return Err({
+    return Result.Err({
       numFavourites: 0,
     });
   }
 
-  const user = getUserResponse.val;
+  const user = getUserResponse.value;
 
   if (
     Number.isNaN(deleteIdx) ||
@@ -151,7 +151,7 @@ export async function deleteHCFromFavourites(props: {
     deleteIdx >= user.favourites.length
   ) {
     // out of bounds
-    return Err({
+    return Result.Err({
       numFavourites: user.favourites.length,
     });
   }
@@ -159,9 +159,9 @@ export async function deleteHCFromFavourites(props: {
   // get details of HC to be deleted
   const delHawkerCentreId = user.favourites[deleteIdx].hawkerCentreId;
   const getHCByIdResponse = await getHawkerCentreById(delHawkerCentreId);
-  if (getHCByIdResponse.err) return getHCByIdResponse;
+  if (getHCByIdResponse.isErr) return getHCByIdResponse;
 
-  const delHawkerCentre = getHCByIdResponse.val;
+  const delHawkerCentre = getHCByIdResponse.value;
 
   const favouritesUpdated = [...user.favourites];
   favouritesUpdated.splice(deleteIdx, 1);
@@ -170,9 +170,9 @@ export async function deleteHCFromFavourites(props: {
     userId,
     favouritesUpdated,
   );
-  if (updateUserResponse.err) return updateUserResponse;
+  if (updateUserResponse.isErr) return updateUserResponse;
 
-  return Ok({
+  return Result.Ok({
     hawkerCentre: delHawkerCentre,
   });
 }
@@ -182,27 +182,27 @@ export async function deleteHCFromFavourites(props: {
  */
 export async function getUserFavouritesWithClosures(
   telegramUser: TelegramUser,
-): Promise<Result<GetUserFavsWithClosuresResponse, Error>> {
+): Promise<ResultType<GetUserFavsWithClosuresResponse, Error>> {
   const { id: userId } = telegramUser;
 
   const getUserResponse = await getUserById(userId);
-  if (getUserResponse.err) {
+  if (getUserResponse.isErr) {
     // user does not exist in DB
-    return Ok({
+    return Result.Ok({
       closures: [],
     });
   }
 
-  const user = getUserResponse.val;
+  const user = getUserResponse.value;
   const userFavHCIds = user.favourites.map((fav) => fav.hawkerCentreId);
 
   const getAllClosuresResponse = await getAllClosures();
-  if (getAllClosuresResponse.err) return getAllClosuresResponse;
-  const closuresAll = getAllClosuresResponse.val;
+  if (getAllClosuresResponse.isErr) return getAllClosuresResponse;
+  const closuresAll = getAllClosuresResponse.value;
 
   const getAllHCResponse = await getAllHawkerCentres();
-  if (getAllHCResponse.err) return getAllHCResponse;
-  const hawkerCentres = getAllHCResponse.val;
+  if (getAllHCResponse.isErr) return getAllHCResponse;
+  const hawkerCentres = getAllHCResponse.value;
 
   const userFavsWithClosures = userFavHCIds.map((favHCId) => {
     const closuresForHawkerCentre = closuresAll.filter(
@@ -230,7 +230,7 @@ export async function getUserFavouritesWithClosures(
     return nextOccurringClosure;
   });
 
-  return Ok({
+  return Result.Ok({
     closures: userFavsWithClosures,
   });
 }
@@ -240,18 +240,18 @@ export async function getUserFavouritesWithClosures(
  */
 export async function isUserInFavouritesMode(
   telegramUser: TelegramUser,
-): Promise<Result<IsUserInFavModeResponse, Error>> {
+): Promise<ResultType<IsUserInFavModeResponse, Error>> {
   const { id: userId } = telegramUser;
 
   const getUserResponse = await getUserById(userId);
 
-  if (getUserResponse.err) {
+  if (getUserResponse.isErr) {
     // user does not exist in DB
     return getUserResponse;
   }
 
-  const user = getUserResponse.val;
-  return Ok({
+  const user = getUserResponse.value;
+  return Result.Ok({
     isInFavouritesMode: user.isInFavouritesMode,
   });
 }
@@ -262,12 +262,12 @@ export async function isUserInFavouritesMode(
 export async function toggleUserInFavouritesMode(
   telegramUser: TelegramUser,
   isInFavouritesMode: boolean,
-): Promise<Result<void, Error>> {
+): Promise<ResultType<void, Error>> {
   const { id: userId, username } = telegramUser;
 
   // TODO: potentially improve this flow
   const getUserResponse = await getUserById(userId);
-  if (getUserResponse.err) {
+  if (getUserResponse.isErr) {
     // user does not exist yet in DB
     const newUser = User.create({
       userId,
@@ -279,16 +279,16 @@ export async function toggleUserInFavouritesMode(
     });
 
     const addUserResponse = await addUser(newUser);
-    if (addUserResponse.err) return addUserResponse;
+    if (addUserResponse.isErr) return addUserResponse;
   } else {
     const updateUserResponse = await updateUserInFavouritesMode(
       userId,
       isInFavouritesMode,
     );
-    if (updateUserResponse.err) return updateUserResponse;
+    if (updateUserResponse.isErr) return updateUserResponse;
   }
 
-  return Ok.EMPTY;
+  return Result.Ok();
 }
 
 /**
@@ -312,8 +312,8 @@ export async function manageNotifications(props: {
   if (keyword === '') {
     let currentValue: boolean | undefined;
 
-    if (getUserResponse.ok) {
-      currentValue = getUserResponse.val.notifications;
+    if (getUserResponse.isOk) {
+      currentValue = getUserResponse.value.notifications;
     }
 
     return {
@@ -333,7 +333,7 @@ export async function manageNotifications(props: {
   })();
 
   if (newNotificationsValue !== undefined) {
-    if (getUserResponse.err) {
+    if (getUserResponse.isErr) {
       // user does not exist yet in DB
       const newUser = User.create({
         userId,

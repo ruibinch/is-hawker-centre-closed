@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { parseISO } from 'date-fns';
-import { Err, Ok } from 'ts-results';
 
+import { Result } from '../../../lib/Result';
 import * as sender from '../../src/bot/sender';
 import { AWSError } from '../../src/errors/AWSError';
 import * as ClosureFile from '../../src/models/Closure';
@@ -25,20 +25,20 @@ describe('[integration] Search module', () => {
   beforeAll(() => {
     getUserByIdSpy = jest
       .spyOn(UserFile, 'getUserById')
-      .mockImplementation(() => Promise.resolve(Err(new AWSError())));
+      .mockImplementation(() => Promise.resolve(Result.Err(new AWSError())));
     maybeHandleFavouriteSelectionSpy = jest
       .spyOn(favouritesIndex, 'maybeHandleFavouriteSelection')
-      .mockImplementation(() => Promise.resolve(Err.EMPTY));
+      .mockImplementation(() => Promise.resolve(Result.Err()));
     getAllClosuresSpy = jest
       .spyOn(ClosureFile, 'getAllClosures')
-      .mockImplementation(() => Promise.resolve(Ok(mockClosures)));
+      .mockImplementation(() => Promise.resolve(Result.Ok(mockClosures)));
   });
 
   beforeEach(() => {
     sendMessageSpy = jest.spyOn(sender, 'sendMessage').mockImplementation();
     addInputToDBSpy = jest
       .spyOn(InputFile, 'addInputToDB')
-      .mockImplementation(() => Promise.resolve(Ok.EMPTY));
+      .mockImplementation(() => Promise.resolve(Result.Ok()));
   });
 
   afterEach(() => {
@@ -364,7 +364,9 @@ describe('[integration] Search module', () => {
         .mockImplementation(() => parseISO('2021-01-01T11:30:25').valueOf());
       getAllClosuresSpy = jest
         .spyOn(ClosureFile, 'getAllClosures')
-        .mockImplementationOnce(() => Promise.resolve(Err(new AWSError())));
+        .mockImplementationOnce(() =>
+          Promise.resolve(Result.Err(new AWSError())),
+        );
     });
 
     afterAll(() => {

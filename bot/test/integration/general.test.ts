@@ -1,6 +1,5 @@
 /* eslint-disable max-len */
-import { Err, Ok } from 'ts-results';
-
+import { Result } from '../../../lib/Result';
 import * as sender from '../../src/bot/sender';
 import { AWSError } from '../../src/errors/AWSError';
 import * as InputFile from '../../src/models/Input';
@@ -19,14 +18,14 @@ describe('[integration] General module', () => {
   beforeAll(() => {
     getUserByIdSpy = jest
       .spyOn(UserFile, 'getUserById')
-      .mockImplementation(() => Promise.resolve(Err(new AWSError())));
+      .mockImplementation(() => Promise.resolve(Result.Err(new AWSError())));
   });
 
   beforeEach(() => {
     sendMessageSpy = jest.spyOn(sender, 'sendMessage').mockImplementation();
     addInputToDBSpy = jest
       .spyOn(InputFile, 'addInputToDB')
-      .mockImplementation(() => Promise.resolve(Ok.EMPTY));
+      .mockImplementation(() => Promise.resolve(Result.Ok()));
   });
 
   afterEach(() => {
@@ -120,7 +119,7 @@ describe('[integration] General module', () => {
     beforeEach(() => {
       processSearchSpy = jest
         .spyOn(searchLogic, 'processSearch')
-        .mockReturnValue(Promise.resolve(Err(new AWSError())));
+        .mockReturnValue(Promise.resolve(Result.Err(new AWSError())));
     });
 
     afterEach(() => {

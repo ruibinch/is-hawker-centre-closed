@@ -1,6 +1,5 @@
 /* eslint-disable max-len */
-import { Ok } from 'ts-results';
-
+import { Result } from '../../../../lib/Result';
 import { ServiceResponse } from '../../utils';
 
 export async function manageGeneral(): Promise<ServiceResponse> {
@@ -14,7 +13,7 @@ export async function manageGeneral(): Promise<ServiceResponse> {
     );
   });
 
-  return Ok({ message: messageForEntries.join('\n\n') });
+  return Result.Ok({ message: messageForEntries.join('\n\n') });
 }
 
 type ChangelogEntry = {

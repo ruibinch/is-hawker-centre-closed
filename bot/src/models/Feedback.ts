@@ -1,7 +1,7 @@
 import * as AWS from 'aws-sdk';
 import { formatISO } from 'date-fns';
-import { Err, Ok, Result } from 'ts-results';
 
+import { Result, ResultType } from '../../../lib/Result';
 import { AWSError } from '../errors/AWSError';
 import { initAWSConfig, TABLE_FEEDBACK } from '../ext/aws/config';
 import { getDynamoDBBillingDetails } from '../ext/aws/dynamodb';
@@ -64,7 +64,7 @@ export class Feedback {
 
 export async function addFeedbackToDB(
   feedback: Feedback,
-): Promise<Result<void, Error>> {
+): Promise<ResultType<void, Error>> {
   try {
     const putOutput = await dynamoDb
       .put({
@@ -75,27 +75,27 @@ export async function addFeedbackToDB(
       .promise();
 
     if (putOutput.$response.error) {
-      return Err(new AWSError());
+      return Result.Err(new AWSError());
     }
 
-    return Ok.EMPTY;
+    return Result.Ok();
   } catch (err) {
-    return Err(err);
+    return Result.Err(err);
   }
 }
 
-export async function getAllFeedback(): Promise<Result<Feedback[], Error>> {
+export async function getAllFeedback(): Promise<ResultType<Feedback[], Error>> {
   try {
     const scanOutput = await dynamoDb
       .scan({ TableName: Feedback.getTableName() })
       .promise();
 
     if (!scanOutput.Items) {
-      return Err(new AWSError());
+      return Result.Err(new AWSError());
     }
 
-    return Ok(scanOutput.Items as Feedback[]);
+    return Result.Ok(scanOutput.Items as Feedback[]);
   } catch (err) {
-    return Err(err);
+    return Result.Err(err);
   }
 }
