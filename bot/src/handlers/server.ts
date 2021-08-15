@@ -1,16 +1,30 @@
-import { APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
+import {
+  APIGatewayProxyEventHeaders,
+  APIGatewayProxyHandler,
+  APIGatewayProxyResult,
+} from 'aws-lambda';
+import dotenv from 'dotenv';
 
+import { Result, ResultType } from '../../../lib/Result';
 import { makeCallbackWrapper } from '../ext/aws/lambda';
 import { getAllInputs, Input } from '../models/Input';
 import { getAllUsers, User } from '../models/User';
 import { ApiResponse } from '../utils';
 
+dotenv.config();
+const serverApiToken = process.env.SERVER_API_TOKEN ?? '';
+
 export const getInputs: APIGatewayProxyHandler = async (
-  _event,
+  event,
   _context,
   callback,
 ): Promise<APIGatewayProxyResult> => {
   const callbackWrapper = makeCallbackWrapper(callback);
+
+  const authResult = performAuth(event.headers);
+  if (authResult.isErr) {
+    return callbackWrapper(403);
+  }
 
   const getAllInputsResult = await getAllInputs();
   if (getAllInputsResult.isErr) {
@@ -27,11 +41,16 @@ export const getInputs: APIGatewayProxyHandler = async (
 };
 
 export const getUsers: APIGatewayProxyHandler = async (
-  _event,
+  event,
   _context,
   callback,
 ): Promise<APIGatewayProxyResult> => {
   const callbackWrapper = makeCallbackWrapper(callback);
+
+  const authResult = performAuth(event.headers);
+  if (authResult.isErr) {
+    return callbackWrapper(403);
+  }
 
   const getAllUsersResult = await getAllUsers();
   if (getAllUsersResult.isErr) {
@@ -46,3 +65,16 @@ export const getUsers: APIGatewayProxyHandler = async (
 
   return callbackWrapper(200, JSON.stringify(responseBody));
 };
+
+function performAuth(headers: APIGatewayProxyEventHeaders): ResultType {
+  const authorizationHeader = headers.Authorization;
+  if (!authorizationHeader) {
+    return Result.Err();
+  }
+
+  const [tokenType, tokenValue] = authorizationHeader.split(' ');
+
+  return tokenType === 'Bearer' && tokenValue === serverApiToken
+    ? Result.Ok()
+    : Result.Err();
+}
