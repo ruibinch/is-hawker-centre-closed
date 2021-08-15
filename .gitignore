@@ -1,10 +1,18 @@
-.build
-.env
-.serverless
-.vscode
-.webpack
+# OS
+.DS_Store
 
-coverage/
-data/
+# VSCode
+.vscode
+
+# dependencies
 node_modules/
+
+# env files
+.env
+
+# tests
+coverage/
+
+# logs
+logs/
 *.log
