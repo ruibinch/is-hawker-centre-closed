@@ -2,7 +2,7 @@
   "root": true,
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": ["./tsconfig.json", "./bot/tsconfig.json"]
+    "project": ["./tsconfig.json", "./bot/tsconfig.json", "./web/tsconfig.json"]
   },
   "plugins": ["@typescript-eslint", "prettier", "jest"],
   "extends": [
@@ -12,7 +12,7 @@
     "prettier"
   ],
   "rules": {
-    "max-len": ["error", { "code": 120 }],
+    "max-len": ["error", { "code": 150 }],
     "import/prefer-default-export": "off",
     "no-console": "off",
     "@typescript-eslint/no-use-before-define": [
@@ -43,7 +43,7 @@
           "./bot/src/ext/aws/config.ts",
           "./bot/test/unit/lang/lang.test.ts"
         ],
-        "packageDir": ["./", "./bot"]
+        "packageDir": ["./", "./bot", "./web"]
       }
     ]
   },
