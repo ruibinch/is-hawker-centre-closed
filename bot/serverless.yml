@@ -76,6 +76,7 @@ provider:
           Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_FEEDBACK}-${self:provider.stage}'
         - Effect: Allow
           Action:
+            - dynamodb:Scan
             - dynamodb:PutItem
           Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_INPUTS}-${self:provider.stage}'
         - Effect: Allow
