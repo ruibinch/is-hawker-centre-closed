@@ -60,6 +60,22 @@ export class Input {
   }
 }
 
+export async function getAllInputs(): Promise<ResultType<Input[], Error>> {
+  try {
+    const scanOutput = await dynamoDb
+      .scan({ TableName: Input.getTableName() })
+      .promise();
+
+    if (!scanOutput.Items) {
+      return Result.Err(new AWSError());
+    }
+
+    return Result.Ok(scanOutput.Items as Input[]);
+  } catch (err) {
+    return Result.Err(err);
+  }
+}
+
 export async function addInputToDB(
   input: Input,
 ): Promise<ResultType<void, Error>> {
