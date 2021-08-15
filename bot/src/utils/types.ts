@@ -13,6 +13,11 @@ export type Module =
  * Response types
  */
 
+export type ApiResponse<TReturn> = {
+  count: number;
+  data: TReturn;
+};
+
 export type BotResponse = {
   message: string;
   choices?: string[];

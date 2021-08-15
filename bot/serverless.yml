@@ -105,6 +105,20 @@ functions:
           path: /bot
     maximumEventAge: 60
     maximumRetryAttempts: 0
+  # server
+  getInputs:
+    handler: ${self:custom.handlersFolder}/server.getInputs
+    events:
+      - http:
+          method: get
+          path: /api/inputs
+  getUsers:
+    handler: ${self:custom.handlersFolder}/server.getUsers
+    events:
+      - http:
+          method: get
+          path: /api/users
+  # triggers
   notificationsTrigger:
     handler: ${self:custom.handlersFolder}/notificationsTrigger.handler
     events:
