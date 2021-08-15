@@ -23,7 +23,7 @@ custom:
     packager: yarn
     includeModules: true
   botFolder: src/bot
-  triggersFolder: src/triggers
+  handlersFolder: src/handlers
 
 plugins:
   - serverless-dotenv-plugin
@@ -106,21 +106,21 @@ functions:
     maximumEventAge: 60
     maximumRetryAttempts: 0
   notificationsTrigger:
-    handler: ${self:custom.triggersFolder}/notificationsTrigger.handler
+    handler: ${self:custom.handlersFolder}/notificationsTrigger.handler
     events:
       # runs daily at 22:00 UTC, or 6am SGT
       - schedule: cron(0 22 * * ? *)
     maximumEventAge: 60
     maximumRetryAttempts: 0
   scanNewEntriesTrigger:
-    handler: ${self:custom.triggersFolder}/scanNewEntriesTrigger.handler
+    handler: ${self:custom.handlersFolder}/scanNewEntriesTrigger.handler
     events:
       # runs every Sun at 20:00 UTC, or 4am SGT
       - schedule: cron(0 20 ? * sun *)
     maximumEventAge: 60
     maximumRetryAttempts: 0
   runBackupTrigger:
-    handler: ${self:custom.triggersFolder}/runBackupTrigger.handler
+    handler: ${self:custom.handlersFolder}/runBackupTrigger.handler
     timeout: 30
     events:
       # runs every Sun at 20:05 UTC, or 4:05am SGT
@@ -128,7 +128,7 @@ functions:
     maximumEventAge: 60
     maximumRetryAttempts: 0
   runResetAndUpdateDbTrigger:
-    handler: ${self:custom.triggersFolder}/runResetAndUpdateDbTrigger.handler
+    handler: ${self:custom.handlersFolder}/runResetAndUpdateDbTrigger.handler
     timeout: 120
     events:
       # runs every Sun at 20:10 UTC, or 4:10am SGT
