@@ -144,7 +144,7 @@ functions:
     maximumRetryAttempts: 0
   runResetAndUpdateDbTrigger:
     handler: ${self:custom.handlersFolder}/runResetAndUpdateDbTrigger.handler
-    timeout: 120
+    timeout: 600
     events:
       # runs every Sun at 20:10 UTC, or 4:10am SGT
       - schedule: cron(10 20 ? * sun *)
