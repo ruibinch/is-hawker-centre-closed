@@ -31,8 +31,8 @@ export async function run(): Promise<void> {
 
   await sendDiscordAdminMessage(
     `[${getStage()}] FIXING DB\n` +
-      `Adding ${entriesToAdd.length} entries\n` +
-      `Deleting ${entriesToDelete.length} entries`,
+      `Adding ${entriesToAdd.length} closure entries\n` +
+      `Deleting ${entriesToDelete.length} closure entries`,
   );
 
   await Promise.all([
