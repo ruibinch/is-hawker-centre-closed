@@ -28,7 +28,7 @@
   "general.command-help.explanation.search-section.ninth": "• \"_tomorrow_\" will display all hawker centres that are closed __tomorrow__\n\n",
   "general.command-help.explanation.favourites-section.first": "{{emoji}} *Favourites*\n\n",
   "general.command-help.explanation.favourites-section.second": "You can manage your favourite hawker centres via the /fav and /del commands\\.\n\n",
-  "general.command-help.explanation.favourites-section.third": "Typing /list will show you all your added favourites as well as their next closure dates.\n\n",
+  "general.command-help.explanation.favourites-section.third": "Typing /list will show you all your added favourites as well as their next closure dates\\.\n\n",
   "general.command-help.explanation.favourites-section.fourth": "When one of your favourite hawker centres is closed, a notification will be sent to you on that day at *6am SGT*\\. Use the /notify command to view/toggle your notification setting\\.\n\n",
   "general.command-help.explanation.language-section.first": "{{emoji}} *Language*\n\n",
   "general.command-help.explanation.language-section.second": "You can toggle your preferred language option using the /language command\\.\n\n",
