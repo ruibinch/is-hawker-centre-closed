@@ -4,7 +4,7 @@ import { addEntry, deleteEntry } from './manageClosureTable';
 
 const FIXES = {
   add: [
-    '103 deepCleaning 2021-07-14 2100-01-01',
+    '103 deepCleaning 2021-07-14 2021-08-14',
     '107 deepCleaning 2021-07-17 2021-07-31',
     '7 deepCleaning 2021-07-18 2021-08-01',
     '50 deepCleaning 2021-07-21 2021-08-04',
