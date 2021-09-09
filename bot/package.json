@@ -35,7 +35,7 @@
     "run:delete-closure:dev": "ts-node src/scripts/manageClosureTable.ts delete",
     "run:delete-closure:prod": "NODE_ENV=production yarn run:delete-closure:dev",
     "run:scan-new": "NODE_ENV=production ts-node src/scripts/scanNewEntries.ts",
-    "run:print-commands": "ts-node src/scripts/printCommands.ts",
+    "run:print-commands": "ts-node src/scripts/printBotCommands.ts",
     "run:test-api": "ts-node src/scripts/testApi.ts",
     "test": "TZ=UTC jest"
   },
