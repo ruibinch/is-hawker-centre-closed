@@ -84,8 +84,10 @@ export async function sendMessage(props: {
     Promise.resolve([] as TelegramResponseBase[]),
   );
 
-  if (responses.some((res) => !res.ok)) {
-    throw new TelegramMessageError();
+  const errorResponses = responses.filter((res) => !res.ok);
+  if (errorResponses.length > 0) {
+    // just throw the first response for convenience
+    throw new TelegramMessageError(errorResponses[0]);
   }
 }
 
@@ -117,6 +119,6 @@ export async function sendMessageWithChoices(props: {
     });
 
   if (!response.ok) {
-    throw new TelegramMessageError();
+    throw new TelegramMessageError(response);
   }
 }
