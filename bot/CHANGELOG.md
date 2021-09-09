@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.11.1] - 2021-09-09
+
+### Fixed
+
+- Handle errors thrown when sending messages in `notificationsTrigger`
+
 ## [0.11.0] - 2021-08-08
 
 ### Changed
