@@ -7,13 +7,17 @@ import {
   TELEGRAM_MESSAGE_MAX_LENGTH,
 } from '../utils/telegram';
 
-const BOT_TOKEN = process.env.BOT_TOKEN ?? '';
+const { BOT_TOKEN } = process.env;
 
 export async function sendMessage(props: {
   chatId: number;
   message: string;
 }): Promise<void> {
   const { chatId, message } = props;
+
+  if (!BOT_TOKEN) {
+    throw new Error('[bot > sender > sendMessage] BOT_TOKEN not defined');
+  }
 
   const telegramSendMessageUrl = `${makeTelegramApiBase(
     BOT_TOKEN,
@@ -97,6 +101,12 @@ export async function sendMessageWithChoices(props: {
   choices: string[];
 }): Promise<void> {
   const { chatId, message, choices } = props;
+
+  if (!BOT_TOKEN) {
+    throw new Error(
+      '[bot > sender > sendMessageWithChoices] BOT_TOKEN not defined',
+    );
+  }
 
   const response: TelegramResponseBase = await axios
     .get(`${makeTelegramApiBase(BOT_TOKEN)}/sendMessage`, {
