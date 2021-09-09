@@ -37,20 +37,6 @@ function getLatestUpdates(): ChangelogEntry[] {
       details: ['Added indefinite end date option'],
     },
     {
-      version: '\\[0\\.9\\.2\\]',
-      date: '2021\\-08\\-04',
-      details: [
-        'Fixed error with messages exceeding the maximum Telegram message length of 4096 by splitting them into separate messages',
-      ],
-    },
-    {
-      version: '\\[0\\.9\\.1\\]',
-      date: '2021\\-08\\-01',
-      details: [
-        'Fixed incomplete results being returned when searching by "month" or "next month"',
-      ],
-    },
-    {
       version: '\\[0\\.9\\.0\\]',
       date: '2021\\-07\\-28',
       details: ['Added /updates command to check the latest updates'],

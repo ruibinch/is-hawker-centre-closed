@@ -97,10 +97,6 @@ describe('[integration] General module', () => {
           '\u{00B7} Changed default timeframe from "today" to "next" to return more useful information by default',
         '*\\[0\\.10\\.0\\] 2021\\-08\\-07*\n' +
           '\u{00B7} Added indefinite end date option',
-        '*\\[0\\.9\\.2\\] 2021\\-08\\-04*\n' +
-          '\u{00B7} Fixed error with messages exceeding the maximum Telegram message length of 4096 by splitting them into separate messages',
-        '*\\[0\\.9\\.1\\] 2021\\-08\\-01*\n' +
-          '\u{00B7} Fixed incomplete results being returned when searching by "month" or "next month"',
         '*\\[0\\.9\\.0\\] 2021\\-07\\-28*\n' +
           '\u{00B7} Added /updates command to check the latest updates',
         '*\\[0\\.8\\.0\\] 2021\\-07\\-28*\n' +
