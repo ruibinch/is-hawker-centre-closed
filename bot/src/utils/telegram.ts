@@ -7,6 +7,7 @@ export const TELEGRAM_MESSAGE_MAX_LENGTH = 4096;
 
 export type TelegramResponseBase = {
   ok: boolean;
+  error_code?: number;
   description?: string;
 };
 
