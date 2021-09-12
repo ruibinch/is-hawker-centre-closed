@@ -30,7 +30,9 @@ describe('[integration] Language module', () => {
   });
 
   beforeEach(() => {
-    sendMessageSpy = jest.spyOn(sender, 'sendMessage').mockImplementation();
+    sendMessageSpy = jest
+      .spyOn(sender, 'sendMessage')
+      .mockImplementation(() => Promise.resolve());
     getUserByIdSpy = jest
       .spyOn(UserFile, 'getUserById')
       .mockImplementation(() => Promise.resolve(Result.Err(new AWSError())));
@@ -59,7 +61,7 @@ describe('[integration] Language module', () => {
   it('["/language"] returns the explanatory message', async () => {
     const inputMessage = '/language';
     const expectedMessage =
-      'To toggle your preferred language option, type in "_/language `[languageCode]`_"\\.\n\n' +
+      'To toggle your preferred language option, type in "`/language [languageCode]`"\\.\n\n' +
       'Supported language codes are:\n' +
       '_en_, _zh_';
 

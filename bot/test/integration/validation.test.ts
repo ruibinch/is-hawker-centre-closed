@@ -29,7 +29,9 @@ describe('[integration] Validation module', () => {
   });
 
   beforeEach(() => {
-    sendMessageSpy = jest.spyOn(sender, 'sendMessage').mockImplementation();
+    sendMessageSpy = jest
+      .spyOn(sender, 'sendMessage')
+      .mockImplementation(() => Promise.resolve());
     addInputToDBSpy = jest
       .spyOn(InputFile, 'addInputToDB')
       .mockImplementation(() => Promise.resolve(Result.Ok()));

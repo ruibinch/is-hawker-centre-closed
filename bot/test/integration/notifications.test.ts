@@ -29,7 +29,9 @@ describe('[integration] Notifications module', () => {
   });
 
   beforeEach(() => {
-    sendMessageSpy = jest.spyOn(sender, 'sendMessage').mockImplementation();
+    sendMessageSpy = jest
+      .spyOn(sender, 'sendMessage')
+      .mockImplementation(() => Promise.resolve());
     sendDiscordAdminMessageSpy = jest
       .spyOn(discord, 'sendDiscordAdminMessage')
       .mockImplementation();

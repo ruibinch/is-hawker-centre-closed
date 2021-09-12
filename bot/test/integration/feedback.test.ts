@@ -34,7 +34,9 @@ describe('[integration] Feedback module', () => {
   });
 
   beforeEach(() => {
-    sendMessageSpy = jest.spyOn(sender, 'sendMessage').mockImplementation();
+    sendMessageSpy = jest
+      .spyOn(sender, 'sendMessage')
+      .mockImplementation(() => Promise.resolve());
     addFeedbackToDBSpy = jest
       .spyOn(Feedback, 'addFeedbackToDB')
       .mockImplementation(() => Promise.resolve(Result.Ok()));
@@ -60,8 +62,8 @@ describe('[integration] Feedback module', () => {
   it('["/feedback"] returns the explanatory message', async () => {
     const inputMessage = '/feedback';
     const expectedMessage =
-      'Type in your feedback after a /feedback command\\.\n\n' +
-      'e\\.g\\. _/feedback Bot icon is ugly_';
+      'Type in your feedback after a `/feedback` command\\.\n\n' +
+      'e\\.g\\. `/feedback Bot icon is ugly`';
 
     await callBot(inputMessage);
     assertInputSaved(addInputToDBSpy, inputMessage);

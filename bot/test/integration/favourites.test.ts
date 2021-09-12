@@ -50,7 +50,9 @@ describe('[integration] Favourites module', () => {
   });
 
   beforeEach(() => {
-    sendMessageSpy = jest.spyOn(sender, 'sendMessage').mockImplementation();
+    sendMessageSpy = jest
+      .spyOn(sender, 'sendMessage')
+      .mockImplementation(() => Promise.resolve());
     sendMessageWithChoicesSpy = jest
       .spyOn(sender, 'sendMessageWithChoices')
       .mockImplementation();
@@ -104,7 +106,7 @@ describe('[integration] Favourites module', () => {
       const inputMessage = '/fav';
       const expectedMessage =
         'Please specify some keyword to filter the list of hawker centres for you to add to your favourites\\.\n\n' +
-        'e\\.g\\. _/fav bedok_';
+        'e\\.g\\. `/fav bedok`';
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
@@ -114,8 +116,8 @@ describe('[integration] Favourites module', () => {
     it('["/del"] returns the explanatory message', async () => {
       const inputMessage = '/del';
       const expectedMessage =
-        'To delete a favourite hawker centre, specify an index number based on the favourites list displayed by the /list command\\.\n\n' +
-        'e\\.g\\. _/del 3_';
+        'To delete a favourite hawker centre, specify an index number based on the favourites list displayed by the `/list` command\\.\n\n' +
+        'e\\.g\\. `/del 3`';
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
@@ -454,7 +456,7 @@ describe('[integration] Favourites module', () => {
         const inputMessage = '/notify';
         const expectedMessage =
           'Your notification setting is currently on\\.\n\n' +
-          'To turn it off, type in "_/notify off_"\\.';
+          'To turn it off, type in "`/notify off`"\\.';
 
         await callBot(inputMessage);
         assertInputSaved(addInputToDBSpy, inputMessage);
@@ -543,7 +545,7 @@ describe('[integration] Favourites module', () => {
       it('["/list"] returns a message prompting to add some favourites', async () => {
         const inputMessage = '/list';
         const expectedMessage =
-          "You've not added any favourites yet\\. Try adding some using the /fav command\\.";
+          "You've not added any favourites yet\\. Try adding some using the `/fav` command\\.";
 
         await callBot(inputMessage);
         assertInputSaved(addInputToDBSpy, inputMessage);
@@ -555,7 +557,7 @@ describe('[integration] Favourites module', () => {
       it('["/del 0"] returns a message prompting to add some favourites', async () => {
         const inputMessage = '/del 0';
         const expectedMessage =
-          "You've not added any favourites yet\\. Try adding some using the /fav command\\.";
+          "You've not added any favourites yet\\. Try adding some using the `/fav` command\\.";
 
         await callBot(inputMessage);
         assertInputSaved(addInputToDBSpy, inputMessage);
@@ -570,7 +572,7 @@ describe('[integration] Favourites module', () => {
         const inputMessage = '/notify';
         const expectedMessage =
           'Your notification setting is currently off\\.\n\n' +
-          'To turn it on, type in "_/notify on_"\\.';
+          'To turn it on, type in "`/notify on`"\\.';
 
         await callBot(inputMessage);
         assertInputSaved(addInputToDBSpy, inputMessage);
@@ -690,7 +692,7 @@ describe('[integration] Favourites module', () => {
       it('["/list"] returns a message prompting to add some favourites', async () => {
         const inputMessage = '/list';
         const expectedMessage =
-          "You've not added any favourites yet\\. Try adding some using the /fav command\\.";
+          "You've not added any favourites yet\\. Try adding some using the `/fav` command\\.";
 
         await callBot(inputMessage);
         assertInputSaved(addInputToDBSpy, inputMessage);
@@ -702,7 +704,7 @@ describe('[integration] Favourites module', () => {
       it('["/del 0"] returns a message prompting to add some favourites', async () => {
         const inputMessage = '/del 0';
         const expectedMessage =
-          "You've not added any favourites yet\\. Try adding some using the /fav command\\.";
+          "You've not added any favourites yet\\. Try adding some using the `/fav` command\\.";
 
         await callBot(inputMessage);
         assertInputSaved(addInputToDBSpy, inputMessage);
@@ -718,7 +720,7 @@ describe('[integration] Favourites module', () => {
         const expectedMessage =
           'You currently do not have a notification setting specified\\.\n\n' +
           'To toggle your notification setting, specify either the _on_ or _off_ keyword\\.\n' +
-          'e\\.g\\. _/notify on_';
+          'e\\.g\\. `/notify on`';
 
         await callBot(inputMessage);
         assertInputSaved(addInputToDBSpy, inputMessage);

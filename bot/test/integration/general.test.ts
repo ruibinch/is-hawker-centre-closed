@@ -22,7 +22,9 @@ describe('[integration] General module', () => {
   });
 
   beforeEach(() => {
-    sendMessageSpy = jest.spyOn(sender, 'sendMessage').mockImplementation();
+    sendMessageSpy = jest
+      .spyOn(sender, 'sendMessage')
+      .mockImplementation(() => Promise.resolve());
     addInputToDBSpy = jest
       .spyOn(InputFile, 'addInputToDB')
       .mockImplementation(() => Promise.resolve(Result.Ok()));
@@ -45,7 +47,7 @@ describe('[integration] General module', () => {
       const expectedMessage =
         'An easy way to check when your favourite hawker centre is next closed\\! \u{1F35C}\u{1F35B}\u{1F367}\n\n' +
         'Simply send the bot some *subset of the hawker centre name*, e\\.g\\. _bedok_\\.\n\n' +
-        'Type in /help to see how you can customise your query further, as well as other features of the bot\\.';
+        'Type in `/help` to see how you can customise your query further, as well as other features of the bot\\.';
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
