@@ -185,8 +185,8 @@ describe('[integration] Search module', () => {
       const expectedMessage =
         'There are *3* hawker centres that are closed today:\n\n' +
         '*Devon Corporation*\n_01\\-Nov to 30\\-Apr; other works_\n\n' +
-        '*Melville City*\n_today_\n\n' +
-        '*Littleroot Town*\n_today to tomorrow_';
+        '*Littleroot Town*\n_today to tomorrow_\n\n' +
+        '*Melville City*\n_today_';
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
@@ -224,13 +224,13 @@ describe('[integration] Search module', () => {
       const expectedMessage =
         'There are *8* hawker centres that are closed this month:\n\n' +
         '*Devon Corporation*\n_01\\-Nov to 30\\-Apr; other works_\n\n' +
-        '*Melville City*\n_today_\n\n' +
         '*Littleroot Town*\n_today to tomorrow_\n\n' +
-        '*Slateport City*\n_tomorrow_\n\n' +
+        '*Melville City*\n_today_\n\n' +
         '*Mossdeep Gym \\(Psychics in space\\)*\n_05\\-Jan_\n\n' +
         '*Oldale Town*\n_15\\-Jan to 18\\-Jan_\n\n' +
+        '*Oldale Town*\n_30\\-Jan to 31\\-Jan_\n\n' +
         '*Route 118 near Melville City*\n_21\\-Jan to 24\\-Jan_\n\n' +
-        '*Oldale Town*\n_30\\-Jan to 31\\-Jan_';
+        '*Slateport City*\n_tomorrow_';
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
@@ -263,8 +263,8 @@ describe('[integration] Search module', () => {
       const expectedMessage =
         'There are *4* hawker centres that will be closed next month:\n\n' +
         '*Devon Corporation*\n_01\\-Nov to 30\\-Apr; other works_\n\n' +
-        '*Petalburg Gym*\n_30\\-Mar till indefinitely; other works_\n\n' +
         '*Lavaridge Gym*\n_01\\-Apr to 05\\-May; other works_\n\n' +
+        '*Petalburg Gym*\n_30\\-Mar till indefinitely; other works_\n\n' +
         '*Sidney Gym*\n_05\\-Apr to 19\\-Apr; deep cleaning_';
 
       await callBot(inputMessage);
