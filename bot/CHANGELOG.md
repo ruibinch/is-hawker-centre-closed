@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.12.0] - 2021-09-14
+
+### Changed
+
+- Results to always be sorted in alphabetical order
+
 ## [0.11.1] - 2021-09-09
 
 ### Fixed

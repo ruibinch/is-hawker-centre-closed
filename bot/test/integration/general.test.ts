@@ -95,6 +95,8 @@ describe('[integration] General module', () => {
     it('["/updates"] returns the latest updates', async () => {
       const inputMessage = '/updates';
       const updateEntries = [
+        '*\\[0\\.12\\.0\\] 2021\\-09\\-14*\n' +
+          '\u{00B7} CHanged returned results to always be sorted in alphabetical order',
         '*\\[0\\.11\\.0\\] 2021\\-08\\-08*\n' +
           '\u{00B7} Changed default timeframe from "today" to "next" to return more useful information by default',
         '*\\[0\\.10\\.0\\] 2021\\-08\\-07*\n' +

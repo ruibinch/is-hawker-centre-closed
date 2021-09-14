@@ -25,6 +25,13 @@ type ChangelogEntry = {
 function getLatestUpdates(): ChangelogEntry[] {
   return [
     {
+      version: '\\[0\\.12\\.0\\]',
+      date: '2021\\-09\\-14',
+      details: [
+        'CHanged returned results to always be sorted in alphabetical order',
+      ],
+    },
+    {
       version: '\\[0\\.11\\.0\\]',
       date: '2021\\-08\\-08',
       details: [
