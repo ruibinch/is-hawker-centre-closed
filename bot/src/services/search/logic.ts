@@ -13,11 +13,7 @@ import { Result, ResultType } from '../../../../lib/Result';
 import { Closure, getAllClosures } from '../../models/Closure';
 import { notEmpty } from '../../utils';
 import { currentDate } from '../../utils/date';
-import {
-  getNextOccurringClosure,
-  sortInAlphabeticalOrder,
-  sortInDateAscThenAlphabeticalOrder,
-} from '../utils';
+import { getNextOccurringClosure, sortInAlphabeticalOrder } from '../utils';
 import { extractSearchModifier } from './searchModifier';
 import { SearchModifier, SearchObject, SearchResponse } from './types';
 
@@ -41,27 +37,16 @@ export async function processSearch(
     });
   }
 
-  const closures = (() => {
-    if (modifier === 'next') {
-      const nextClosuresForEachHC = getNextClosuresForEachHC(
-        closuresFilteredByKeyword,
-      );
-
-      return sortInAlphabeticalOrder(nextClosuresForEachHC);
-    }
-
-    const closuresFilteredByKeywordAndDate = filterByDate(
-      closuresFilteredByKeyword,
-      modifier,
-    );
-
-    return sortInDateAscThenAlphabeticalOrder(closuresFilteredByKeywordAndDate);
-  })();
+  const closures =
+    modifier === 'next'
+      ? getNextClosuresForEachHC(closuresFilteredByKeyword)
+      : filterByDate(closuresFilteredByKeyword, modifier);
+  const closuresSorted = sortInAlphabeticalOrder(closures);
 
   return Result.Ok({
     params: searchParams,
     hasResults: true,
-    closures,
+    closures: closuresSorted,
   });
 }
 
