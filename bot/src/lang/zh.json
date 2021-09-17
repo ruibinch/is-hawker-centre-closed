@@ -33,6 +33,7 @@
   "general.command-help.explanation.language-section.first": "{{emoji}} *语言*\n\n",
   "general.command-help.explanation.language-section.second": "您能使用“`/language`”命令以切换首选语言。\n\n",
   "search.no-hawker-centres-exist": "没有任何小贩中心包括单词“{{keyword}}”。请使用其他关键词再试。",
+  "search.no-hawker-centres-exist.keyword-next": "您需要在单词“next”之前指定小贩中心关键词，比如“`amoy next`”。请再重试。",
   "search.no-hawker-centres-closed.present": "好！{{timePeriod}}没有包括单词“{{keyword}}”的小贩中心关闭。",
   "search.no-hawker-centres-closed.future": "好！{{timePeriod}}不会有包括单词“{{keyword}}”的小贩中心关闭。",
   "search.hawker-centres-closed.without-keyword.singular.present": "{{timePeriod}}有*{{numHC}}*个小贩中心关闭：\n\n",
