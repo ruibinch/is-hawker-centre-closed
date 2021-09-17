@@ -46,7 +46,7 @@ describe('[integration] General module', () => {
       const inputMessage = '/start';
       const expectedMessage =
         'An easy way to check when your favourite hawker centre is next closed\\! \u{1F35C}\u{1F35B}\u{1F367}\n\n' +
-        'Simply send the bot some *subset of the hawker centre name*, e\\.g\\. _bedok_\\.\n\n' +
+        'Simply send the bot *a part of the hawker centre name*, e\\.g\\. `ang mo kio`, `85`, `bukit`\\.\n\n' +
         'Type in `/help` to see how you can customise your query further, as well as other features of the bot\\.';
 
       await callBot(inputMessage);

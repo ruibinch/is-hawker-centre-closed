@@ -112,9 +112,7 @@ export function makeCommandMessage(s: string): string | undefined {
         t('general.command-start.explanation.first', {
           emojis: '\u{1F35C}\u{1F35B}\u{1F367}',
         }) +
-        t('general.command-start.explanation.second', {
-          example: makeRandomSearchKeywordExample(),
-        }) +
+        t('general.command-start.explanation.second') +
         t('general.command-start.explanation.third');
       break;
     }
@@ -146,9 +144,7 @@ export function makeCommandMessage(s: string): string | undefined {
     case '/fav': {
       reply =
         t('favourites.command-fav.explanation.first') +
-        t('favourites.command-fav.explanation.second', {
-          example: makeRandomSearchKeywordExample(),
-        });
+        t('favourites.command-fav.explanation.second');
       break;
     }
     case '/del': {
@@ -184,24 +180,17 @@ function formatEndpointForDisplay(endpoint: string) {
   return endpoint.replace(/_/g, '\\_');
 }
 
-function makeRandomSearchKeywordExample(): string {
-  // prettier-ignore
-  const searchExamples = ['bedok', 'holland', 'clementi', 'redhill', 'ang mo kio', 'tampines', 'bukit merah', 'whampoa', 'toa payoh', 'yishun', 'jurong'];
-
-  return searchExamples[generateRandomInt(0, searchExamples.length)];
-}
-
-const feedbackExamples = [
-  'Bot icon is ugly',
-  'Commands are confusing',
-  'Brilliant bot!',
-  'Improve the help messages',
-  'More emojis needed',
-  'Change the bot name',
-  'Can it include the individual stalls in the hawker centre too?',
-];
-
 function makeRandomFeedbackExample(): string {
+  const feedbackExamples = [
+    'Bot icon is ugly',
+    'Commands are confusing',
+    'Brilliant bot!',
+    'Improve the help messages',
+    'More emojis needed',
+    'Change the bot name',
+    'Can it include the individual stalls in the hawker centre too?',
+  ];
+
   return feedbackExamples[generateRandomInt(0, feedbackExamples.length)];
 }
 

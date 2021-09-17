@@ -106,7 +106,7 @@ describe('[integration] Favourites module', () => {
       const inputMessage = '/fav';
       const expectedMessage =
         'Please specify some keyword to filter the list of hawker centres for you to add to your favourites\\.\n\n' +
-        'e\\.g\\. `/fav bedok`';
+        'e\\.g\\. `/fav toa payoh`';
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
