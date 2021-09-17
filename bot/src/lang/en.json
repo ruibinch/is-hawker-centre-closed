@@ -33,7 +33,7 @@
   "general.command-help.explanation.language-section.first": "{{emoji}} *Language*\n\n",
   "general.command-help.explanation.language-section.second": "You can toggle your preferred language option using the `/language` command\\.\n\n",
   "search.no-hawker-centres-exist": "There are no hawker centres{{keyword}}\\. Please try again with another keyword\\.",
-  "search.no-hawker-centres-exist.keyword-next": "*next* needs to be preceded by a hawker centre search keyword, e\\.g\\. `amoy next`\\. Please try again\\.",
+  "search.no-hawker-centres-exist.keyword-next": "Searching by *next* requires a preceding hawker centre search keyword, e\\.g\\. `amoy next`\\. Please try again\\.",
   "search.no-hawker-centres-closed.present": "All good\\! No hawker centres{{keyword}} are undergoing cleaning {{timePeriod}}\\.",
   "search.no-hawker-centres-closed.future": "All good\\! No hawker centres{{keyword}} will be undergoing cleaning {{timePeriod}}\\.",
   "search.hawker-centres-closed.without-keyword.singular.present": "There is *{{numHC}}* hawker centre that is closed {{timePeriod}}:\n\n",

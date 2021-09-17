@@ -321,7 +321,7 @@ describe('[integration] Search module', () => {
     it('["Next"] returns a custom message when the search keyword is a sole "next"', async () => {
       const inputMessage = 'Next';
       const expectedMessage =
-        '*next* needs to be preceded by a hawker centre search keyword, e\\.g\\. `amoy next`\\. Please try again\\.';
+        'Searching by *next* requires a preceding hawker centre search keyword, e\\.g\\. `amoy next`\\. Please try again\\.';
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
