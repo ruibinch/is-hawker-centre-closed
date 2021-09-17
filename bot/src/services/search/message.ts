@@ -12,9 +12,12 @@ export function makeMessage(searchResponse: SearchResponse): string {
   let reply: string;
 
   if (!hasResults) {
-    reply = t('search.no-hawker-centres-exist', {
-      keyword: makeKeywordSnippet(keyword),
-    });
+    reply =
+      keyword.toLowerCase() === 'next'
+        ? t('search.no-hawker-centres-exist.keyword-next')
+        : t('search.no-hawker-centres-exist', {
+            keyword: makeKeywordSnippet(keyword),
+          });
   } else {
     reply = (
       isSearchModifierTimeBased(modifier)
