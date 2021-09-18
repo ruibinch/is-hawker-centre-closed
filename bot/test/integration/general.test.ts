@@ -60,10 +60,10 @@ describe('[integration] General module', () => {
         '\u{1F50D} *Search*\n\n' +
         'By default, the bot returns the *next closure dates* of the hawker centres matching your search query\\.\n\n' +
         'You can modify the search behaviour by adding one of these supported timeframes at the end:\n' +
-        '• `today`\n• `tmr` / `tomorrow`\n• `month`\n• `next month`\n• `next` \\(_default_\\)\n\n' +
+        '• `today`\n• `tmr` / `tomorrow`\n• `next week`\n• `month`\n• `next month`\n• `next` \\(_default_\\)\n\n' +
         'You can also search *by timeframe* alone\\.\n\n' +
         'Examples:\n' +
-        '• "`bedok month`" will display the hawker centres containing the keyword __bedok__ that are closed __this month__\n' +
+        '• "`bedok next week`" will display the hawker centres containing the keyword __bedok__ that are closed __next week__\n' +
         '• "`jurong next`" will display the hawker centres containing the keyword __jurong__ and their __next closure dates__\n' +
         '• "`tomorrow`" will display all hawker centres that are closed __tomorrow__\n\n' +
         '\u{1F31F} *Favourites*\n\n' +
