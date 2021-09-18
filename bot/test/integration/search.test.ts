@@ -120,7 +120,7 @@ describe('[integration] Search module', () => {
 
       const inputMessage = 'rustboro next week';
       const expectedMessage =
-        'Here are the hawker centres containing the keyword *rustboro* that will be closed next week:\n\n' +
+        'Here are the hawker centres containing the keyword *rustboro* that will be closed next week \\(01\\-Feb to 07\\-Feb\\):\n\n' +
         '*Rustboro City*\n_02\\-Feb to 05\\-Feb_';
 
       await callBot(inputMessage);
@@ -243,7 +243,7 @@ describe('[integration] Search module', () => {
 
       const inputMessage = 'Next week';
       const expectedMessage =
-        'There are *3* hawker centres that will be closed next week:\n\n' +
+        'There are *3* hawker centres that will be closed next week \\(01\\-Feb to 07\\-Feb\\):\n\n' +
         '*Devon Corporation*\n_01\\-Nov to 30\\-Apr; other works_\n\n' +
         '*Melville City*\n_tomorrow to 28\\-Feb; other works_\n\n' +
         '*Rustboro City*\n_02\\-Feb to 05\\-Feb_';
@@ -261,7 +261,7 @@ describe('[integration] Search module', () => {
 
       const inputMessage = 'Next week';
       const expectedMessage =
-        'There is *1* hawker centre that will be closed next week:\n\n' +
+        'There is *1* hawker centre that will be closed next week \\(21\\-Dec to 27\\-Dec\\):\n\n' +
         '*Devon Corporation*\n_01\\-Nov to 30\\-Apr; other works_';
 
       await callBot(inputMessage);

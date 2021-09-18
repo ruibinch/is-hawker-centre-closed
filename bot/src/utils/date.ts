@@ -70,14 +70,14 @@ export function makeNextWeekInterval(date: Date): {
 }
 
 /**
- * Formats the input date in YYYY-MM-DD format to dd-MMM format.
+ * Formats the input date in YYYY-MM-DD format or of Date type to dd-MMM format.
  * If shouldDisplayTemporalPronoun is set to true, then return "yesterday", "today" or "tomorrow" when applicable.
  */
 export function formatDateDisplay(
-  dateString: string,
+  dateRaw: string | Date,
   shouldDisplayTemporalPronoun = false,
 ): string {
-  const date = parseISO(dateString);
+  const date = dateRaw instanceof Date ? dateRaw : parseISO(dateRaw);
   if (shouldDisplayTemporalPronoun) {
     if (isYesterday(date)) {
       return t('common.time.yesterday');
