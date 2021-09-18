@@ -1,5 +1,10 @@
 import { t } from '../../lang';
 import { Closure } from '../../models/Closure';
+import {
+  currentDate,
+  formatDateDisplay,
+  makeNextWeekInterval,
+} from '../../utils/date';
 import { makeClosureListItem } from '../message';
 import { isSearchModifierTimeBased } from './searchModifier';
 import { SearchModifier, SearchResponse } from './types';
@@ -114,6 +119,14 @@ function makeTimePeriodSnippet(modifier: SearchModifier) {
       return t('common.time.today');
     case 'tomorrow':
       return t('common.time.tomorrow');
+    case 'nextWeek': {
+      const nextWeekInterval = makeNextWeekInterval(currentDate());
+
+      return `${t('common.time.next-week')} \\(${t('common.time.time-period', {
+        startDate: formatDateDisplay(nextWeekInterval.start),
+        endDate: formatDateDisplay(nextWeekInterval.end),
+      })}\\)`;
+    }
     case 'month':
       return t('common.time.this-month');
     case 'nextMonth':
@@ -131,6 +144,7 @@ function makeClosuresListOutput(closures: Closure[]) {
 function isSearchModifierInFuture(modifier: SearchModifier) {
   switch (modifier) {
     case 'tomorrow':
+    case 'nextWeek':
     case 'nextMonth':
       return true;
     case 'today':

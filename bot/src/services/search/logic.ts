@@ -1,8 +1,9 @@
 import {
   addDays,
   addMonths,
-  differenceInCalendarMonths,
-  isSameMonth,
+  areIntervalsOverlapping,
+  endOfDay,
+  endOfMonth,
   isWithinInterval,
   parseISO,
   startOfDay,
@@ -12,7 +13,7 @@ import {
 import { Result, ResultType } from '../../../../lib/Result';
 import { Closure, getAllClosures } from '../../models/Closure';
 import { notEmpty } from '../../utils';
-import { currentDate } from '../../utils/date';
+import { currentDate, makeNextWeekInterval } from '../../utils/date';
 import { getNextOccurringClosure, sortInAlphabeticalOrder } from '../utils';
 import { extractSearchModifier } from './searchModifier';
 import { SearchModifier, SearchObject, SearchResponse } from './types';
@@ -100,36 +101,51 @@ function filterByKeyword(closures: Closure[], keyword: string) {
  */
 function filterByDate(closures: Closure[], modifier: SearchModifier) {
   const makeInterval = (startDate: Date, endDate: Date) => ({
-    start: startDate,
-    end: endDate,
+    start: startOfDay(startDate),
+    end: endOfDay(endDate),
   });
 
   const today = startOfDay(currentDate());
 
   return closures.filter((closure) => {
-    const startDate = parseISO(closure.startDate);
-    const endDate = parseISO(closure.endDate);
+    const closureStartDate = parseISO(closure.startDate);
+    const closureEndDate = parseISO(closure.endDate);
 
     return (() => {
       if (modifier === 'today') {
-        return isWithinInterval(today, makeInterval(startDate, endDate));
+        return isWithinInterval(
+          today,
+          makeInterval(closureStartDate, closureEndDate),
+        );
       }
       if (modifier === 'tomorrow') {
         const tomorrowDate = addDays(today, 1);
-        return isWithinInterval(tomorrowDate, makeInterval(startDate, endDate));
+        return isWithinInterval(
+          tomorrowDate,
+          makeInterval(closureStartDate, closureEndDate),
+        );
+      }
+      if (modifier === 'nextWeek') {
+        const nextWeekInterval = makeNextWeekInterval(today);
+        return areIntervalsOverlapping(
+          nextWeekInterval,
+          makeInterval(closureStartDate, closureEndDate),
+        );
       }
       if (modifier === 'month') {
-        return (
-          isWithinInterval(today, makeInterval(startDate, endDate)) ||
-          isSameMonth(today, startDate) ||
-          isSameMonth(today, endDate)
+        const monthStart = startOfMonth(today);
+        const monthEnd = endOfMonth(today);
+        return areIntervalsOverlapping(
+          makeInterval(monthStart, monthEnd),
+          makeInterval(closureStartDate, closureEndDate),
         );
       }
       if (modifier === 'nextMonth') {
-        const nextMonthDate = startOfMonth(addMonths(today, 1));
-        return (
-          isWithinInterval(nextMonthDate, makeInterval(startDate, endDate)) ||
-          differenceInCalendarMonths(startDate, today) === 1
+        const nextMonthStart = startOfMonth(addMonths(today, 1));
+        const nextMonthEnd = endOfMonth(addMonths(today, 1));
+        return areIntervalsOverlapping(
+          makeInterval(nextMonthStart, nextMonthEnd),
+          makeInterval(closureStartDate, closureEndDate),
         );
       }
       /* istanbul ignore next */
