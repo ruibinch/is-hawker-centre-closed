@@ -114,6 +114,8 @@ function makeTimePeriodSnippet(modifier: SearchModifier) {
       return t('common.time.today');
     case 'tomorrow':
       return t('common.time.tomorrow');
+    case 'nextWeek':
+      return t('common.time.next-week');
     case 'month':
       return t('common.time.this-month');
     case 'nextMonth':
@@ -131,6 +133,7 @@ function makeClosuresListOutput(closures: Closure[]) {
 function isSearchModifierInFuture(modifier: SearchModifier) {
   switch (modifier) {
     case 'tomorrow':
+    case 'nextWeek':
     case 'nextMonth':
       return true;
     case 'today':

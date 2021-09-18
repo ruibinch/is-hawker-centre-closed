@@ -97,6 +97,7 @@
   "common.time.yesterday": "yesterday",
   "common.time.today": "today",
   "common.time.tomorrow": "tomorrow",
+  "common.time.next-week": "next week",
   "common.time.this-month": "this month",
   "common.time.next-month": "next month",
   "common.time.date-format": "dd\\-MMM"

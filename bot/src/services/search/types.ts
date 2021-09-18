@@ -13,6 +13,7 @@ export type SearchResponse = {
 export type SearchModifier =
   | 'today'
   | 'tomorrow'
+  | 'nextWeek'
   | 'month'
   | 'nextMonth'
   | 'next';

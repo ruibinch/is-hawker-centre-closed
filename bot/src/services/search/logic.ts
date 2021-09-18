@@ -13,7 +13,7 @@ import {
 import { Result, ResultType } from '../../../../lib/Result';
 import { Closure, getAllClosures } from '../../models/Closure';
 import { notEmpty } from '../../utils';
-import { currentDate } from '../../utils/date';
+import { currentDate, makeNextWeekInterval } from '../../utils/date';
 import { getNextOccurringClosure, sortInAlphabeticalOrder } from '../utils';
 import { extractSearchModifier } from './searchModifier';
 import { SearchModifier, SearchObject, SearchResponse } from './types';
@@ -122,6 +122,13 @@ function filterByDate(closures: Closure[], modifier: SearchModifier) {
         const tomorrowDate = addDays(today, 1);
         return isWithinInterval(
           tomorrowDate,
+          makeInterval(closureStartDate, closureEndDate),
+        );
+      }
+      if (modifier === 'nextWeek') {
+        const nextWeekInterval = makeNextWeekInterval(today);
+        return areIntervalsOverlapping(
+          nextWeekInterval,
           makeInterval(closureStartDate, closureEndDate),
         );
       }

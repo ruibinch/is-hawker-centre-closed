@@ -4,6 +4,7 @@ import { ExtractSearchModifierResult, SearchModifier } from './types';
 // List of accepted search modifiers
 const SEARCH_MODIFIERS = [
   'today',
+  'next week',
   'month',
   'next month',
   'tmr',
@@ -44,6 +45,8 @@ function parseSearchModifier(s: string): SearchModifier | undefined {
   switch (str) {
     case 'next month':
       return 'nextMonth';
+    case 'next week':
+      return 'nextWeek';
     case 'tmr':
       return 'tomorrow';
     case 'today':

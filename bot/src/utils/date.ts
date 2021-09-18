@@ -1,4 +1,8 @@
 import {
+  addDays,
+  addWeeks,
+  eachWeekOfInterval,
+  endOfDay,
   format,
   isToday,
   isTomorrow,
@@ -9,6 +13,18 @@ import {
 } from 'date-fns';
 
 import { t } from '../lang';
+
+export function currentDate(): Date {
+  return new Date(Date.now());
+}
+
+export function currentDateInYYYYMMDD(): string {
+  return format(currentDate(), 'yyyyMMdd');
+}
+
+export function formatDateWithTime(date: Date): string {
+  return format(date, 'yyyy-MM-dd HH:mm:ssXX');
+}
 
 /**
  * "2100-01-01" is used to represent an indefinite end date.
@@ -33,6 +49,27 @@ export function isRecent(dateString: string): boolean {
 }
 
 /**
+ * Returns the start and end date range of next week.
+ * Each week is defined to start on Monday 00:00:00 and end on Sunday 23:59:59.
+ */
+export function makeNextWeekInterval(date: Date): {
+  start: Date;
+  end: Date;
+} {
+  const oneWeekFromToday = addWeeks(date, 1);
+  const nextWeekStart = eachWeekOfInterval(
+    { start: oneWeekFromToday, end: oneWeekFromToday },
+    { weekStartsOn: 1 },
+  )[0];
+  const nextWeekEnd = endOfDay(addDays(nextWeekStart, 6));
+
+  return {
+    start: nextWeekStart,
+    end: nextWeekEnd,
+  };
+}
+
+/**
  * Formats the input date in YYYY-MM-DD format to dd-MMM format.
  * If shouldDisplayTemporalPronoun is set to true, then return "yesterday", "today" or "tomorrow" when applicable.
  */
@@ -54,16 +91,4 @@ export function formatDateDisplay(
   }
 
   return format(date, t('common.time.date-format'));
-}
-
-export function currentDate(): Date {
-  return new Date(Date.now());
-}
-
-export function currentDateInYYYYMMDD(): string {
-  return format(currentDate(), 'yyyyMMdd');
-}
-
-export function formatDateWithTime(date: Date): string {
-  return format(date, 'yyyy-MM-dd HH:mm:ssXX');
 }
