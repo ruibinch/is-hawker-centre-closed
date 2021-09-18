@@ -54,12 +54,12 @@ describe('[integration] General module', () => {
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
-    it.skip('["/help"] returns the correct message', async () => {
+    it('["/help"] returns the correct message', async () => {
       const inputMessage = '/help';
       const expectedMessage =
         '\u{1F50D} *Search*\n\n' +
         'By default, the bot returns the *next closure dates* of the hawker centres matching your search query\\.\n\n' +
-        'You can modify the search behaviour by adding one of these supported timeframes at the end:\n' +
+        'You can modify the search behaviour by adding one of these supported *timeframes* at the end:\n' +
         '• `today`\n• `tmr` / `tomorrow`\n• `next week`\n• `month`\n• `next month`\n• `next` \\(_default_\\)\n\n' +
         'You can also search *by timeframe* alone\\.\n\n' +
         'Examples:\n' +
@@ -67,11 +67,11 @@ describe('[integration] General module', () => {
         '• "`jurong next`" will display the hawker centres containing the keyword __jurong__ and their __next closure dates__\n' +
         '• "`tomorrow`" will display all hawker centres that are closed __tomorrow__\n\n' +
         '\u{1F31F} *Favourites*\n\n' +
-        'You can manage your favourite hawker centres via the /fav and /del commands\\.\n\n' +
-        'Typing /list will show you all your added favourites as well as their next closure dates.\n\n' +
-        'When one of your favourite hawker centres is closed, a notification will be sent to you on that day at *6am SGT*\\. Use the /notify command to view/toggle your notification setting\\.\n\n' +
+        'You can manage your favourite hawker centres via the `/fav` and `/del` commands\\.\n\n' +
+        'Typing `/list` will show you all your added favourites as well as their next closure dates\\.\n\n' +
+        'When one of your favourite hawker centres is closed, a notification will be sent to you on that day at *6am SGT*\\. Use the `/notify` command to view/toggle your notification setting\\.\n\n' +
         '\u{1F4AC} *Language*\n\n' +
-        'You can toggle your preferred language option using the /language command\\.\n\n';
+        'You can toggle your preferred language option using the `/language` command\\.\n\n';
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
