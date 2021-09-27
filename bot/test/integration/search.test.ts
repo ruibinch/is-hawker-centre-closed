@@ -196,42 +196,39 @@ describe('[integration] Search module', () => {
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
-    it('["Today"] returns all closures occurring today', async () => {
-      const inputMessage = 'Today';
+    it('["Tdy" / "Today"] returns all closures occurring today', async () => {
+      const inputMessage1 = 'Tdy';
+      const inputMessage2 = 'Today';
       const expectedMessage =
         'There are *3* hawker centres that are closed today:\n\n' +
         '*Devon Corporation*\n_01\\-Nov to 30\\-Apr; other works_\n\n' +
         '*Littleroot Town*\n_today to tomorrow_\n\n' +
         '*Melville City*\n_today_';
 
-      await callBot(inputMessage);
-      assertInputSaved(addInputToDBSpy, inputMessage);
+      await callBot(inputMessage1);
+      assertInputSaved(addInputToDBSpy, inputMessage1);
+      assertBotResponse(sendMessageSpy, expectedMessage);
+
+      await callBot(inputMessage2);
+      assertInputSaved(addInputToDBSpy, inputMessage2);
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
-    it('["Tmr"] returns all closures occurring tomorrow', async () => {
-      const inputMessage = 'Tmr';
+    it('["Tmr" / "Tomorrow"] returns all closures occurring tomorrow', async () => {
+      const inputMessage1 = 'Tmr';
+      const inputMessage2 = 'Tomorrow';
       const expectedMessage =
         'There are *3* hawker centres that will be closed tomorrow:\n\n' +
         '*Devon Corporation*\n_01\\-Nov to 30\\-Apr; other works_\n\n' +
         '*Littleroot Town*\n_today to tomorrow_\n\n' +
         '*Slateport City*\n_tomorrow_';
 
-      await callBot(inputMessage);
-      assertInputSaved(addInputToDBSpy, inputMessage);
+      await callBot(inputMessage1);
+      assertInputSaved(addInputToDBSpy, inputMessage1);
       assertBotResponse(sendMessageSpy, expectedMessage);
-    });
 
-    it('["Tomorrow"] returns all closures occurring tomorrow', async () => {
-      const inputMessage = 'Tomorrow';
-      const expectedMessage =
-        'There are *3* hawker centres that will be closed tomorrow:\n\n' +
-        '*Devon Corporation*\n_01\\-Nov to 30\\-Apr; other works_\n\n' +
-        '*Littleroot Town*\n_today to tomorrow_\n\n' +
-        '*Slateport City*\n_tomorrow_';
-
-      await callBot(inputMessage);
-      assertInputSaved(addInputToDBSpy, inputMessage);
+      await callBot(inputMessage2);
+      assertInputSaved(addInputToDBSpy, inputMessage2);
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
@@ -372,33 +369,33 @@ describe('[integration] Search module', () => {
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
-    it('["Today"] returns no closures', async () => {
-      const inputMessage = 'Today';
+    it('["Tdy / Today"] returns no closures', async () => {
+      const inputMessage1 = 'Tdy';
+      const inputMessage2 = 'Today';
       const expectedMessage =
         'All good\\! No hawker centres are undergoing cleaning today\\.';
 
-      await callBot(inputMessage);
-      assertInputSaved(addInputToDBSpy, inputMessage);
+      await callBot(inputMessage1);
+      assertInputSaved(addInputToDBSpy, inputMessage1);
+      assertBotResponse(sendMessageSpy, expectedMessage);
+
+      await callBot(inputMessage2);
+      assertInputSaved(addInputToDBSpy, inputMessage2);
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
-    it('["Tmr"] returns no closures', async () => {
-      const inputMessage = 'Tmr';
+    it('["Tmr" / "Tomorrow"] returns no closures', async () => {
+      const inputMessage1 = 'Tmr';
+      const inputMessage2 = 'Tomorrow';
       const expectedMessage =
         'All good\\! No hawker centres will be undergoing cleaning tomorrow\\.';
 
-      await callBot(inputMessage);
-      assertInputSaved(addInputToDBSpy, inputMessage);
+      await callBot(inputMessage1);
+      assertInputSaved(addInputToDBSpy, inputMessage1);
       assertBotResponse(sendMessageSpy, expectedMessage);
-    });
 
-    it('["Tomorrow"] returns no closures', async () => {
-      const inputMessage = 'Tomorrow';
-      const expectedMessage =
-        'All good\\! No hawker centres will be undergoing cleaning tomorrow\\.';
-
-      await callBot(inputMessage);
-      assertInputSaved(addInputToDBSpy, inputMessage);
+      await callBot(inputMessage2);
+      assertInputSaved(addInputToDBSpy, inputMessage2);
       assertBotResponse(sendMessageSpy, expectedMessage);
     });
 
