@@ -54,7 +54,7 @@ async function findPreAndPostResetDiffs(resetDbResult: NEAData | null) {
 
   try {
     await sendDiscordAdminMessage(
-      `[${getStage()}] RESET AND UPDATE SUMMARY\n${outputMessage}`,
+      `[${getStage()}] SYNC SUMMARY\n${outputMessage}`,
     );
   } catch (e) {
     console.info(outputMessage);
