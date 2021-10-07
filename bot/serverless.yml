@@ -142,11 +142,11 @@ functions:
       - schedule: cron(5 20 ? * sun *)
     maximumEventAge: 60
     maximumRetryAttempts: 0
-  runResetAndUpdateDbTrigger:
-    handler: ${self:custom.handlersFolder}/runResetAndUpdateDbTrigger.handler
+  syncDbTrigger:
+    handler: ${self:custom.handlersFolder}/syncDbTrigger.handler
     timeout: 600
     events:
-      # runs every Sun at 20:10 UTC, or 4:10am SGT
-      - schedule: cron(10 20 ? * sun *)
+      # runs daily at 20:10 UTC, or 4:10am SGT
+      - schedule: cron(10 20 * * ? *)
     maximumEventAge: 60
     maximumRetryAttempts: 0

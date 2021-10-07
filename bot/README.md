@@ -88,7 +88,7 @@ There are 5 Lambda functions to be deployed:
 1. `notificationsTrigger`
 1. `scanNewEntriesTrigger`
 1. `runBackupTrigger`
-1. `runResetAndUpdateDbTrigger`
+1. `syncDbTrigger`
 
 To install a fresh deployment,
 

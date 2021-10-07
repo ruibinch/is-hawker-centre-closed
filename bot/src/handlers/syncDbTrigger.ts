@@ -1,7 +1,7 @@
 import { APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
 
 import { makeCallbackWrapper } from '../ext/aws/lambda';
-import { run as executeResetAndUpdateDb } from '../scripts/resetAndUpdateDb';
+import { run as executeSyncDb } from '../scripts/syncDb';
 
 export const handler: APIGatewayProxyHandler = async (
   _event,
@@ -10,7 +10,7 @@ export const handler: APIGatewayProxyHandler = async (
 ): Promise<APIGatewayProxyResult> => {
   const callbackWrapper = makeCallbackWrapper(callback);
 
-  await executeResetAndUpdateDb();
+  await executeSyncDb();
 
   return callbackWrapper(204);
 };
