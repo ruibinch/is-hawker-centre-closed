@@ -1,4 +1,6 @@
-import { APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
+import * as Sentry from '@sentry/serverless';
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import dotenv from 'dotenv';
 
 import { sendMessage } from '../bot/sender';
 import { makeCallbackWrapper } from '../ext/aws/lambda';
@@ -7,30 +9,52 @@ import { constructNotifications } from '../services/notifications';
 import { NotificationMessage } from '../services/notifications/types';
 import { getStage } from '../utils';
 
-export const handler: APIGatewayProxyHandler = async (
-  _event,
-  _context,
-  callback,
-): Promise<APIGatewayProxyResult> => {
-  const callbackWrapper = makeCallbackWrapper(callback);
+dotenv.config();
 
-  const notificationsOutput = await constructNotifications();
-  if (notificationsOutput.isErr) {
-    return callbackWrapper(400);
-  }
+Sentry.AWSLambda.init({
+  dsn: process.env.SENTRY_DSN,
+  tracesSampleRate: 1.0, // sends 100% of errors to Sentry
+});
 
-  const notifications = notificationsOutput.value;
-  const notificationsResult = await sendNotifications(notifications);
+export const handler = Sentry.AWSLambda.wrapHandler(
+  async (
+    _event: APIGatewayProxyEvent,
+    _context,
+    callback,
+  ): Promise<APIGatewayProxyResult> => {
+    const callbackWrapper = makeCallbackWrapper(callback);
 
-  await sendDiscordAdminMessage(
-    `[${getStage()}] NOTIFICATIONS\n\n` +
-      `Success: ${notificationsResult.success}\n` +
-      `Failure: ${notificationsResult.failure.length}\n` +
-      `${notificationsResult.failure.map((entry) => `• ${entry}`).join('\n')}`,
-  );
+    try {
+      const notificationsOutput = await constructNotifications();
+      if (notificationsOutput.isErr) {
+        throw notificationsOutput.value;
+      }
 
-  return callbackWrapper(204);
-};
+      const notifications = notificationsOutput.value;
+      const notificationsResult = await sendNotifications(notifications);
+
+      await sendDiscordAdminMessage(
+        `[${getStage()}] NOTIFICATIONS\n\n` +
+          `Success: ${notificationsResult.success}\n` +
+          `Failure: ${notificationsResult.failure.length}\n` +
+          `${notificationsResult.failure
+            .map((entry) => `• ${entry}`)
+            .join('\n')}`,
+      );
+
+      if (notificationsResult.failure.length > 0) {
+        throw new Error(notificationsResult.failure.join(', '));
+      }
+
+      return callbackWrapper(204);
+    } catch (error) {
+      console.error('[notificationsTrigger]', error);
+      Sentry.captureException(error);
+
+      return callbackWrapper(400);
+    }
+  },
+);
 
 type NotificationsResult = { success: number; failure: string[] };
 
