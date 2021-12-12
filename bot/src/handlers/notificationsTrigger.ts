@@ -48,8 +48,10 @@ export const handler = Sentry.AWSLambda.wrapHandler(
 
       return callbackWrapper(204);
     } catch (error) {
-      console.error('[notificationsTrigger]', error);
-      Sentry.captureException(error);
+      if (process.env.NODE_ENV !== 'test') {
+        console.error('[notificationsTrigger]', error);
+        Sentry.captureException(error);
+      }
 
       return callbackWrapper(400);
     }

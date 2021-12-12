@@ -5,14 +5,14 @@ type ResponseBody = {
   body: string;
 };
 
-export const makeCallbackWrapper = (
-  callback: Callback<APIGatewayProxyResult>,
-) => (statusCode: number, body?: string): ResponseBody => {
-  const responseBody: ResponseBody = {
-    statusCode,
-    body: body ?? '',
-  };
+export const makeCallbackWrapper =
+  (callback: Callback<APIGatewayProxyResult>) =>
+  (statusCode: number, body?: string): ResponseBody => {
+    const responseBody: ResponseBody = {
+      statusCode,
+      body: body ?? '',
+    };
 
-  callback(null, responseBody);
-  return responseBody;
-};
+    callback(null, responseBody);
+    return responseBody;
+  };
