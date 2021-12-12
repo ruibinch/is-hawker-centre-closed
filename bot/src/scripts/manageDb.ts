@@ -2,6 +2,7 @@ import * as AWS from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
 
 import { NEAData } from '../dataCollection';
+import { DBError } from '../errors/DBError';
 import { initAWSConfig } from '../ext/aws/config';
 import { sendDiscordAdminMessage } from '../ext/discord';
 import { getAllClosures, ClosureObject } from '../models/Closure';
@@ -55,7 +56,7 @@ function makeListOutput(results: DynamoDBOperationResult[]) {
   const resultsDefined = results.filter(notEmpty);
 
   return resultsDefined.length === 0
-    ? 'none'
+    ? '-'
     : resultsDefined
         .map((result, idx) => `${idx + 1}. ${result.message}`)
         .join('\n');
@@ -73,17 +74,23 @@ async function createTables() {
   );
 
   const createTableOutputsParsed = parseDynamoDBPromises(createTableOutputs);
+  const successOutputs = createTableOutputsParsed.filter(
+    (result) => result.success,
+  );
+  const failureOutputs = createTableOutputsParsed.filter(
+    (result) => !result.success,
+  );
 
   await sendDiscordAdminMessage(
     `[${getStage()}] DB TABLES CREATED\n` +
-      `${makeListOutput(
-        createTableOutputsParsed.filter((result) => result.success),
-      )}\n\n` +
+      `${makeListOutput(successOutputs)}\n\n` +
       `Error creating the following tables:\n` +
-      `${makeListOutput(
-        createTableOutputsParsed.filter((result) => !result.success),
-      )}`,
+      `${makeListOutput(failureOutputs)}`,
   );
+
+  if (failureOutputs.length > 0) {
+    throw new DBError(makeListOutput(failureOutputs));
+  }
 }
 
 async function deleteTables() {
@@ -102,17 +109,23 @@ async function deleteTables() {
   );
 
   const deleteTableOutputsParsed = parseDynamoDBPromises(deleteTableOutputs);
+  const successOutputs = deleteTableOutputsParsed.filter(
+    (result) => result.success,
+  );
+  const failureOutputs = deleteTableOutputsParsed.filter(
+    (result) => !result.success,
+  );
 
   await sendDiscordAdminMessage(
     `[${getStage()}] DB TABLES DELETED\n` +
-      `${makeListOutput(
-        deleteTableOutputsParsed.filter((result) => result.success),
-      )}\n\n` +
+      `${makeListOutput(successOutputs)}\n\n` +
       `Error deleting the following tables:\n` +
-      `${makeListOutput(
-        deleteTableOutputsParsed.filter((result) => !result.success),
-      )}`,
+      `${makeListOutput(failureOutputs)}`,
   );
+
+  if (failureOutputs.length > 0) {
+    throw new DBError(makeListOutput(failureOutputs));
+  }
 }
 
 /**
@@ -121,8 +134,11 @@ async function deleteTables() {
 async function resetTables(): Promise<NEAData | null> {
   const getAllHCResponse = await getAllHawkerCentres();
   const getAllClosuresResponse = await getAllClosures();
-  if (getAllHCResponse.isErr || getAllClosuresResponse.isErr) {
-    return null;
+  if (getAllHCResponse.isErr) {
+    throw getAllHCResponse.value;
+  }
+  if (getAllClosuresResponse.isErr) {
+    throw getAllClosuresResponse.value;
   }
 
   const numEntriesInClosuresTable = getAllClosuresResponse.value.length;
@@ -162,18 +178,23 @@ async function resetTables(): Promise<NEAData | null> {
     ].map(wrapPromise),
   );
   const createTableOutputsParsed = parseDynamoDBPromises(createTableOutputs);
-
+  const successOutputs = createTableOutputsParsed.filter(
+    (result) => result.success,
+  );
+  const failureOutputs = createTableOutputsParsed.filter(
+    (result) => !result.success,
+  );
   await sendDiscordAdminMessage(
     `[${getStage()}] RESET IN PROGRESS\n` +
       `Created tables:\n` +
-      `${makeListOutput(
-        createTableOutputsParsed.filter((result) => result.success),
-      )}\n\n` +
+      `${makeListOutput(successOutputs)}\n\n` +
       `Error creating the following tables:\n` +
-      `${makeListOutput(
-        createTableOutputsParsed.filter((result) => !result.success),
-      )}`,
+      `${makeListOutput(failureOutputs)}`,
   );
+
+  if (failureOutputs.length > 0) {
+    throw new DBError(makeListOutput(failureOutputs));
+  }
 
   return {
     closures: getAllClosuresResponse.value,
@@ -191,11 +212,9 @@ export async function run(operationInput?: string): Promise<NEAData | null> {
   } else if (operation === 'reset') {
     const resetResult = await resetTables();
     return resetResult;
-  } else {
-    throw new Error(`unrecognised operation name "${operation}"`);
   }
 
-  return null;
+  throw new Error(`unrecognised operation name "${operation}"`);
 }
 
 if (require.main === module) {

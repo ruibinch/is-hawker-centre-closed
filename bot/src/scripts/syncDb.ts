@@ -20,8 +20,11 @@ async function findPreAndPostResetDiffs(resetDbResult: NEAData | null) {
 
   const getAllClosuresResponse = await getAllClosures();
   const getAllHCResponse = await getAllHawkerCentres();
-  if (getAllClosuresResponse.isErr || getAllHCResponse.isErr) {
-    return;
+  if (getAllClosuresResponse.isErr) {
+    throw getAllClosuresResponse.value;
+  }
+  if (getAllHCResponse.isErr) {
+    throw getAllHCResponse.value;
   }
 
   const { closures: closuresBefore, hawkerCentres: hawkerCentresBefore } =
