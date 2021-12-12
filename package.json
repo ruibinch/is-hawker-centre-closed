@@ -4,6 +4,7 @@
   "license": "UNLICENSED",
   "main": "index.js",
   "scripts": {
+    "deduplicate": "npx yarn-deduplicate yarn.lock && yarn install",
     "lint": "eslint . --ext .ts",
     "test": "cd ./bot && yarn test",
     "prettify": "prettier --write \"**/*.{ts,js,json}\""
