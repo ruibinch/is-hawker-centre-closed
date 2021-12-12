@@ -2,6 +2,7 @@ import * as AWS from 'aws-sdk';
 
 import { DBError } from '../errors/DBError';
 import { initAWSConfig, TABLE_FEEDBACK, TABLE_USERS } from '../ext/aws/config';
+import { DDB_PROPAGATE_DURATION } from '../ext/aws/dynamodb';
 import { sendDiscordAdminMessage } from '../ext/discord';
 import { getStage, sleep } from '../utils';
 import { formatDateWithTime } from '../utils/date';
@@ -69,8 +70,7 @@ async function restoreBackup(tableName: string) {
     ),
   );
 
-  // sleep for 2 secs for deletion process to propagate
-  await sleep(2000);
+  await sleep(DDB_PROPAGATE_DURATION);
 
   const restoreOutput = await dynamoDb
     .restoreTableFromBackup({

@@ -4,6 +4,7 @@ import { PromiseResult } from 'aws-sdk/lib/request';
 import { NEAData } from '../dataCollection';
 import { DBError } from '../errors/DBError';
 import { initAWSConfig } from '../ext/aws/config';
+import { DDB_PROPAGATE_DURATION } from '../ext/aws/dynamodb';
 import { sendDiscordAdminMessage } from '../ext/discord';
 import { getAllClosures, ClosureObject } from '../models/Closure';
 import { Feedback } from '../models/Feedback';
@@ -168,8 +169,7 @@ async function resetTables(): Promise<NEAData | null> {
       .join('\n')}`,
   );
 
-  // sleep for 2 secs for deletion process to propagate else creation will throw an error
-  await sleep(2000);
+  await sleep(DDB_PROPAGATE_DURATION);
 
   const createTableOutputs = await Promise.all(
     [
