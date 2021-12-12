@@ -3,14 +3,12 @@ import { sendDiscordAdminMessage } from '../ext/discord';
 import { Closure, getAllClosures, isClosure } from '../models/Closure';
 import { getAllHawkerCentres, HawkerCentre } from '../models/HawkerCentre';
 import { getStage, prettifyJSON } from '../utils';
-import { run as executeFixDb } from './fixDb';
 import { run as executeManageDb } from './manageDb';
 import { run as executeSeedDb } from './seedDb';
 
 export async function run(): Promise<void> {
   const resetDbResult = await executeManageDb('reset');
   await executeSeedDb({ shouldWriteFile: false });
-  await executeFixDb();
 
   await findPreAndPostResetDiffs(resetDbResult);
 }
