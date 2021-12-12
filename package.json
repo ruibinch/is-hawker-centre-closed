@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint . --ext .ts",
-    "test": "cd ./bot && yarn test"
+    "test": "cd ./bot && yarn test",
+    "prettify": "prettier --write \"**/*.{ts,js,json}\""
   },
   "devDependencies": {
     "@types/jest": "^26.0.24",
