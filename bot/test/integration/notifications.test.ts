@@ -85,10 +85,6 @@ describe('[integration] Notifications module', () => {
 
     expect(sendMessageSpy).not.toHaveBeenCalled();
     expect(sendDiscordAdminMessageSpy).not.toHaveBeenCalled();
-    expect(mockCallback).toHaveBeenCalledWith(null, {
-      body: '',
-      statusCode: 400,
-    });
   });
 
   it('returns an error 400 when getAllClosures fails', async () => {
@@ -100,9 +96,5 @@ describe('[integration] Notifications module', () => {
 
     expect(sendMessageSpy).not.toHaveBeenCalled();
     expect(sendDiscordAdminMessageSpy).not.toHaveBeenCalled();
-    expect(mockCallback).toHaveBeenCalledWith(null, {
-      body: '',
-      statusCode: 400,
-    });
   });
 });
