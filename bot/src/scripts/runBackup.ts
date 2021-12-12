@@ -1,5 +1,6 @@
 import * as AWS from 'aws-sdk';
 
+import { DBError } from '../errors/DBError';
 import { initAWSConfig, TABLE_FEEDBACK, TABLE_USERS } from '../ext/aws/config';
 import { sendDiscordAdminMessage } from '../ext/discord';
 import { getStage, notEmpty } from '../utils';
@@ -88,10 +89,10 @@ function getBackupsToDelete(backupsForTables: Record<string, BackupEntry[]>) {
 async function deleteBackups() {
   const backupsList = await dynamoDb.listBackups().promise();
   if (!backupsList.BackupSummaries) {
-    await sendDiscordAdminMessage(
-      `[${stage}] BACKUP DELETION UNSUCCESSFUL\nUnable to view list of backups`,
-    );
-    return;
+    const errorMessage =
+      'BACKUP DELETION UNSUCCESSFUL\nUnable to view list of backups';
+    await sendDiscordAdminMessage(`[${stage}] ${errorMessage}`);
+    throw new DBError(errorMessage);
   }
 
   const backupsForTables = getBackupsForTables(backupsList.BackupSummaries);
@@ -115,7 +116,7 @@ async function deleteBackups() {
 
   await sendDiscordAdminMessage(
     `[${stage}] BACKUPS DELETED\n${
-      responsesOutput.length === 0 ? 'none' : responsesOutput.join('\n')
+      responsesOutput.length === 0 ? '-' : responsesOutput.join('\n')
     }`,
   );
 }
@@ -143,7 +144,7 @@ async function createBackups() {
 
   await sendDiscordAdminMessage(
     `[${stage}] BACKUPS CREATED\n${
-      responsesOutput.length === 0 ? 'none' : responsesOutput.join('\n')
+      responsesOutput.length === 0 ? '-' : responsesOutput.join('\n')
     }`,
   );
 }

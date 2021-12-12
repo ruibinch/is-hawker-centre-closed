@@ -1,6 +1,8 @@
 import * as AWS from 'aws-sdk';
 
+import { DBError } from '../errors/DBError';
 import { initAWSConfig, TABLE_FEEDBACK, TABLE_USERS } from '../ext/aws/config';
+import { DDB_PROPAGATE_DURATION } from '../ext/aws/dynamodb';
 import { sendDiscordAdminMessage } from '../ext/discord';
 import { getStage, sleep } from '../utils';
 import { formatDateWithTime } from '../utils/date';
@@ -26,10 +28,9 @@ function makeInProgressMessage(s: string) {
 async function restoreBackup(tableName: string) {
   const backupsList = await dynamoDb.listBackups().promise();
   if (!backupsList.BackupSummaries) {
-    await sendDiscordAdminMessage(
-      makeErrorMessage('Unable to view list of backups'),
-    );
-    return;
+    const errorMessage = makeErrorMessage('Unable to view list of backups');
+    await sendDiscordAdminMessage(errorMessage);
+    throw new DBError(errorMessage);
   }
 
   const fullTableName = `${tableName}-${getStage()}`;
@@ -37,26 +38,27 @@ async function restoreBackup(tableName: string) {
     (backupEntry) => backupEntry.TableName === fullTableName,
   );
   if (backupsForTable.length === 0) {
-    await sendDiscordAdminMessage(
-      makeErrorMessage(`No backups found for table ${fullTableName}`),
+    const errorMessage = makeErrorMessage(
+      `No backups found for table ${fullTableName}`,
     );
-    return;
+    await sendDiscordAdminMessage(errorMessage);
+    throw new DBError(errorMessage);
   }
 
   // Assume that there is only 1 backup for each table
   const [latestBackup] = backupsForTable;
   const { BackupArn: latestBackupArn, BackupSizeBytes } = latestBackup;
   if (!latestBackupArn) {
-    await sendDiscordAdminMessage(
-      makeErrorMessage('latestBackupArn value is null'),
-    );
-    return;
+    const errorMessage = makeErrorMessage('latestBackupArn value is null');
+    await sendDiscordAdminMessage(errorMessage);
+    throw new DBError(errorMessage);
   }
   if (BackupSizeBytes === 0) {
-    await sendDiscordAdminMessage(
+    const errorMessage = makeErrorMessage(
       makeErrorMessage(`Backup "${latestBackupArn}" is empty`),
     );
-    return;
+    await sendDiscordAdminMessage(errorMessage);
+    throw new DBError(errorMessage);
   }
 
   const deleteOutput = await dynamoDb
@@ -68,8 +70,7 @@ async function restoreBackup(tableName: string) {
     ),
   );
 
-  // sleep for 2 secs for deletion process to propagate
-  await sleep(2000);
+  await sleep(DDB_PROPAGATE_DURATION);
 
   const restoreOutput = await dynamoDb
     .restoreTableFromBackup({
