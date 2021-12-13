@@ -42,10 +42,6 @@ export const handler = Sentry.AWSLambda.wrapHandler(
             .join('\n')}`,
       );
 
-      if (notificationsResult.failure.length > 0) {
-        throw new Error(notificationsResult.failure.join(', '));
-      }
-
       return callbackWrapper(204);
     } catch (error) {
       if (process.env.NODE_ENV !== 'test') {
