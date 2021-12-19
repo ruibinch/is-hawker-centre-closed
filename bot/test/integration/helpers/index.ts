@@ -47,12 +47,15 @@ export const assertBotResponse = (
   expectedMessage: string,
   expectedChoices?: string[],
 ): void => {
-  const expectedObject = {
+  const expectedObject: {
+    message: string;
+    choices?: string[];
+  } = {
     message: expectedMessage,
-    choices: expectedChoices,
   };
-  if (expectedObject.choices === undefined) {
-    delete expectedObject.choices;
+
+  if (expectedChoices) {
+    expectedObject.choices = expectedChoices;
   }
 
   expect(spy).toHaveBeenCalledWith(expect.objectContaining(expectedObject));
