@@ -5,7 +5,7 @@ import { AWSError } from '../errors/AWSError';
 import { initAWSConfig, TABLE_CLOSURES } from '../ext/aws/config';
 import { getDynamoDBBillingDetails } from '../ext/aws/dynamodb';
 import { sendDiscordAdminMessage } from '../ext/discord';
-import { getStage, prettifyJSON } from '../utils';
+import { getStage, prettifyJSON, wrapUnknownError } from '../utils';
 import { HawkerCentre } from './HawkerCentre';
 
 initAWSConfig();
@@ -157,7 +157,7 @@ export async function getAllClosures(): Promise<ResultType<Closure[], Error>> {
 
     return Result.Ok(scanOutput.Items as Closure[]);
   } catch (err) {
-    return Result.Err(err);
+    return Result.Err(wrapUnknownError(err));
   }
 }
 

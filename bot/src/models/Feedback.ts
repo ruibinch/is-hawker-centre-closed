@@ -5,7 +5,7 @@ import { Result, ResultType } from '../../../lib/Result';
 import { AWSError } from '../errors/AWSError';
 import { initAWSConfig, TABLE_FEEDBACK } from '../ext/aws/config';
 import { getDynamoDBBillingDetails } from '../ext/aws/dynamodb';
-import { getStage } from '../utils';
+import { getStage, wrapUnknownError } from '../utils';
 import { currentDate } from '../utils/date';
 
 initAWSConfig();
@@ -80,7 +80,7 @@ export async function addFeedbackToDB(
 
     return Result.Ok();
   } catch (err) {
-    return Result.Err(err);
+    return Result.Err(wrapUnknownError(err));
   }
 }
 
@@ -96,6 +96,6 @@ export async function getAllFeedback(): Promise<ResultType<Feedback[], Error>> {
 
     return Result.Ok(scanOutput.Items as Feedback[]);
   } catch (err) {
-    return Result.Err(err);
+    return Result.Err(wrapUnknownError(err));
   }
 }

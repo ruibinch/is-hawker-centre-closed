@@ -7,7 +7,7 @@ import { AWSError } from '../errors/AWSError';
 import { initAWSConfig, TABLE_USERS } from '../ext/aws/config';
 import { getDynamoDBBillingDetails } from '../ext/aws/dynamodb';
 import { Language } from '../lang';
-import { getStage } from '../utils';
+import { getStage, wrapUnknownError } from '../utils';
 import { currentDate } from '../utils/date';
 
 initAWSConfig();
@@ -96,7 +96,7 @@ export async function addUser(user: User): Promise<ResultType<void, Error>> {
 
     return Result.Ok();
   } catch (err) {
-    return Result.Err(err);
+    return Result.Err(wrapUnknownError(err));
   }
 }
 
@@ -112,7 +112,7 @@ export async function getAllUsers(): Promise<ResultType<User[], Error>> {
 
     return Result.Ok(scanOutput.Items as User[]);
   } catch (err) {
-    return Result.Err(err);
+    return Result.Err(wrapUnknownError(err));
   }
 }
 
@@ -136,7 +136,7 @@ export async function getUserById(
 
       user = getOutput.Item;
     } catch (err) {
-      return Result.Err(err);
+      return Result.Err(wrapUnknownError(err));
     }
   }
 
@@ -166,7 +166,7 @@ export async function updateUserFavourites(
 
     return Result.Ok();
   } catch (err) {
-    return Result.Err(err);
+    return Result.Err(wrapUnknownError(err));
   }
 }
 
@@ -194,7 +194,7 @@ export async function updateUserInFavouritesMode(
 
     return Result.Ok();
   } catch (err) {
-    return Result.Err(err);
+    return Result.Err(wrapUnknownError(err));
   }
 }
 
@@ -222,7 +222,7 @@ export async function updateUserNotifications(
 
     return Result.Ok();
   } catch (err) {
-    return Result.Err(err);
+    return Result.Err(wrapUnknownError(err));
   }
 }
 
@@ -249,6 +249,6 @@ export async function updateUserLanguageCode(
 
     return Result.Ok();
   } catch (err) {
-    return Result.Err(err);
+    return Result.Err(wrapUnknownError(err));
   }
 }

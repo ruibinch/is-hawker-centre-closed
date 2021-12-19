@@ -5,7 +5,7 @@ import { AWSError } from '../errors/AWSError';
 import { initAWSConfig, TABLE_HC } from '../ext/aws/config';
 import { getDynamoDBBillingDetails } from '../ext/aws/dynamodb';
 import { sendDiscordAdminMessage } from '../ext/discord';
-import { getStage } from '../utils';
+import { getStage, wrapUnknownError } from '../utils';
 
 initAWSConfig();
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
@@ -86,7 +86,7 @@ export async function getAllHawkerCentres(): Promise<
 
     return Result.Ok(scanOutput.Items as HawkerCentre[]);
   } catch (err) {
-    return Result.Err(err);
+    return Result.Err(wrapUnknownError(err));
   }
 }
 
@@ -107,6 +107,6 @@ export async function getHawkerCentreById(
 
     return Result.Ok(getOutput.Item as HawkerCentre);
   } catch (err) {
-    return Result.Err(err);
+    return Result.Err(wrapUnknownError(err));
   }
 }
