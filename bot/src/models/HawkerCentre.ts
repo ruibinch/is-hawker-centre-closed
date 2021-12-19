@@ -13,7 +13,7 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
 export type HawkerCentreProps = {
   hawkerCentreId: number;
   name: string;
-  nameSecondary?: string;
+  nameSecondary?: string | undefined;
 };
 
 export class HawkerCentre {
@@ -21,7 +21,7 @@ export class HawkerCentre {
 
   name: string;
 
-  nameSecondary?: string;
+  nameSecondary?: string | undefined;
 
   private constructor(props: HawkerCentreProps) {
     this.hawkerCentreId = props.hawkerCentreId;

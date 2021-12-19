@@ -20,7 +20,7 @@ export type ApiResponse<TReturn> = {
 
 export type BotResponse = {
   message: string;
-  choices?: string[];
+  choices?: string[] | undefined;
 };
 
 export type ServiceResponse = ResultType<BotResponse, void>;

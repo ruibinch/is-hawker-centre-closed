@@ -14,7 +14,7 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
 type InputProps = {
   inputId: string;
   userId: number;
-  username?: string;
+  username?: string | undefined;
   text: string;
 };
 
@@ -23,7 +23,7 @@ export class Input {
 
   userId: number;
 
-  username?: string;
+  username?: string | undefined;
 
   text: string;
 

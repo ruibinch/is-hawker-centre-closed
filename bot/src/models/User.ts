@@ -25,7 +25,7 @@ export type UserFavourite = {
 
 export type UserProps = {
   userId: number;
-  username?: string;
+  username?: string | undefined;
   languageCode: Language;
   favourites: UserFavourite[];
   isInFavouritesMode: boolean;
@@ -35,7 +35,7 @@ export type UserProps = {
 export class User {
   userId: number;
 
-  username?: string;
+  username?: string | undefined;
 
   languageCode: Language;
 
