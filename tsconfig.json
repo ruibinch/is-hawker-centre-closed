@@ -113,7 +113,7 @@
     // "pretty": true,                                  /* stylise errors and messages using colour and context */
 
     /* Completeness */
-    // "skipLibCheck": false,                           /* skip type checking of declaration files */
+    "skipLibCheck": true,                               /* skip type checking of declaration files */
 
     /* Watch options */
     "assumeChangesOnlyAffectDirectDependencies": false, /* specify whether to only recheck/build files and its dependencies rather than all possibly-affected files */

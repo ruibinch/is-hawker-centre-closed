@@ -67,7 +67,7 @@ export const getUsers: APIGatewayProxyHandler = async (
 };
 
 function performAuth(headers: APIGatewayProxyEventHeaders): ResultType {
-  const authorizationHeader = headers.Authorization;
+  const authorizationHeader = headers['Authorization'];
   if (!authorizationHeader) {
     return Result.Err();
   }
