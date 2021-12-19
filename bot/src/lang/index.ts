@@ -3,7 +3,6 @@ import i18n, { TranslateOptions } from 'i18n-js';
 import enDict from './en.json';
 import zhDict from './zh.json';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export type Language = 'en' | 'zh';
 
 type Dictionary = {
@@ -14,6 +13,7 @@ const normaliseKey = (key: string) => key.replace(/\./g, '-');
 const normaliseDictionary = (dictionary: Dictionary) =>
   Object.entries(dictionary).reduce(
     (newDict: Dictionary, [lang, translations]) => {
+      // @ts-expect-error lang can only be "en"/"zh"
       newDict[lang] = Object.entries(translations).reduce(
         (newTranslations: Record<string, string>, [key, value]) => {
           newTranslations[normaliseKey(key)] = value;
