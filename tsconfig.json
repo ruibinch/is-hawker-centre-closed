@@ -1,14 +1,124 @@
 {
+  /* Reference: https://www.typescriptlang.org/tsconfig */
+  /* Options are only uncommented if they are used and override the default option */
+  /* Top-level props (extends, include, exclude, references) excluded as those are specified in the individual tsconfig files */
+
   "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
-    "lib": ["es6"],
-    "outDir": "build",
-    "strict": true,
-    "noImplicitAny": false,
-    "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "types": ["node", "@types/jest"],
-    "typeRoots": ["./node_modules/@types"]
+    /* Type checking */
+    // "allowUnreachableCode": undefined,               /* raises an error when there is an unreachable code path (should be handled by ESLint) */
+    // "allowUnusedLabels": undefined,                  /* raises an error when a label is unused (should be handled by ESLint) */
+    // "alwaysStrict": true,                            /* ensures files are parsed in ECMAScript strict mode (defaults to true in strict mode) */
+    "exactOptionalPropertyTypes": true,                 /* prevents optional props from allowing undefined as a value */
+    "noFallthroughCasesInSwitch": true,                 /* ensures all switch cases ends in break or return */
+    // "noImplicitAny": true,                           /* raises an error when `any` type is inferred (defaults to true in strict mode) */
+    "noImplicitOverride": true,                         /* ensures overriding functions in subclasses are marked with `override` */
+    "noImplicitReturns": true,                          /* raises an error when a codepath in a function does not return a value */
+    // "noImplicitThis": true,                          /* raises an error on `this` expressions with an implied `any` type (defaults to true in strict mode) */
+    "noPropertyAccessFromIndexSignature": true,         /* requires using indexed instead of dot accessors on fields that are not explicitly defined */
+    "noUncheckedIndexedAccess": false,                  /* adds `undefined` to any field that is not explicitly defined */
+    // "noUnusedLocals": false,                         /* raises an error on unused local variables (should be handled by ESLint) */
+    // "noUnusedParameters": false,                     /* raises an error on unused function parameters (should be handled by ESLint) */
+    "strict": true,                                     /* enables all of the strict mode family options */
+    // "strictBindCallApply": true,                     /* checks that the built-in methods of functions (`call`, `bind`, `apply`) are typesafe (defaults to true in strict mode) */
+    // "strictFunctionTypes": true,                     /* ensures function assignment is typesafe (defaults to true in strict mode) */
+    // "strictNullChecks": true,                        /* takes `null` and `undefined` into account (defaults to true in strict mode) */
+    // "strictPropertyInitialization": true,            /* raises an errorw hen a class property was declared but not set in the constructor (defaults to true in strict mode) */
+    // "useUnknownInCatchVariables": true,              /* defaults catch clause variables to `unknown` (defaults to true in strict mode) */
+
+    /* Modules */
+    // "allowUmdGlobalAccess": false,                   /* allows access of UMD exports as globals from inside module files */
+    // "baseUrl": "./",                                 /* base directory to resolve non-absolute module names */
+    "module": "commonjs",                               /* module system for the program */
+    // "moduleResolution": "node",                      /* module resolution strategy */
+    // "noResolve": false,                              /* adds resolved files from `import` anad `<reference>` directives to the program */
+    // "paths": {},                                     /* declaration for TS to resolve import paths; useful to avoid long relative import paths */
+    "resolveJsonModule": true,                          /* allows importing JSON files */
+    // "rootDir": "",                                   /* specify root folder of source files */
+    // "rootDirs": [],                                  /* specify multiple virtual directories as a single root */
+    // "typeRoots": [],                                 /* all visible `@types` packages are included by default; this option is used to override the default */ 
+    // "types": [],                                     /* all visible `@types` packages are included by default; this option is used to override the default */
+
+    /* Emit */
+    // "declaration": false,                            /* generates .d.ts files */
+    // "declarationDir": "",                            /* root directory to store emitted declaration files */
+    // "declarationMap": false,                         /* generates a source map for .d.ts files that maps back to the original .ts source file */
+    // "downlevelIteration": false,                     /* emits more compliant but more verbose JS when transpiling to older JS versions */
+    // "emitBOM": false,                                /* emits a byte order mark (BOM) when writing output files */
+    // "emitDeclarationOnly": false,                    /* emits only d.ts files without any .js files (useful when using a non-TS transpiler) */ 
+    // "importHelpers": false,                          /* imports helper functions used in downleveling operations from the tslib module to reduce duplicate code */
+    // "importsNotUsedAsValues":  "remove"              /* specify handling method of import statements not used as values, e.g. used as types */ 
+    // "inlineSourceMap": false,                        /* embed source map content in .js files directly instead of a separate .js.map file */
+    // "inlineSources": false,                          /* include the original content of the .ts file as an embedded string in the source map */
+    // "mapRoot": "",                                   /* specify location where the debugger should locate map files instead of generated locations */
+    // "newLine": "",                                   /* specify EOL sequence to be used when emitting files ('CRLF' for dos, 'LF' for unix) */
+    // "noEmit": false,                                 /* do not emit compiler ouput files (used when another transpiler tool is used, e.g. babel, swc) */
+    // "noEmitHelpers": false,                          /* provide implementations of helper functions in the global scope instead of emitting helper functions */
+    // "noEmitOnError": false,                          /* do not emit compiler output files if any errors are reported
+    "outDir": "build",                                  /* directory to emit .js, .d.ts, .js.map etc files into */
+    // "outFile": "",                                   /* specify a single output file to concatenate all global files into (only applicable when "module" is None/System/AMD) */
+    // "preserveConstEnums": false,                     /* do not erase `const enum` declarations in generated code */
+    // "preserveValueImports": false,                   /* preserve unused value imports in generated code that would otherwise have been removed */
+    // "removeComments": false,                         /* strips comments in generated code */
+    // "sourceMap": false,                              /* enables generation of sourcemap files */
+    // "sourceRoot": "",                                /* specify location where TS files are located instead of relative source locations */
+    // "stripInternal": false,                          /* do not emit declarations for code with an @internal annotation in its JSDoc comment */
+
+    /* JS support */
+    // "allowJs": false,                                /* allows JS files to be imported (useful for step-by-step JS->TS migration) */
+    // "checkJs": false,                                /* allows type checking in JS files */
+    // "maxNodeModuleJsDepth": 0,                       /* maximum dependency depth to search under node_modules and load JS files */
+
+    /* Editor support */
+    // "disableSizeLimit": false,                       /* removes the upper limit to the amount of memory allocated by TS server */
+    // "plugins": [],                                   /* list of language service plugins to run inside the editor */
+
+    /* Interop constraints */
+    // "allowSyntheticDefaultImports": true,            /* allows default import syntax even when imported module does not have a default export */
+    "esModuleInterop": true,                            /* informs JS to treat CommonJS/AMD/UMD modules differently from ES6 modules, which emits additional JS */
+    // "forceConsistentCasingInFileNames": false,       /* raises an error if a file is being imported via a different casing than the casing it is saved in */
+    // "isolatedModules": false,                        /* ensures each file can be transpiled without relying on other imports (useful when non-TS transpilers are used) */
+    // "preserveSymlinks": false,                       /* resolves any references relative to the location of the symlink file than the path resolved to by the symlink */
+
+    /* Backwards compatability: Skipped */
+
+    /* Language and Environment */
+    // "emitDecoratorMetadata": false,                  /* emits type metadata for decorated declarations in source files */
+    // "experimentalDecorators": false,                 /* enables experimental support for decorators */
+    // "jsx": "preserve",                               /* controls how JSX constructs are emitted */
+    // "jsxFactory": "React.createElement",             /* specify JSX factory function used when targeting React JSX emit */
+    // "jsxFragmentFactory": "React.Fragment",          /* specify JSX Fragment reference used for fragments when targeting React JSX emit */
+    // "jsxImportSource": "react",                      /* specify module specifier used to import the JSX factory functions when using "jsx: react-jsx" */
+    "lib": ["ES6"],                                     /* specify a set of bundled library declaration files instead of using the TS default */
+    // "noLib": false,                                  /* disable the automatic inclusion of any library files */
+    "target": "ES6",                                    /* set JS language version for emitted JS files and include compatible library declarations */
+    // "useDefineForClassFields": false,                /* switches to the new ECMA runtime behaviour of handling class fields */
+
+    /* Compiler diagnostics */
+    // "explainFiles": false,                           /* prints a list of filenames with accompanying explanations on why they are included in the compilation output (for debugging) */
+    // "extendedDiagnostics": false,                    /* outputs more diagnostics to find where TS compile-time is spent on (for debugging) */
+    // "generateCpuProfile": "profile.cpuprofile",      /* outputs a v8 CPU profile of the compiler run (for debugging) */
+    // "listEmittedFiles": false,                       /* prints names of generated files part of the compilation */
+    // "traceResolution": false,                        /* enables tracing of the name resolution process (for debugging) */
+
+    /* Projects */
+    // "composite": false,                              /* enforces constrants in order for build tools to determine if a project has been built yet */
+    // "disableReferencedProjectLoad": false,           /* disable default behaviour of TS loading all available projects into memory (useful when project is very large) */
+    // "disableSolutionSearching": false,               /* opt project out of being included when using editor features like "find all references"/"jump to definition" */
+    // "incremental": false,                            /* enable incremental compilation by saving information about the project graph from the last compilation (useful when TS codebase is large) */
+    // "tsBuildInfoFile": ".tsbuildinfo",               /* specify file for storing incremental compilation information */
+
+    /* Output formatting */
+    // "noErrorTruncation": false,                      /* do not truncate error messages */
+    // "preserveWatchOutput": false,                    /* specify whether to keep outdated console output in watch mode */
+    // "pretty": true,                                  /* stylise errors and messages using colour and context */
+
+    /* Completeness */
+    // "skipLibCheck": false,                           /* skip type checking of declaration files */
+
+    /* Watch options */
+    "assumeChangesOnlyAffectDirectDependencies": false, /* specify whether to only recheck/build files and its dependencies rather than all possibly-affected files */
+    // "watchFile": "dynamicPriorityPolling",           /* specify strategy for watching individual files */
+    // "watchDirectory": "dynamicPriorityPolling",      /* specify strategy for watching directory trees (for systems that lack recursive file-watching functionality) */
+    // "fallbackPolling": "dynamicPriority",            /* specify polling strategy used when systems runs out and/or doesn't support native file watchers */
   }
 }
