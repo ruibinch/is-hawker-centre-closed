@@ -8,9 +8,9 @@ type OverrideInfo = {
 
 const OVERRIDES: OverrideInfo[] = [
   {
-    id: 104,
-    attributeName: 'other_works_startdate',
-    newValue: '1/3/2021',
+    id: 74,
+    attributeName: 'name',
+    newValue: 'New Upper Changi Road Blk 208B (Bedok Interchange Food Centre)',
   },
 ];
 
