@@ -1,79 +1,66 @@
-import {
-  HawkerCentreClosureResponse,
-  HawkerCentreClosureRecord,
-} from './types';
+import { HawkerCentreClosureRecord } from './types';
+
+type OverrideInfo = {
+  id: number;
+  attributeName: keyof HawkerCentreClosureRecord;
+  newValue: string;
+};
+
+const OVERRIDES: OverrideInfo[] = [
+  {
+    id: 74,
+    attributeName: 'name',
+    newValue: 'New Upper Changi Road Blk 208B (Bedok Interchange Food Centre)',
+  },
+];
 
 /**
- * Performs a manual override of some data points.
+ * Performs a manual override of some records.
  * Used when the API returns incorrect/old data.
  */
-export function overrideData(
-  data: HawkerCentreClosureResponse,
-): HawkerCentreClosureResponse {
-  const dataUpdated = overrideSingleRecord({
-    data,
-    id: 104,
-    overrides: [
-      {
-        attributeName: 'other_works_startdate',
-        newValue: '1/3/2021',
-      },
-    ],
+export function overrideRecords(
+  records: HawkerCentreClosureRecord[],
+): HawkerCentreClosureRecord[] {
+  let recordsUpdated = [...records];
+
+  OVERRIDES.forEach((overrideInfo) => {
+    const { id, attributeName, newValue } = overrideInfo;
+
+    const record = findRecordById(records, id);
+    if (record) {
+      const recordUpdated = {
+        ...record,
+        [attributeName]: newValue,
+      };
+
+      recordsUpdated = generateUpdatedRecords(
+        recordsUpdated,
+        id,
+        recordUpdated,
+      );
+    }
   });
 
-  return dataUpdated;
-}
-
-function overrideSingleRecord(props: {
-  data: HawkerCentreClosureResponse;
-  id: number;
-  overrides: Array<{
-    attributeName: string;
-    newValue: string;
-  }>;
-}): HawkerCentreClosureResponse {
-  const { data, id, overrides } = props;
-
-  const record = findRecordById(data, 104);
-  if (!record) {
-    return data;
-  }
-
-  overrides.forEach((override) => {
-    const { attributeName, newValue } = override;
-    record[attributeName] = newValue;
-  });
-
-  const recordsUpdated = generateUpdatedRecords(data, id, record);
-  return {
-    ...data,
-    result: {
-      ...data.result,
-      records: recordsUpdated,
-    },
-  };
+  return recordsUpdated;
 }
 
 /**
  * Finds a record by the `_id` attribute.
  */
 function findRecordById(
-  data: HawkerCentreClosureResponse,
+  records: HawkerCentreClosureRecord[],
   id: number,
 ): HawkerCentreClosureRecord | undefined {
-  const { records } = data.result;
   return records.find((record) => record._id === id);
 }
 
 /**
- * Combines the updated record with the existing unchanged records.
+ * Combines the updated record with the existing records.
  */
 function generateUpdatedRecords(
-  data: HawkerCentreClosureResponse,
+  records: HawkerCentreClosureRecord[],
   id: number,
-  record: HawkerCentreClosureRecord,
+  recordUpdated: HawkerCentreClosureRecord,
 ): HawkerCentreClosureRecord[] {
-  const { records } = data.result;
-  const recordsUnchanged = records.filter((_record) => _record._id !== id);
-  return [...recordsUnchanged, record];
+  return [...records.filter((_record) => _record._id !== id), recordUpdated];
 }
