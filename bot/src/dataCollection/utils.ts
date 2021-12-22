@@ -2,7 +2,7 @@ import axios from 'axios';
 import fs from 'fs';
 import Hashes from 'jshashes';
 
-import { overrideData } from './override';
+import { overrideRecords } from './override';
 import {
   HawkerCentreClosureResponse,
   HawkerCentreClosureRecord,
@@ -17,10 +17,12 @@ export async function getRawRecords(): Promise<HawkerCentreClosureRecord[]> {
       },
     })
     .then((response) => {
-      const data = response.data as HawkerCentreClosureResponse;
-      const dataUpdated = overrideData(data);
+      const {
+        result: { records },
+      } = response.data as HawkerCentreClosureResponse;
+      const recordsUpdated = overrideRecords(records);
 
-      return dataUpdated.result.records.map((record) => ({
+      return recordsUpdated.map((record) => ({
         _id: record._id,
         name: record.name,
         address_myenv: record.address_myenv,
