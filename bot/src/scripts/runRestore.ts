@@ -55,7 +55,7 @@ async function restoreBackup(tableName: string) {
   }
   if (BackupSizeBytes === 0) {
     const errorMessage = makeErrorMessage(
-      makeErrorMessage(`Backup "${latestBackupArn}" is empty`),
+      `Backup "${latestBackupArn}" is empty`,
     );
     await sendDiscordAdminMessage(errorMessage);
     throw new DBError(errorMessage);
