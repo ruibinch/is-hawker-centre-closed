@@ -1,6 +1,6 @@
 import { addInputToDB, Input } from '../../models/Input';
 import { currentDate } from '../../utils/date';
-import { TelegramUser } from '../../utils/telegram';
+import type { TelegramUser } from '../../utils/telegram';
 
 export async function saveInput(
   text: string,

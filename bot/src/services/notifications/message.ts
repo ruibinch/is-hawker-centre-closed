@@ -1,5 +1,5 @@
 import { t } from '../../lang';
-import { Closure } from '../../models/Closure';
+import type { Closure } from '../../models/Closure';
 import { makeClosureListItem } from '../message';
 
 export function makeNotificationMessage(closures: Closure[]): string {

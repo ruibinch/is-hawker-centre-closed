@@ -1,7 +1,7 @@
 import * as AWS from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
 
-import { NEAData } from '../dataCollection';
+import type { NEAData } from '../dataCollection';
 import { DBError } from '../errors/DBError';
 import { initAWSConfig } from '../ext/aws/config';
 import { DDB_PROPAGATE_DURATION } from '../ext/aws/dynamodb';

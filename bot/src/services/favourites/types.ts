@@ -1,5 +1,5 @@
-import { ClosurePartial } from '../../models/Closure';
-import { HawkerCentre } from '../../models/HawkerCentre';
+import type { ClosurePartial } from '../../models/Closure';
+import type { HawkerCentre } from '../../models/HawkerCentre';
 
 export type FindHCResponse = {
   isExactMatch?: boolean;

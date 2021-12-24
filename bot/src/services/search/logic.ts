@@ -10,13 +10,13 @@ import {
   startOfMonth,
 } from 'date-fns';
 
-import { Result, ResultType } from '../../../../lib/Result';
-import { Closure, getAllClosures } from '../../models/Closure';
+import { Result, type ResultType } from '../../../../lib/Result';
+import { type Closure, getAllClosures } from '../../models/Closure';
 import { notEmpty } from '../../utils';
 import { currentDate, makeNextWeekInterval } from '../../utils/date';
 import { getNextOccurringClosure, sortInAlphabeticalOrder } from '../utils';
 import { extractSearchModifier } from './searchModifier';
-import { SearchModifier, SearchObject, SearchResponse } from './types';
+import type { SearchModifier, SearchObject, SearchResponse } from './types';
 
 export async function processSearch(
   term: string,

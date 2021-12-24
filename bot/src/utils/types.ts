@@ -1,4 +1,4 @@
-import { ResultType } from '../../../lib/Result';
+import type { ResultType } from '../../../lib/Result';
 
 export type Stage = 'dev' | 'prod';
 
@@ -20,7 +20,7 @@ export type ApiResponse<TReturn> = {
 
 export type BotResponse = {
   message: string;
-  choices?: string[];
+  choices?: string[] | undefined;
 };
 
 export type ServiceResponse = ResultType<BotResponse, void>;

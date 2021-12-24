@@ -1,5 +1,5 @@
 import { Result } from '../../../../lib/Result';
-import { ServiceResponse } from '../../utils/types';
+import type { ServiceResponse } from '../../utils/types';
 import { processSearch } from './logic';
 import { makeMessage, makeSearchUnexpectedErrorMessage } from './message';
 

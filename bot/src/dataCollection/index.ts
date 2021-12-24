@@ -1,6 +1,6 @@
-import { ClosureReason, Closure } from '../models/Closure';
-import { HawkerCentre } from '../models/HawkerCentre';
-import { HawkerCentreClosureRecord } from './types';
+import type { ClosureReason, Closure } from '../models/Closure';
+import type { HawkerCentre } from '../models/HawkerCentre';
+import type { HawkerCentreClosureRecord } from './types';
 import { generateHash, parseClosureDate, parseHawkerCentreName } from './utils';
 
 export * from './types';

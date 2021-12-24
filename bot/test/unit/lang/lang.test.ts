@@ -1,7 +1,7 @@
 import {
   extractFromFiles,
   findMissing,
-  KeyExtractedFromFile,
+  type KeyExtractedFromFile,
 } from 'i18n-extract';
 
 import { dictionary } from '../../../src/lang';

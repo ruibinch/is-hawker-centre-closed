@@ -1,11 +1,11 @@
 import * as AWS from 'aws-sdk';
 
-import { Result, ResultType } from '../../../lib/Result';
+import { Result, type ResultType } from '../../../lib/Result';
 import { AWSError } from '../errors/AWSError';
 import { initAWSConfig, TABLE_HC } from '../ext/aws/config';
 import { getDynamoDBBillingDetails } from '../ext/aws/dynamodb';
 import { sendDiscordAdminMessage } from '../ext/discord';
-import { getStage } from '../utils';
+import { getStage, wrapUnknownError } from '../utils';
 
 initAWSConfig();
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
@@ -13,7 +13,7 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
 export type HawkerCentreProps = {
   hawkerCentreId: number;
   name: string;
-  nameSecondary?: string;
+  nameSecondary?: string | undefined;
 };
 
 export class HawkerCentre {
@@ -21,7 +21,7 @@ export class HawkerCentre {
 
   name: string;
 
-  nameSecondary?: string;
+  nameSecondary?: string | undefined;
 
   private constructor(props: HawkerCentreProps) {
     this.hawkerCentreId = props.hawkerCentreId;
@@ -86,7 +86,7 @@ export async function getAllHawkerCentres(): Promise<
 
     return Result.Ok(scanOutput.Items as HawkerCentre[]);
   } catch (err) {
-    return Result.Err(err);
+    return Result.Err(wrapUnknownError(err));
   }
 }
 
@@ -107,6 +107,6 @@ export async function getHawkerCentreById(
 
     return Result.Ok(getOutput.Item as HawkerCentre);
   } catch (err) {
-    return Result.Err(err);
+    return Result.Err(wrapUnknownError(err));
   }
 }

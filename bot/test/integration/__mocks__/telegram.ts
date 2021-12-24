@@ -1,4 +1,4 @@
-import {
+import type {
   TelegramChat,
   TelegramMessage,
   TelegramUser,

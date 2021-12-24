@@ -1,11 +1,11 @@
 import * as AWS from 'aws-sdk';
 import { formatISO } from 'date-fns';
 
-import { Result, ResultType } from '../../../lib/Result';
+import { Result, type ResultType } from '../../../lib/Result';
 import { AWSError } from '../errors/AWSError';
 import { initAWSConfig, TABLE_INPUTS } from '../ext/aws/config';
 import { getDynamoDBBillingDetails } from '../ext/aws/dynamodb';
-import { getStage } from '../utils';
+import { getStage, wrapUnknownError } from '../utils';
 import { currentDate } from '../utils/date';
 
 initAWSConfig();
@@ -14,7 +14,7 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
 type InputProps = {
   inputId: string;
   userId: number;
-  username?: string;
+  username?: string | undefined;
   text: string;
 };
 
@@ -23,7 +23,7 @@ export class Input {
 
   userId: number;
 
-  username?: string;
+  username?: string | undefined;
 
   text: string;
 
@@ -72,7 +72,7 @@ export async function getAllInputs(): Promise<ResultType<Input[], Error>> {
 
     return Result.Ok(scanOutput.Items as Input[]);
   } catch (err) {
-    return Result.Err(err);
+    return Result.Err(wrapUnknownError(err));
   }
 }
 
@@ -94,6 +94,6 @@ export async function addInputToDB(
 
     return Result.Ok();
   } catch (err) {
-    return Result.Err(err);
+    return Result.Err(wrapUnknownError(err));
   }
 }

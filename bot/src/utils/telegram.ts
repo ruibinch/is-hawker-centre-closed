@@ -43,7 +43,7 @@ export type TelegramMessage = {
   from: TelegramUser;
   date: number;
   chat: TelegramChat;
-  text?: string;
+  text?: string | undefined;
   sender_chat?: TelegramChat;
   via_bot?: TelegramUser;
   animation?: unknown;

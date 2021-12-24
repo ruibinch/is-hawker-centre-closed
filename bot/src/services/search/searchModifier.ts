@@ -1,5 +1,5 @@
-import { Result, ResultType } from '../../../../lib/Result';
-import { ExtractSearchModifierResult, SearchModifier } from './types';
+import { Result, type ResultType } from '../../../../lib/Result';
+import type { ExtractSearchModifierResult, SearchModifier } from './types';
 
 // List of accepted search modifiers
 const SEARCH_MODIFIERS = [

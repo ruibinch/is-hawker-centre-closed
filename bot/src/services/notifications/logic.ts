@@ -1,10 +1,10 @@
 import { isWithinInterval, parseISO, startOfDay } from 'date-fns';
 
-import { Result, ResultType } from '../../../../lib/Result';
+import { Result, type ResultType } from '../../../../lib/Result';
 import { getAllClosures } from '../../models/Closure';
 import { getAllUsers } from '../../models/User';
 import { currentDate } from '../../utils/date';
-import { UserWithClosure } from './types';
+import type { UserWithClosure } from './types';
 
 /**
  * Returns a list of users along with their saved favourite hawker centres that are closed today.

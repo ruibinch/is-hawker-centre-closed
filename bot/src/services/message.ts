@@ -1,5 +1,5 @@
 import { t } from '../lang';
-import { Closure, ClosureReason } from '../models/Closure';
+import type { Closure, ClosureReason } from '../models/Closure';
 import { formatDateDisplay, isIndefiniteEndDate } from '../utils/date';
 
 export function makeGenericErrorMessage(): string {

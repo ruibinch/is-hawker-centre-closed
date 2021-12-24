@@ -1,8 +1,8 @@
 import { Result } from '../../../../lib/Result';
 import { isCommand } from '../../bot/commands';
-import { HawkerCentre } from '../../models/HawkerCentre';
-import { TelegramUser } from '../../utils/telegram';
-import { ServiceResponse } from '../../utils/types';
+import type { HawkerCentre } from '../../models/HawkerCentre';
+import type { TelegramUser } from '../../utils/telegram';
+import type { ServiceResponse } from '../../utils/types';
 import { makeHawkerCentreName } from '../message';
 import {
   addHCToFavourites,

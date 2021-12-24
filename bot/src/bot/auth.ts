@@ -1,4 +1,4 @@
-import { APIGatewayProxyEventQueryStringParameters } from 'aws-lambda';
+import type { APIGatewayProxyEventQueryStringParameters } from 'aws-lambda';
 
 type QueryParams = {
   token?: string;
