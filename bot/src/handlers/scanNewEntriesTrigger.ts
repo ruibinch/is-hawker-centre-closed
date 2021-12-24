@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/serverless';
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import dotenv from 'dotenv';
 
 import { makeCallbackWrapper } from '../ext/aws/lambda';

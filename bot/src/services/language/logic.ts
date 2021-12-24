@@ -1,13 +1,13 @@
-import { Result, ResultType } from '../../../../lib/Result';
-import { initDictionary, Language } from '../../lang';
+import { Result, type ResultType } from '../../../../lib/Result';
+import { initDictionary, type Language } from '../../lang';
 import {
   addUser,
   getUserById,
   updateUserLanguageCode,
   User,
 } from '../../models/User';
-import { TelegramUser } from '../../utils/telegram';
-import { GetUserLanguageCodeResponse } from './types';
+import type { TelegramUser } from '../../utils/telegram';
+import type { GetUserLanguageCodeResponse } from './types';
 
 export async function updateLanguage(props: {
   text: string;

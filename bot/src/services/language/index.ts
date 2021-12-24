@@ -1,6 +1,6 @@
 import { Result } from '../../../../lib/Result';
-import { TelegramUser } from '../../utils/telegram';
-import { ServiceResponse } from '../../utils/types';
+import type { TelegramUser } from '../../utils/telegram';
+import type { ServiceResponse } from '../../utils/types';
 import { updateLanguage } from './logic';
 import {
   makeErrorUpdatingLanguageMessage,

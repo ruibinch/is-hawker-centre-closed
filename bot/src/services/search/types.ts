@@ -1,4 +1,4 @@
-import { Closure } from '../../models/Closure';
+import type { Closure } from '../../models/Closure';
 
 export type SearchQuery = {
   term: string;

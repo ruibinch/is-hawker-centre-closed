@@ -3,7 +3,7 @@ import fs from 'fs';
 import Hashes from 'jshashes';
 
 import { overrideRecords } from './override';
-import {
+import type {
   HawkerCentreClosureResponse,
   HawkerCentreClosureRecord,
 } from './types';

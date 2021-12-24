@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { formatISO } from 'date-fns';
 
-import { Result, ResultType } from '../../../../lib/Result';
+import { Result, type ResultType } from '../../../../lib/Result';
 import { getAllClosures } from '../../models/Closure';
 import {
   getAllHawkerCentres,
@@ -18,14 +18,14 @@ import {
   UserFavourite,
 } from '../../models/User';
 import { currentDate } from '../../utils/date';
-import { TelegramUser } from '../../utils/telegram';
+import type { TelegramUser } from '../../utils/telegram';
 import { getNextOccurringClosure } from '../utils';
 import {
   MAX_CHOICES,
   NOTIFICATION_OFF_KEYWORDS,
   NOTIFICATION_ON_KEYWORDS,
 } from './constants';
-import {
+import type {
   AddHCResponse,
   DeleteHCResponseError,
   DeleteHCResponseOk,

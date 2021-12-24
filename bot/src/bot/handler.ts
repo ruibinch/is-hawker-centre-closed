@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/serverless';
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import dotenv from 'dotenv';
 
 import { ServiceError } from '../errors/ServiceError';
@@ -16,7 +16,7 @@ import { getUserLanguageCode, manageLanguage } from '../services/language';
 import { makeGenericErrorMessage } from '../services/message';
 import { runSearch } from '../services/search';
 import { extractTelegramMessage, TelegramUpdate } from '../utils/telegram';
-import { BotResponse } from '../utils/types';
+import type { BotResponse } from '../utils/types';
 import { validateToken } from './auth';
 import { isCommand, isCommandInModule, makeCommandMessage } from './commands';
 import { sendMessage, sendMessageWithChoices } from './sender';

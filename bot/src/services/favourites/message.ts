@@ -1,6 +1,6 @@
 import { t } from '../../lang';
-import { ClosurePartial } from '../../models/Closure';
-import { HawkerCentre } from '../../models/HawkerCentre';
+import type { ClosurePartial } from '../../models/Closure';
+import type { HawkerCentre } from '../../models/HawkerCentre';
 import {
   makeClosurePeriodSnippet,
   makeClosureReasonSnippet,

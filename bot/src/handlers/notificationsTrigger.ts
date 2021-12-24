@@ -1,12 +1,12 @@
 import * as Sentry from '@sentry/serverless';
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import dotenv from 'dotenv';
 
 import { sendMessage } from '../bot/sender';
 import { makeCallbackWrapper } from '../ext/aws/lambda';
 import { sendDiscordAdminMessage } from '../ext/discord';
 import { constructNotifications } from '../services/notifications';
-import { NotificationMessage } from '../services/notifications/types';
+import type { NotificationMessage } from '../services/notifications/types';
 import { getStage } from '../utils';
 
 dotenv.config();

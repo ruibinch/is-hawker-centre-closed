@@ -1,7 +1,7 @@
 import * as AWS from 'aws-sdk';
 import { formatISO } from 'date-fns';
 
-import { Result, ResultType } from '../../../lib/Result';
+import { Result, type ResultType } from '../../../lib/Result';
 import { AWSError } from '../errors/AWSError';
 import { initAWSConfig, TABLE_INPUTS } from '../ext/aws/config';
 import { getDynamoDBBillingDetails } from '../ext/aws/dynamodb';

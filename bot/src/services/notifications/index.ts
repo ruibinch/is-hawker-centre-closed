@@ -1,8 +1,8 @@
-import { Result, ResultType } from '../../../../lib/Result';
+import { Result, type ResultType } from '../../../../lib/Result';
 import { initDictionary } from '../../lang';
 import { getUsersWithFavsClosedToday } from './logic';
 import { makeNotificationMessage } from './message';
-import { NotificationMessage } from './types';
+import type { NotificationMessage } from './types';
 
 export async function constructNotifications(): Promise<
   ResultType<NotificationMessage[], Error>

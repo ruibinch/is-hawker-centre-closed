@@ -1,7 +1,7 @@
-import { Result, ResultType } from '../../../../lib/Result';
+import { Result, type ResultType } from '../../../../lib/Result';
 import { addFeedbackToDB, Feedback } from '../../models/Feedback';
 import { currentDate } from '../../utils/date';
-import { TelegramUser } from '../../utils/telegram';
+import type { TelegramUser } from '../../utils/telegram';
 
 export async function addFeedback(props: {
   text: string;

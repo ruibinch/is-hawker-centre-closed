@@ -6,7 +6,7 @@ import { AWSError } from '../errors/AWSError';
 import { sendDiscordClosuresAdminMessage } from '../ext/discord';
 import {
   addClosure,
-  Closure,
+  type Closure,
   ClosureObject,
   deleteClosure,
   isValidClosureReason,

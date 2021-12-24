@@ -1,4 +1,4 @@
-import { Stage } from './types';
+import type { Stage } from './types';
 
 export * from './types';
 

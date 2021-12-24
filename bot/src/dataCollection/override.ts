@@ -1,4 +1,4 @@
-import { HawkerCentreClosureRecord } from './types';
+import type { HawkerCentreClosureRecord } from './types';
 
 type OverrideInfo = {
   id: number;

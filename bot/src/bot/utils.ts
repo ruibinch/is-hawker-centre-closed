@@ -1,9 +1,9 @@
 import emojiRegexFactory from 'emoji-regex/RGI_Emoji';
 
-import { Result, ResultType } from '../../../lib/Result';
+import { Result, type ResultType } from '../../../lib/Result';
 import { t } from '../lang';
-import { TelegramMessage } from '../utils/telegram';
-import { ValidateResponseError, ValidateResponseOk } from './types';
+import type { TelegramMessage } from '../utils/telegram';
+import type { ValidateResponseError, ValidateResponseOk } from './types';
 
 function isDefined(...variables: unknown[]) {
   return variables.every(Boolean);

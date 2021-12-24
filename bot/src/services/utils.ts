@@ -1,6 +1,6 @@
 import { endOfDay, isPast, parseISO } from 'date-fns';
 
-import { Closure } from '../models/Closure';
+import type { Closure } from '../models/Closure';
 
 /**
  * Returns the closure entry that is the next to occur w.r.t. the current date (includes closures occurring today).

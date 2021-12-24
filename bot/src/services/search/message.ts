@@ -1,5 +1,5 @@
 import { t } from '../../lang';
-import { Closure } from '../../models/Closure';
+import type { Closure } from '../../models/Closure';
 import {
   currentDate,
   formatDateDisplay,
@@ -7,7 +7,7 @@ import {
 } from '../../utils/date';
 import { makeClosureListItem } from '../message';
 import { isSearchModifierTimeBased } from './searchModifier';
-import { SearchModifier, SearchResponse } from './types';
+import type { SearchModifier, SearchResponse } from './types';
 
 export function makeMessage(searchResponse: SearchResponse): string {
   const {

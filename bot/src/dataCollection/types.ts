@@ -1,5 +1,5 @@
-import { Closure } from '../models/Closure';
-import { HawkerCentre } from '../models/HawkerCentre';
+import type { Closure } from '../models/Closure';
+import type { HawkerCentre } from '../models/HawkerCentre';
 
 type DataGovSGResponseBase = {
   help: string;

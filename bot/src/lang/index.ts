@@ -1,4 +1,4 @@
-import i18n, { TranslateOptions } from 'i18n-js';
+import i18n, { type TranslateOptions } from 'i18n-js';
 
 import enDict from './en.json';
 import zhDict from './zh.json';

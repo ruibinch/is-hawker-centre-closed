@@ -1,4 +1,4 @@
-import { APIGatewayProxyResult, Callback } from 'aws-lambda';
+import type { APIGatewayProxyResult, Callback } from 'aws-lambda';
 
 type ResponseBody = {
   statusCode: number;

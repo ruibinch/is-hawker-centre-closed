@@ -1,15 +1,15 @@
-import {
+import type {
   APIGatewayProxyEventHeaders,
   APIGatewayProxyHandler,
   APIGatewayProxyResult,
 } from 'aws-lambda';
 import dotenv from 'dotenv';
 
-import { Result, ResultType } from '../../../lib/Result';
+import { Result, type ResultType } from '../../../lib/Result';
 import { makeCallbackWrapper } from '../ext/aws/lambda';
-import { getAllInputs, Input } from '../models/Input';
-import { getAllUsers, User } from '../models/User';
-import { ApiResponse } from '../utils';
+import { getAllInputs, type Input } from '../models/Input';
+import { getAllUsers, type User } from '../models/User';
+import type { ApiResponse } from '../utils';
 
 dotenv.config();
 const serverApiToken = process.env.SERVER_API_TOKEN ?? '';

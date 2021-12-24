@@ -1,12 +1,12 @@
 import * as AWS from 'aws-sdk';
 
-import { Result, ResultType } from '../../../lib/Result';
+import { Result, type ResultType } from '../../../lib/Result';
 import { AWSError } from '../errors/AWSError';
 import { initAWSConfig, TABLE_CLOSURES } from '../ext/aws/config';
 import { getDynamoDBBillingDetails } from '../ext/aws/dynamodb';
 import { sendDiscordAdminMessage } from '../ext/discord';
 import { getStage, prettifyJSON, wrapUnknownError } from '../utils';
-import { HawkerCentre } from './HawkerCentre';
+import type { HawkerCentre } from './HawkerCentre';
 
 initAWSConfig();
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
