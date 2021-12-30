@@ -41,28 +41,28 @@
     "test": "TZ=UTC jest"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.87",
-    "@types/i18n-js": "^3.8.0",
-    "aws-sdk": "^2.1046.0",
-    "i18n-extract": "^0.6.7",
-    "jest": "^27.4.4",
-    "serverless-dotenv-plugin": "^3.10.0",
-    "serverless-offline": "^8.3.1",
-    "serverless-webpack": "^5.6.0",
-    "ts-jest": "^27.1.1",
-    "ts-loader": "^9.2.6",
-    "webpack": "^5.65.0",
-    "webpack-node-externals": "^3.0.0"
+    "@types/aws-lambda": "8.10.89",
+    "@types/i18n-js": "3.8.2",
+    "aws-sdk": "2.1048.0",
+    "i18n-extract": "0.6.7",
+    "jest": "27.4.5",
+    "serverless-dotenv-plugin": "3.11.1",
+    "serverless-offline": "8.3.1",
+    "serverless-webpack": "5.6.0",
+    "ts-jest": "27.1.2",
+    "ts-loader": "9.2.6",
+    "webpack": "5.65.0",
+    "webpack-node-externals": "3.0.0"
   },
   "dependencies": {
-    "@sentry/serverless": "^6.16.1",
-    "axios": "^0.21.4",
-    "date-fns": "^2.27.0",
-    "discord.js": "^12.5.3",
-    "dotenv": "^10.0.0",
-    "emoji-regex": "^9.2.2",
-    "i18n-js": "^3.8.0",
-    "jshashes": "^1.0.8",
-    "node-cache": "^5.1.2"
+    "@sentry/serverless": "6.16.1",
+    "axios": "0.24.0",
+    "date-fns": "2.28.0",
+    "discord.js": "12.5.3",
+    "dotenv": "10.0.0",
+    "emoji-regex": "10.0.0",
+    "i18n-js": "3.8.0",
+    "jshashes": "1.0.8",
+    "node-cache": "5.1.2"
   }
 }

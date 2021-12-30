@@ -3,6 +3,7 @@ app: ihcc
 service: ishawkercentreclosed
 
 frameworkVersion: '2'
+configValidationMode: error
 
 custom:
   dotenv:
@@ -32,7 +33,7 @@ plugins:
 
 provider:
   name: aws
-  runtime: nodejs12.x
+  runtime: nodejs14.x
   stage: ${opt:stage, 'dev'}
   region: ${env:REGION}
   lambdaHashingVersion: 20201221
