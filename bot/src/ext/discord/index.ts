@@ -2,7 +2,7 @@ import Discord from 'discord.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
-const client = new Discord.Client();
+const client = new Discord.Client({ intents: [] });
 const adminDevChannelId = process.env.DISCORD_ADMIN_DEV_CHANNEL_ID ?? '';
 const adminProdChannelId = process.env.DISCORD_ADMIN_PROD_CHANNEL_ID ?? '';
 const closuresAdminDevChannelId =
