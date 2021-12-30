@@ -1,4 +1,4 @@
-import emojiRegexFactory from 'emoji-regex/RGI_Emoji';
+import emojiRegexFactory from 'emoji-regex';
 
 import { Result, type ResultType } from '../../../lib/Result';
 import { t } from '../lang';
