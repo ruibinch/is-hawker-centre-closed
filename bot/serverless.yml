@@ -3,6 +3,7 @@ app: ihcc
 service: ishawkercentreclosed
 
 frameworkVersion: '2'
+configValidationMode: error
 
 custom:
   dotenv:
