@@ -44,7 +44,7 @@
     "@types/aws-lambda": "8.10.89",
     "@types/i18n-js": "3.8.2",
     "aws-sdk": "2.1048.0",
-    "i18n-extract": "ruibinch/i18n-extract",
+    "i18n-extract": "0.6.7",
     "jest": "27.4.5",
     "serverless-dotenv-plugin": "3.11.1",
     "serverless-offline": "8.3.1",
