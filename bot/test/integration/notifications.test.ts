@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { parseISO } from 'date-fns';
 
-import { Result } from '../../../lib/Result';
+import { Result } from '../../../common/lib/Result';
 import * as sender from '../../src/bot/sender';
 import { AWSError } from '../../src/errors/AWSError';
 import * as discord from '../../src/ext/discord';

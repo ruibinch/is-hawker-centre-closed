@@ -1,4 +1,4 @@
-import { Result, type ResultType } from '../../../../lib/Result';
+import { Result, type ResultType } from '../../../../common/lib/Result';
 import { initDictionary } from '../../lang';
 import { getUsersWithFavsClosedToday } from './logic';
 import { makeNotificationMessage } from './message';

@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { Result } from '../../../../lib/Result';
+import { Result } from '../../../../common/lib/Result';
 import type { ServiceResponse } from '../../utils';
 
 export async function manageGeneral(): Promise<ServiceResponse> {

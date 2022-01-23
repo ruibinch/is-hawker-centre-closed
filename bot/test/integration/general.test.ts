@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { Result } from '../../../lib/Result';
+import { Result } from '../../../common/lib/Result';
 import * as sender from '../../src/bot/sender';
 import { AWSError } from '../../src/errors/AWSError';
 import * as InputFile from '../../src/models/Input';

@@ -1,6 +1,6 @@
 import * as AWS from 'aws-sdk';
 
-import { Result, type ResultType } from '../../../lib/Result';
+import { Result, type ResultType } from '../../../common/lib/Result';
 import { AWSError } from '../errors/AWSError';
 import { initAWSConfig, TABLE_HC } from '../ext/aws/config';
 import { getDynamoDBBillingDetails } from '../ext/aws/dynamodb';
