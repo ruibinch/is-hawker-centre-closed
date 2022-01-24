@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { formatISO } from 'date-fns';
 
-import { Result, type ResultType } from '../../../../lib/Result';
+import { Result, type ResultType } from '../../../../common/lib/Result';
 import { getAllClosures } from '../../models/Closure';
 import {
   getAllHawkerCentres,

@@ -10,7 +10,7 @@ import {
   startOfMonth,
 } from 'date-fns';
 
-import { Result, type ResultType } from '../../../../lib/Result';
+import { Result, type ResultType } from '../../../../common/lib/Result';
 import { type Closure, getAllClosures } from '../../models/Closure';
 import { notEmpty } from '../../utils';
 import { currentDate, makeNextWeekInterval } from '../../utils/date';

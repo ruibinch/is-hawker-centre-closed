@@ -1,4 +1,4 @@
-import { Result } from '../../../../lib/Result';
+import { Result } from '../../../../common/lib/Result';
 import { isCommand } from '../../bot/commands';
 import type { HawkerCentre } from '../../models/HawkerCentre';
 import type { TelegramUser } from '../../utils/telegram';

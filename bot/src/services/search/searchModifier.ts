@@ -1,4 +1,4 @@
-import { Result, type ResultType } from '../../../../lib/Result';
+import { Result, type ResultType } from '../../../../common/lib/Result';
 import type { ExtractSearchModifierResult, SearchModifier } from './types';
 
 // List of accepted search modifiers

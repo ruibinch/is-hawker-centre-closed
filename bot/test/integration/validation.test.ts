@@ -5,7 +5,7 @@ import type {
   Context,
 } from 'aws-lambda';
 
-import { Result } from '../../../lib/Result';
+import { Result } from '../../../common/lib/Result';
 import { bot } from '../../src/bot/handler';
 import * as sender from '../../src/bot/sender';
 import { AWSError } from '../../src/errors/AWSError';
