@@ -1,8 +1,9 @@
 {
   /* Reference: https://www.typescriptlang.org/tsconfig */
+  
+  "include": ["src/**/*.ts", "test/**/*.ts"],
+  
   /* Options are only uncommented if they are used and override the default option */
-  /* Top-level props (extends, include, exclude, references) excluded as those are specified in the individual tsconfig files */
-
   "compilerOptions": {
     /* Type checking */
     // "allowUnreachableCode": undefined,               /* raises an error when there is an unreachable code path (should be handled by ESLint) */

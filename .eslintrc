@@ -2,7 +2,7 @@
   "root": true,
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": ["./tsconfig.json", "./bot/tsconfig.json"]
+    "project": ["./tsconfig.json"]
   },
   "plugins": ["@typescript-eslint", "prettier", "jest"],
   "extends": [
@@ -42,10 +42,10 @@
         "devDependencies": [
           "**/models/*.ts",
           "**/scripts/*.ts",
-          "./bot/src/ext/aws/config.ts",
-          "./bot/test/unit/lang/lang.test.ts"
+          "./src/ext/aws/config.ts",
+          "./test/unit/lang/lang.test.ts"
         ],
-        "packageDir": ["./", "./bot"]
+        "packageDir": ["./"]
       }
     ]
   },
