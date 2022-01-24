@@ -5,8 +5,8 @@ import type {
 } from 'aws-lambda';
 import dotenv from 'dotenv';
 
-import { Result, type ResultType } from '../../../common/lib/Result';
 import { makeCallbackWrapper } from '../ext/aws/lambda';
+import { Result, type ResultType } from '../lib/Result';
 import { getAllInputs, type Input } from '../models/Input';
 import { getAllUsers, type User } from '../models/User';
 import type { ApiResponse } from '../utils';

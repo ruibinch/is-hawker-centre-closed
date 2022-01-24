@@ -1,9 +1,9 @@
 /* eslint-disable max-len */
 import { parseISO } from 'date-fns';
 
-import { Result } from '../../../common/lib/Result';
 import * as sender from '../../src/bot/sender';
 import { AWSError } from '../../src/errors/AWSError';
+import { Result } from '../../src/lib/Result';
 import * as ClosureFile from '../../src/models/Closure';
 import * as InputFile from '../../src/models/Input';
 import * as UserFile from '../../src/models/User';

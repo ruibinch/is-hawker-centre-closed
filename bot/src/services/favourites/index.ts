@@ -1,5 +1,5 @@
-import { Result } from '../../../../common/lib/Result';
 import { isCommand } from '../../bot/commands';
+import { Result } from '../../lib/Result';
 import type { HawkerCentre } from '../../models/HawkerCentre';
 import type { TelegramUser } from '../../utils/telegram';
 import type { ServiceResponse } from '../../utils/types';

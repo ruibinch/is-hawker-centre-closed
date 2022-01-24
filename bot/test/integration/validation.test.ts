@@ -5,10 +5,10 @@ import type {
   Context,
 } from 'aws-lambda';
 
-import { Result } from '../../../common/lib/Result';
 import { bot } from '../../src/bot/handler';
 import * as sender from '../../src/bot/sender';
 import { AWSError } from '../../src/errors/AWSError';
+import { Result } from '../../src/lib/Result';
 import * as InputFile from '../../src/models/Input';
 import * as UserFile from '../../src/models/User';
 import * as searchFeature from '../../src/services/search';

@@ -1,5 +1,5 @@
-import { Result, type ResultType } from '../../../../common/lib/Result';
 import { initDictionary, type Language } from '../../lang';
+import { Result, type ResultType } from '../../lib/Result';
 import {
   addUser,
   getUserById,

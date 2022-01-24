@@ -1,4 +1,4 @@
-import { Result, type ResultType } from '../../../../common/lib/Result';
+import { Result, type ResultType } from '../../lib/Result';
 import { addFeedbackToDB, Feedback } from '../../models/Feedback';
 import { currentDate } from '../../utils/date';
 import type { TelegramUser } from '../../utils/telegram';

@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
-import { Result } from '../../../common/lib/Result';
 import * as sender from '../../src/bot/sender';
 import { AWSError } from '../../src/errors/AWSError';
+import { Result } from '../../src/lib/Result';
 import * as InputFile from '../../src/models/Input';
 import * as UserFile from '../../src/models/User';
 import * as searchLogic from '../../src/services/search/logic';

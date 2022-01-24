@@ -1,9 +1,9 @@
 import readline from 'readline';
 
-import { Result } from '../../../common/lib/Result';
 import { generateHash } from '../dataCollection';
 import { AWSError } from '../errors/AWSError';
 import { sendDiscordClosuresAdminMessage } from '../ext/discord';
+import { Result } from '../lib/Result';
 import {
   addClosure,
   type Closure,

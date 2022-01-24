@@ -1,4 +1,4 @@
-import type { ResultType } from '../../../common/lib/Result';
+import type { ResultType } from '../lib/Result';
 
 export type Stage = 'dev' | 'prod';
 

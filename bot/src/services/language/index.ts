@@ -1,4 +1,4 @@
-import { Result } from '../../../../common/lib/Result';
+import { Result } from '../../lib/Result';
 import type { TelegramUser } from '../../utils/telegram';
 import type { ServiceResponse } from '../../utils/types';
 import { updateLanguage } from './logic';
