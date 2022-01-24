@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 declare module 'i18n-extract' {
   // ref: https://github.com/babel/babel/blob/master/packages/babel-parser/src/util/location.js
   type Position = {
