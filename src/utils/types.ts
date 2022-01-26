@@ -13,7 +13,7 @@ export type Module =
  * Response types
  */
 
-export type ApiResponse<TReturn> = {
+export type ServerApiResponse<TReturn> = {
   count: number;
   data: TReturn;
 };

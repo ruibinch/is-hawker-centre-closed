@@ -27,6 +27,13 @@ export function formatDateWithTime(date: Date): string {
 }
 
 /**
+ * Returns a date in YYYY-MM-DD format from a full ISO string.
+ */
+export function getDateIgnoringTime(dateString: string): string {
+  return dateString.substring(0, 10);
+}
+
+/**
  * "2100-01-01" is used to represent an indefinite end date.
  */
 export function isIndefiniteEndDate(dateString: string): boolean {
