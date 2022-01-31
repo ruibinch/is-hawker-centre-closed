@@ -1,6 +1,11 @@
 {
   /* Reference: https://www.typescriptlang.org/tsconfig */
   
+  /* ts-node configuration options */
+  "ts-node": {
+    "transpileOnly": true
+  },
+  
   "include": ["src/**/*.ts", "test/**/*.ts"],
   
   /* Options are only uncommented if they are used and override the default option */
