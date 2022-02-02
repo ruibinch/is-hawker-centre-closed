@@ -2,24 +2,12 @@ org: ruibinch
 app: ihcc
 service: ishawkercentreclosed
 
-frameworkVersion: '2'
+frameworkVersion: '3'
 configValidationMode: error
 
+useDotenv: true
+
 custom:
-  dotenv:
-    exclude:
-      - APIG_DEV
-      - APIG_PROD
-    required:
-      env:
-        - BOT_TOKEN_dev
-        - BOT_TOKEN_prod
-        - REGION
-        - TABLE_CLOSURES
-        - TABLE_HC
-        - TABLE_USERS
-        - TABLE_FEEDBACK
-        - TABLE_INPUTS
   webpack:
     packager: yarn
     includeModules: true
@@ -27,7 +15,6 @@ custom:
   handlersFolder: src/handlers
 
 plugins:
-  - serverless-dotenv-plugin
   - serverless-webpack
   - serverless-offline
 
@@ -42,6 +29,18 @@ provider:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
     STAGE: ${self:provider.stage}
     BOT_TOKEN: ${env:BOT_TOKEN_${self:provider.stage}}
+    DISCORD_BOT_TOKEN: ${env:DISCORD_BOT_TOKEN}
+    DISCORD_ADMIN_DEV_CHANNEL_ID: ${env:DISCORD_ADMIN_DEV_CHANNEL_ID}
+    DISCORD_ADMIN_PROD_CHANNEL_ID: ${env:DISCORD_ADMIN_PROD_CHANNEL_ID}
+    DISCORD_CLOSURES_ADMIN_DEV_CHANNEL_ID: ${env:DISCORD_CLOSURES_ADMIN_DEV_CHANNEL_ID}
+    DISCORD_CLOSURES_ADMIN_PROD_CHANNEL_ID: ${env:DISCORD_CLOSURES_ADMIN_PROD_CHANNEL_ID}
+    REGION: ${env:REGION}
+    SENTRY_DSN: ${env:SENTRY_DSN}
+    TABLE_CLOSURES: ${env:TABLE_CLOSURES}
+    TABLE_HC: ${env:TABLE_HC}
+    TABLE_USERS: ${env:TABLE_USERS}
+    TABLE_FEEDBACK: ${env:TABLE_FEEDBACK}
+    TABLE_INPUTS: ${env:TABLE_INPUTS}
   iam:
     role:
       statements:
