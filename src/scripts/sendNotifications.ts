@@ -6,7 +6,8 @@ import type { NotificationMessage } from '../services/notifications/types';
 dotenv.config();
 
 // Note: care should be taken when amending this to avoid sending notifications from prod bot
-process.env.BOT_TOKEN = process.env.BOT_TOKEN_dev;
+// prettier-ignore
+process.env.TELEGRAM_BOT_TOKEN = process.env['TELEGRAM_BOT_TOKEN_DEV'] as string;
 
 export async function run(): Promise<void> {
   const notifications: NotificationMessage[] = [

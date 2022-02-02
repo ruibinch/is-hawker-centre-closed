@@ -7,7 +7,7 @@ import {
   TELEGRAM_MESSAGE_MAX_LENGTH,
 } from '../utils/telegram';
 
-const { BOT_TOKEN } = process.env;
+const { TELEGRAM_BOT_TOKEN } = process.env;
 
 export async function sendMessage(props: {
   chatId: number;
@@ -15,12 +15,14 @@ export async function sendMessage(props: {
 }): Promise<void> {
   const { chatId, message } = props;
 
-  if (!BOT_TOKEN) {
-    throw new Error('[bot > sender > sendMessage] BOT_TOKEN not defined');
+  if (!TELEGRAM_BOT_TOKEN) {
+    throw new Error(
+      '[bot > sender > sendMessage] TELEGRAM_BOT_TOKEN not defined',
+    );
   }
 
   const telegramSendMessageUrl = `${makeTelegramApiBase(
-    BOT_TOKEN,
+    TELEGRAM_BOT_TOKEN,
   )}/sendMessage`;
 
   const makeSendMessageParams = (text: string) => ({
@@ -102,14 +104,14 @@ export async function sendMessageWithChoices(props: {
 }): Promise<void> {
   const { chatId, message, choices } = props;
 
-  if (!BOT_TOKEN) {
+  if (!TELEGRAM_BOT_TOKEN) {
     throw new Error(
-      '[bot > sender > sendMessageWithChoices] BOT_TOKEN not defined',
+      '[bot > sender > sendMessageWithChoices] TELEGRAM_BOT_TOKEN not defined',
     );
   }
 
   const response: TelegramResponseBase = await axios
-    .get(`${makeTelegramApiBase(BOT_TOKEN)}/sendMessage`, {
+    .get(`${makeTelegramApiBase(TELEGRAM_BOT_TOKEN)}/sendMessage`, {
       params: {
         chat_id: chatId,
         text: message,

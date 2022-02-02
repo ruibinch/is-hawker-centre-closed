@@ -5,7 +5,7 @@ type QueryParams = {
 };
 
 /**
- * Naive method of cross-checking the `token` value sent in the HTTP request with the saved BOT_TOKEN.
+ * Naive method of cross-checking the `token` value sent in the HTTP request with the saved TELEGRAM_BOT_TOKEN.
  */
 /* istanbul ignore next */
 export function validateToken(
@@ -14,5 +14,5 @@ export function validateToken(
   if (process.env.NODE_ENV === 'development') return true;
 
   const queryParams = queryStringParameters as QueryParams;
-  return queryParams?.token === process.env.BOT_TOKEN;
+  return queryParams?.token === process.env.TELEGRAM_BOT_TOKEN;
 }

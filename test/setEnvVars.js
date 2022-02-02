@@ -1,1 +1,1 @@
-process.env.BOT_TOKEN = 'pokemongottacatchthemall';
+process.env.TELEGRAM_BOT_TOKEN = 'pokemongottacatchthemall';

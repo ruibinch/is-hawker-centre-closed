@@ -3,17 +3,17 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const botTokenDev = process.env.BOT_TOKEN_dev;
-const botTokenProd = process.env.BOT_TOKEN_prod;
+const telegramBotTokenDev = process.env['TELEGRAM_BOT_TOKEN_DEV'];
+const telegramBotTokenProd = process.env['TELEGRAM_BOT_TOKEN_PROD'];
 const apiGatewayDev = process.env.APIG_DEV;
 const apiGatewayProd = process.env.APIG_PROD;
 const awsRegion = process.env.REGION;
 
-if (botTokenDev === undefined) {
-  throw new Error('BOT_TOKEN_dev missing');
+if (telegramBotTokenDev === undefined) {
+  throw new Error('TELEGRAM_BOT_TOKEN_DEV missing');
 }
-if (botTokenProd === undefined) {
-  throw new Error('BOT_TOKEN_prod missing');
+if (telegramBotTokenProd === undefined) {
+  throw new Error('TELEGRAM_BOT_TOKEN_PROD missing');
 }
 if (apiGatewayDev === undefined) {
   throw new Error('APIG_DEV missing');
@@ -26,8 +26,8 @@ if (awsRegion === undefined) {
 }
 
 const apiParams: [string, string, string, string][] = [
-  [apiGatewayDev, awsRegion, 'dev', botTokenDev],
-  [apiGatewayProd, awsRegion, 'prod', botTokenProd],
+  [apiGatewayDev, awsRegion, 'dev', telegramBotTokenDev],
+  [apiGatewayProd, awsRegion, 'prod', telegramBotTokenProd],
 ];
 
 console.log('Testing APIs of dev and prod environments\n');

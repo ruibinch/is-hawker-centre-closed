@@ -5,31 +5,31 @@ import { makeTelegramApiBase, WebhookInfoResponse } from '../utils/telegram';
 
 dotenv.config();
 
-const [apiGatewayId, region, slsStage] = (() =>
+const region = process.env.REGION;
+const [slsStage, apiGatewayId, telegramBotToken] = (() =>
   process.env.NODE_ENV === 'production'
-    ? [process.env.APIG_PROD, process.env.REGION, 'prod']
-    : [process.env.APIG_DEV, process.env.REGION, 'dev'])();
-const token = process.env[`BOT_TOKEN_${slsStage}`];
+    ? ['prod', process.env.APIG_PROD, process.env['TELEGRAM_BOT_TOKEN_PROD']]
+    : ['dev', process.env.APIG_DEV, process.env['TELEGRAM_BOT_TOKEN_DEV']])();
 
-if (apiGatewayId === undefined) {
-  throw new Error('APIG missing');
-}
 if (region === undefined) {
   throw new Error('REGION missing');
 }
-if (token === undefined) {
-  throw new Error('BOT_TOKEN missing');
+if (apiGatewayId === undefined) {
+  throw new Error('APIG missing');
+}
+if (telegramBotToken === undefined) {
+  throw new Error(`TELEGRAM_BOT_TOKEN missing`);
 }
 
 axios
-  .get(`${makeTelegramApiBase(token)}/setWebhook`, {
+  .get(`${makeTelegramApiBase(telegramBotToken)}/setWebhook`, {
     params: {
-      url: `https://${apiGatewayId}.execute-api.${region}.amazonaws.com/${slsStage}/bot?token=${token}`,
+      url: `https://${apiGatewayId}.execute-api.${region}.amazonaws.com/${slsStage}/bot?token=${telegramBotToken}`,
     },
   })
   .then(() => {
     axios
-      .get(`${makeTelegramApiBase(token)}/getWebhookInfo`)
+      .get(`${makeTelegramApiBase(telegramBotToken)}/getWebhookInfo`)
       .then((response) => {
         const webhookInfoResponse = response.data as WebhookInfoResponse;
         console.log(`Webhook URL: ${webhookInfoResponse.result.url}`);
