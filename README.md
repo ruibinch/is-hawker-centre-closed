@@ -9,7 +9,7 @@ Create a bot with the [BotFather](https://t.me/botfather) and note down the retu
 Update this bot token in the `.env` file (see [Setup](#setup) section below).
 
 > Typically, 2 bots are used - 1 for dev environment and 1 for prod environment.
-> If you only want to have 1 bot, update `serverless.yml` accordingly to read the desired BOT_TOKEN value.
+> If you only want to have 1 bot, update `serverless.yml` accordingly to read the desired TELEGRAM_BOT_TOKEN value.
 
 ## `.env` file
 
@@ -17,8 +17,15 @@ An `.env` file with the following keys specified is required (the values for `AP
 
 ```
 # Telegram
-BOT_TOKEN_dev=11111111:abcdefghijkl
-BOT_TOKEN_prod=22222222:abcdefghijkl
+TELEGRAM_BOT_TOKEN_DEV=11111111:abcdefghijkl
+TELEGRAM_BOT_TOKEN_PROD=22222222:abcdefghijkl
+
+# Discord (only if Discord integration is desired)
+DISCORD_BOT_TOKEN=abcdefghijkl.123456789.lkjhgfedcba
+DISCORD_ADMIN_DEV_CHANNEL_ID=1234567890987654321
+DISCORD_ADMIN_PROD_CHANNEL_ID=1234567890987654321
+DISCORD_CLOSURES_ADMIN_DEV_CHANNEL_ID=1234567890987654321
+DISCORD_CLOSURES_ADMIN_PROD_CHANNEL_ID=1234567890987654321
 
 # Environment
 REGION=eu-central-1

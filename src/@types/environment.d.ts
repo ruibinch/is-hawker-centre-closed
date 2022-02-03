@@ -6,14 +6,12 @@ declare namespace NodeJS {
 
     /* Injected by serverless.yml */
 
-    BOT_TOKEN: string;
     STAGE: string;
 
     /* Defined in .env */
 
     // Telegram
-    BOT_TOKEN_dev: string;
-    BOT_TOKEN_prod: string;
+    TELEGRAM_BOT_TOKEN: string;
 
     // Discord
     DISCORD_BOT_TOKEN: string;

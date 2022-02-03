@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 const client = new Discord.Client();
+// These are not defined using stage params as they are run via standalone scripts as well
 const adminDevChannelId = process.env.DISCORD_ADMIN_DEV_CHANNEL_ID ?? '';
 const adminProdChannelId = process.env.DISCORD_ADMIN_PROD_CHANNEL_ID ?? '';
 const closuresAdminDevChannelId =
