@@ -150,3 +150,9 @@ functions:
       - http:
           method: post
           path: /api/inputs
+  hcFavouritesCount:
+    handler: ${self:custom.serverHandlersFolder}/hcFavouritesCount.handler
+    events:
+      - http:
+          method: get
+          path: /api/hcFavouritesCount
