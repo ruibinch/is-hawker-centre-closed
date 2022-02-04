@@ -13,7 +13,7 @@ custom:
     includeModules: true
   botFolder: src/bot
   handlersFolder: src/handlers
-  serverFolder: src/server
+  serverHandlersFolder: src/server/handlers
 
 plugins:
   - serverless-webpack
@@ -144,8 +144,8 @@ functions:
     maximumEventAge: 60
     maximumRetryAttempts: 0
   # server
-  searchInputs:
-    handler: ${self:custom.serverFolder}/handler.searchInputs
+  getInputs:
+    handler: ${self:custom.serverHandlersFolder}/getInputs.handler
     events:
       - http:
           method: post

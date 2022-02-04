@@ -3,7 +3,7 @@ export type BaseQueryParams = {
   size?: number;
 };
 
-export type SearchInputsParams = BaseQueryParams & {
+export type GetInputsParams = BaseQueryParams & {
   fromDate?: string;
   toDate?: string;
   userId?: number;

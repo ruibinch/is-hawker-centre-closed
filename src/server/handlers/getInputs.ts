@@ -6,16 +6,16 @@ import type {
 import { isAfter, isBefore, parseISO } from 'date-fns';
 import dotenv from 'dotenv';
 
-import { makeCallbackWrapper } from '../ext/aws/lambda';
-import { getAllInputs, Input } from '../models/Input';
-import { getDateIgnoringTime } from '../utils/date';
-import type { ServerApiResponse } from '../utils/types';
-import { paginateResults, sortInputsByMostRecent } from './helpers';
-import type { SearchInputsParams } from './types';
+import { makeCallbackWrapper } from '../../ext/aws/lambda';
+import { getAllInputs, Input } from '../../models/Input';
+import { getDateIgnoringTime } from '../../utils/date';
+import type { ServerApiResponse } from '../../utils/types';
+import { paginateResults } from '../helpers';
+import type { GetInputsParams } from '../types';
 
 dotenv.config();
 
-export const searchInputs: APIGatewayProxyHandler = async (
+export const handler: APIGatewayProxyHandler = async (
   event: APIGatewayProxyEvent,
   _context,
   callback,
@@ -31,7 +31,7 @@ export const searchInputs: APIGatewayProxyHandler = async (
     return callbackWrapper(400, 'Error obtaining inputs');
   }
 
-  const params = JSON.parse(event.body) as SearchInputsParams;
+  const params = JSON.parse(event.body) as GetInputsParams;
   const inputsAll = getAllInputsResponse.value;
 
   const inputs = inputsAll.filter((input) => {
@@ -67,3 +67,12 @@ export const searchInputs: APIGatewayProxyHandler = async (
 
   return callbackWrapper(200, JSON.stringify(responseBody));
 };
+
+function sortInputsByMostRecent(inputs: Input[]) {
+  return [...inputs].sort((a, b) => {
+    // inputId is of format `{{userId}}-{{unixTime}}`
+    const aTime = Number(a.inputId.split('-')[1]);
+    const bTime = Number(b.inputId.split('-')[1]);
+    return bTime - aTime;
+  });
+}
