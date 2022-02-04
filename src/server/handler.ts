@@ -10,7 +10,7 @@ import { makeCallbackWrapper } from '../ext/aws/lambda';
 import { getAllInputs, Input } from '../models/Input';
 import { getDateIgnoringTime } from '../utils/date';
 import type { ServerApiResponse } from '../utils/types';
-import { sortInputsByMostRecent } from './helpers';
+import { paginateResults, sortInputsByMostRecent } from './helpers';
 import type { SearchInputsParams } from './types';
 
 dotenv.config();
@@ -57,9 +57,12 @@ export const searchInputs: APIGatewayProxyHandler = async (
     return true;
   });
 
+  const inputsSorted = sortInputsByMostRecent(inputs);
+  const inputsSortedPaginated = paginateResults(inputsSorted, params);
+
   const responseBody: ServerApiResponse<Input[]> = {
-    count: inputs.length,
-    data: sortInputsByMostRecent(inputs),
+    count: inputsSortedPaginated.length,
+    data: inputsSortedPaginated,
   };
 
   return callbackWrapper(200, JSON.stringify(responseBody));
