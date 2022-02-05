@@ -1,7 +1,8 @@
 import { Input } from '../models/Input';
+import { User } from '../models/User';
 import { BaseQueryParams } from './types';
 
-export function paginateResults<T extends Input>(
+export function paginateResults<T extends Input | User>(
   results: T[],
   params: BaseQueryParams,
 ): T[] {

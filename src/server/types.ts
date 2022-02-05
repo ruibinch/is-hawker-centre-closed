@@ -8,3 +8,7 @@ export type GetInputsParams = BaseQueryParams & {
   toDate?: string;
   userId?: number;
 };
+
+export type GetUsersParams = BaseQueryParams & {
+  userId?: number;
+};

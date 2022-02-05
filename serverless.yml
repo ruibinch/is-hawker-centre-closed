@@ -150,6 +150,12 @@ functions:
       - http:
           method: post
           path: /api/inputs
+  getUsers:
+    handler: ${self:custom.serverHandlersFolder}/getUsers.handler
+    events:
+      - http:
+          method: post
+          path: /api/users
   hcFavouritesCount:
     handler: ${self:custom.serverHandlersFolder}/hcFavouritesCount.handler
     events:
