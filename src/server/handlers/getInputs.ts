@@ -6,7 +6,7 @@ import type {
 import { isAfter, isBefore, parseISO } from 'date-fns';
 import dotenv from 'dotenv';
 
-import { makeCallbackWrapper } from '../../ext/aws/lambda';
+import { makeLambdaResponse } from '../../ext/aws/lambda';
 import { getAllInputs, Input } from '../../models/Input';
 import { getDateIgnoringTime } from '../../utils/date';
 import type { ServerApiResponse } from '../../utils/types';
@@ -21,22 +21,18 @@ dotenv.config();
 
 export const handler: APIGatewayProxyHandler = async (
   event: APIGatewayProxyEvent,
-  _context,
-  callback,
 ): Promise<APIGatewayProxyResult> => {
-  const callbackWrapper = makeCallbackWrapper(callback);
-
   if (!validateServerRequest(event.headers)) {
-    return callbackWrapper(403);
+    return makeLambdaResponse(403);
   }
 
   if (!event.body) {
-    return callbackWrapper(400, wrapErrorMessage('Missing request body'));
+    return makeLambdaResponse(400, wrapErrorMessage('Missing request body'));
   }
 
   const getAllInputsResponse = await getAllInputs();
   if (getAllInputsResponse.isErr) {
-    return callbackWrapper(400, wrapErrorMessage('Error obtaining inputs'));
+    return makeLambdaResponse(400, wrapErrorMessage('Error obtaining inputs'));
   }
 
   const params = JSON.parse(event.body) as GetInputsParams;
@@ -73,7 +69,7 @@ export const handler: APIGatewayProxyHandler = async (
     data: inputsSortedPaginated,
   };
 
-  return callbackWrapper(200, JSON.stringify(responseBody));
+  return makeLambdaResponse(200, responseBody);
 };
 
 function sortInputsByMostRecent(inputs: Input[]) {

@@ -5,7 +5,7 @@ import type {
 } from 'aws-lambda';
 import dotenv from 'dotenv';
 
-import { makeCallbackWrapper } from '../../ext/aws/lambda';
+import { makeLambdaResponse } from '../../ext/aws/lambda';
 import { getAllUsers, User } from '../../models/User';
 import type { ServerApiResponse } from '../../utils/types';
 import {
@@ -19,22 +19,18 @@ dotenv.config();
 
 export const handler: APIGatewayProxyHandler = async (
   event: APIGatewayProxyEvent,
-  _context,
-  callback,
 ): Promise<APIGatewayProxyResult> => {
-  const callbackWrapper = makeCallbackWrapper(callback);
-
   if (!validateServerRequest(event.headers)) {
-    return callbackWrapper(403);
+    return makeLambdaResponse(403);
   }
 
   if (!event.body) {
-    return callbackWrapper(400, wrapErrorMessage('Missing request body'));
+    return makeLambdaResponse(400, wrapErrorMessage('Missing request body'));
   }
 
   const getAllUsersResponse = await getAllUsers();
   if (getAllUsersResponse.isErr) {
-    return callbackWrapper(400, wrapErrorMessage('Error obtaining users'));
+    return makeLambdaResponse(400, wrapErrorMessage('Error obtaining users'));
   }
 
   const params = JSON.parse(event.body) as GetUsersParams;
@@ -52,5 +48,5 @@ export const handler: APIGatewayProxyHandler = async (
     data: usersPaginated,
   };
 
-  return callbackWrapper(200, JSON.stringify(responseBody));
+  return makeLambdaResponse(200, responseBody);
 };
