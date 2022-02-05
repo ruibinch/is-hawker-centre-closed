@@ -34,6 +34,6 @@ declare namespace NodeJS {
     TABLE_INPUTS: string;
 
     // Server
-    SERVER_API_TOKEN: string;
+    SERVER_AUTH_TOKEN: string;
   }
 }

@@ -10,7 +10,11 @@ import { makeCallbackWrapper } from '../../ext/aws/lambda';
 import { getAllInputs, Input } from '../../models/Input';
 import { getDateIgnoringTime } from '../../utils/date';
 import type { ServerApiResponse } from '../../utils/types';
-import { paginateResults, wrapErrorMessage } from '../helpers';
+import {
+  paginateResults,
+  validateServerRequest,
+  wrapErrorMessage,
+} from '../helpers';
 import type { GetInputsParams } from '../types';
 
 dotenv.config();
@@ -21,6 +25,10 @@ export const handler: APIGatewayProxyHandler = async (
   callback,
 ): Promise<APIGatewayProxyResult> => {
   const callbackWrapper = makeCallbackWrapper(callback);
+
+  if (!validateServerRequest(event.headers)) {
+    return callbackWrapper(403);
+  }
 
   if (!event.body) {
     return callbackWrapper(400, wrapErrorMessage('Missing request body'));

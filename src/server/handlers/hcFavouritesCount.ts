@@ -8,16 +8,20 @@ import dotenv from 'dotenv';
 import { makeCallbackWrapper } from '../../ext/aws/lambda';
 import { getAllHawkerCentres } from '../../models/HawkerCentre';
 import { getAllUsers } from '../../models/User';
-import { wrapErrorMessage } from '../helpers';
+import { validateServerRequest, wrapErrorMessage } from '../helpers';
 
 dotenv.config();
 
 export const handler: APIGatewayProxyHandler = async (
-  _event: APIGatewayProxyEvent,
+  event: APIGatewayProxyEvent,
   _context,
   callback,
 ): Promise<APIGatewayProxyResult> => {
   const callbackWrapper = makeCallbackWrapper(callback);
+
+  if (!validateServerRequest(event.headers)) {
+    return callbackWrapper(403);
+  }
 
   const getAllUsersResponse = await getAllUsers();
   if (getAllUsersResponse.isErr) {

@@ -8,7 +8,11 @@ import dotenv from 'dotenv';
 import { makeCallbackWrapper } from '../../ext/aws/lambda';
 import { getAllUsers, User } from '../../models/User';
 import type { ServerApiResponse } from '../../utils/types';
-import { paginateResults, wrapErrorMessage } from '../helpers';
+import {
+  paginateResults,
+  validateServerRequest,
+  wrapErrorMessage,
+} from '../helpers';
 import type { GetUsersParams } from '../types';
 
 dotenv.config();
@@ -19,6 +23,10 @@ export const handler: APIGatewayProxyHandler = async (
   callback,
 ): Promise<APIGatewayProxyResult> => {
   const callbackWrapper = makeCallbackWrapper(callback);
+
+  if (!validateServerRequest(event.headers)) {
+    return callbackWrapper(403);
+  }
 
   if (!event.body) {
     return callbackWrapper(400, wrapErrorMessage('Missing request body'));
