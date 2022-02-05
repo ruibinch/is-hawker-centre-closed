@@ -10,7 +10,7 @@ import { makeCallbackWrapper } from '../../ext/aws/lambda';
 import { getAllInputs, Input } from '../../models/Input';
 import { getDateIgnoringTime } from '../../utils/date';
 import type { ServerApiResponse } from '../../utils/types';
-import { paginateResults } from '../helpers';
+import { paginateResults, wrapErrorMessage } from '../helpers';
 import type { GetInputsParams } from '../types';
 
 dotenv.config();
@@ -23,12 +23,12 @@ export const handler: APIGatewayProxyHandler = async (
   const callbackWrapper = makeCallbackWrapper(callback);
 
   if (!event.body) {
-    return callbackWrapper(400, 'Missing request body');
+    return callbackWrapper(400, wrapErrorMessage('Missing request body'));
   }
 
   const getAllInputsResponse = await getAllInputs();
   if (getAllInputsResponse.isErr) {
-    return callbackWrapper(400, 'Error obtaining inputs');
+    return callbackWrapper(400, wrapErrorMessage('Error obtaining inputs'));
   }
 
   const params = JSON.parse(event.body) as GetInputsParams;

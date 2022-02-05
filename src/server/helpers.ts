@@ -13,3 +13,9 @@ export function paginateResults<T extends Input | User>(
   const endIndex = startIndex + size;
   return results.slice(startIndex, endIndex);
 }
+
+export function wrapErrorMessage(errorMessage: string) {
+  return JSON.stringify({
+    error: errorMessage,
+  });
+}

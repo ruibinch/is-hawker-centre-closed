@@ -8,7 +8,7 @@ import dotenv from 'dotenv';
 import { makeCallbackWrapper } from '../../ext/aws/lambda';
 import { getAllUsers, User } from '../../models/User';
 import type { ServerApiResponse } from '../../utils/types';
-import { paginateResults } from '../helpers';
+import { paginateResults, wrapErrorMessage } from '../helpers';
 import type { GetUsersParams } from '../types';
 
 dotenv.config();
@@ -21,12 +21,12 @@ export const handler: APIGatewayProxyHandler = async (
   const callbackWrapper = makeCallbackWrapper(callback);
 
   if (!event.body) {
-    return callbackWrapper(400, 'Missing request body');
+    return callbackWrapper(400, wrapErrorMessage('Missing request body'));
   }
 
   const getAllUsersResponse = await getAllUsers();
   if (getAllUsersResponse.isErr) {
-    return callbackWrapper(400, 'Error obtaining users');
+    return callbackWrapper(400, wrapErrorMessage('Error obtaining users'));
   }
 
   const params = JSON.parse(event.body) as GetUsersParams;

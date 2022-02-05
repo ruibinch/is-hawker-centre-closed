@@ -8,6 +8,7 @@ import dotenv from 'dotenv';
 import { makeCallbackWrapper } from '../../ext/aws/lambda';
 import { getAllHawkerCentres } from '../../models/HawkerCentre';
 import { getAllUsers } from '../../models/User';
+import { wrapErrorMessage } from '../helpers';
 
 dotenv.config();
 
@@ -20,12 +21,15 @@ export const handler: APIGatewayProxyHandler = async (
 
   const getAllUsersResponse = await getAllUsers();
   if (getAllUsersResponse.isErr) {
-    return callbackWrapper(400, 'Error obtaining users');
+    return callbackWrapper(400, wrapErrorMessage('Error obtaining users'));
   }
 
   const getAllHawkerCentresResponse = await getAllHawkerCentres();
   if (getAllHawkerCentresResponse.isErr) {
-    return callbackWrapper(400, 'Error obtaining hawker centres');
+    return callbackWrapper(
+      400,
+      wrapErrorMessage('Error obtaining hawker centres'),
+    );
   }
 
   const users = getAllUsersResponse.value;
