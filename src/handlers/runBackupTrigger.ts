@@ -1,8 +1,8 @@
 import * as Sentry from '@sentry/serverless';
-import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import type { APIGatewayProxyResult } from 'aws-lambda';
 import dotenv from 'dotenv';
 
-import { makeCallbackWrapper } from '../ext/aws/lambda';
+import { makeLambdaResponse } from '../ext/aws/lambda';
 import { run as executeRunBackup } from '../scripts/runBackup';
 
 dotenv.config();
@@ -13,21 +13,15 @@ Sentry.AWSLambda.init({
 });
 
 export const handler = Sentry.AWSLambda.wrapHandler(
-  async (
-    _event: APIGatewayProxyEvent,
-    _context,
-    callback,
-  ): Promise<APIGatewayProxyResult> => {
-    const callbackWrapper = makeCallbackWrapper(callback);
-
+  async (): Promise<APIGatewayProxyResult> => {
     try {
       await executeRunBackup();
-      return callbackWrapper(204);
+      return makeLambdaResponse(204);
     } catch (error) {
       console.error('[runBackupTrigger]', error);
       Sentry.captureException(error);
 
-      return callbackWrapper(400);
+      return makeLambdaResponse(400);
     }
   },
 );

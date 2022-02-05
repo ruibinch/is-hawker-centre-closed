@@ -5,7 +5,7 @@ import type {
 } from 'aws-lambda';
 import dotenv from 'dotenv';
 
-import { makeCallbackWrapper } from '../ext/aws/lambda';
+import { makeLambdaResponse } from '../ext/aws/lambda';
 import { Result, type ResultType } from '../lib/Result';
 import { getAllInputs, type Input } from '../models/Input';
 import { getAllUsers, type User } from '../models/User';
@@ -16,19 +16,15 @@ const serverApiToken = process.env.SERVER_API_TOKEN ?? '';
 
 export const getInputs: APIGatewayProxyHandler = async (
   event,
-  _context,
-  callback,
 ): Promise<APIGatewayProxyResult> => {
-  const callbackWrapper = makeCallbackWrapper(callback);
-
   const authResult = performAuth(event.headers);
   if (authResult.isErr) {
-    return callbackWrapper(403);
+    return makeLambdaResponse(403);
   }
 
   const getAllInputsResult = await getAllInputs();
   if (getAllInputsResult.isErr) {
-    return callbackWrapper(400, JSON.stringify(getAllInputsResult.value));
+    return makeLambdaResponse(400, JSON.stringify(getAllInputsResult.value));
   }
 
   const inputs = getAllInputsResult.value;
@@ -37,24 +33,20 @@ export const getInputs: APIGatewayProxyHandler = async (
     data: inputs,
   };
 
-  return callbackWrapper(200, JSON.stringify(responseBody));
+  return makeLambdaResponse(200, JSON.stringify(responseBody));
 };
 
 export const getUsers: APIGatewayProxyHandler = async (
   event,
-  _context,
-  callback,
 ): Promise<APIGatewayProxyResult> => {
-  const callbackWrapper = makeCallbackWrapper(callback);
-
   const authResult = performAuth(event.headers);
   if (authResult.isErr) {
-    return callbackWrapper(403);
+    return makeLambdaResponse(403);
   }
 
   const getAllUsersResult = await getAllUsers();
   if (getAllUsersResult.isErr) {
-    return callbackWrapper(400, JSON.stringify(getAllUsersResult.value));
+    return makeLambdaResponse(400, JSON.stringify(getAllUsersResult.value));
   }
 
   const users = getAllUsersResult.value;
@@ -63,7 +55,7 @@ export const getUsers: APIGatewayProxyHandler = async (
     data: users,
   };
 
-  return callbackWrapper(200, JSON.stringify(responseBody));
+  return makeLambdaResponse(200, JSON.stringify(responseBody));
 };
 
 function performAuth(headers: APIGatewayProxyEventHeaders): ResultType {

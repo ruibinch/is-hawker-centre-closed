@@ -1,9 +1,9 @@
 import * as Sentry from '@sentry/serverless';
-import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import type { APIGatewayProxyResult } from 'aws-lambda';
 import dotenv from 'dotenv';
 
 import { sendMessage } from '../bot/sender';
-import { makeCallbackWrapper } from '../ext/aws/lambda';
+import { makeLambdaResponse } from '../ext/aws/lambda';
 import { sendDiscordAdminMessage } from '../ext/discord';
 import { constructNotifications } from '../services/notifications';
 import type { NotificationMessage } from '../services/notifications/types';
@@ -17,13 +17,7 @@ Sentry.AWSLambda.init({
 });
 
 export const handler = Sentry.AWSLambda.wrapHandler(
-  async (
-    _event: APIGatewayProxyEvent,
-    _context,
-    callback,
-  ): Promise<APIGatewayProxyResult> => {
-    const callbackWrapper = makeCallbackWrapper(callback);
-
+  async (): Promise<APIGatewayProxyResult> => {
     try {
       const notificationsOutput = await constructNotifications();
       if (notificationsOutput.isErr) {
@@ -42,14 +36,14 @@ export const handler = Sentry.AWSLambda.wrapHandler(
             .join('\n')}`,
       );
 
-      return callbackWrapper(204);
+      return makeLambdaResponse(204);
     } catch (error) {
       if (process.env.NODE_ENV !== 'test') {
         console.error('[notificationsTrigger]', error);
         Sentry.captureException(error);
       }
 
-      return callbackWrapper(400);
+      return makeLambdaResponse(400);
     }
   },
 );

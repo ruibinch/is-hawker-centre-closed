@@ -3,7 +3,7 @@ import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import dotenv from 'dotenv';
 
 import { ServiceError } from '../errors/ServiceError';
-import { makeCallbackWrapper } from '../ext/aws/lambda';
+import { makeLambdaResponse } from '../ext/aws/lambda';
 import { initDictionary } from '../lang';
 import {
   maybeHandleFavouriteSelection,
@@ -30,28 +30,23 @@ Sentry.AWSLambda.init({
 });
 
 export const bot = Sentry.AWSLambda.wrapHandler(
-  async (
-    event: APIGatewayProxyEvent,
-    _context,
-    callback,
-  ): Promise<APIGatewayProxyResult> => {
-    const callbackWrapper = makeCallbackWrapper(callback);
+  async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     let chatId: number | undefined;
 
     // this try-catch loop will catch all the errors that have bubbled up from the child functions
     try {
       if (!validateToken(event.queryStringParameters)) {
-        return callbackWrapper(403);
+        return makeLambdaResponse(403);
       }
 
       if (!event.body) {
-        return callbackWrapper(400);
+        return makeLambdaResponse(400);
       }
 
       const telegramUpdate = JSON.parse(event.body) as TelegramUpdate;
       const telegramMessage = extractTelegramMessage(telegramUpdate);
       if (telegramMessage === null) {
-        return callbackWrapper(204);
+        return makeLambdaResponse(204);
       }
 
       const { from: telegramUser } = telegramMessage;
@@ -64,12 +59,12 @@ export const bot = Sentry.AWSLambda.wrapHandler(
       if (validationResponse.isErr) {
         const { errorMessage } = validationResponse.value;
         await sendMessage({ chatId, message: errorMessage });
-        return callbackWrapper(200);
+        return makeLambdaResponse(200);
       }
 
       const { textSanitised } = validationResponse.value;
       if (textSanitised === null) {
-        return callbackWrapper(204);
+        return makeLambdaResponse(204);
       }
 
       // tmp: save all incoming inputs for now for better usage understanding
@@ -79,7 +74,7 @@ export const bot = Sentry.AWSLambda.wrapHandler(
         const commandMessage = makeCommandMessage(textSanitised);
         if (commandMessage) {
           await sendMessage({ chatId, message: commandMessage });
-          return callbackWrapper(200);
+          return makeLambdaResponse(200);
         }
       }
 
@@ -116,7 +111,7 @@ export const bot = Sentry.AWSLambda.wrapHandler(
         await sendMessage({ chatId, message });
       }
 
-      return callbackWrapper(200);
+      return makeLambdaResponse(200);
     } catch (error) {
       /* istanbul ignore next */
       if (process.env.NODE_ENV !== 'test') {
@@ -126,11 +121,11 @@ export const bot = Sentry.AWSLambda.wrapHandler(
 
       if (chatId !== undefined) {
         await sendMessage({ chatId, message: makeGenericErrorMessage() });
-        return callbackWrapper(200);
+        return makeLambdaResponse(200);
       }
 
       /* istanbul ignore next */
-      return callbackWrapper(204);
+      return makeLambdaResponse(204);
     }
   },
 );
