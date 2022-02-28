@@ -44,6 +44,7 @@ export const handler: APIGatewayProxyHandler = async (
   const usersPaginated = paginateResults(users, params);
 
   const responseBody: ServerApiResponse<User[]> = {
+    total: users.length,
     count: usersPaginated.length,
     data: usersPaginated,
   };

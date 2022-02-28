@@ -14,6 +14,7 @@ export type Module =
  */
 
 export type ServerApiResponse<TReturn> = {
+  total: number;
   count: number;
   data: TReturn;
 };
