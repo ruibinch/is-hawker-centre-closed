@@ -12,7 +12,8 @@ import {
   isValidClosureReason,
 } from '../models/Closure';
 import { getHawkerCentreById } from '../models/HawkerCentre';
-import { getStage, prettifyJSON } from '../utils';
+import { prettifyJSON } from '../utils';
+import { getStage } from '../utils/stage';
 
 const args = process.argv.slice(2);
 const [operation, ...inputArgs] = args;

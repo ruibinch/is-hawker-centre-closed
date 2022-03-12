@@ -7,13 +7,12 @@ import dotenv from 'dotenv';
 
 import { makeLambdaResponse } from '../../ext/aws/lambda';
 import { getAllUsers, User } from '../../models/User';
-import type { ServerApiResponse } from '../../utils/types';
 import {
   paginateResults,
   validateServerRequest,
   wrapErrorMessage,
 } from '../helpers';
-import type { GetUsersParams } from '../types';
+import type { GetUsersParams, ServerApiResponse } from '../types';
 
 dotenv.config();
 

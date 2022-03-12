@@ -4,8 +4,9 @@ import { DBError } from '../errors/DBError';
 import { initAWSConfig, TABLE_FEEDBACK, TABLE_USERS } from '../ext/aws/config';
 import { DDB_PROPAGATE_DURATION } from '../ext/aws/dynamodb';
 import { sendDiscordAdminMessage } from '../ext/discord';
-import { getStage, sleep } from '../utils';
+import { sleep } from '../utils';
 import { formatDateWithTime } from '../utils/date';
+import { getStage } from '../utils/stage';
 
 const args = process.argv.slice(2);
 const [keyword] = args;

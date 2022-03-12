@@ -43,7 +43,7 @@
           "**/models/*.ts",
           "**/scripts/*.ts",
           "./src/ext/aws/config.ts",
-          "./test/unit/lang/lang.test.ts"
+          "./test/unit/bot/lang.test.ts"
         ],
         "packageDir": ["./"]
       }

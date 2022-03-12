@@ -7,8 +7,8 @@ import {
 import { sendDiscordAdminMessage } from '../ext/discord';
 import { uploadClosures } from '../models/Closure';
 import { uploadHawkerCentres } from '../models/HawkerCentre';
-import { getStage } from '../utils';
 import { currentDateInYYYYMMDD } from '../utils/date';
+import { getStage } from '../utils/stage';
 
 const args = process.argv.slice(2);
 const [isUploadToAws] = args;

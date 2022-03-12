@@ -5,7 +5,7 @@ import {
   makeTelegramApiBase,
   TelegramResponseBase,
   TELEGRAM_MESSAGE_MAX_LENGTH,
-} from '../utils/telegram';
+} from './telegram';
 
 const { TELEGRAM_BOT_TOKEN } = process.env;
 

@@ -2,7 +2,8 @@ import { type NEAData } from '../dataCollection';
 import { sendDiscordAdminMessage } from '../ext/discord';
 import { type Closure, getAllClosures, isClosure } from '../models/Closure';
 import { getAllHawkerCentres, type HawkerCentre } from '../models/HawkerCentre';
-import { getStage, prettifyJSON } from '../utils';
+import { prettifyJSON } from '../utils';
+import { getStage } from '../utils/stage';
 import { run as executeManageDb } from './manageDb';
 import { run as executeSeedDb } from './seedDb';
 

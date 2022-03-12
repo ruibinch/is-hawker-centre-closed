@@ -5,7 +5,8 @@ import { initAWSConfig, TABLE_CLOSURES } from '../ext/aws/config';
 import { getDynamoDBBillingDetails } from '../ext/aws/dynamodb';
 import { sendDiscordAdminMessage } from '../ext/discord';
 import { Result, type ResultType } from '../lib/Result';
-import { getStage, prettifyJSON, wrapUnknownError } from '../utils';
+import { prettifyJSON, wrapUnknownError } from '../utils';
+import { getStage } from '../utils/stage';
 import type { HawkerCentre } from './HawkerCentre';
 
 initAWSConfig();
