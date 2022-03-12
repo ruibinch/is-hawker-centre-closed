@@ -12,3 +12,9 @@ export type GetInputsParams = BaseQueryParams & {
 export type GetUsersParams = BaseQueryParams & {
   userId?: number;
 };
+
+export type ServerApiResponse<TReturn> = {
+  total: number;
+  count: number;
+  data: TReturn;
+};

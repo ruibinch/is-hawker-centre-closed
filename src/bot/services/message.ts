@@ -1,6 +1,7 @@
 import { t } from '../../lang';
 import type { Closure, ClosureReason } from '../../models/Closure';
-import { formatDateDisplay, isIndefiniteEndDate } from '../../utils/date';
+import { isIndefiniteEndDate } from '../../utils/date';
+import { formatDateDisplay } from './helpers';
 
 export function makeGenericErrorMessage(): string {
   return t('validation.error.generic');

@@ -7,8 +7,9 @@ import { initAWSConfig, TABLE_USERS } from '../ext/aws/config';
 import { getDynamoDBBillingDetails } from '../ext/aws/dynamodb';
 import type { Language } from '../lang';
 import { Result, type ResultType } from '../lib/Result';
-import { getStage, wrapUnknownError } from '../utils';
+import { wrapUnknownError } from '../utils';
 import { currentDate } from '../utils/date';
+import { getStage } from '../utils/stage';
 
 initAWSConfig();
 const dynamoDb = new AWS.DynamoDB.DocumentClient();

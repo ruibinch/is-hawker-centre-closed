@@ -1,5 +1,14 @@
-import { endOfDay, isPast, parseISO } from 'date-fns';
+import {
+  endOfDay,
+  format,
+  isPast,
+  isToday,
+  isTomorrow,
+  isYesterday,
+  parseISO,
+} from 'date-fns';
 
+import { t } from '../../lang';
 import type { Closure } from '../../models/Closure';
 
 /**
@@ -15,6 +24,30 @@ export function getNextOccurringClosure(
   );
 
   return closuresSortedAndFiltered[0];
+}
+
+/**
+ * Formats the input date in YYYY-MM-DD format or of Date type to dd-MMM format.
+ * If shouldDisplayTemporalPronoun is set to true, then return "yesterday", "today" or "tomorrow" when applicable.
+ */
+export function formatDateDisplay(
+  dateRaw: string | Date,
+  shouldDisplayTemporalPronoun = false,
+): string {
+  const date = dateRaw instanceof Date ? dateRaw : parseISO(dateRaw);
+  if (shouldDisplayTemporalPronoun) {
+    if (isYesterday(date)) {
+      return t('common.time.yesterday');
+    }
+    if (isToday(date)) {
+      return t('common.time.today');
+    }
+    if (isTomorrow(date)) {
+      return t('common.time.tomorrow');
+    }
+  }
+
+  return format(date, t('common.time.date-format'));
 }
 
 /**

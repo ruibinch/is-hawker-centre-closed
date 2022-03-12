@@ -5,15 +5,9 @@ import {
   endOfDay,
   format,
   formatISO,
-  isToday,
-  isTomorrow,
   isWithinInterval,
-  isYesterday,
-  parseISO,
   subDays,
 } from 'date-fns';
-
-import { t } from '../lang';
 
 export function currentDate(): Date {
   return new Date(Date.now());
@@ -79,28 +73,4 @@ export function makeNextWeekInterval(date: Date): {
     start: nextWeekStart,
     end: nextWeekEnd,
   };
-}
-
-/**
- * Formats the input date in YYYY-MM-DD format or of Date type to dd-MMM format.
- * If shouldDisplayTemporalPronoun is set to true, then return "yesterday", "today" or "tomorrow" when applicable.
- */
-export function formatDateDisplay(
-  dateRaw: string | Date,
-  shouldDisplayTemporalPronoun = false,
-): string {
-  const date = dateRaw instanceof Date ? dateRaw : parseISO(dateRaw);
-  if (shouldDisplayTemporalPronoun) {
-    if (isYesterday(date)) {
-      return t('common.time.yesterday');
-    }
-    if (isToday(date)) {
-      return t('common.time.today');
-    }
-    if (isTomorrow(date)) {
-      return t('common.time.tomorrow');
-    }
-  }
-
-  return format(date, t('common.time.date-format'));
 }

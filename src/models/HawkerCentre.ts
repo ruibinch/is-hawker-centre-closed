@@ -5,7 +5,8 @@ import { initAWSConfig, TABLE_HC } from '../ext/aws/config';
 import { getDynamoDBBillingDetails } from '../ext/aws/dynamodb';
 import { sendDiscordAdminMessage } from '../ext/discord';
 import { Result, type ResultType } from '../lib/Result';
-import { getStage, wrapUnknownError } from '../utils';
+import { wrapUnknownError } from '../utils';
+import { getStage } from '../utils/stage';
 
 initAWSConfig();
 const dynamoDb = new AWS.DynamoDB.DocumentClient();

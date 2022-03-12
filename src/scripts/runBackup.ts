@@ -3,8 +3,9 @@ import * as AWS from 'aws-sdk';
 import { DBError } from '../errors/DBError';
 import { initAWSConfig, TABLE_FEEDBACK, TABLE_USERS } from '../ext/aws/config';
 import { sendDiscordAdminMessage } from '../ext/discord';
-import { getStage, notEmpty } from '../utils';
+import { notEmpty } from '../utils';
 import { currentDateInYYYYMMDD, formatDateWithTime } from '../utils/date';
+import { getStage } from '../utils/stage';
 
 initAWSConfig();
 const dynamoDb = new AWS.DynamoDB();

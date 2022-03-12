@@ -1,10 +1,7 @@
 import { t } from '../../../lang';
 import type { Closure } from '../../../models/Closure';
-import {
-  currentDate,
-  formatDateDisplay,
-  makeNextWeekInterval,
-} from '../../../utils/date';
+import { currentDate, makeNextWeekInterval } from '../../../utils/date';
+import { formatDateDisplay } from '../helpers';
 import { makeClosureListItem } from '../message';
 import { isSearchModifierTimeBased } from './searchModifier';
 import type { SearchModifier, SearchResponse } from './types';

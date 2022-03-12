@@ -5,8 +5,9 @@ import { AWSError } from '../errors/AWSError';
 import { initAWSConfig, TABLE_FEEDBACK } from '../ext/aws/config';
 import { getDynamoDBBillingDetails } from '../ext/aws/dynamodb';
 import { Result, type ResultType } from '../lib/Result';
-import { getStage, wrapUnknownError } from '../utils';
+import { wrapUnknownError } from '../utils';
 import { currentDate } from '../utils/date';
+import { getStage } from '../utils/stage';
 
 initAWSConfig();
 const dynamoDb = new AWS.DynamoDB.DocumentClient();

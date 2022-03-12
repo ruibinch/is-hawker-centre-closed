@@ -11,13 +11,8 @@ import { Feedback } from '../models/Feedback';
 import { getAllHawkerCentres, HawkerCentre } from '../models/HawkerCentre';
 import { Input } from '../models/Input';
 import { User } from '../models/User';
-import {
-  getStage,
-  notEmpty,
-  wrapPromise,
-  sleep,
-  WrappedPromise,
-} from '../utils';
+import { notEmpty, wrapPromise, sleep, WrappedPromise } from '../utils';
+import { getStage } from '../utils/stage';
 
 const args = process.argv.slice(2);
 const [operationArg] = args;

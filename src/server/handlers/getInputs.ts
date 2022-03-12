@@ -9,13 +9,12 @@ import dotenv from 'dotenv';
 import { makeLambdaResponse } from '../../ext/aws/lambda';
 import { getAllInputs, Input, sortInputsByTime } from '../../models/Input';
 import { getDateIgnoringTime } from '../../utils/date';
-import type { ServerApiResponse } from '../../utils/types';
 import {
   paginateResults,
   validateServerRequest,
   wrapErrorMessage,
 } from '../helpers';
-import type { GetInputsParams } from '../types';
+import type { GetInputsParams, ServerApiResponse } from '../types';
 
 dotenv.config();
 

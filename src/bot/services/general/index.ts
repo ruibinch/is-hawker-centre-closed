@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import { Result } from '../../../lib/Result';
-import type { ServiceResponse } from '../../../utils';
+import type { ServiceResponse } from '../../types';
 
 export async function manageGeneral(): Promise<ServiceResponse> {
   const changelogEntries = getLatestUpdates();
