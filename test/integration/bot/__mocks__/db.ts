@@ -1,7 +1,7 @@
-import type { TelegramUser } from '../../../src/bot/telegram';
-import type { Closure } from '../../../src/models/Closure';
-import type { HawkerCentre } from '../../../src/models/HawkerCentre';
-import type { User } from '../../../src/models/User';
+import type { TelegramUser } from '../../../../src/bot/telegram';
+import type { Closure } from '../../../../src/models/Closure';
+import type { HawkerCentre } from '../../../../src/models/HawkerCentre';
+import type { User } from '../../../../src/models/User';
 
 export const mockClosures: Closure[] = [
   {

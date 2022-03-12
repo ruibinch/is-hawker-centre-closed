@@ -1,16 +1,16 @@
 /* eslint-disable max-len */
 import { parseISO } from 'date-fns';
 
-import * as sender from '../../src/bot/sender';
-import * as favouritesIndex from '../../src/bot/services/favourites/index';
-import * as feedbackIndex from '../../src/bot/services/feedback/index';
-import * as searchIndex from '../../src/bot/services/search/index';
-import { AWSError } from '../../src/errors/AWSError';
-import { Result } from '../../src/lib/Result';
-import * as ClosureFile from '../../src/models/Closure';
-import * as HawkerCentreFile from '../../src/models/HawkerCentre';
-import * as InputFile from '../../src/models/Input';
-import * as UserFile from '../../src/models/User';
+import * as sender from '../../../src/bot/sender';
+import * as favouritesIndex from '../../../src/bot/services/favourites/index';
+import * as feedbackIndex from '../../../src/bot/services/feedback/index';
+import * as searchIndex from '../../../src/bot/services/search/index';
+import { AWSError } from '../../../src/errors/AWSError';
+import { Result } from '../../../src/lib/Result';
+import * as ClosureFile from '../../../src/models/Closure';
+import * as HawkerCentreFile from '../../../src/models/HawkerCentre';
+import * as InputFile from '../../../src/models/Input';
+import * as UserFile from '../../../src/models/User';
 import {
   mockHawkerCentres,
   mockClosures,
@@ -21,7 +21,7 @@ import {
 } from './__mocks__/db';
 import { assertBotResponse, assertInputSaved, makeBotWrapper } from './helpers';
 
-describe('[integration] Favourites module', () => {
+describe('[bot] [integration] Favourites module', () => {
   const mockCallback = jest.fn();
   const callBot = makeBotWrapper(mockCallback);
 

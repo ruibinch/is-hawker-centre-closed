@@ -2,7 +2,7 @@ import type {
   TelegramChat,
   TelegramMessage,
   TelegramUser,
-} from '../../../src/bot/telegram';
+} from '../../../../src/bot/telegram';
 
 export const mockTelegramUser: TelegramUser = {
   id: 1,

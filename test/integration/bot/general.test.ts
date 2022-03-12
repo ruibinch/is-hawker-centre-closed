@@ -1,13 +1,13 @@
 /* eslint-disable max-len */
-import * as sender from '../../src/bot/sender';
-import * as searchLogic from '../../src/bot/services/search/logic';
-import { AWSError } from '../../src/errors/AWSError';
-import { Result } from '../../src/lib/Result';
-import * as InputFile from '../../src/models/Input';
-import * as UserFile from '../../src/models/User';
+import * as sender from '../../../src/bot/sender';
+import * as searchLogic from '../../../src/bot/services/search/logic';
+import { AWSError } from '../../../src/errors/AWSError';
+import { Result } from '../../../src/lib/Result';
+import * as InputFile from '../../../src/models/Input';
+import * as UserFile from '../../../src/models/User';
 import { assertBotResponse, assertInputSaved, makeBotWrapper } from './helpers';
 
-describe('[integration] General module', () => {
+describe('[bot] [integration] General module', () => {
   const mockCallback = jest.fn();
   const callBot = makeBotWrapper(mockCallback);
 
