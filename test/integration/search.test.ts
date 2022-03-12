@@ -2,12 +2,12 @@
 import { parseISO } from 'date-fns';
 
 import * as sender from '../../src/bot/sender';
+import * as favouritesIndex from '../../src/bot/services/favourites/index';
 import { AWSError } from '../../src/errors/AWSError';
 import { Result } from '../../src/lib/Result';
 import * as ClosureFile from '../../src/models/Closure';
 import * as InputFile from '../../src/models/Input';
 import * as UserFile from '../../src/models/User';
-import * as favouritesIndex from '../../src/services/favourites/index';
 import { mockClosures } from './__mocks__/db';
 import { assertBotResponse, assertInputSaved, makeBotWrapper } from './helpers';
 

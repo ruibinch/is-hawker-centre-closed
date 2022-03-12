@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 
-import { sendNotifications } from '../handlers/notificationsTrigger';
-import type { NotificationMessage } from '../services/notifications/types';
+import { sendNotifications } from '../bot/handlers/notificationsTrigger';
+import type { NotificationMessage } from '../bot/services/notifications/types';
 
 dotenv.config();
 

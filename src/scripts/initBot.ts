@@ -1,7 +1,7 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
 
-import { makeTelegramApiBase, WebhookInfoResponse } from '../utils/telegram';
+import { makeTelegramApiBase, WebhookInfoResponse } from '../bot/telegram';
 
 dotenv.config();
 

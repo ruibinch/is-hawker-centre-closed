@@ -1,11 +1,11 @@
 import type { APIGatewayProxyEvent, Context } from 'aws-lambda';
 
-import { bot } from '../../../src/bot/handler';
-import { handler as notificationsTriggerHandler } from '../../../src/handlers/notificationsTrigger';
+import { bot } from '../../../src/bot/handlers/bot';
+import { handler as notificationsTriggerHandler } from '../../../src/bot/handlers/notificationsTrigger';
 import type {
   TelegramMessage,
   TelegramUpdate,
-} from '../../../src/utils/telegram';
+} from '../../../src/bot/telegram';
 import { makeTelegramMessage } from '../__mocks__/telegram';
 
 export const makeBotWrapper =
