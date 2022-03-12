@@ -1,5 +1,5 @@
-import type { Language } from '../../../lang';
 import type { Closure } from '../../../models/Closure';
+import type { Language } from '../../lang';
 
 export type UserWithClosure = {
   userId: number;

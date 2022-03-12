@@ -1,5 +1,5 @@
-import { initDictionary } from '../../../lang';
 import { Result, type ResultType } from '../../../lib/Result';
+import { initDictionary } from '../../lang';
 import { getUsersWithFavsClosedToday } from './logic';
 import { makeNotificationMessage } from './message';
 import type { NotificationMessage } from './types';

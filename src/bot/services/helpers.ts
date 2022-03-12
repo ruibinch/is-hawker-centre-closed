@@ -8,8 +8,8 @@ import {
   parseISO,
 } from 'date-fns';
 
-import { t } from '../../lang';
 import type { Closure } from '../../models/Closure';
+import { t } from '../lang';
 
 /**
  * Returns the closure entry that is the next to occur w.r.t. the current date (includes closures occurring today).

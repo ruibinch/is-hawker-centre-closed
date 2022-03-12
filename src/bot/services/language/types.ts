@@ -1,4 +1,4 @@
-import type { Language } from '../../../lang';
+import type { Language } from '../../lang';
 
 export type GetUserLanguageCodeResponse = {
   languageCode: Language;

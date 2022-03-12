@@ -2,10 +2,10 @@ import * as AWS from 'aws-sdk';
 import { formatISO } from 'date-fns';
 import NodeCache from 'node-cache';
 
+import type { Language } from '../bot/lang';
 import { AWSError } from '../errors/AWSError';
 import { initAWSConfig, TABLE_USERS } from '../ext/aws/config';
 import { getDynamoDBBillingDetails } from '../ext/aws/dynamodb';
-import type { Language } from '../lang';
 import { Result, type ResultType } from '../lib/Result';
 import { wrapUnknownError } from '../utils';
 import { currentDate } from '../utils/date';

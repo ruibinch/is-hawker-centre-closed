@@ -1,4 +1,4 @@
-import { t } from '../../../lang';
+import { t } from '../../lang';
 
 export function makeLanguageUpdatedMessage(): string {
   return t('language.updated');

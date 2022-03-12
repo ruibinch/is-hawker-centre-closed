@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { t } from '../lang';
+import { t } from './lang';
 import type { Command, Module } from './types';
 
 export const COMMANDS: Command[] = [

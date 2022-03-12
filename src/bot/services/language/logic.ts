@@ -1,4 +1,3 @@
-import { initDictionary, type Language } from '../../../lang';
 import { Result, type ResultType } from '../../../lib/Result';
 import {
   addUser,
@@ -6,6 +5,7 @@ import {
   updateUserLanguageCode,
   User,
 } from '../../../models/User';
+import { initDictionary, type Language } from '../../lang';
 import type { TelegramUser } from '../../telegram';
 import type { GetUserLanguageCodeResponse } from './types';
 

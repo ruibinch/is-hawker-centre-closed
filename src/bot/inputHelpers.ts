@@ -1,7 +1,7 @@
 import emojiRegexFactory from 'emoji-regex';
 
-import { t } from '../lang';
 import { Result, type ResultType } from '../lib/Result';
+import { t } from './lang';
 import type { TelegramMessage } from './telegram';
 import type { ValidateResponseError, ValidateResponseOk } from './types';
 

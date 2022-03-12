@@ -4,7 +4,7 @@ import {
   type KeyExtractedFromFile,
 } from 'i18n-extract';
 
-import { dictionary } from '../../../src/lang';
+import { dictionary } from '../../../src/bot/lang';
 
 describe('[unit] lang keys', () => {
   let keys: KeyExtractedFromFile[];
