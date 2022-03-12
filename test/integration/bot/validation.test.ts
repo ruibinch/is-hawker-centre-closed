@@ -5,7 +5,7 @@ import type {
   Context,
 } from 'aws-lambda';
 
-import { bot } from '../../../src/bot/handlers/bot';
+import { handler as botHandler } from '../../../src/bot/handlers/bot';
 import * as sender from '../../../src/bot/sender';
 import * as searchFeature from '../../../src/bot/services/search';
 import { AWSError } from '../../../src/errors/AWSError';
@@ -193,7 +193,7 @@ describe('[bot] [integration] Validation module', () => {
 
   describe('invalid message format', () => {
     it('sends a message with a missing token', async () => {
-      const result = await bot(
+      const result = await botHandler(
         {} as APIGatewayProxyEvent,
         {} as Context,
         mockCallback,
@@ -213,7 +213,7 @@ describe('[bot] [integration] Validation module', () => {
         },
       } as unknown as APIGatewayProxyEvent;
 
-      const result = await bot(event, {} as Context, mockCallback);
+      const result = await botHandler(event, {} as Context, mockCallback);
 
       expect(result).toBeDefined();
       if (result) {

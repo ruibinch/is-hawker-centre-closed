@@ -29,7 +29,7 @@ Sentry.AWSLambda.init({
   tracesSampleRate: 1.0, // sends 100% of errors to Sentry
 });
 
-export const bot = Sentry.AWSLambda.wrapHandler(
+export const handler = Sentry.AWSLambda.wrapHandler(
   async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     let chatId: number | undefined;
 

@@ -11,9 +11,8 @@ custom:
   webpack:
     packager: yarn
     includeModules: true
-  botFolder: src/bot
-  handlersFolder: src/handlers
-  serverHandlersFolder: src/server/handlers
+  botHandlers: src/bot/handlers
+  serverHandlers: src/server/handlers
 
 plugins:
   - serverless-webpack
@@ -106,7 +105,7 @@ package:
 
 functions:
   bot:
-    handler: ${self:custom.botFolder}/handler.bot
+    handler: ${self:custom.botHandlers}/bot.handler
     events:
       - http:
           method: post
@@ -115,21 +114,21 @@ functions:
     maximumRetryAttempts: 0
   # triggers
   notificationsTrigger:
-    handler: ${self:custom.handlersFolder}/notificationsTrigger.handler
+    handler: ${self:custom.botHandlers}/notificationsTrigger.handler
     events:
       # runs daily at 22:00 UTC, or 6am SGT
       - schedule: cron(0 22 * * ? *)
     maximumEventAge: 60
     maximumRetryAttempts: 0
   scanNewEntriesTrigger:
-    handler: ${self:custom.handlersFolder}/scanNewEntriesTrigger.handler
+    handler: ${self:custom.botHandlers}/scanNewEntriesTrigger.handler
     events:
       # runs every Sun at 20:00 UTC, or 4am SGT
       - schedule: cron(0 20 ? * sun *)
     maximumEventAge: 60
     maximumRetryAttempts: 0
   runBackupTrigger:
-    handler: ${self:custom.handlersFolder}/runBackupTrigger.handler
+    handler: ${self:custom.botHandlers}/runBackupTrigger.handler
     timeout: 30
     events:
       # runs every Sun at 20:05 UTC, or 4:05am SGT
@@ -137,7 +136,7 @@ functions:
     maximumEventAge: 60
     maximumRetryAttempts: 0
   syncDbTrigger:
-    handler: ${self:custom.handlersFolder}/syncDbTrigger.handler
+    handler: ${self:custom.botHandlers}/syncDbTrigger.handler
     timeout: 600
     events:
       # runs daily at 20:10 UTC, or 4:10am SGT
@@ -146,25 +145,25 @@ functions:
     maximumRetryAttempts: 0
   # server
   getInputs:
-    handler: ${self:custom.serverHandlersFolder}/getInputs.handler
+    handler: ${self:custom.serverHandlers}/getInputs.handler
     events:
       - http:
           method: post
           path: /api/inputs
   getUsers:
-    handler: ${self:custom.serverHandlersFolder}/getUsers.handler
+    handler: ${self:custom.serverHandlers}/getUsers.handler
     events:
       - http:
           method: post
           path: /api/users
   hcFavouritesCount:
-    handler: ${self:custom.serverHandlersFolder}/hcFavouritesCount.handler
+    handler: ${self:custom.serverHandlers}/hcFavouritesCount.handler
     events:
       - http:
           method: get
           path: /api/hcFavouritesCount
   statistics:
-    handler: ${self:custom.serverHandlersFolder}/statistics.handler
+    handler: ${self:custom.serverHandlers}/statistics.handler
     events:
       - http:
           method: get
