@@ -13,6 +13,7 @@ custom:
     includeModules: true
   botFolder: src/bot
   handlersFolder: src/handlers
+  serverHandlersFolder: src/server/handlers
 
 plugins:
   - serverless-webpack
@@ -46,6 +47,7 @@ provider:
     TABLE_USERS: ${env:TABLE_USERS}
     TABLE_FEEDBACK: ${env:TABLE_FEEDBACK}
     TABLE_INPUTS: ${env:TABLE_INPUTS}
+    SERVER_AUTH_TOKEN: ${env:SERVER_AUTH_TOKEN}
   iam:
     role:
       statements:
@@ -111,19 +113,6 @@ functions:
           path: /bot
     maximumEventAge: 60
     maximumRetryAttempts: 0
-  # server
-  getInputs:
-    handler: ${self:custom.handlersFolder}/server.getInputs
-    events:
-      - http:
-          method: get
-          path: /api/inputs
-  getUsers:
-    handler: ${self:custom.handlersFolder}/server.getUsers
-    events:
-      - http:
-          method: get
-          path: /api/users
   # triggers
   notificationsTrigger:
     handler: ${self:custom.handlersFolder}/notificationsTrigger.handler
@@ -155,3 +144,28 @@ functions:
       - schedule: cron(10 20 * * ? *)
     maximumEventAge: 60
     maximumRetryAttempts: 0
+  # server
+  getInputs:
+    handler: ${self:custom.serverHandlersFolder}/getInputs.handler
+    events:
+      - http:
+          method: post
+          path: /api/inputs
+  getUsers:
+    handler: ${self:custom.serverHandlersFolder}/getUsers.handler
+    events:
+      - http:
+          method: post
+          path: /api/users
+  hcFavouritesCount:
+    handler: ${self:custom.serverHandlersFolder}/hcFavouritesCount.handler
+    events:
+      - http:
+          method: get
+          path: /api/hcFavouritesCount
+  statistics:
+    handler: ${self:custom.serverHandlersFolder}/statistics.handler
+    events:
+      - http:
+          method: get
+          path: /api/statistics

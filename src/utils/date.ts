@@ -4,6 +4,7 @@ import {
   eachWeekOfInterval,
   endOfDay,
   format,
+  formatISO,
   isToday,
   isTomorrow,
   isWithinInterval,
@@ -22,8 +23,19 @@ export function currentDateInYYYYMMDD(): string {
   return format(currentDate(), 'yyyyMMdd');
 }
 
+export function toDateISO8601(date: Date | number): string {
+  return formatISO(date, { representation: 'date' });
+}
+
 export function formatDateWithTime(date: Date): string {
   return format(date, 'yyyy-MM-dd HH:mm:ssXX');
+}
+
+/**
+ * Returns a date in YYYY-MM-DD format from a full ISO string.
+ */
+export function getDateIgnoringTime(dateString: string): string {
+  return dateString.substring(0, 10);
 }
 
 /**
