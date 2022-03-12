@@ -163,3 +163,9 @@ functions:
       - http:
           method: get
           path: /api/hcFavouritesCount
+  statistics:
+    handler: ${self:custom.serverHandlersFolder}/statistics.handler
+    events:
+      - http:
+          method: get
+          path: /api/statistics

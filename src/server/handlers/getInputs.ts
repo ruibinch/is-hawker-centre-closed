@@ -7,7 +7,7 @@ import { isAfter, isBefore, parseISO } from 'date-fns';
 import dotenv from 'dotenv';
 
 import { makeLambdaResponse } from '../../ext/aws/lambda';
-import { getAllInputs, Input } from '../../models/Input';
+import { getAllInputs, Input, sortInputsByTime } from '../../models/Input';
 import { getDateIgnoringTime } from '../../utils/date';
 import type { ServerApiResponse } from '../../utils/types';
 import {
@@ -61,7 +61,7 @@ export const handler: APIGatewayProxyHandler = async (
     return true;
   });
 
-  const inputsSorted = sortInputsByMostRecent(inputs);
+  const inputsSorted = sortInputsByTime(inputs, 'desc');
   const inputsSortedPaginated = paginateResults(inputsSorted, params);
 
   const responseBody: ServerApiResponse<Input[]> = {
@@ -72,12 +72,3 @@ export const handler: APIGatewayProxyHandler = async (
 
   return makeLambdaResponse(200, responseBody);
 };
-
-function sortInputsByMostRecent(inputs: Input[]) {
-  return [...inputs].sort((a, b) => {
-    // inputId is of format `{{userId}}-{{unixTime}}`
-    const aTime = Number(a.inputId.split('-')[1]);
-    const bTime = Number(b.inputId.split('-')[1]);
-    return bTime - aTime;
-  });
-}

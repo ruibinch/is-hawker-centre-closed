@@ -60,6 +60,18 @@ export class Input {
   }
 }
 
+type SortOrder = 'asc' | 'desc';
+
+export function sortInputsByTime(inputs: Input[], order: SortOrder) {
+  return [...inputs].sort((a, b) => {
+    // inputId is of format `{{userId}}-{{unixTime}}`
+    const aTime = Number(a.inputId.split('-')[1]);
+    const bTime = Number(b.inputId.split('-')[1]);
+
+    return order === 'asc' ? aTime - bTime : bTime - aTime;
+  });
+}
+
 export async function getAllInputs(): Promise<ResultType<Input[], Error>> {
   try {
     const scanOutput = await dynamoDb
