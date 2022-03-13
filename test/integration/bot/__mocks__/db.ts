@@ -277,30 +277,32 @@ export const mockUserInFavMode: User = {
   createdAt: '2021-01-01T00:00:00Z',
 };
 
+export const mockUserWithZhLanguage: User = {
+  userId: 5,
+  username: 'meowth',
+  languageCode: 'zh',
+  favourites: [
+    {
+      hawkerCentreId: 5,
+      dateAdded: '2021-01-08T09:05:12+08:00',
+    },
+    {
+      hawkerCentreId: 6,
+      dateAdded: '2021-01-08T09:05:45+08:00',
+    },
+  ],
+  isInFavouritesMode: false,
+  notifications: true,
+  createdAt: '2021-01-01T00:00:00Z',
+};
+
 export const mockUsers: User[] = [
   // user has 1 favourite HC closed today, language en
   mockUser,
   // user has 0 favourite HCs closed today
   mockUserInFavMode,
   // user has 2 favourite HCs closed today, language zh
-  {
-    userId: 5,
-    username: 'meowth',
-    languageCode: 'zh',
-    favourites: [
-      {
-        hawkerCentreId: 5,
-        dateAdded: '2021-01-08T09:05:12+08:00',
-      },
-      {
-        hawkerCentreId: 6,
-        dateAdded: '2021-01-08T09:05:45+08:00',
-      },
-    ],
-    isInFavouritesMode: false,
-    notifications: true,
-    createdAt: '2021-01-01T00:00:00Z',
-  },
+  mockUserWithZhLanguage,
 ];
 
 export const mockTelegramUser: TelegramUser = {

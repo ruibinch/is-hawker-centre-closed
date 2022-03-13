@@ -152,24 +152,24 @@ functions:
     maximumEventAge: 60
     maximumRetryAttempts: 0
   # server
-  getInputs:
-    handler: ${self:custom.serverHandlers}/getInputs.handler
+  inputs:
+    handler: ${self:custom.serverHandlers}/inputs.handler
     events:
       - http:
           method: post
           path: /api/inputs
-  getUsers:
-    handler: ${self:custom.serverHandlers}/getUsers.handler
+  users:
+    handler: ${self:custom.serverHandlers}/users.handler
     events:
       - http:
           method: post
           path: /api/users
-  hcFavouritesCount:
-    handler: ${self:custom.serverHandlers}/hcFavouritesCount.handler
+  hcFavourites:
+    handler: ${self:custom.serverHandlers}/hcFavourites.handler
     events:
       - http:
           method: get
-          path: /api/hcFavouritesCount
+          path: /api/hcFavourites
   statistics:
     handler: ${self:custom.serverHandlers}/statistics.handler
     events:

@@ -6,11 +6,16 @@ import type {
 import dotenv from 'dotenv';
 
 import { makeLambdaResponse } from '../../ext/aws/lambda';
-import { getAllHawkerCentres } from '../../models/HawkerCentre';
+import { Result, ResultType } from '../../lib/Result';
+import { getAllHawkerCentres, HawkerCentre } from '../../models/HawkerCentre';
 import { getAllUsers } from '../../models/User';
-import { validateServerRequest } from '../helpers';
+import { validateServerRequest, wrapErrorMessage } from '../helpers';
 
 dotenv.config();
+
+type GetHcFavouritesCountResponse = {
+  data: Array<HawkerCentre & { count: number }>;
+};
 
 export const handler: APIGatewayProxyHandler = async (
   event: APIGatewayProxyEvent,
@@ -19,28 +24,36 @@ export const handler: APIGatewayProxyHandler = async (
     return makeLambdaResponse(403);
   }
 
+  const getHcFavouritesCountResult = await handleGetHcFavouritesCount();
+
+  return getHcFavouritesCountResult.isOk
+    ? makeLambdaResponse(200, getHcFavouritesCountResult.value)
+    : makeLambdaResponse(
+        400,
+        wrapErrorMessage(getHcFavouritesCountResult.value),
+      );
+};
+
+async function handleGetHcFavouritesCount(): Promise<
+  ResultType<GetHcFavouritesCountResponse, string>
+> {
   const getAllUsersResponse = await getAllUsers();
   if (getAllUsersResponse.isErr) {
-    return makeLambdaResponse(400, 'Error obtaining users');
+    return Result.Err('Error obtaining users');
   }
 
   const getAllHawkerCentresResponse = await getAllHawkerCentres();
   if (getAllHawkerCentresResponse.isErr) {
-    return makeLambdaResponse(400, 'Error obtaining hawker centres');
+    return Result.Err('Error obtaining hawker centres');
   }
 
   const users = getAllUsersResponse.value;
   const hawkerCentreIdToCountMap = users.reduce(
-    (map: Record<string, number>, user) => {
+    (countMap: Record<string, number>, user) => {
       user.favourites.forEach(({ hawkerCentreId }) => {
-        if (hawkerCentreId in map) {
-          map[hawkerCentreId] = map[hawkerCentreId] + 1;
-        } else {
-          map[hawkerCentreId] = 1;
-        }
+        countMap[hawkerCentreId] = (countMap[hawkerCentreId] ?? 0) + 1;
       });
-
-      return map;
+      return countMap;
     },
     {},
   );
@@ -53,9 +66,7 @@ export const handler: APIGatewayProxyHandler = async (
     }),
   );
 
-  const responseBody = {
+  return Result.Ok({
     data: hawkerCentresWithFavouritesCount,
-  };
-
-  return makeLambdaResponse(200, responseBody);
-};
+  });
+}
