@@ -5,10 +5,10 @@ import type { NotificationMessage } from '../bot/services/notifications/types';
 
 dotenv.config();
 
-// Note: care should be taken when amending this to avoid sending notifications from prod bot
-// prettier-ignore
-process.env.TELEGRAM_BOT_TOKEN = process.env['TELEGRAM_BOT_TOKEN_DEV'] as string;
-
+/**
+ * Run this script via:
+ * TELEGRAM_BOT_TOKEN={{telegramBotToken}} yarn ts-node src/scripts/sendNotifications.ts
+ */
 export async function run(): Promise<void> {
   const notifications: NotificationMessage[] = [
     {
