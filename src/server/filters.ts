@@ -1,5 +1,6 @@
 import { isAfter, isBefore, parseISO } from 'date-fns';
 
+import { Feedback } from '../models/Feedback';
 import { Input } from '../models/Input';
 import { User } from '../models/User';
 import { getDateIgnoringTime } from '../utils/date';
@@ -8,8 +9,8 @@ export function filterInputByUserId(input: Input, userId: number | undefined) {
   return userId === undefined || userId === input.userId;
 }
 
-export function filterInputByDate(
-  input: Input,
+export function filterItemsByDate(
+  input: Feedback | Input,
   fromDate: string | undefined,
   toDate: string | undefined,
 ) {

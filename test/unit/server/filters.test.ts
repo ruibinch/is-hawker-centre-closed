@@ -3,7 +3,7 @@ import { parseISO } from 'date-fns';
 import { Input } from '../../../src/models/Input';
 import { User } from '../../../src/models/User';
 import {
-  filterInputByDate,
+  filterItemsByDate,
   filterInputByUserId,
   filterUserByUserId,
 } from '../../../src/server/filters';
@@ -50,31 +50,31 @@ describe('[unit] server > filters', () => {
     describe('filterInputByDate', () => {
       it('returns true when input falls within fromDate and toDate', () => {
         expect(
-          filterInputByDate(input, '2021-06-01', '2021-06-30'),
+          filterItemsByDate(input, '2021-06-01', '2021-06-30'),
         ).toBeTruthy();
       });
 
       it('returns true when input is after the specified fromDate', () => {
-        expect(filterInputByDate(input, '2021-06-01', undefined)).toBeTruthy();
+        expect(filterItemsByDate(input, '2021-06-01', undefined)).toBeTruthy();
       });
 
       it('returns true when input is before the specified toDate', () => {
-        expect(filterInputByDate(input, undefined, '2021-06-30')).toBeTruthy();
+        expect(filterItemsByDate(input, undefined, '2021-06-30')).toBeTruthy();
       });
 
       it('returns true when fromDate and toDate are undefined', () => {
-        expect(filterInputByDate(input, undefined, undefined)).toBeTruthy();
+        expect(filterItemsByDate(input, undefined, undefined)).toBeTruthy();
       });
 
       it('returns false when input is before the specified fromDate', () => {
         expect(
-          filterInputByDate(input, '2021-06-05', '2021-06-30'),
+          filterItemsByDate(input, '2021-06-05', '2021-06-30'),
         ).toBeFalsy();
       });
 
       it('returns false when input is after the specified toDate', () => {
         expect(
-          filterInputByDate(input, '2021-06-01', '2021-06-03'),
+          filterItemsByDate(input, '2021-06-01', '2021-06-03'),
         ).toBeFalsy();
       });
     });
