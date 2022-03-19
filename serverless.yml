@@ -143,6 +143,14 @@ functions:
       - schedule: cron(10 20 * * ? *)
     maximumEventAge: 60
     maximumRetryAttempts: 0
+  checkHealthinessTrigger:
+    handler: ${self:custom.botHandlers}/checkHealthinessTrigger.handler
+    timeout: 30
+    events:
+      # runs daily at 20:28 UTC, or 4:28am SGT
+      - schedule: cron(28 20 * * ? *)
+    maximumEventAge: 60
+    maximumRetryAttempts: 0
   # server
   getInputs:
     handler: ${self:custom.serverHandlers}/getInputs.handler
