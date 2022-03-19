@@ -1,3 +1,4 @@
+import { Feedback } from '../../../../src/models/Feedback';
 import { Input } from '../../../../src/models/Input';
 import { User } from '../../../../src/models/User';
 import {
@@ -311,5 +312,22 @@ export const mockInputs: Input[] = [
     username: 'ashketchum',
     text: '/language zh',
     createdAt: '2021-12-28T21:43:28+08:00',
+  },
+];
+
+export const mockFeedbacks: Feedback[] = [
+  {
+    feedbackId: '3-1616119798',
+    userId: 3,
+    username: 'brock',
+    text: 'Cool bot',
+    createdAt: '2021-03-19T10:09:58+08:00',
+  },
+  {
+    feedbackId: '5-1631204758',
+    userId: 5,
+    username: 'meowth',
+    text: 'Response is slow sometimes',
+    createdAt: '2021-09-10T00:25:58+08:00',
   },
 ];

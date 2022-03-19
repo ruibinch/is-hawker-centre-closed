@@ -164,6 +164,12 @@ functions:
       - http:
           method: post
           path: /api/users
+  feedback:
+    handler: ${self:custom.serverHandlers}/feedback.handler
+    events:
+      - http:
+          method: post
+          path: /api/feedback
   hcFavourites:
     handler: ${self:custom.serverHandlers}/hcFavourites.handler
     events:

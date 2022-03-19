@@ -1,5 +1,6 @@
 import type { APIGatewayProxyEventHeaders } from 'aws-lambda';
 
+import { Feedback } from '../models/Feedback';
 import { Input } from '../models/Input';
 import { User } from '../models/User';
 import { BaseQueryParams } from './types';
@@ -12,7 +13,7 @@ export function validateServerRequest(headers: APIGatewayProxyEventHeaders) {
   return authType === 'Bearer' && authToken === process.env.SERVER_AUTH_TOKEN;
 }
 
-export function paginateResults<T extends Input | User>(
+export function paginateResults<T extends Feedback | Input | User>(
   results: T[],
   params: BaseQueryParams,
 ): T[] {

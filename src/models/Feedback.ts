@@ -63,6 +63,18 @@ export class Feedback {
   }
 }
 
+type SortOrder = 'asc' | 'desc';
+
+export function sortFeedbackByTime(feedbacks: Feedback[], order: SortOrder) {
+  return [...feedbacks].sort((a, b) => {
+    // inputId is of format `{{userId}}-{{unixTime}}`
+    const aTime = Number(a.feedbackId.split('-')[1]);
+    const bTime = Number(b.feedbackId.split('-')[1]);
+
+    return order === 'asc' ? aTime - bTime : bTime - aTime;
+  });
+}
+
 export async function addFeedbackToDB(
   feedback: Feedback,
 ): Promise<ResultType<void, Error>> {
