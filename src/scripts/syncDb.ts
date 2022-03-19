@@ -40,37 +40,31 @@ async function findPreAndPostResetDiffs(resetDbResult: NEAData | null) {
     deletedEntries: hawkerCentresDeleted,
   } = findDiffs(hawkerCentresBefore, hawkerCentresAfter);
 
-  const outputMessage =
-    `${closuresAdded.length} CLOSURES ADDED\n${prettifyJSON(
-      closuresAdded,
-    )}\n\n` +
-    `${closuresDeleted.length} CLOSURES DELETED\n${prettifyJSON(
-      closuresDeleted,
-    )}\n\n` +
-    `${hawkerCentresAdded.length} HAWKER CENTRES ADDED\n${prettifyJSON(
-      hawkerCentresAdded,
-    )}\n\n` +
-    `${hawkerCentresDeleted.length} HAWKER CENTRES DELETED\n${prettifyJSON(
-      hawkerCentresDeleted,
-    )}\n\n`;
-
-  try {
-    await sendDiscordAdminMessage(
-      `[${getStage()}] SYNC SUMMARY\n${outputMessage}`,
-    );
-  } catch (e) {
-    console.info(outputMessage);
-  }
+  await sendDiscordAdminMessage(
+    `**[${getStage()}]  🔁 SYNC SUMMARY**\n` +
+      `${closuresAdded.length} closure(s) added\n${prettifyJSON(
+        closuresAdded,
+      )}\n` +
+      `${closuresDeleted.length} closure(s) deleted\n${prettifyJSON(
+        closuresDeleted,
+      )}\n` +
+      `${hawkerCentresAdded.length} hawker centre(s) added\n${prettifyJSON(
+        hawkerCentresAdded,
+      )}\n` +
+      `${hawkerCentresDeleted.length} hawker centre(s) deleted\n${prettifyJSON(
+        hawkerCentresDeleted,
+      )}\n`,
+  );
 }
 
 // old entry exists in new list: entry not added
 // old entry does not exist in new list: entry deleted
-function findDiffs<T extends (Closure | HawkerCentre)[]>(
+function findDiffs<T extends Array<Closure | HawkerCentre>>(
   oldList: T,
   newList: T,
 ) {
-  let addedEntries: (Closure | HawkerCentre)[] = [...newList];
-  const deletedEntries: (Closure | HawkerCentre)[] = [];
+  let addedEntries: Array<Closure | HawkerCentre> = [...newList];
+  const deletedEntries: Array<Closure | HawkerCentre> = [];
 
   const getUniqueId = (entry: Closure | HawkerCentre) =>
     isClosure(entry) ? entry.id : entry.hawkerCentreId;

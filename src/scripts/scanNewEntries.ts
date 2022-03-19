@@ -40,7 +40,7 @@ async function scanNewEntries() {
   });
 
   await sendDiscordAdminMessage(
-    `[${getStage()}] NEW ENTRIES IN THE PAST WEEK\n` +
+    `**[${getStage()}]  🆕 NEW ENTRIES IN THE PAST WEEK**\n` +
       `Users:\n${
         newUsersOutput.length === 0 ? 'none' : newUsersOutput.join('\n')
       }\n\n` +

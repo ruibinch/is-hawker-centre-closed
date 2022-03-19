@@ -22,7 +22,7 @@ export async function run(
   const hawkerCentres = getHawkerCentresList(closures);
 
   await sendDiscordAdminMessage(
-    `[${getStage()}] SEEDING DB\n${[
+    `**[${getStage()}]  🌱 SEEDING DB**\n${[
       'Data obtained from data.gov.sg API:',
       `1. ${closures.length} closures`,
       `2. ${hawkerCentres.length} hawker centres`,

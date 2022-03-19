@@ -28,7 +28,7 @@ export const handler = Sentry.AWSLambda.wrapHandler(
       const notificationsResult = await sendNotifications(notifications);
 
       await sendDiscordAdminMessage(
-        `[${getStage()}] NOTIFICATIONS\n\n` +
+        `**[${getStage()}]  🔔 NOTIFICATIONS**\n` +
           `Success: ${notificationsResult.success}\n` +
           `Failure: ${notificationsResult.failure.length}\n` +
           `${notificationsResult.failure

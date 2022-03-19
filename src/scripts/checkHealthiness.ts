@@ -25,7 +25,7 @@ async function checkHealthiness(): Promise<void> {
 
   await sendDiscordAdminMessage(
     `**[${getStage()}]  🏥 HEALTHINESS CHECK**\n` +
-      `${isHealthy ? '✅ PASSED' : '❌ FAILED'}\n` +
+      `${isHealthy ? '✅ PASSED' : '🚨 FAILED'}\n` +
       `Number of closures: ${numEntriesInClosuresTable}\n` +
       `Number of hawker centres: ${numEntriesInHCTable}`,
   );
