@@ -70,11 +70,11 @@ async function executeBotLogin() {
 }
 
 function getAdminChannelId(message: string) {
-  return message.startsWith('[prod]') ? adminProdChannelId : adminDevChannelId;
+  return message.includes('[prod]') ? adminProdChannelId : adminDevChannelId;
 }
 
 function getClosuresAdminChannelId(message: string) {
-  return message.startsWith('[prod]')
+  return message.includes('[prod]')
     ? closuresAdminProdChannelId
     : closuresAdminDevChannelId;
 }
