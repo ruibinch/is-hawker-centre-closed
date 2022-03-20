@@ -103,14 +103,6 @@ export const mockClosures: Closure[] = [
   },
   {
     id: '111',
-    hawkerCentreId: 39,
-    reason: 'deepCleaning',
-    name: 'Sidney Gym',
-    startDate: '2021-04-05',
-    endDate: '2021-04-19',
-  },
-  {
-    id: '111',
     hawkerCentreId: 35,
     reason: 'others',
     name: 'Petalburg Gym',

@@ -90,7 +90,6 @@
   "notifications.overview.plural": "{{emoji}} 注意！今天有{{numHC}}个您喜爱的小贩中心关闭。\n\n",
   "common.hc-item": "*{{hcName}}*\n _{{closurePeriod}}{{closureReason}}_",
   "common.hc-item.closure-reason": "; {{reason}}",
-  "common.closure-reason.deep-cleaning": "深度清洁",
   "common.closure-reason.others": "其他工程",
   "common.time.time-period": "{{startDate}}至{{endDate}}",
   "common.time.time-period.indefinite-end-date": "{{startDate}}直到无限期",
