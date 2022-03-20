@@ -56,10 +56,6 @@ export function makeClosureReasonSnippet(
       return t('common.hc-item.closure-reason', {
         reason: t(`common.closure-reason.others`),
       });
-    case 'deepCleaning':
-      return t('common.hc-item.closure-reason', {
-        reason: t(`common.closure-reason.deep-cleaning`),
-      });
     default:
       return '';
   }

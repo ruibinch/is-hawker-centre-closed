@@ -306,11 +306,10 @@ describe('[bot] [integration] Search module', () => {
 
       const inputMessage = 'Next month';
       const expectedMessage =
-        'There are *4* hawker centres that will be closed next month:\n\n' +
+        'There are *3* hawker centres that will be closed next month:\n\n' +
         '*Devon Corporation*\n_01\\-Nov to 30\\-Apr; other works_\n\n' +
         '*Lavaridge Gym*\n_01\\-Apr to 05\\-May; other works_\n\n' +
-        '*Petalburg Gym*\n_30\\-Mar till indefinitely; other works_\n\n' +
-        '*Sidney Gym*\n_05\\-Apr to 19\\-Apr; deep cleaning_';
+        '*Petalburg Gym*\n_30\\-Mar till indefinitely; other works_';
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
