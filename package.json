@@ -37,7 +37,6 @@
     "run:scan-new": "NODE_ENV=production ts-node src/scripts/scanNewEntries.ts",
     "run:print-commands": "ts-node src/scripts/printBotCommands.ts",
     "run:print-description": "ts-node src/scripts/printBotDescription.ts",
-    "run:test-api": "ts-node src/scripts/testApi.ts",
     "deduplicate": "npx yarn-deduplicate yarn.lock && yarn install",
     "lint": "eslint . --ext .ts",
     "test": "TZ=UTC jest",
