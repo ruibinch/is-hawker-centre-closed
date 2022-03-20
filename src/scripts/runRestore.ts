@@ -15,15 +15,15 @@ initAWSConfig();
 const dynamoDb = new AWS.DynamoDB();
 
 function makeSuccessMessage(s: string) {
-  return `RESTORE SUCCESSFUL\n${s}`;
+  return `**RESTORE SUCCESSFUL**\n${s}`;
 }
 
 function makeErrorMessage(s: string) {
-  return `RESTORE UNSUCCESSFUL\n${s}`;
+  return `🚨 **RESTORE UNSUCCESSFUL**\n${s}`;
 }
 
 function makeInProgressMessage(s: string) {
-  return `RESTORE IN PROGRESS\n${s}`;
+  return `**RESTORE IN PROGRESS**\n${s}`;
 }
 
 async function restoreBackup(tableName: string) {

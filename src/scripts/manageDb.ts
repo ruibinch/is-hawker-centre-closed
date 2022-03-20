@@ -78,7 +78,7 @@ async function createTables() {
   );
 
   await sendDiscordAdminMessage(
-    `[${getStage()}] DB TABLES CREATED\n` +
+    `**[${getStage()}]  📢 DB TABLES CREATED**\n` +
       `${makeListOutput(successOutputs)}\n\n` +
       `Error creating the following tables:\n` +
       `${makeListOutput(failureOutputs)}`,
@@ -113,7 +113,7 @@ async function deleteTables() {
   );
 
   await sendDiscordAdminMessage(
-    `[${getStage()}] DB TABLES DELETED\n` +
+    `**[${getStage()}]  📢 DB TABLES DELETED**\n` +
       `${makeListOutput(successOutputs)}\n\n` +
       `Error deleting the following tables:\n` +
       `${makeListOutput(failureOutputs)}`,
@@ -153,7 +153,7 @@ async function resetTables(): Promise<NEAData | null> {
   const deleteTableOutputsParsed = parseDynamoDBPromises(deleteTableOutputs);
 
   await sendDiscordAdminMessage(
-    `[${getStage()}] RESET IN PROGRESS\nDeleted tables:\n${[
+    `**[${getStage()}]  📢 RESET IN PROGRESS\nDeleted tables:**\n${[
       [deleteTableOutputsParsed[0].message, numEntriesInClosuresTable],
       [deleteTableOutputsParsed[1].message, numEntriesInHCTable],
     ]
@@ -180,7 +180,7 @@ async function resetTables(): Promise<NEAData | null> {
     (result) => !result.success,
   );
   await sendDiscordAdminMessage(
-    `[${getStage()}] RESET IN PROGRESS\n` +
+    `**[${getStage()}]  📢 RESET IN PROGRESS**\n` +
       `Created tables:\n` +
       `${makeListOutput(successOutputs)}\n\n` +
       `Error creating the following tables:\n` +

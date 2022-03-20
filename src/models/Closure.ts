@@ -86,7 +86,7 @@ export async function uploadClosures(closures: Closure[]): Promise<void> {
     ),
   );
   await sendDiscordAdminMessage(
-    `[${getStage()}] SEEDING DB\n` +
+    `**[${getStage()}]  🌱 SEEDING DB**\n` +
       `Uploaded ${closures.length} entries to table "${closuresTable}"`,
   );
 }
@@ -108,7 +108,7 @@ export async function addClosure(props: {
 
   if (shouldSendMessage) {
     await sendDiscordAdminMessage(
-      `[${getStage()}] ADDED CLOSURE ENTRY\n${prettifyJSON(closure)}`,
+      `**[${getStage()}] ADDED CLOSURE ENTRY**\n${prettifyJSON(closure)}`,
     );
   }
 }
@@ -139,7 +139,7 @@ export async function deleteClosure(props: {
   const closure = deleteOutput.Attributes;
   if (shouldSendMessage) {
     await sendDiscordAdminMessage(
-      `[${getStage()}] DELETED CLOSURE ENTRY\n${prettifyJSON(closure)}`,
+      `**[${getStage()}] DELETED CLOSURE ENTRY**\n${prettifyJSON(closure)}`,
     );
   }
 
