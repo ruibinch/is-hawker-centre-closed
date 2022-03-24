@@ -25,6 +25,10 @@ export function formatDateWithTime(date: Date): string {
   return format(date, 'yyyy-MM-dd HH:mm:ssXX');
 }
 
+export function isAfterOrEqual(date: Date, dateToCompare: Date): boolean {
+  return date.getTime() >= dateToCompare.getTime();
+}
+
 /**
  * Returns a date in YYYY-MM-DD format from a full ISO string.
  */

@@ -3,20 +3,32 @@ import type {
   APIGatewayProxyHandler,
   APIGatewayProxyResult,
 } from 'aws-lambda';
-import {
-  eachMonthOfInterval,
-  eachWeekOfInterval,
-  isBefore,
-  parseISO,
-} from 'date-fns';
 import dotenv from 'dotenv';
 
 import { makeLambdaResponse } from '../../ext/aws/lambda';
-import { getAllInputs, sortInputsByTime } from '../../models/Input';
-import { currentDate, toDateISO8601 } from '../../utils/date';
+import { Result, ResultType } from '../../lib/Result';
 import { validateServerRequest, wrapErrorMessage } from '../helpers';
+import { getSelectedTimeframes } from '../services/statistics/common';
+import { calculateInputStatistics } from '../services/statistics/inputs';
+import type {
+  Scope,
+  StatsEntry,
+  Timeframe,
+} from '../services/statistics/types';
 
 dotenv.config();
+
+type GetStatisticsParams = {
+  fromDate?: string;
+  toDate?: string;
+  scopes?: Partial<Record<Scope, boolean>>;
+  timeframes?: Partial<Record<Timeframe, boolean>>;
+};
+
+// TODO: explore RecursivePartial type
+type GetStatisticsResponse = {
+  data: Partial<Record<Scope, Partial<Record<Timeframe, StatsEntry[]>>>>;
+};
 
 export const handler: APIGatewayProxyHandler = async (
   event: APIGatewayProxyEvent,
@@ -25,75 +37,40 @@ export const handler: APIGatewayProxyHandler = async (
     return makeLambdaResponse(403);
   }
 
-  const getAllInputsResponse = await getAllInputs();
-  if (getAllInputsResponse.isErr) {
-    return makeLambdaResponse(400, wrapErrorMessage('Error obtaining inputs'));
-  }
+  const getStatisticsResult = await handleGetStatistics(event.body);
 
-  const inputs = getAllInputsResponse.value;
-  const inputsSortedAsc = sortInputsByTime(inputs, 'asc');
-
-  const firstInputDate = parseISO(inputsSortedAsc[0].createdAt);
-  const today = currentDate();
-  const weeksList = eachWeekOfInterval(
-    {
-      start: firstInputDate,
-      end: today,
-    },
-    {
-      weekStartsOn: 1, // week starts on Monday
-    },
-  );
-  const monthsList = eachMonthOfInterval({
-    start: firstInputDate,
-    end: today,
-  });
-
-  const weekCountList = Array(weeksList.length).fill(0);
-  const monthCountList = Array(monthsList.length).fill(0);
-  let currentWeekIndex = 0;
-  let currentMonthIndex = 0;
-
-  inputsSortedAsc.forEach((input) => {
-    const inputCreatedDate = parseISO(input.createdAt);
-
-    const startOfNextWeek = weeksList[currentWeekIndex + 1];
-    if (isBefore(inputCreatedDate, startOfNextWeek)) {
-      weekCountList[currentWeekIndex] += 1;
-    } else {
-      currentWeekIndex += 1;
-      weekCountList[currentWeekIndex + 1] += 1;
-    }
-
-    const startOfNextMonth = monthsList[currentMonthIndex + 1];
-    if (isBefore(inputCreatedDate, startOfNextMonth)) {
-      monthCountList[currentMonthIndex] += 1;
-    } else {
-      currentMonthIndex += 1;
-      monthCountList[currentMonthIndex] += 1;
-    }
-  });
-
-  const weekToInputCountDict = makeInputCountDict(weeksList, weekCountList);
-  const monthToInputCountDict = makeInputCountDict(monthsList, monthCountList);
-
-  const responseBody = {
-    data: {
-      byWeek: weekToInputCountDict,
-      byMonth: monthToInputCountDict,
-    },
-  };
-
-  return makeLambdaResponse(200, responseBody);
+  return getStatisticsResult.isOk
+    ? makeLambdaResponse(200, getStatisticsResult.value)
+    : makeLambdaResponse(400, wrapErrorMessage(getStatisticsResult.value));
 };
 
-function makeInputCountDict(datesList: Date[], countList: number[]) {
-  return datesList.reduce(
-    (inputCountDict: Record<string, number>, date, idx) => {
-      const dateFormatted = toDateISO8601(date);
-      inputCountDict[dateFormatted] = countList[idx];
-      return inputCountDict;
-    },
-    {},
-  );
+async function handleGetStatistics(
+  requestBody: string | null,
+): Promise<ResultType<GetStatisticsResponse, string>> {
+  if (!requestBody) {
+    return Result.Err('Missing request body');
+  }
+
+  const params = JSON.parse(requestBody) as GetStatisticsParams;
+
+  const timeframes = getSelectedTimeframes(params.timeframes);
+  const inputStatsResult = await calculateInputStatistics({
+    fromDate: params.fromDate,
+    toDate: params.toDate,
+    timeframes,
+  });
+  if (inputStatsResult.isErr) {
+    return Result.Err(inputStatsResult.value);
+  }
+  const inputStats = inputStatsResult.value;
+
+  const statsData: GetStatisticsResponse['data'] = {};
+  if (params.scopes?.inputs) {
+    statsData.inputs = inputStats.inputs;
+  }
+  if (params.scopes?.inputsByNewUsers) {
+    statsData.inputsByNewUsers = inputStats.inputsByNewUsers;
+  }
+
+  return Result.Ok({ data: statsData });
 }

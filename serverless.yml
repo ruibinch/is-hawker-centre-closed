@@ -180,5 +180,5 @@ functions:
     handler: ${self:custom.serverHandlers}/statistics.handler
     events:
       - http:
-          method: get
+          method: post
           path: /api/statistics
