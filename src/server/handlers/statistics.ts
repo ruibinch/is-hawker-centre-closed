@@ -9,7 +9,7 @@ import { makeLambdaResponse } from '../../ext/aws/lambda';
 import { Result, ResultType } from '../../lib/Result';
 import { validateServerRequest, wrapErrorMessage } from '../helpers';
 import { getSelectedTimeframes } from '../services/statistics/common';
-import { calculateInputStatistics } from '../services/statistics/inputs';
+import { calculateInputsStats } from '../services/statistics/inputs';
 import type {
   Scope,
   StatsEntry,
@@ -54,23 +54,32 @@ async function handleGetStatistics(
   const params = JSON.parse(requestBody) as GetStatisticsParams;
 
   const timeframes = getSelectedTimeframes(params.timeframes);
-  const inputStatsResult = await calculateInputStatistics({
-    fromDate: params.fromDate,
-    toDate: params.toDate,
-    timeframes,
-  });
-  if (inputStatsResult.isErr) {
-    return Result.Err(inputStatsResult.value);
+  if (timeframes.length === 0) {
+    return Result.Err('No timeframes specified');
   }
-  const inputStats = inputStatsResult.value;
 
-  const statsData: GetStatisticsResponse['data'] = {};
-  if (params.scopes?.inputs) {
-    statsData.inputs = inputStats.inputs;
+  const { scopes } = params;
+  if (!scopes || Object.values(scopes).every((v) => !v)) {
+    return Result.Err('No scopes specified');
   }
-  if (params.scopes?.inputsByNewUsers) {
-    statsData.inputsByNewUsers = inputStats.inputsByNewUsers;
+
+  let inputsStats = {};
+
+  if (scopes.inputs) {
+    const inputsStatsResult = await calculateInputsStats({
+      fromDate: params.fromDate,
+      toDate: params.toDate,
+      timeframes,
+    });
+    if (inputsStatsResult.isErr) {
+      return Result.Err(inputsStatsResult.value);
+    }
+    inputsStats = inputsStatsResult.value;
   }
+
+  const statsData: GetStatisticsResponse['data'] = {
+    inputs: inputsStats,
+  };
 
   return Result.Ok({ data: statsData });
 }

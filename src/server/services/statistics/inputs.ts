@@ -1,26 +1,21 @@
 import { parseISO } from 'date-fns';
 
-import { ResultType, Result } from '../../../lib/Result';
-import { getAllInputs, Input, sortInputsByTime } from '../../../models/Input';
+import { Result, ResultType } from '../../../lib/Result';
+import { getAllInputs, sortInputsByTime } from '../../../models/Input';
 import { isAfterOrEqual, toDateISO8601 } from '../../../utils/date';
 import { filterItemsByDate } from '../../filters';
 import { makeTimeframeList } from './common';
-import { Timeframe, StatsEntry } from './types';
+import { StatsForTimeframe, Timeframe } from './types';
 
-type InputStatsData = Record<
-  'inputs' | 'inputsByNewUsers',
-  Partial<Record<Timeframe, StatsEntry[]>>
->;
-
-export async function calculateInputStatistics({
+export async function calculateInputsStats({
   fromDate,
   toDate,
-  timeframes,
+  timeframes: timeframesBase,
 }: {
   fromDate: string | undefined;
   toDate: string | undefined;
   timeframes: { timeframe: Timeframe }[];
-}): Promise<ResultType<InputStatsData, string>> {
+}): Promise<ResultType<StatsForTimeframe, string>> {
   const getAllInputsResponse = await getAllInputs();
   if (getAllInputsResponse.isErr) {
     return Result.Err('Error obtaining inputs');
@@ -34,9 +29,8 @@ export async function calculateInputStatistics({
 
   const firstInputDate = parseISO(inputs[0].createdAt);
   const lastInputDate = parseISO(inputs[inputs.length - 1].createdAt);
-  const usersFirstSeen = makeUsersFirstSeenDict(inputsAll);
 
-  let timeframesWithCounters = timeframes.map(({ timeframe }) => {
+  let timeframes = timeframesBase.map(({ timeframe }) => {
     const timeframeList = makeTimeframeList(
       firstInputDate,
       lastInputDate,
@@ -45,10 +39,10 @@ export async function calculateInputStatistics({
 
     return {
       timeframe,
-      timeframeCountData: timeframeList.map((date) => ({
+      data: timeframeList.map((date) => ({
         date,
-        inputsCount: 0,
-        inputsByNewUsersCount: 0,
+        new: 0,
+        total: 0,
       })),
       currentIndex: 0,
     };
@@ -57,19 +51,14 @@ export async function calculateInputStatistics({
   inputs.forEach((input) => {
     const inputCreatedDate = parseISO(input.createdAt);
 
-    timeframesWithCounters = timeframesWithCounters.map((entry) => {
+    timeframes = timeframes.map((entry) => {
       const updatedIndex = updateTimeframeListIndex(
         inputCreatedDate,
-        entry.timeframeCountData,
+        entry.data,
         entry.currentIndex,
       );
 
-      entry.timeframeCountData[updatedIndex].inputsCount += 1;
-
-      const userFirstSeenDate = usersFirstSeen[input.userId];
-      if (userFirstSeenDate === input.createdAt) {
-        entry.timeframeCountData[updatedIndex].inputsByNewUsersCount += 1;
-      }
+      entry.data[updatedIndex].new += 1;
 
       return {
         ...entry,
@@ -78,47 +67,35 @@ export async function calculateInputStatistics({
     });
   });
 
-  const inputStats = timeframesWithCounters.reduce(
-    (_inputStats: InputStatsData, { timeframe, timeframeCountData }) => {
-      _inputStats.inputs[timeframe] = timeframeCountData.map((d) => ({
-        date: toDateISO8601(d.date),
-        count: d.inputsCount,
-      }));
+  const inputsStats = timeframes.reduce(
+    (_inputsStats: StatsForTimeframe, { timeframe, data }) => {
+      let total = 0;
 
-      _inputStats.inputsByNewUsers[timeframe] = timeframeCountData.map((d) => ({
-        date: toDateISO8601(d.date),
-        count: d.inputsByNewUsersCount,
-      }));
+      _inputsStats[timeframe] = data.map((d) => {
+        total += d.new;
 
-      return _inputStats;
+        return {
+          date: toDateISO8601(d.date),
+          new: d.new,
+          total,
+        };
+      });
+
+      return _inputsStats;
     },
-    {
-      inputs: {},
-      inputsByNewUsers: {},
-    },
+    {},
   );
 
-  return Result.Ok(inputStats);
-}
-
-function makeUsersFirstSeenDict(inputsAll: Input[]) {
-  return inputsAll.reduce((users: Record<string, string>, input) => {
-    if (users[input.userId]) return users;
-
-    users[input.userId] = input.createdAt;
-    return users;
-  }, {});
+  return Result.Ok(inputsStats);
 }
 
 function updateTimeframeListIndex(
   currentEntryDate: Date,
-  timeframeCountData: Array<{ date: Date }>,
+  data: { date: Date }[],
   _currentIndex: number,
 ) {
   const getStartOfNextTimeframe = (index: number) =>
-    index < timeframeCountData.length - 1
-      ? timeframeCountData[index + 1].date
-      : undefined;
+    index < data.length - 1 ? data[index + 1].date : undefined;
 
   let currentIndex = _currentIndex;
   let startOfNextTimeframe = getStartOfNextTimeframe(currentIndex);
