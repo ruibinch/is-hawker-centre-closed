@@ -10,7 +10,7 @@ export function filterInputByUserId(input: Input, userId: number | undefined) {
 }
 
 export function filterItemsByDate(
-  input: Feedback | Input,
+  input: Feedback | Input | User,
   fromDate: string | undefined,
   toDate: string | undefined,
 ) {

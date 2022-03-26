@@ -141,3 +141,8 @@ export const usersStats = {
     { date: '2021-12-27', new: 0, total: 5 },
   ],
 };
+
+export const usersWithFavsStats = {
+  byMonth: [{ date: '2021-01-01', new: 5, total: 5 }],
+  byWeek: [{ date: '2020-12-28', new: 5, total: 5 }],
+};

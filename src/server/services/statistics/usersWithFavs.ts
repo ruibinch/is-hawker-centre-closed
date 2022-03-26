@@ -1,31 +1,33 @@
 import { parseISO } from 'date-fns';
 
 import { Result, ResultType } from '../../../lib/Result';
-import { Input } from '../../../models/Input';
+import { User } from '../../../models/User';
 import { toDateISO8601 } from '../../../utils/date';
 import { makeTimeframeList, updateTimeframeListIndex } from './common';
-import { StatsForTimeframe, Timeframe } from './types';
+import { Timeframe, StatsForTimeframe } from './types';
 
 type Props = {
-  inputs: Input[];
+  users: User[];
   timeframes: { timeframe: Timeframe }[];
   fromDate: string | undefined;
   toDate: string | undefined;
 };
 
-export async function calculateInputsStats({
-  inputs,
+export async function calculateUsersWithFavsStats({
+  users,
   timeframes: timeframesBase,
   fromDate,
   toDate,
 }: Props): Promise<ResultType<StatsForTimeframe, string>> {
-  const firstInputDate = parseISO(fromDate ?? inputs[0].createdAt);
-  const lastInputDate = parseISO(toDate ?? inputs[inputs.length - 1].createdAt);
+  const firstUserCreatedDate = parseISO(fromDate ?? users[0].createdAt);
+  const lastUserCreatedDate = parseISO(
+    toDate ?? users[users.length - 1].createdAt,
+  );
 
   let timeframes = timeframesBase.map(({ timeframe }) => {
     const timeframeList = makeTimeframeList(
-      firstInputDate,
-      lastInputDate,
+      firstUserCreatedDate,
+      lastUserCreatedDate,
       timeframe,
     );
 
@@ -39,10 +41,10 @@ export async function calculateInputsStats({
     };
   });
 
-  inputs.forEach((input) => {
+  users.forEach((user) => {
     timeframes = timeframes.map((entry) => {
       const updatedIndex = updateTimeframeListIndex(
-        parseISO(input.createdAt),
+        parseISO(user.createdAt),
         entry.data,
         entry.currentIndex,
       );
@@ -56,11 +58,11 @@ export async function calculateInputsStats({
     });
   });
 
-  const inputsStats = timeframes.reduce(
-    (_inputsStats: StatsForTimeframe, { timeframe, data }) => {
+  const usersWithFavsStats = timeframes.reduce(
+    (_usersWithFavsStats: StatsForTimeframe, { timeframe, data }) => {
       let total = 0;
 
-      _inputsStats[timeframe] = data.map((d) => {
+      _usersWithFavsStats[timeframe] = data.map((d) => {
         total += d.new;
 
         return {
@@ -70,10 +72,10 @@ export async function calculateInputsStats({
         };
       });
 
-      return _inputsStats;
+      return _usersWithFavsStats;
     },
     {},
   );
 
-  return Result.Ok(inputsStats);
+  return Result.Ok(usersWithFavsStats);
 }

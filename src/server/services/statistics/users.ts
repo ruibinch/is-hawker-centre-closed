@@ -6,15 +6,21 @@ import { toDateISO8601 } from '../../../utils/date';
 import { makeTimeframeList, updateTimeframeListIndex } from './common';
 import { Timeframe, StatsForTimeframe } from './types';
 
+type Props = {
+  inputs: Input[];
+  timeframes: { timeframe: Timeframe }[];
+  fromDate: string | undefined;
+  toDate: string | undefined;
+};
+
 export async function calculateUsersStats({
   inputs,
   timeframes: timeframesBase,
-}: {
-  inputs: Input[];
-  timeframes: { timeframe: Timeframe }[];
-}): Promise<ResultType<StatsForTimeframe, string>> {
-  const firstInputDate = parseISO(inputs[0].createdAt);
-  const lastInputDate = parseISO(inputs[inputs.length - 1].createdAt);
+  fromDate,
+  toDate,
+}: Props): Promise<ResultType<StatsForTimeframe, string>> {
+  const firstInputDate = parseISO(fromDate ?? inputs[0].createdAt);
+  const lastInputDate = parseISO(toDate ?? inputs[inputs.length - 1].createdAt);
 
   let timeframes = timeframesBase.map(({ timeframe }) => {
     const timeframeList = makeTimeframeList(

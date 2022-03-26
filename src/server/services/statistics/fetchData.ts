@@ -40,8 +40,11 @@ export async function fetchData({
       return Result.Err('Error obtaining users');
     }
 
-    const usersRaw = getAllUsersResult.value;
-    users = sortUsersByTime(usersRaw, 'asc');
+    const usersAll = getAllUsersResult.value;
+    const usersFiltered = usersAll.filter((user) =>
+      filterItemsByDate(user, fromDate, toDate),
+    );
+    users = sortUsersByTime(usersFiltered, 'asc');
   }
 
   return Result.Ok({ inputs, users });

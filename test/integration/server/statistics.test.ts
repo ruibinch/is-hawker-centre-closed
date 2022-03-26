@@ -1,21 +1,31 @@
 import { Result } from '../../../src/lib/Result';
 import * as InputFile from '../../../src/models/Input';
+import * as UserFile from '../../../src/models/User';
 import { handler as statisticsHandler } from '../../../src/server/handlers/statistics';
-import { mockInputs } from './__mocks__/db';
-import { inputsStats, usersStats } from './__mocks__/statsResults';
+import { mockInputs, mockUsers } from './__mocks__/db';
+import {
+  inputsStats,
+  usersStats,
+  usersWithFavsStats,
+} from './__mocks__/statsResults';
 import { callServerHandler } from './helpers';
 
 describe('[server] [integration] /statistics endpoint', () => {
   let getAllInputsSpy: jest.SpyInstance;
+  let getAllUsersSpy: jest.SpyInstance;
 
   beforeEach(() => {
     getAllInputsSpy = jest
       .spyOn(InputFile, 'getAllInputs')
       .mockImplementation(() => Promise.resolve(Result.Ok(mockInputs)));
+    getAllUsersSpy = jest
+      .spyOn(UserFile, 'getAllUsers')
+      .mockImplementation(() => Promise.resolve(Result.Ok(mockUsers)));
   });
 
   afterEach(() => {
     getAllInputsSpy.mockRestore();
+    getAllUsersSpy.mockRestore();
   });
 
   describe('inputs scope', () => {
@@ -77,6 +87,37 @@ describe('[server] [integration] /statistics endpoint', () => {
       const responseBody = JSON.parse(response.body);
       expect(response.statusCode).toStrictEqual(400);
       expect(responseBody.error).toStrictEqual('Error obtaining inputs');
+    });
+  });
+
+  describe('usersWithFavs scope', () => {
+    const params = {
+      scopes: {
+        usersWithFavs: true,
+      },
+      timeframes: {
+        byMonth: true,
+        byWeek: true,
+      },
+    };
+
+    it('returns the correct stats', async () => {
+      const response = await callServerHandler(statisticsHandler, params);
+
+      const responseBody = JSON.parse(response.body);
+      expect(responseBody.data.usersWithFavs).toStrictEqual(usersWithFavsStats);
+    });
+
+    it('returns 400 when getAllUsers throws an error', async () => {
+      getAllUsersSpy = jest
+        .spyOn(UserFile, 'getAllUsers')
+        .mockImplementation(() => Promise.resolve(Result.Err()));
+
+      const response = await callServerHandler(statisticsHandler, params);
+
+      const responseBody = JSON.parse(response.body);
+      expect(response.statusCode).toStrictEqual(400);
+      expect(responseBody.error).toStrictEqual('Error obtaining users');
     });
   });
 

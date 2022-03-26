@@ -8,6 +8,7 @@ import dotenv from 'dotenv';
 import { makeLambdaResponse } from '../../ext/aws/lambda';
 import { Result, ResultType } from '../../lib/Result';
 import { Input } from '../../models/Input';
+import { User } from '../../models/User';
 import { validateServerRequest, wrapErrorMessage } from '../helpers';
 import { getSelectedTimeframes } from '../services/statistics/common';
 import { fetchData } from '../services/statistics/fetchData';
@@ -18,6 +19,7 @@ import type {
   Timeframe,
 } from '../services/statistics/types';
 import { calculateUsersStats } from '../services/statistics/users';
+import { calculateUsersWithFavsStats } from '../services/statistics/usersWithFavs';
 
 dotenv.config();
 
@@ -79,11 +81,14 @@ async function handleGetStatistics(
 
   let inputsStats = {};
   let usersStats = {};
+  let usersWithFavsStats = {};
 
   if (scopes.inputs) {
     const inputsStatsResult = await calculateInputsStats({
       inputs: inputs as Input[],
       timeframes,
+      fromDate: params.fromDate,
+      toDate: params.toDate,
     });
     if (inputsStatsResult.isErr) {
       return Result.Err(inputsStatsResult.value);
@@ -95,6 +100,8 @@ async function handleGetStatistics(
     const usersStatsResult = await calculateUsersStats({
       inputs: inputs as Input[],
       timeframes,
+      fromDate: params.fromDate,
+      toDate: params.toDate,
     });
     if (usersStatsResult.isErr) {
       return Result.Err(usersStatsResult.value);
@@ -102,9 +109,23 @@ async function handleGetStatistics(
     usersStats = usersStatsResult.value;
   }
 
+  if (scopes.usersWithFavs) {
+    const usersWithFavsStatsResult = await calculateUsersWithFavsStats({
+      users: users as User[],
+      timeframes,
+      fromDate: params.fromDate,
+      toDate: params.toDate,
+    });
+    if (usersWithFavsStatsResult.isErr) {
+      return Result.Err(usersWithFavsStatsResult.value);
+    }
+    usersWithFavsStats = usersWithFavsStatsResult.value;
+  }
+
   const statsData: GetStatisticsResponse['data'] = {
     inputs: inputsStats,
     users: usersStats,
+    usersWithFavs: usersWithFavsStats,
   };
 
   return Result.Ok({ data: statsData });
