@@ -7,8 +7,10 @@ import dotenv from 'dotenv';
 
 import { makeLambdaResponse } from '../../ext/aws/lambda';
 import { Result, ResultType } from '../../lib/Result';
+import { Input } from '../../models/Input';
 import { validateServerRequest, wrapErrorMessage } from '../helpers';
 import { getSelectedTimeframes } from '../services/statistics/common';
+import { fetchData } from '../services/statistics/fetchData';
 import { calculateInputsStats } from '../services/statistics/inputs';
 import type {
   Scope,
@@ -63,12 +65,22 @@ async function handleGetStatistics(
     return Result.Err('No scopes specified');
   }
 
+  const fetchDataResult = await fetchData({
+    scopes,
+    fromDate: params.fromDate,
+    toDate: params.toDate,
+  });
+  if (fetchDataResult.isErr) {
+    return fetchDataResult;
+  }
+
+  const { inputs, users } = fetchDataResult.value;
+
   let inputsStats = {};
 
   if (scopes.inputs) {
     const inputsStatsResult = await calculateInputsStats({
-      fromDate: params.fromDate,
-      toDate: params.toDate,
+      inputs: inputs as Input[],
       timeframes,
     });
     if (inputsStatsResult.isErr) {

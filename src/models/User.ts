@@ -1,5 +1,5 @@
 import * as AWS from 'aws-sdk';
-import { formatISO } from 'date-fns';
+import { formatISO, parseISO } from 'date-fns';
 import NodeCache from 'node-cache';
 
 import type { Language } from '../bot/lang';
@@ -99,6 +99,15 @@ export async function addUser(user: User): Promise<ResultType<void, Error>> {
   } catch (err) {
     return Result.Err(wrapUnknownError(err));
   }
+}
+
+export function sortUsersByTime(users: User[], order: 'asc' | 'desc') {
+  return [...users].sort((a, b) => {
+    const aTime = parseISO(a.createdAt).getTime();
+    const bTime = parseISO(b.createdAt).getTime();
+
+    return order === 'asc' ? aTime - bTime : bTime - aTime;
+  });
 }
 
 export async function getAllUsers(): Promise<ResultType<User[], Error>> {

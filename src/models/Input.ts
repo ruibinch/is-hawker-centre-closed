@@ -61,9 +61,7 @@ export class Input {
   }
 }
 
-type SortOrder = 'asc' | 'desc';
-
-export function sortInputsByTime(inputs: Input[], order: SortOrder) {
+export function sortInputsByTime(inputs: Input[], order: 'asc' | 'desc') {
   return [...inputs].sort((a, b) => {
     // inputId is of format `{{userId}}-{{unixTime}}`
     const aTime = Number(a.inputId.split('-')[1]);

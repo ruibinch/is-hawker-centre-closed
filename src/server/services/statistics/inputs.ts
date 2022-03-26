@@ -1,32 +1,18 @@
 import { parseISO } from 'date-fns';
 
 import { Result, ResultType } from '../../../lib/Result';
-import { getAllInputs, sortInputsByTime } from '../../../models/Input';
+import { Input } from '../../../models/Input';
 import { isAfterOrEqual, toDateISO8601 } from '../../../utils/date';
-import { filterItemsByDate } from '../../filters';
 import { makeTimeframeList } from './common';
 import { StatsForTimeframe, Timeframe } from './types';
 
 export async function calculateInputsStats({
-  fromDate,
-  toDate,
+  inputs,
   timeframes: timeframesBase,
 }: {
-  fromDate: string | undefined;
-  toDate: string | undefined;
+  inputs: Input[];
   timeframes: { timeframe: Timeframe }[];
 }): Promise<ResultType<StatsForTimeframe, string>> {
-  const getAllInputsResponse = await getAllInputs();
-  if (getAllInputsResponse.isErr) {
-    return Result.Err('Error obtaining inputs');
-  }
-
-  const inputsAll = getAllInputsResponse.value;
-  const inputsFiltered = inputsAll.filter((input) =>
-    filterItemsByDate(input, fromDate, toDate),
-  );
-  const inputs = sortInputsByTime(inputsFiltered, 'asc');
-
   const firstInputDate = parseISO(inputs[0].createdAt);
   const lastInputDate = parseISO(inputs[inputs.length - 1].createdAt);
 
@@ -42,7 +28,6 @@ export async function calculateInputsStats({
       data: timeframeList.map((date) => ({
         date,
         new: 0,
-        total: 0,
       })),
       currentIndex: 0,
     };
