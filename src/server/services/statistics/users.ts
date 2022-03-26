@@ -4,9 +4,9 @@ import { Result, ResultType } from '../../../lib/Result';
 import { Input } from '../../../models/Input';
 import { toDateISO8601 } from '../../../utils/date';
 import { makeTimeframeList, updateTimeframeListIndex } from './common';
-import { StatsForTimeframe, Timeframe } from './types';
+import { Timeframe, StatsForTimeframe } from './types';
 
-export async function calculateInputsStats({
+export async function calculateUsersStats({
   inputs,
   timeframes: timeframesBase,
 }: {
@@ -33,7 +33,11 @@ export async function calculateInputsStats({
     };
   });
 
+  const userIds: number[] = [];
+
   inputs.forEach((input) => {
+    if (userIds.includes(input.userId)) return;
+
     timeframes = timeframes.map((entry) => {
       const updatedIndex = updateTimeframeListIndex(
         parseISO(input.createdAt),
@@ -48,13 +52,15 @@ export async function calculateInputsStats({
         currentIndex: updatedIndex,
       };
     });
+
+    userIds.push(input.userId);
   });
 
-  const inputsStats = timeframes.reduce(
-    (_inputsStats: StatsForTimeframe, { timeframe, data }) => {
+  const usersStats = timeframes.reduce(
+    (_usersStats: StatsForTimeframe, { timeframe, data }) => {
       let total = 0;
 
-      _inputsStats[timeframe] = data.map((d) => {
+      _usersStats[timeframe] = data.map((d) => {
         total += d.new;
 
         return {
@@ -64,10 +70,10 @@ export async function calculateInputsStats({
         };
       });
 
-      return _inputsStats;
+      return _usersStats;
     },
     {},
   );
 
-  return Result.Ok(inputsStats);
+  return Result.Ok(usersStats);
 }

@@ -17,6 +17,7 @@ import type {
   StatsEntry,
   Timeframe,
 } from '../services/statistics/types';
+import { calculateUsersStats } from '../services/statistics/users';
 
 dotenv.config();
 
@@ -77,6 +78,7 @@ async function handleGetStatistics(
   const { inputs, users } = fetchDataResult.value;
 
   let inputsStats = {};
+  let usersStats = {};
 
   if (scopes.inputs) {
     const inputsStatsResult = await calculateInputsStats({
@@ -89,8 +91,20 @@ async function handleGetStatistics(
     inputsStats = inputsStatsResult.value;
   }
 
+  if (scopes.users) {
+    const usersStatsResult = await calculateUsersStats({
+      inputs: inputs as Input[],
+      timeframes,
+    });
+    if (usersStatsResult.isErr) {
+      return Result.Err(usersStatsResult.value);
+    }
+    usersStats = usersStatsResult.value;
+  }
+
   const statsData: GetStatisticsResponse['data'] = {
     inputs: inputsStats,
+    users: usersStats,
   };
 
   return Result.Ok({ data: statsData });
