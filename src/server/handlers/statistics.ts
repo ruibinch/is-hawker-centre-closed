@@ -13,6 +13,7 @@ import { validateServerRequest, wrapErrorMessage } from '../helpers';
 import { getSelectedTimeframes } from '../services/statistics/common';
 import { fetchData } from '../services/statistics/fetchData';
 import { calculateInputsStats } from '../services/statistics/inputs';
+import { calculatePercentageUsersWithFavsStats } from '../services/statistics/percentageUsersWithFavs';
 import type {
   Scope,
   StatsEntry,
@@ -82,6 +83,7 @@ async function handleGetStatistics(
   let inputsStats = {};
   let usersStats = {};
   let usersWithFavsStats = {};
+  let percentageUsersWithFavsStats = {};
 
   if (scopes.inputs) {
     const inputsStatsResult = await calculateInputsStats({
@@ -96,7 +98,7 @@ async function handleGetStatistics(
     inputsStats = inputsStatsResult.value;
   }
 
-  if (scopes.users) {
+  if (scopes.users || scopes.percentageUsersWithFavs) {
     const usersStatsResult = await calculateUsersStats({
       inputs: inputs as Input[],
       timeframes,
@@ -109,7 +111,7 @@ async function handleGetStatistics(
     usersStats = usersStatsResult.value;
   }
 
-  if (scopes.usersWithFavs) {
+  if (scopes.usersWithFavs || scopes.percentageUsersWithFavs) {
     const usersWithFavsStatsResult = await calculateUsersWithFavsStats({
       users: users as User[],
       timeframes,
@@ -122,10 +124,18 @@ async function handleGetStatistics(
     usersWithFavsStats = usersWithFavsStatsResult.value;
   }
 
+  if (scopes.percentageUsersWithFavs) {
+    percentageUsersWithFavsStats = calculatePercentageUsersWithFavsStats({
+      usersStats,
+      usersWithFavsStats,
+    });
+  }
+
   const statsData: GetStatisticsResponse['data'] = {
     inputs: inputsStats,
     users: usersStats,
     usersWithFavs: usersWithFavsStats,
+    percentageUsersWithFavs: percentageUsersWithFavsStats,
   };
 
   return Result.Ok({ data: statsData });
