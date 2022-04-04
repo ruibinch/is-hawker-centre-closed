@@ -8,7 +8,7 @@ import { Timeframe, StatsForTimeframe } from './types';
 
 type Props = {
   users: User[];
-  timeframes: { timeframe: Timeframe }[];
+  timeframes: Timeframe[];
   fromDate: string | undefined;
   toDate: string | undefined;
 };
@@ -24,7 +24,7 @@ export async function calculateUsersWithFavsStats({
     toDate ?? users[users.length - 1].createdAt,
   );
 
-  let timeframes = timeframesBase.map(({ timeframe }) => {
+  let timeframes = timeframesBase.map((timeframe) => {
     const timeframeList = makeTimeframeList(
       firstUserCreatedDate,
       lastUserCreatedDate,

@@ -7,21 +7,8 @@ import {
 import { isAfterOrEqual } from '../../../utils/date';
 import { Timeframe } from './types';
 
-export function getSelectedTimeframes(
-  timeframes: Partial<Record<Timeframe, boolean>> | undefined,
-) {
-  return Object.entries(timeframes ?? []).reduce(
-    (
-      _selectedTimeframes: Array<{ timeframe: Timeframe }>,
-      [timeframe, toggleValue],
-    ) => {
-      if (toggleValue) {
-        _selectedTimeframes.push({ timeframe: timeframe as Timeframe });
-      }
-      return _selectedTimeframes;
-    },
-    [],
-  );
+export function includesSome(baseArray: unknown[], values: unknown[]) {
+  return values.some((value) => baseArray.includes(value));
 }
 
 export function makeTimeframeList(

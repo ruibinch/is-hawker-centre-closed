@@ -10,12 +10,17 @@ import {
 } from '../../bot/__mocks__/db';
 export { mockHawkerCentres } from '../../bot/__mocks__/db';
 
+const setUserCreatedAt = (user: User, date: string): User => ({
+  ...user,
+  createdAt: date,
+});
+
 export const mockUsers: User[] = [
-  mockUser1,
-  mockUser2,
-  mockUser3,
-  mockUser4,
-  mockUser5,
+  setUserCreatedAt(mockUser1, '2021-01-10T14:27:23+08:00'),
+  setUserCreatedAt(mockUser2, '2021-03-17T01:20:24+08:00'),
+  setUserCreatedAt(mockUser3, '2021-09-09T09:47:36+08:00'),
+  setUserCreatedAt(mockUser4, '2021-09-19T11:20:17+08:00'),
+  setUserCreatedAt(mockUser5, '2021-05-30T21:52:29+08:00'),
 ];
 
 export const mockInputs: Input[] = [

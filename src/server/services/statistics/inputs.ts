@@ -8,7 +8,7 @@ import { StatsForTimeframe, Timeframe } from './types';
 
 type Props = {
   inputs: Input[];
-  timeframes: { timeframe: Timeframe }[];
+  timeframes: Timeframe[];
   fromDate: string | undefined;
   toDate: string | undefined;
 };
@@ -22,7 +22,7 @@ export async function calculateInputsStats({
   const firstInputDate = parseISO(fromDate ?? inputs[0].createdAt);
   const lastInputDate = parseISO(toDate ?? inputs[inputs.length - 1].createdAt);
 
-  let timeframes = timeframesBase.map(({ timeframe }) => {
+  let timeframes = timeframesBase.map((timeframe) => {
     const timeframeList = makeTimeframeList(
       firstInputDate,
       lastInputDate,

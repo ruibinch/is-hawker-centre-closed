@@ -19,15 +19,27 @@ export function calculatePercentageUsersWithFavsStats({
         timeframe as Timeframe
       ] as StatsEntry[];
 
+      let usersWithFavsTotal = 0;
+
       // @ts-expect-error timeframe is of Timeframe type
       _percentageUsersWithFavsStats[timeframe] = usersStatsData.map(
-        (usersStatsDatum, idx) => {
-          const usersWithFavsStatsDatum = usersWithFavsStatsForTimeframe[idx];
+        (usersStatsDatum) => {
+          const usersWithFavsStatsDatum = usersWithFavsStatsForTimeframe.find(
+            (entry) => entry.date === usersStatsDatum.date,
+          );
+          if (usersWithFavsStatsDatum?.total !== undefined) {
+            usersWithFavsTotal = usersWithFavsStatsDatum.total;
+          }
 
           return {
             date: usersStatsDatum.date,
-            new: usersWithFavsStatsDatum.new / usersStatsDatum.new,
-            total: usersWithFavsStatsDatum.total / usersStatsDatum.total,
+            new:
+              usersStatsDatum.new === 0
+                ? 0
+                : roundTo2DP(
+                    (usersWithFavsStatsDatum?.new ?? 0) / usersStatsDatum.new,
+                  ),
+            total: roundTo2DP(usersWithFavsTotal / usersStatsDatum.total),
           };
         },
       );
@@ -38,4 +50,8 @@ export function calculatePercentageUsersWithFavsStats({
   );
 
   return percentageUsersWithFavsStats;
+}
+
+function roundTo2DP(num: number) {
+  return Math.round((num + Number.EPSILON) * 100) / 100;
 }

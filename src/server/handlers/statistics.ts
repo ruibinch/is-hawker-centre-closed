@@ -10,9 +10,10 @@ import { Result, ResultType } from '../../lib/Result';
 import { Input } from '../../models/Input';
 import { User } from '../../models/User';
 import { validateServerRequest, wrapErrorMessage } from '../helpers';
-import { getSelectedTimeframes } from '../services/statistics/common';
+import { includesSome } from '../services/statistics/common';
 import { fetchData } from '../services/statistics/fetchData';
 import { calculateInputsStats } from '../services/statistics/inputs';
+import { parseRequestBody } from '../services/statistics/parser';
 import { calculatePercentageUsersWithFavsStats } from '../services/statistics/percentageUsersWithFavs';
 import type {
   Scope,
@@ -23,13 +24,6 @@ import { calculateUsersStats } from '../services/statistics/users';
 import { calculateUsersWithFavsStats } from '../services/statistics/usersWithFavs';
 
 dotenv.config();
-
-type GetStatisticsParams = {
-  fromDate?: string;
-  toDate?: string;
-  scopes?: Partial<Record<Scope, boolean>>;
-  timeframes?: Partial<Record<Timeframe, boolean>>;
-};
 
 // TODO: explore RecursivePartial type
 type GetStatisticsResponse = {
@@ -57,22 +51,24 @@ async function handleGetStatistics(
     return Result.Err('Missing request body');
   }
 
-  const params = JSON.parse(requestBody) as GetStatisticsParams;
+  const parseResult = parseRequestBody(requestBody);
+  if (parseResult.isErr) {
+    return Result.Err(parseResult.value);
+  }
+  const params = parseResult.value;
+  const { fromDate, toDate, scopes, timeframes } = params;
 
-  const timeframes = getSelectedTimeframes(params.timeframes);
-  if (timeframes.length === 0) {
+  if (!timeframes) {
     return Result.Err('No timeframes specified');
   }
-
-  const { scopes } = params;
-  if (!scopes || Object.values(scopes).every((v) => !v)) {
+  if (!scopes) {
     return Result.Err('No scopes specified');
   }
 
   const fetchDataResult = await fetchData({
     scopes,
-    fromDate: params.fromDate,
-    toDate: params.toDate,
+    fromDate,
+    toDate,
   });
   if (fetchDataResult.isErr) {
     return fetchDataResult;
@@ -85,12 +81,12 @@ async function handleGetStatistics(
   let usersWithFavsStats = {};
   let percentageUsersWithFavsStats = {};
 
-  if (scopes.inputs) {
+  if (includesSome(scopes, ['inputs'])) {
     const inputsStatsResult = await calculateInputsStats({
       inputs: inputs as Input[],
       timeframes,
-      fromDate: params.fromDate,
-      toDate: params.toDate,
+      fromDate,
+      toDate,
     });
     if (inputsStatsResult.isErr) {
       return Result.Err(inputsStatsResult.value);
@@ -98,12 +94,12 @@ async function handleGetStatistics(
     inputsStats = inputsStatsResult.value;
   }
 
-  if (scopes.users || scopes.percentageUsersWithFavs) {
+  if (includesSome(scopes, ['users', 'percentageUsersWithFavs'])) {
     const usersStatsResult = await calculateUsersStats({
       inputs: inputs as Input[],
       timeframes,
-      fromDate: params.fromDate,
-      toDate: params.toDate,
+      fromDate,
+      toDate,
     });
     if (usersStatsResult.isErr) {
       return Result.Err(usersStatsResult.value);
@@ -111,12 +107,12 @@ async function handleGetStatistics(
     usersStats = usersStatsResult.value;
   }
 
-  if (scopes.usersWithFavs || scopes.percentageUsersWithFavs) {
+  if (includesSome(scopes, ['usersWithFavs', 'percentageUsersWithFavs'])) {
     const usersWithFavsStatsResult = await calculateUsersWithFavsStats({
       users: users as User[],
       timeframes,
-      fromDate: params.fromDate,
-      toDate: params.toDate,
+      fromDate,
+      toDate,
     });
     if (usersWithFavsStatsResult.isErr) {
       return Result.Err(usersWithFavsStatsResult.value);
@@ -124,19 +120,28 @@ async function handleGetStatistics(
     usersWithFavsStats = usersWithFavsStatsResult.value;
   }
 
-  if (scopes.percentageUsersWithFavs) {
+  if (includesSome(scopes, ['percentageUsersWithFavs'])) {
     percentageUsersWithFavsStats = calculatePercentageUsersWithFavsStats({
       usersStats,
       usersWithFavsStats,
     });
   }
 
-  const statsData: GetStatisticsResponse['data'] = {
+  const statsDataAll: GetStatisticsResponse['data'] = {
     inputs: inputsStats,
     users: usersStats,
     usersWithFavs: usersWithFavsStats,
     percentageUsersWithFavs: percentageUsersWithFavsStats,
   };
+  const statsData = Object.entries(statsDataAll).reduce(
+    (_statsData: typeof statsDataAll, [scope, scopeStats]) => {
+      if (scopes.includes(scope as Scope)) {
+        _statsData[scope as Scope] = scopeStats;
+      }
+      return _statsData;
+    },
+    {},
+  );
 
   return Result.Ok({ data: statsData });
 }
