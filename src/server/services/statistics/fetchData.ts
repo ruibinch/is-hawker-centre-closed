@@ -20,7 +20,14 @@ export async function fetchData({ scopes, fromDate, toDate }: Props) {
   let inputs;
   let users;
 
-  if (includesSome(scopes, ['inputs', 'users', 'percentageUsersWithFavs'])) {
+  if (
+    includesSome(scopes, [
+      'inputs',
+      'inputsByDay',
+      'users',
+      'percentageUsersWithFavs',
+    ])
+  ) {
     const getAllInputsResult = await getAllInputs();
     if (getAllInputsResult.isErr) {
       return Result.Err('Error obtaining inputs');

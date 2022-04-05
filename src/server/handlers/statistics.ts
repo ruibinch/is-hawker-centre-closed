@@ -10,24 +10,29 @@ import { Result, ResultType } from '../../lib/Result';
 import { Input } from '../../models/Input';
 import { User } from '../../models/User';
 import { validateServerRequest, wrapErrorMessage } from '../helpers';
-import { includesSome } from '../services/statistics/common';
+import { includesSome, isScope } from '../services/statistics/common';
 import { fetchData } from '../services/statistics/fetchData';
 import { calculateInputsStats } from '../services/statistics/inputs';
+import {
+  calculateInputsByDayStats,
+  DayOfWeek,
+} from '../services/statistics/inputsByDay';
 import { parseRequestBody } from '../services/statistics/parser';
 import { calculatePercentageUsersWithFavsStats } from '../services/statistics/percentageUsersWithFavs';
-import type {
-  Scope,
-  StatsEntry,
-  Timeframe,
-} from '../services/statistics/types';
+import type { StatsEntry, Timeframe } from '../services/statistics/types';
 import { calculateUsersStats } from '../services/statistics/users';
 import { calculateUsersWithFavsStats } from '../services/statistics/usersWithFavs';
 
 dotenv.config();
 
-// TODO: explore RecursivePartial type
 type GetStatisticsResponse = {
-  data: Partial<Record<Scope, Partial<Record<Timeframe, StatsEntry[]>>>>;
+  data: Partial<{
+    inputs: Partial<Record<Timeframe, StatsEntry[]>>;
+    inputsByDay: Record<DayOfWeek, number>;
+    users: Partial<Record<Timeframe, StatsEntry[]>>;
+    usersWithFavs: Partial<Record<Timeframe, StatsEntry[]>>;
+    percentageUsersWithFavs: Partial<Record<Timeframe, StatsEntry[]>>;
+  }>;
 };
 
 export const handler: APIGatewayProxyHandler = async (
@@ -75,11 +80,7 @@ async function handleGetStatistics(
   }
 
   const { inputs, users } = fetchDataResult.value;
-
-  let inputsStats = {};
-  let usersStats = {};
-  let usersWithFavsStats = {};
-  let percentageUsersWithFavsStats = {};
+  const statsData: GetStatisticsResponse['data'] = {};
 
   if (includesSome(scopes, ['inputs'])) {
     const inputsStatsResult = await calculateInputsStats({
@@ -91,7 +92,13 @@ async function handleGetStatistics(
     if (inputsStatsResult.isErr) {
       return Result.Err(inputsStatsResult.value);
     }
-    inputsStats = inputsStatsResult.value;
+    statsData.inputs = inputsStatsResult.value;
+  }
+
+  if (includesSome(scopes, ['inputsByDay'])) {
+    statsData.inputsByDay = calculateInputsByDayStats({
+      inputs: inputs as Input[],
+    });
   }
 
   if (includesSome(scopes, ['users', 'percentageUsersWithFavs'])) {
@@ -104,7 +111,7 @@ async function handleGetStatistics(
     if (usersStatsResult.isErr) {
       return Result.Err(usersStatsResult.value);
     }
-    usersStats = usersStatsResult.value;
+    statsData.users = usersStatsResult.value;
   }
 
   if (includesSome(scopes, ['usersWithFavs', 'percentageUsersWithFavs'])) {
@@ -117,31 +124,29 @@ async function handleGetStatistics(
     if (usersWithFavsStatsResult.isErr) {
       return Result.Err(usersWithFavsStatsResult.value);
     }
-    usersWithFavsStats = usersWithFavsStatsResult.value;
+    statsData.usersWithFavs = usersWithFavsStatsResult.value;
   }
 
   if (includesSome(scopes, ['percentageUsersWithFavs'])) {
-    percentageUsersWithFavsStats = calculatePercentageUsersWithFavsStats({
-      usersStats,
-      usersWithFavsStats,
+    if (!statsData.users || !statsData.usersWithFavs) {
+      return Result.Err(
+        'Error computing percentageUsersWithFavs: users or usersWithFavs is undefined',
+      );
+    }
+
+    statsData.percentageUsersWithFavs = calculatePercentageUsersWithFavsStats({
+      usersStats: statsData.users,
+      usersWithFavsStats: statsData.usersWithFavs,
     });
   }
 
-  const statsDataAll: GetStatisticsResponse['data'] = {
-    inputs: inputsStats,
-    users: usersStats,
-    usersWithFavs: usersWithFavsStats,
-    percentageUsersWithFavs: percentageUsersWithFavsStats,
-  };
-  const statsData = Object.entries(statsDataAll).reduce(
-    (_statsData: typeof statsDataAll, [scope, scopeStats]) => {
-      if (scopes.includes(scope as Scope)) {
-        _statsData[scope as Scope] = scopeStats;
-      }
-      return _statsData;
-    },
-    {},
-  );
+  // some scope results are computed solely to be used when computing other scopes
+  // if these "enabler" scopes are not in the params list, remove them from the statsData dict
+  Object.keys(statsData).forEach((scope) => {
+    if (isScope(scope) && !scopes.includes(scope)) {
+      statsData[scope] = undefined;
+    }
+  });
 
   return Result.Ok({ data: statsData });
 }

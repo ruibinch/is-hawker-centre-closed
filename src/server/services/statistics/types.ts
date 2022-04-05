@@ -1,5 +1,6 @@
 export type Scope =
   | 'inputs'
+  | 'inputsByDay'
   | 'users'
   | 'usersWithFavs'
   | 'percentageUsersWithFavs';

@@ -1,5 +1,6 @@
 import { Result, ResultType } from '../../../lib/Result';
 import { Undefined } from '../../../utils/types';
+import { isScope, isTimeframe } from './common';
 import { Scope, Timeframe } from './types';
 
 type GetStatisticsParams = Undefined<{
@@ -57,17 +58,4 @@ export function parseRequestBody(
     scopes,
     timeframes,
   });
-}
-
-function isScope(s: unknown): s is Scope {
-  return (
-    s === 'inputs' ||
-    s === 'users' ||
-    s === 'usersWithFavs' ||
-    s === 'percentageUsersWithFavs'
-  );
-}
-
-function isTimeframe(s: unknown): s is Timeframe {
-  return s === 'byMonth' || s === 'byWeek' || s === 'byDay';
 }

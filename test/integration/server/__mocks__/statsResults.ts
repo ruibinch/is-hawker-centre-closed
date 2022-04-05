@@ -70,6 +70,16 @@ export const inputsStats = {
   ],
 };
 
+export const inputsByDayStats = {
+  mon: 4,
+  tue: 8,
+  wed: 2,
+  thu: 7,
+  fri: 9,
+  sat: 5,
+  sun: 7,
+};
+
 export const usersStats = {
   byMonth: [
     { date: '2021-01-01', new: 3, total: 3 },

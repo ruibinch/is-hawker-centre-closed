@@ -4,6 +4,7 @@ import * as UserFile from '../../../src/models/User';
 import { handler as statisticsHandler } from '../../../src/server/handlers/statistics';
 import { mockInputs, mockUsers } from './__mocks__/db';
 import {
+  inputsByDayStats,
   inputsStats,
   percentageUsersWithFavsStats,
   usersStats,
@@ -40,6 +41,32 @@ describe('[server] [integration] /statistics endpoint', () => {
 
       const responseBody = JSON.parse(response.body);
       expect(responseBody.data.inputs).toStrictEqual(inputsStats);
+    });
+
+    it('returns 400 when getAllInputs throws an error', async () => {
+      getAllInputsSpy = jest
+        .spyOn(InputFile, 'getAllInputs')
+        .mockImplementation(() => Promise.resolve(Result.Err()));
+
+      const response = await callServerHandler(statisticsHandler, params);
+
+      const responseBody = JSON.parse(response.body);
+      expect(response.statusCode).toStrictEqual(400);
+      expect(responseBody.error).toStrictEqual('Error obtaining inputs');
+    });
+  });
+
+  describe('inputsByDay scope', () => {
+    const params = {
+      scopes: ['inputsByDay'],
+      timeframes: ['byMonth'],
+    };
+
+    it('returns the correct stats', async () => {
+      const response = await callServerHandler(statisticsHandler, params);
+
+      const responseBody = JSON.parse(response.body);
+      expect(responseBody.data.inputsByDay).toStrictEqual(inputsByDayStats);
     });
 
     it('returns 400 when getAllInputs throws an error', async () => {

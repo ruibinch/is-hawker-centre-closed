@@ -5,7 +5,21 @@ import {
 } from 'date-fns';
 
 import { isAfterOrEqual } from '../../../utils/date';
-import { Timeframe } from './types';
+import { Scope, Timeframe } from './types';
+
+export function isScope(s: unknown): s is Scope {
+  return (
+    s === 'inputs' ||
+    s === 'inputsByDay' ||
+    s === 'users' ||
+    s === 'usersWithFavs' ||
+    s === 'percentageUsersWithFavs'
+  );
+}
+
+export function isTimeframe(s: unknown): s is Timeframe {
+  return s === 'byMonth' || s === 'byWeek' || s === 'byDay';
+}
 
 export function includesSome(baseArray: unknown[], values: unknown[]) {
   return values.some((value) => baseArray.includes(value));
