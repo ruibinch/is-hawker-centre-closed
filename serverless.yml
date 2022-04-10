@@ -170,12 +170,6 @@ functions:
       - http:
           method: post
           path: /api/feedback
-  hcFavourites:
-    handler: ${self:custom.serverHandlers}/hcFavourites.handler
-    events:
-      - http:
-          method: get
-          path: /api/hcFavourites
   statistics:
     handler: ${self:custom.serverHandlers}/statistics.handler
     events:

@@ -13,7 +13,8 @@ export function isScope(s: unknown): s is Scope {
     s === 'inputsByDay' ||
     s === 'users' ||
     s === 'usersWithFavs' ||
-    s === 'percentageUsersWithFavs'
+    s === 'percentageUsersWithFavs' ||
+    s === 'hawkerCentreFavsCount'
   );
 }
 
@@ -21,7 +22,7 @@ export function isTimeframe(s: unknown): s is Timeframe {
   return s === 'byMonth' || s === 'byWeek' || s === 'byDay';
 }
 
-export function includesSome(baseArray: unknown[], values: unknown[]) {
+export function includesSome<T>(baseArray: T[], values: T[]) {
   return values.some((value) => baseArray.includes(value));
 }
 

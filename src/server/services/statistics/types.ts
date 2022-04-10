@@ -3,7 +3,8 @@ export type Scope =
   | 'inputsByDay'
   | 'users'
   | 'usersWithFavs'
-  | 'percentageUsersWithFavs';
+  | 'percentageUsersWithFavs'
+  | 'hawkerCentreFavsCount';
 export type Timeframe = 'byMonth' | 'byWeek' | 'byDay';
 
 export type StatsEntry = {

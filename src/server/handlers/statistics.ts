@@ -7,11 +7,13 @@ import dotenv from 'dotenv';
 
 import { makeLambdaResponse } from '../../ext/aws/lambda';
 import { Result, ResultType } from '../../lib/Result';
+import { HawkerCentre } from '../../models/HawkerCentre';
 import { Input } from '../../models/Input';
 import { User } from '../../models/User';
 import { validateServerRequest, wrapErrorMessage } from '../helpers';
 import { includesSome, isScope } from '../services/statistics/common';
 import { fetchData } from '../services/statistics/fetchData';
+import { calculateHawkerCentreFavsCount } from '../services/statistics/hawkerCentreFavsCount';
 import { calculateInputsStats } from '../services/statistics/inputs';
 import {
   calculateInputsByDayStats,
@@ -19,7 +21,11 @@ import {
 } from '../services/statistics/inputsByDay';
 import { parseRequestBody } from '../services/statistics/parser';
 import { calculatePercentageUsersWithFavsStats } from '../services/statistics/percentageUsersWithFavs';
-import type { StatsEntry, Timeframe } from '../services/statistics/types';
+import type {
+  Scope,
+  StatsEntry,
+  Timeframe,
+} from '../services/statistics/types';
 import { calculateUsersStats } from '../services/statistics/users';
 import { calculateUsersWithFavsStats } from '../services/statistics/usersWithFavs';
 
@@ -32,6 +38,7 @@ type GetStatisticsResponse = {
     users: Partial<Record<Timeframe, StatsEntry[]>>;
     usersWithFavs: Partial<Record<Timeframe, StatsEntry[]>>;
     percentageUsersWithFavs: Partial<Record<Timeframe, StatsEntry[]>>;
+    hawkerCentreFavsCount: Array<HawkerCentre & { count: number }>;
   }>;
 };
 
@@ -79,10 +86,10 @@ async function handleGetStatistics(
     return fetchDataResult;
   }
 
-  const { inputs, users } = fetchDataResult.value;
+  const { inputs, users, hawkerCentres } = fetchDataResult.value;
   const statsData: GetStatisticsResponse['data'] = {};
 
-  if (includesSome(scopes, ['inputs'])) {
+  if (includesSome<Scope>(scopes, ['inputs'])) {
     const inputsStatsResult = await calculateInputsStats({
       inputs: inputs as Input[],
       timeframes,
@@ -95,13 +102,13 @@ async function handleGetStatistics(
     statsData.inputs = inputsStatsResult.value;
   }
 
-  if (includesSome(scopes, ['inputsByDay'])) {
+  if (includesSome<Scope>(scopes, ['inputsByDay'])) {
     statsData.inputsByDay = calculateInputsByDayStats({
       inputs: inputs as Input[],
     });
   }
 
-  if (includesSome(scopes, ['users', 'percentageUsersWithFavs'])) {
+  if (includesSome<Scope>(scopes, ['users', 'percentageUsersWithFavs'])) {
     const usersStatsResult = await calculateUsersStats({
       inputs: inputs as Input[],
       timeframes,
@@ -114,7 +121,9 @@ async function handleGetStatistics(
     statsData.users = usersStatsResult.value;
   }
 
-  if (includesSome(scopes, ['usersWithFavs', 'percentageUsersWithFavs'])) {
+  if (
+    includesSome<Scope>(scopes, ['usersWithFavs', 'percentageUsersWithFavs'])
+  ) {
     const usersWithFavsStatsResult = await calculateUsersWithFavsStats({
       users: users as User[],
       timeframes,
@@ -127,7 +136,7 @@ async function handleGetStatistics(
     statsData.usersWithFavs = usersWithFavsStatsResult.value;
   }
 
-  if (includesSome(scopes, ['percentageUsersWithFavs'])) {
+  if (includesSome<Scope>(scopes, ['percentageUsersWithFavs'])) {
     if (!statsData.users || !statsData.usersWithFavs) {
       return Result.Err(
         'Error computing percentageUsersWithFavs: users or usersWithFavs is undefined',
@@ -137,6 +146,13 @@ async function handleGetStatistics(
     statsData.percentageUsersWithFavs = calculatePercentageUsersWithFavsStats({
       usersStats: statsData.users,
       usersWithFavsStats: statsData.usersWithFavs,
+    });
+  }
+
+  if (includesSome<Scope>(scopes, ['hawkerCentreFavsCount'])) {
+    statsData.hawkerCentreFavsCount = calculateHawkerCentreFavsCount({
+      users: users as User[],
+      hawkerCentres: hawkerCentres as HawkerCentre[],
     });
   }
 
