@@ -29,6 +29,12 @@ async function checkHealthiness(): Promise<void> {
       `Number of closures: ${numEntriesInClosuresTable}\n` +
       `Number of hawker centres: ${numEntriesInHCTable}`,
   );
+
+  if (!isHealthy) {
+    throw new Error(
+      `Healthiness check failed - Closures: ${numEntriesInClosuresTable}; HCs: ${numEntriesInHCTable}`,
+    );
+  }
 }
 
 export async function run(): Promise<void> {
