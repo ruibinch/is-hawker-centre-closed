@@ -2,7 +2,7 @@ import readline from 'readline';
 
 import { generateHash } from '../dataCollection';
 import { AWSError } from '../errors/AWSError';
-import { sendDiscordClosuresAdminMessage } from '../ext/discord';
+// import { sendDiscordClosuresAdminMessage } from '../ext/discord';
 import { Result } from '../lib/Result';
 import {
   addClosure,
@@ -13,7 +13,7 @@ import {
 } from '../models/Closure';
 import { getHawkerCentreById } from '../models/HawkerCentre';
 import { prettifyJSON } from '../utils';
-import { getStage } from '../utils/stage';
+// import { getStage } from '../utils/stage';
 
 const args = process.argv.slice(2);
 const [operation, ...inputArgs] = args;
@@ -116,11 +116,11 @@ export async function addEntry(inputEntryString?: string): Promise<void> {
       closure,
       shouldSendMessage: inputEntryString === undefined,
     });
-    await sendDiscordClosuresAdminMessage(
-      `[${getStage()}] ADDED CLOSURE ENTRY\n${Object.values(
-        validateResult.value,
-      ).join(' ')}`,
-    );
+    // await sendDiscordClosuresAdminMessage(
+    //   `[${getStage()}] ADDED CLOSURE ENTRY\n${Object.values(
+    //     validateResult.value,
+    //   ).join(' ')}`,
+    // );
     console.info('Closure entry added');
   } else {
     console.info('Closure entry not added');
@@ -154,11 +154,11 @@ export async function deleteEntry(inputEntryString?: string): Promise<void> {
     return;
   }
 
-  await sendDiscordClosuresAdminMessage(
-    `[${getStage()}] DELETED CLOSURE ENTRY\n${Object.values(
-      validateResult.value,
-    ).join(' ')}`,
-  );
+  // await sendDiscordClosuresAdminMessage(
+  //   `[${getStage()}] DELETED CLOSURE ENTRY\n${Object.values(
+  //     validateResult.value,
+  //   ).join(' ')}`,
+  // );
   console.info('Closure entry deleted');
 }
 

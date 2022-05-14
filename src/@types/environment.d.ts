@@ -17,8 +17,6 @@ declare namespace NodeJS {
     DISCORD_BOT_TOKEN: string;
     DISCORD_ADMIN_DEV_CHANNEL_ID: string;
     DISCORD_ADMIN_PROD_CHANNEL_ID: string;
-    DISCORD_CLOSURES_ADMIN_DEV_CHANNEL_ID: string;
-    DISCORD_CLOSURES_ADMIN_PROD_CHANNEL_ID: string;
 
     // Environment
     REGION: string;
