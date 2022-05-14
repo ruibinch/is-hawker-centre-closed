@@ -39,15 +39,13 @@ async function scanNewEntries() {
     }${userId} at ${formatCreatedAtDate(createdAt)})`;
   });
 
-  await sendDiscordAdminMessage(
-    `**[${getStage()}]  🆕 NEW ENTRIES IN THE PAST WEEK**\n` +
-      `Users:\n${
-        newUsersOutput.length === 0 ? 'none' : newUsersOutput.join('\n')
-      }\n\n` +
-      `Feedback:\n${
-        newFeedbackOutput.length === 0 ? 'none' : newFeedbackOutput.join('\n')
-      }`,
-  );
+  await sendDiscordAdminMessage([
+    `**[${getStage()}]  🆕 NEW ENTRIES IN THE PAST WEEK**`,
+    `Users:`,
+    `${newUsersOutput.length === 0 ? 'none' : newUsersOutput.join('\n')}`,
+    `\nFeedback:`,
+    `${newFeedbackOutput.length === 0 ? 'none' : newFeedbackOutput.join('\n')}`,
+  ]);
 }
 
 export async function run(): Promise<void> {

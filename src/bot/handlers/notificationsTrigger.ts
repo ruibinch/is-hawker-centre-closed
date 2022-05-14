@@ -27,14 +27,12 @@ export const handler = Sentry.AWSLambda.wrapHandler(
       const notifications = notificationsOutput.value;
       const notificationsResult = await sendNotifications(notifications);
 
-      await sendDiscordAdminMessage(
-        `**[${getStage()}]  🔔 NOTIFICATIONS**\n` +
-          `Success: ${notificationsResult.success}\n` +
-          `Failure: ${notificationsResult.failure.length}\n` +
-          `${notificationsResult.failure
-            .map((entry) => `• ${entry}`)
-            .join('\n')}`,
-      );
+      await sendDiscordAdminMessage([
+        `**[${getStage()}]  🔔 NOTIFICATIONS**`,
+        `Success: ${notificationsResult.success}`,
+        `Failure: ${notificationsResult.failure.length}`,
+        ...notificationsResult.failure.map((entry) => `• ${entry}`),
+      ]);
 
       return makeLambdaResponse(204);
     } catch (error) {

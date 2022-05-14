@@ -26,17 +26,15 @@ export async function run(
     hawkerCentres,
   });
 
-  await sendDiscordAdminMessage(
-    `${[
-      `**[${getStage()}]  🌱 SEEDING DB**`,
-      'Data obtained from data.gov.sg API:',
-      `  1. ${closures.length} closures`,
-      `  2. ${hawkerCentres.length} hawker centres`,
-      'After de-duplication:',
-      `  1. ${closuresDedupe.length} closures`,
-      `  2. ${hawkerCentresDedupe.length} hawker centres`,
-    ].join('\n')}`,
-  );
+  await sendDiscordAdminMessage([
+    `**[${getStage()}]  🌱 SEEDING DB**`,
+    'Data obtained from data.gov.sg API:',
+    `  1. ${closures.length} closures`,
+    `  2. ${hawkerCentres.length} hawker centres`,
+    'After de-duplication:',
+    `  1. ${closuresDedupe.length} closures`,
+    `  2. ${hawkerCentresDedupe.length} hawker centres`,
+  ]);
   if (props.shouldWriteFile) {
     writeFile(closuresDedupe, `closures-${currentDateInYYYYMMDD()}.json`);
     writeFile(

@@ -67,10 +67,10 @@ export async function uploadHawkerCentres(
         .promise(),
     ),
   );
-  await sendDiscordAdminMessage(
-    `**[${getStage()}]  🌱 SEEDING DB**\n` +
-      `Uploaded ${hawkerCentres.length} entries to table "${hcTable}"`,
-  );
+  await sendDiscordAdminMessage([
+    `**[${getStage()}]  🌱 SEEDING DB**`,
+    `Uploaded ${hawkerCentres.length} entries to table "${hcTable}"`,
+  ]);
 }
 
 export async function getAllHawkerCentres(): Promise<

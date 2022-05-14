@@ -23,12 +23,12 @@ async function checkHealthiness(): Promise<void> {
     numEntriesInClosuresTable >= CLOSURE_TABLE_ENTRIES_HEALTHINESS_THRESHOLD &&
     numEntriesInHCTable >= HC_TABLE_ENTRIES_HEALTHINESS_THRESHOLD;
 
-  await sendDiscordAdminMessage(
-    `**[${getStage()}]  🏥 HEALTHINESS CHECK**\n` +
-      `${isHealthy ? '✅ PASSED' : '🚨 FAILED'}\n` +
-      `Number of closures: ${numEntriesInClosuresTable}\n` +
-      `Number of hawker centres: ${numEntriesInHCTable}`,
-  );
+  await sendDiscordAdminMessage([
+    `**[${getStage()}]  🏥 HEALTHINESS CHECK**`,
+    `${isHealthy ? '✅ PASSED' : '🚨 FAILED'}`,
+    `Number of closures: ${numEntriesInClosuresTable}`,
+    `Number of hawker centres: ${numEntriesInHCTable}`,
+  ]);
 
   if (!isHealthy) {
     throw new Error(

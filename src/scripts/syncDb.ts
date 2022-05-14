@@ -40,21 +40,17 @@ async function findPreAndPostResetDiffs(resetDbResult: NEAData | null) {
     deletedEntries: hawkerCentresDeleted,
   } = findDiffs(hawkerCentresBefore, hawkerCentresAfter);
 
-  await sendDiscordAdminMessage(
-    `**[${getStage()}]  🔁 SYNC SUMMARY**\n` +
-      `${closuresAdded.length} closure(s) added\n${prettifyJSON(
-        closuresAdded,
-      )}\n` +
-      `${closuresDeleted.length} closure(s) deleted\n${prettifyJSON(
-        closuresDeleted,
-      )}\n` +
-      `${hawkerCentresAdded.length} hawker centre(s) added\n${prettifyJSON(
-        hawkerCentresAdded,
-      )}\n` +
-      `${hawkerCentresDeleted.length} hawker centre(s) deleted\n${prettifyJSON(
-        hawkerCentresDeleted,
-      )}\n`,
-  );
+  await sendDiscordAdminMessage([
+    `**[${getStage()}]  🔁 SYNC SUMMARY**`,
+    `${closuresAdded.length} closure(s) added`,
+    `${prettifyJSON(closuresAdded)}`,
+    `${closuresDeleted.length} closure(s) deleted`,
+    `${prettifyJSON(closuresDeleted)}`,
+    `${hawkerCentresAdded.length} hawker centre(s) added`,
+    `${prettifyJSON(hawkerCentresAdded)}`,
+    `${hawkerCentresDeleted.length} hawker centre(s) deleted`,
+    `${prettifyJSON(hawkerCentresDeleted)}`,
+  ]);
 }
 
 // old entry exists in new list: entry not added
