@@ -9,9 +9,14 @@ const adminProdChannelId = process.env.DISCORD_ADMIN_PROD_CHANNEL_ID ?? '';
 
 const DISCORD_BOT_LOGIN_TIMEOUT_MS = 60000;
 
-export async function sendDiscordAdminMessage(message: string): Promise<void> {
+export async function sendDiscordAdminMessage(
+  messageRaw: string | string[],
+): Promise<void> {
   await executeBotLogin();
 
+  const message = Array.isArray(messageRaw)
+    ? messageRaw.join('\n')
+    : messageRaw;
   const channel = await client.channels.fetch(getAdminChannelId(message));
   if (channel instanceof Discord.TextChannel) {
     await channel.send(message);

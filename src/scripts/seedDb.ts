@@ -5,8 +5,8 @@ import {
   writeFile,
 } from '../dataCollection';
 import { sendDiscordAdminMessage } from '../ext/discord';
-import { uploadClosures } from '../models/Closure';
-import { uploadHawkerCentres } from '../models/HawkerCentre';
+import { Closure, uploadClosures } from '../models/Closure';
+import { HawkerCentre, uploadHawkerCentres } from '../models/HawkerCentre';
 import { currentDateInYYYYMMDD } from '../utils/date';
 import { getStage } from '../utils/stage';
 
@@ -21,21 +21,31 @@ export async function run(
   const closures = generateClosures(getRawRecordsResponse);
   const hawkerCentres = getHawkerCentresList(closures);
 
-  await sendDiscordAdminMessage(
-    `**[${getStage()}]  🌱 SEEDING DB**\n${[
-      'Data obtained from data.gov.sg API:',
-      `1. ${closures.length} closures`,
-      `2. ${hawkerCentres.length} hawker centres`,
-    ].join('\n')}`,
-  );
+  const { closuresDedupe, hawkerCentresDedupe } = deduplicateEntries({
+    closures,
+    hawkerCentres,
+  });
+
+  await sendDiscordAdminMessage([
+    `**[${getStage()}]  🌱 SEEDING DB**`,
+    'Data obtained from data.gov.sg API:',
+    `  1. ${closures.length} closures`,
+    `  2. ${hawkerCentres.length} hawker centres`,
+    'After de-duplication:',
+    `  1. ${closuresDedupe.length} closures`,
+    `  2. ${hawkerCentresDedupe.length} hawker centres`,
+  ]);
   if (props.shouldWriteFile) {
-    writeFile(closures, `closures-${currentDateInYYYYMMDD()}.json`);
-    writeFile(hawkerCentres, `hawkerCentres-${currentDateInYYYYMMDD()}.json`);
+    writeFile(closuresDedupe, `closures-${currentDateInYYYYMMDD()}.json`);
+    writeFile(
+      hawkerCentresDedupe,
+      `hawkerCentres-${currentDateInYYYYMMDD()}.json`,
+    );
   }
 
   if (isUploadToAws !== 'false') {
-    await uploadClosures(closures);
-    await uploadHawkerCentres(hawkerCentres);
+    await uploadClosures(closuresDedupe);
+    await uploadHawkerCentres(hawkerCentresDedupe);
   }
 }
 
@@ -43,4 +53,34 @@ if (require.main === module) {
   run().then(() => {
     process.exit(0);
   });
+}
+
+// Sometimes the data.gov.sg API behaves erratically and returns duplicate hawker centre and closure entries
+function deduplicateEntries({
+  closures,
+  hawkerCentres,
+}: {
+  closures: Closure[];
+  hawkerCentres: HawkerCentre[];
+}) {
+  const hawkerCentresDedupe: HawkerCentre[] = [];
+
+  [...hawkerCentres]
+    .sort((a, b) => a.hawkerCentreId - b.hawkerCentreId)
+    .forEach((hawkerCentre) => {
+      if (
+        // check duplication by hawker centre name
+        !hawkerCentresDedupe.map(({ name }) => name).includes(hawkerCentre.name)
+      ) {
+        hawkerCentresDedupe.push(hawkerCentre);
+      }
+    });
+
+  const closuresDedupe = closures.filter((closure) =>
+    hawkerCentresDedupe
+      .map(({ hawkerCentreId }) => hawkerCentreId)
+      .includes(closure.hawkerCentreId),
+  );
+
+  return { closuresDedupe, hawkerCentresDedupe };
 }

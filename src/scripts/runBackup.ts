@@ -115,11 +115,10 @@ async function deleteBackups() {
     })
     .filter(notEmpty);
 
-  await sendDiscordAdminMessage(
-    `**[${stage}] BACKUPS DELETED**\n${
-      responsesOutput.length === 0 ? '-' : responsesOutput.join('\n')
-    }`,
-  );
+  await sendDiscordAdminMessage([
+    `**[${stage}] BACKUPS DELETED**`,
+    `${responsesOutput.length === 0 ? '-' : responsesOutput.join('\n')}`,
+  ]);
 }
 
 async function createBackups() {
@@ -143,11 +142,10 @@ async function createBackups() {
     })
     .filter(notEmpty);
 
-  await sendDiscordAdminMessage(
-    `**[${stage}] BACKUPS CREATED**\n${
-      responsesOutput.length === 0 ? '-' : responsesOutput.join('\n')
-    }`,
-  );
+  await sendDiscordAdminMessage([
+    `**[${stage}] BACKUPS CREATED**`,
+    `${responsesOutput.length === 0 ? '-' : responsesOutput.join('\n')}`,
+  ]);
 }
 
 export async function run(): Promise<void> {

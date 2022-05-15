@@ -77,12 +77,12 @@ async function createTables() {
     (result) => !result.success,
   );
 
-  await sendDiscordAdminMessage(
-    `**[${getStage()}]  📢 DB TABLES CREATED**\n` +
-      `${makeListOutput(successOutputs)}\n\n` +
-      `Error creating the following tables:\n` +
-      `${makeListOutput(failureOutputs)}`,
-  );
+  await sendDiscordAdminMessage([
+    `**[${getStage()}]  📢 DB TABLES CREATED**`,
+    `${makeListOutput(successOutputs)}`,
+    `\nError creating the following tables:`,
+    `${makeListOutput(failureOutputs)}`,
+  ]);
 
   if (failureOutputs.length > 0) {
     throw new DBError(makeListOutput(failureOutputs));
@@ -112,12 +112,12 @@ async function deleteTables() {
     (result) => !result.success,
   );
 
-  await sendDiscordAdminMessage(
-    `**[${getStage()}]  📢 DB TABLES DELETED**\n` +
-      `${makeListOutput(successOutputs)}\n\n` +
-      `Error deleting the following tables:\n` +
-      `${makeListOutput(failureOutputs)}`,
-  );
+  await sendDiscordAdminMessage([
+    `**[${getStage()}]  📢 DB TABLES DELETED**`,
+    `${makeListOutput(successOutputs)}`,
+    `\nError deleting the following tables:`,
+    `${makeListOutput(failureOutputs)}`,
+  ]);
 
   if (failureOutputs.length > 0) {
     throw new DBError(makeListOutput(failureOutputs));
@@ -152,17 +152,17 @@ async function resetTables(): Promise<NEAData | null> {
   );
   const deleteTableOutputsParsed = parseDynamoDBPromises(deleteTableOutputs);
 
-  await sendDiscordAdminMessage(
-    `**[${getStage()}]  📢 RESET IN PROGRESS\nDeleted tables:**\n${[
+  await sendDiscordAdminMessage([
+    `**[${getStage()}]  📢 RESET IN PROGRESS**`,
+    `Deleted tables:`,
+    ...[
       [deleteTableOutputsParsed[0].message, numEntriesInClosuresTable],
       [deleteTableOutputsParsed[1].message, numEntriesInHCTable],
-    ]
-      .map(
-        ([tableName, numEntries], idx) =>
-          `${idx + 1}. ${tableName} (${numEntries} entries)`,
-      )
-      .join('\n')}`,
-  );
+    ].map(
+      ([tableName, numEntries], idx) =>
+        `${idx + 1}. ${tableName} (${numEntries} entries)`,
+    ),
+  ]);
 
   await sleep(DDB_PROPAGATE_DURATION);
 
@@ -179,13 +179,13 @@ async function resetTables(): Promise<NEAData | null> {
   const failureOutputs = createTableOutputsParsed.filter(
     (result) => !result.success,
   );
-  await sendDiscordAdminMessage(
-    `**[${getStage()}]  📢 RESET IN PROGRESS**\n` +
-      `Created tables:\n` +
-      `${makeListOutput(successOutputs)}\n\n` +
-      `Error creating the following tables:\n` +
-      `${makeListOutput(failureOutputs)}`,
-  );
+  await sendDiscordAdminMessage([
+    `**[${getStage()}]  📢 RESET IN PROGRESS**`,
+    `Created tables:`,
+    `${makeListOutput(successOutputs)}`,
+    `\nError creating the following tables:`,
+    `${makeListOutput(failureOutputs)}`,
+  ]);
 
   if (failureOutputs.length > 0) {
     throw new DBError(makeListOutput(failureOutputs));

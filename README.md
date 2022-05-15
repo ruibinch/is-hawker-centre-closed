@@ -15,29 +15,7 @@ Update this bot token in the `.env` file (see [Setup](#setup) section below).
 
 An `.env` file with the following keys specified is required (the values for `APIG_*` can be populated later on during the setup).
 
-```
-# Telegram
-TELEGRAM_BOT_TOKEN_DEV=11111111:abcdefghijkl
-TELEGRAM_BOT_TOKEN_PROD=22222222:abcdefghijkl
-
-# Discord (only if Discord integration is desired)
-DISCORD_BOT_TOKEN=abcdefghijkl.123456789.lkjhgfedcba
-DISCORD_ADMIN_DEV_CHANNEL_ID=1234567890987654321
-DISCORD_ADMIN_PROD_CHANNEL_ID=1234567890987654321
-
-# Environment
-REGION=eu-central-1
-APIG_DEV=12345678
-APIG_PROD=87654321
-SENTRY_DSN=https://xxxxx@yyy.ingest.sentry.io/zzz # optional
-
-# DynamoDB table names
-TABLE_CLOSURES=ihcc-closures
-TABLE_HC=ihcc-hawkerCentres
-TABLE_USERS=ihcc-users
-TABLE_FEEDBACK=ihcc-feedback
-TABLE_INPUTS=ihcc-inputs
-```
+Refer to `env.sample` for an example.
 
 ## Setup
 
