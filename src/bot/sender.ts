@@ -12,8 +12,8 @@ const { TELEGRAM_BOT_TOKEN } = process.env;
 
 export async function sendMessage(props: {
   chatId: number;
-  message?: string;
-  messageParams?: TelegramSendMessageParams;
+  message?: string | undefined;
+  messageParams?: TelegramSendMessageParams | undefined;
 }): Promise<void> {
   const { chatId, message: _message, messageParams } = props;
   const message = _message ?? messageParams?.text;
@@ -103,8 +103,8 @@ export async function sendMessage(props: {
 
 export async function sendMessageWithChoices(props: {
   chatId: number;
-  message?: string;
-  messageParams?: TelegramSendMessageParams;
+  message?: string | undefined;
+  messageParams?: TelegramSendMessageParams | undefined;
   choices: string[];
 }): Promise<void> {
   const { chatId, message: _message, messageParams, choices } = props;

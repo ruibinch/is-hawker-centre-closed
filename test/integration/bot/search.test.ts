@@ -76,7 +76,7 @@ describe('[bot] [integration] Search module', () => {
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
-      assertBotResponse(sendMessageSpy, expectedMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
     });
 
     it('["littleroot today"] returns a single closure occurring today', async () => {
@@ -87,7 +87,7 @@ describe('[bot] [integration] Search module', () => {
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
-      assertBotResponse(sendMessageSpy, expectedMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
     });
 
     it('["slateport tmr"] returns all closures occurring tomorrow', async () => {
@@ -98,7 +98,7 @@ describe('[bot] [integration] Search module', () => {
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
-      assertBotResponse(sendMessageSpy, expectedMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
     });
 
     it('["slateport tomorrow"] returns all closures occurring tomorrow', async () => {
@@ -109,7 +109,7 @@ describe('[bot] [integration] Search module', () => {
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
-      assertBotResponse(sendMessageSpy, expectedMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
     });
 
     it('["rustboro next week"] returns a single closure occurring next week, when there is a single closure', async () => {
@@ -125,7 +125,7 @@ describe('[bot] [integration] Search module', () => {
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
-      assertBotResponse(sendMessageSpy, expectedMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
     });
 
     it('["oldale month"] returns closures occurring in the current month', async () => {
@@ -137,7 +137,7 @@ describe('[bot] [integration] Search module', () => {
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
-      assertBotResponse(sendMessageSpy, expectedMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
     });
 
     it('["melville 118 month"] searches across multiple words', async () => {
@@ -148,7 +148,7 @@ describe('[bot] [integration] Search module', () => {
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
-      assertBotResponse(sendMessageSpy, expectedMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
     });
 
     it('["psychic month"] searches on secondary name', async () => {
@@ -159,7 +159,7 @@ describe('[bot] [integration] Search module', () => {
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
-      assertBotResponse(sendMessageSpy, expectedMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
     });
 
     it('["verdanturf next month"] returns closures occurring in the next month', async () => {
@@ -170,7 +170,7 @@ describe('[bot] [integration] Search module', () => {
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
-      assertBotResponse(sendMessageSpy, expectedMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
     });
 
     it('["melville next month"] returns closures occurring in the next month with the other works suffix', async () => {
@@ -181,7 +181,7 @@ describe('[bot] [integration] Search module', () => {
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
-      assertBotResponse(sendMessageSpy, expectedMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
     });
 
     it('["melville next"] returns the next closure dates for hawker centres containing the keyword "melville"', async () => {
@@ -193,7 +193,7 @@ describe('[bot] [integration] Search module', () => {
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
-      assertBotResponse(sendMessageSpy, expectedMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
     });
 
     it('["Tdy" / "Today"] returns all closures occurring today', async () => {
@@ -207,11 +207,11 @@ describe('[bot] [integration] Search module', () => {
 
       await callBot(inputMessage1);
       assertInputSaved(addInputToDBSpy, inputMessage1);
-      assertBotResponse(sendMessageSpy, expectedMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
 
       await callBot(inputMessage2);
       assertInputSaved(addInputToDBSpy, inputMessage2);
-      assertBotResponse(sendMessageSpy, expectedMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
     });
 
     it('["Tmr" / "Tomorrow"] returns all closures occurring tomorrow', async () => {
@@ -225,11 +225,11 @@ describe('[bot] [integration] Search module', () => {
 
       await callBot(inputMessage1);
       assertInputSaved(addInputToDBSpy, inputMessage1);
-      assertBotResponse(sendMessageSpy, expectedMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
 
       await callBot(inputMessage2);
       assertInputSaved(addInputToDBSpy, inputMessage2);
-      assertBotResponse(sendMessageSpy, expectedMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
     });
 
     it('["Next week"] returns all closures occurring in the next week, when there are multiple closures', async () => {
@@ -247,7 +247,7 @@ describe('[bot] [integration] Search module', () => {
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
-      assertBotResponse(sendMessageSpy, expectedMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
     });
 
     it('["Next week"] returns all closures occurring in the next week, when there is a single closure', async () => {
@@ -263,7 +263,7 @@ describe('[bot] [integration] Search module', () => {
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
-      assertBotResponse(sendMessageSpy, expectedMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
     });
 
     it('["Month"] returns all closures occurring in the current month, when there are multiple closures', async () => {
@@ -281,7 +281,7 @@ describe('[bot] [integration] Search module', () => {
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
-      assertBotResponse(sendMessageSpy, expectedMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
     });
 
     it('["Month"] returns all closures occurring in the current month, when there is a single closure', async () => {
@@ -296,7 +296,7 @@ describe('[bot] [integration] Search module', () => {
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
-      assertBotResponse(sendMessageSpy, expectedMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
     });
 
     it('["Next month"] returns all closures occurring in the next month, when there are multiple closures', async () => {
@@ -313,7 +313,7 @@ describe('[bot] [integration] Search module', () => {
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
-      assertBotResponse(sendMessageSpy, expectedMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
     });
 
     it('["Next month"] returns all closures occurring in the next month, when there is a single closure', async () => {
@@ -328,7 +328,7 @@ describe('[bot] [integration] Search module', () => {
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
-      assertBotResponse(sendMessageSpy, expectedMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
     });
   });
 
@@ -350,12 +350,12 @@ describe('[bot] [integration] Search module', () => {
       let inputMessage = 'pallet';
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
-      assertBotResponse(sendMessageSpy, expectedMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
 
       inputMessage = 'pallet next';
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
-      assertBotResponse(sendMessageSpy, expectedMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
     });
 
     it('["Next"] returns a custom message when the search keyword is a sole "next"', async () => {
@@ -365,7 +365,7 @@ describe('[bot] [integration] Search module', () => {
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
-      assertBotResponse(sendMessageSpy, expectedMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
     });
 
     it('["Tdy / Today"] returns no closures', async () => {
@@ -376,11 +376,11 @@ describe('[bot] [integration] Search module', () => {
 
       await callBot(inputMessage1);
       assertInputSaved(addInputToDBSpy, inputMessage1);
-      assertBotResponse(sendMessageSpy, expectedMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
 
       await callBot(inputMessage2);
       assertInputSaved(addInputToDBSpy, inputMessage2);
-      assertBotResponse(sendMessageSpy, expectedMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
     });
 
     it('["Tmr" / "Tomorrow"] returns no closures', async () => {
@@ -391,11 +391,11 @@ describe('[bot] [integration] Search module', () => {
 
       await callBot(inputMessage1);
       assertInputSaved(addInputToDBSpy, inputMessage1);
-      assertBotResponse(sendMessageSpy, expectedMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
 
       await callBot(inputMessage2);
       assertInputSaved(addInputToDBSpy, inputMessage2);
-      assertBotResponse(sendMessageSpy, expectedMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
     });
 
     it('["Month"] returns no closures', async () => {
@@ -405,7 +405,7 @@ describe('[bot] [integration] Search module', () => {
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
-      assertBotResponse(sendMessageSpy, expectedMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
     });
   });
 

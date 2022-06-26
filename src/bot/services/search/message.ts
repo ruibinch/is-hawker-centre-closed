@@ -1,33 +1,37 @@
 import type { Closure } from '../../../models/Closure';
 import { currentDate, makeNextWeekInterval } from '../../../utils/date';
 import { t } from '../../lang';
+import { TelegramSendMessageParams } from '../../telegram';
 import { formatDateDisplay } from '../helpers';
 import { makeClosureListItem } from '../message';
 import { isSearchModifierTimeBased } from './searchModifier';
 import type { SearchModifier, SearchResponse } from './types';
 
-export function makeMessage(searchResponse: SearchResponse): string {
+export function makeMessage(
+  searchResponse: SearchResponse,
+): TelegramSendMessageParams {
   const {
     params: { modifier, keyword },
     hasResults,
   } = searchResponse;
-  let reply: string;
+
+  const messageParams: TelegramSendMessageParams = { text: '' };
 
   if (!hasResults) {
-    reply =
+    messageParams.text =
       keyword.toLowerCase() === 'next'
         ? t('search.no-hawker-centres-exist.keyword-next')
         : t('search.no-hawker-centres-exist', {
             keyword: makeKeywordSnippet(keyword),
           });
   } else {
-    reply = (
+    messageParams.text = (
       isSearchModifierTimeBased(modifier)
         ? makeMessageForTimeBasedModifier
         : makeMessageForNonTimeBasedModifier
     )(searchResponse);
   }
-  return reply;
+  return messageParams;
 }
 
 export function makeSearchUnexpectedErrorMessage(): string {
@@ -41,10 +45,10 @@ function makeMessageForTimeBasedModifier(
     params: { keyword, modifier },
     closures,
   } = searchResponse;
-  let reply = '';
+  let messageText = '';
 
   if (closures.length === 0) {
-    reply = t(
+    messageText = t(
       isSearchModifierInFuture(modifier)
         ? 'search.no-hawker-centres-closed.future'
         : 'search.no-hawker-centres-closed.present',
@@ -67,12 +71,12 @@ function makeMessageForTimeBasedModifier(
           : 'search.hawker-centres-closed.without-keyword.plural.present';
       })();
 
-      reply = t(messageString, {
+      messageText = t(messageString, {
         numHC: closures.length,
         timePeriod: makeTimePeriodSnippet(modifier),
       });
     } else {
-      reply = t(
+      messageText = t(
         isSearchModifierInFuture(modifier)
           ? 'search.hawker-centres-closed.with-keyword.future'
           : 'search.hawker-centres-closed.with-keyword.present',
@@ -83,10 +87,10 @@ function makeMessageForTimeBasedModifier(
       );
     }
 
-    reply += makeClosuresListOutput(closures);
+    messageText += makeClosuresListOutput(closures);
   }
 
-  return reply;
+  return messageText;
 }
 
 function makeMessageForNonTimeBasedModifier(
@@ -97,13 +101,13 @@ function makeMessageForNonTimeBasedModifier(
     closures,
   } = searchResponse;
 
-  let reply = t('search.hawker-centres-next-closure', {
+  let messageText = t('search.hawker-centres-next-closure', {
     keyword: makeKeywordSnippet(keyword),
   });
 
-  reply += makeClosuresListOutput(closures);
+  messageText += makeClosuresListOutput(closures);
 
-  return reply;
+  return messageText;
 }
 
 function makeKeywordSnippet(keyword: string) {

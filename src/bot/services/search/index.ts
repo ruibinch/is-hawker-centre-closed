@@ -19,6 +19,6 @@ export async function runSearch(
   }
 
   return Result.Ok({
-    message: makeMessage(searchResponse.value),
+    messageParams: makeMessage(searchResponse.value),
   });
 }

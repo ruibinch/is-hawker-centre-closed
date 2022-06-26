@@ -106,12 +106,17 @@ export const handler = Sentry.AWSLambda.wrapHandler(
       }
 
       if (!botResponse) throw new ServiceError();
-      const { message, choices } = botResponse;
+      const { message, messageParams, choices } = botResponse;
 
       if (choices) {
-        await sendMessageWithChoices({ chatId, message, choices });
+        await sendMessageWithChoices({
+          chatId,
+          message,
+          messageParams,
+          choices,
+        });
       } else {
-        await sendMessage({ chatId, message });
+        await sendMessage({ chatId, message, messageParams });
       }
 
       return makeLambdaResponse(200);
