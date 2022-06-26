@@ -90,6 +90,9 @@ export type TelegramInlineKeyboardButton = {
   | {
       web_app: TelegramWebAppInfo;
     }
+  | {
+      callback_data: string;
+    }
 );
 
 export type TelegramWebAppInfo = {

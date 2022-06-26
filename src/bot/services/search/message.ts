@@ -1,18 +1,25 @@
 import type { Closure } from '../../../models/Closure';
 import { currentDate, makeNextWeekInterval } from '../../../utils/date';
 import { t } from '../../lang';
-import { TelegramSendMessageParams } from '../../telegram';
+import {
+  TelegramInlineKeyboardButton,
+  TelegramSendMessageParams,
+} from '../../telegram';
 import { formatDateDisplay } from '../helpers';
 import { makeClosureListItem } from '../message';
 import { isSearchModifierTimeBased } from './searchModifier';
 import type { SearchModifier, SearchResponse } from './types';
 
+const MAX_RESULTS_PER_PAGE = 8;
+
 export function makeMessage(
   searchResponse: SearchResponse,
+  currPage: number,
 ): TelegramSendMessageParams {
   const {
     params: { modifier, keyword },
     hasResults,
+    closures,
   } = searchResponse;
 
   const messageParams: TelegramSendMessageParams = { text: '' };
@@ -30,6 +37,12 @@ export function makeMessage(
         ? makeMessageForTimeBasedModifier
         : makeMessageForNonTimeBasedModifier
     )(searchResponse);
+
+    // const listPagination = makeClosuresListPagination(closures, currPage);
+    const listPagination = undefined;
+    if (listPagination) {
+      messageParams.reply_markup = { inline_keyboard: [listPagination] };
+    }
   }
   return messageParams;
 }
@@ -108,6 +121,28 @@ function makeMessageForNonTimeBasedModifier(
   messageText += makeClosuresListOutput(closures);
 
   return messageText;
+}
+
+function makeClosuresListPagination(
+  closures: Closure[],
+  currPage: number,
+): Array<TelegramInlineKeyboardButton> | undefined {
+  if (closures.length <= MAX_RESULTS_PER_PAGE) return undefined;
+
+  const numPages = Math.ceil(closures.length / MAX_RESULTS_PER_PAGE);
+
+  const paginationSet = new Set([1, numPages]);
+  paginationSet.add(currPage);
+  paginationSet.add(currPage - 1);
+  paginationSet.add(currPage + 1);
+
+  const pagination = [...Array.from(paginationSet).filter((v) => v > 0)].sort(
+    (a, b) => a - b,
+  );
+  return pagination.map((pageNumber) => ({
+    text: `${pageNumber}`,
+    callback_data: `$searchPagination ${pageNumber}`,
+  }));
 }
 
 function makeKeywordSnippet(keyword: string) {

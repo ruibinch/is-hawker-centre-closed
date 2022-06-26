@@ -19,6 +19,7 @@ export async function runSearch(
   }
 
   return Result.Ok({
-    messageParams: makeMessage(searchResponse.value),
+    // TODO: pass in currPage here
+    messageParams: makeMessage(searchResponse.value, 1),
   });
 }
