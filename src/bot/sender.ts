@@ -4,6 +4,7 @@ import { TelegramMessageError } from '../errors/TelegramMessageError';
 import {
   makeTelegramApiBase,
   TelegramResponseBase,
+  TelegramSendMessageParams,
   TELEGRAM_MESSAGE_MAX_LENGTH,
 } from './telegram';
 
@@ -11,9 +12,12 @@ const { TELEGRAM_BOT_TOKEN } = process.env;
 
 export async function sendMessage(props: {
   chatId: number;
-  message: string;
+  message?: string;
+  messageParams?: TelegramSendMessageParams;
 }): Promise<void> {
-  const { chatId, message } = props;
+  const { chatId, message: _message, messageParams } = props;
+  const message = _message ?? messageParams?.text;
+  if (!message) return;
 
   if (!TELEGRAM_BOT_TOKEN) {
     throw new Error(
@@ -30,7 +34,7 @@ export async function sendMessage(props: {
       chat_id: chatId,
       text,
       parse_mode: 'MarkdownV2',
-      reply_markup: {
+      reply_markup: messageParams?.reply_markup ?? {
         remove_keyboard: true,
       },
     },
@@ -99,10 +103,13 @@ export async function sendMessage(props: {
 
 export async function sendMessageWithChoices(props: {
   chatId: number;
-  message: string;
+  message?: string;
+  messageParams?: TelegramSendMessageParams;
   choices: string[];
 }): Promise<void> {
-  const { chatId, message, choices } = props;
+  const { chatId, message: _message, messageParams, choices } = props;
+  const message = _message ?? messageParams?.text;
+  if (!message) return;
 
   if (!TELEGRAM_BOT_TOKEN) {
     throw new Error(

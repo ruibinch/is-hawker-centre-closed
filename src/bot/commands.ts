@@ -1,5 +1,8 @@
 /* eslint-disable max-len */
+import { Result, ResultType } from '../lib/Result';
+import features from './features';
 import { t } from './lang';
+import { TelegramSendMessageParams } from './telegram';
 import type { Command, Module } from './types';
 
 export const COMMANDS: Command[] = [
@@ -87,36 +90,54 @@ function isCommandSupported(s: string): boolean {
   return COMMANDS.map((cmd) => cmd.endpoint).includes(s);
 }
 
-export function makeCommandMessage(s: string): string | undefined {
+export function makeCommandMessage(
+  s: string,
+): ResultType<TelegramSendMessageParams> {
   if (isCommandWithoutExplanation(s)) {
-    return undefined;
+    return Result.Err();
   }
-
-  let reply = '';
 
   if (!isCommandSupported(s)) {
-    return (
-      t('general.error.unsupported-command.first') +
-      t('general.error.unsupported-command.second', {
-        commands: COMMANDS.map((cmd) =>
-          formatEndpointForDisplay(cmd.endpoint),
-        ).join(', '),
-      })
-    );
+    return Result.Ok({
+      text:
+        t('general.error.unsupported-command.first') +
+        t('general.error.unsupported-command.second', {
+          commands: COMMANDS.map((cmd) =>
+            formatEndpointForDisplay(cmd.endpoint),
+          ).join(', '),
+        }),
+    });
   }
+
+  const sendMessageParams: TelegramSendMessageParams = {
+    text: '',
+  };
 
   switch (s) {
     case '/start': {
-      reply =
+      sendMessageParams.text =
         t('general.command-start.explanation.first', {
           emojis: '\u{1F35C}\u{1F35B}\u{1F367}',
         }) +
         t('general.command-start.explanation.second') +
         t('general.command-start.explanation.third');
+
+      if (features('ENABLE_WEBAPP')) {
+        sendMessageParams.reply_markup = {
+          inline_keyboard: [
+            [
+              {
+                text: 'Help Manual',
+                web_app: { url: 'https://ihcc-webapp.vercel.app/' },
+              },
+            ],
+          ],
+        };
+      }
       break;
     }
     case '/help': {
-      reply =
+      sendMessageParams.text =
         t('general.command-help.explanation.search-section.first', {
           emoji: '\u{1F50D}',
         }) +
@@ -141,26 +162,26 @@ export function makeCommandMessage(s: string): string | undefined {
       break;
     }
     case '/fav': {
-      reply =
+      sendMessageParams.text =
         t('favourites.command-fav.explanation.first') +
         t('favourites.command-fav.explanation.second');
       break;
     }
     case '/del': {
-      reply =
+      sendMessageParams.text =
         t('favourites.command-del.explanation.first') +
         t('favourites.command-del.explanation.second');
       break;
     }
     case '/language': {
-      reply =
+      sendMessageParams.text =
         t('language.command-language.explanation.first') +
         t('language.command-language.explanation.second') +
         t('language.command-language.explanation.third');
       break;
     }
     case '/feedback': {
-      reply =
+      sendMessageParams.text =
         t('feedback.command-feedback.explanation.first') +
         t('feedback.command-feedback.explanation.second', {
           example: makeRandomFeedbackExample(),
@@ -172,7 +193,8 @@ export function makeCommandMessage(s: string): string | undefined {
       break;
   }
 
-  return reply;
+  if (sendMessageParams.text === '') return Result.Err();
+  return Result.Ok(sendMessageParams);
 }
 
 function formatEndpointForDisplay(endpoint: string) {

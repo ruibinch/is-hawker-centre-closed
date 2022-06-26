@@ -4,6 +4,7 @@ import { handler as botHandler } from '../../../../src/bot/handlers/bot';
 import { handler as notificationsTriggerHandler } from '../../../../src/bot/handlers/notificationsTrigger';
 import type {
   TelegramMessage,
+  TelegramSendMessageParams,
   TelegramUpdate,
 } from '../../../../src/bot/telegram';
 import { makeTelegramMessage } from '../__mocks__/telegram';
@@ -47,15 +48,21 @@ export const makeNotificationsWrapper =
 export const assertBotResponse = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   spy: jest.SpyInstance<any, any>,
-  expectedMessage: string,
+  expectedMessageProps: string | TelegramSendMessageParams,
   expectedChoices?: string[],
 ): void => {
   const expectedObject: {
-    message: string;
+    message?: string;
+    messageParams?: TelegramSendMessageParams;
     choices?: string[];
-  } = {
-    message: expectedMessage,
-  };
+  } =
+    typeof expectedMessageProps === 'string'
+      ? {
+          message: expectedMessageProps,
+        }
+      : {
+          messageParams: expectedMessageProps,
+        };
 
   if (expectedChoices) {
     expectedObject.choices = expectedChoices;

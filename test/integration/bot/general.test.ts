@@ -47,11 +47,25 @@ describe('[bot] [integration] General module', () => {
       const expectedMessage =
         'An easy way to check when your favourite hawker centre is next closed\\! \u{1F35C}\u{1F35B}\u{1F367}\n\n' +
         'Simply send the bot *a part of the hawker centre name*, e\\.g\\. `ang mo kio`, `85`, `bukit`\\.\n\n' +
-        'Type in `/help` to see how you can customise your query further, as well as other features of the bot\\.';
+        'Check out the help manual for more features and commands supported by the bot\\.';
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const expectedReplyMarkup = {
+        inline_keyboard: [
+          [
+            {
+              text: 'Help Manual',
+              web_app: { url: 'https://ihcc-webapp.vercel.app/' },
+            },
+          ],
+        ],
+      };
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
-      assertBotResponse(sendMessageSpy, expectedMessage);
+      assertBotResponse(sendMessageSpy, {
+        text: expectedMessage,
+        // reply_markup: expectedReplyMarkup,
+      });
     });
 
     it('["/help"] returns the correct message', async () => {
@@ -75,7 +89,7 @@ describe('[bot] [integration] General module', () => {
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
-      assertBotResponse(sendMessageSpy, expectedMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
     });
 
     it('returns the correct prompt when an unsupported command is sent', async () => {
@@ -87,7 +101,7 @@ describe('[bot] [integration] General module', () => {
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
-      assertBotResponse(sendMessageSpy, expectedMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
     });
   });
 
@@ -97,16 +111,6 @@ describe('[bot] [integration] General module', () => {
       const updateEntries = [
         '*\\[0\\.13\\.0\\] 2021\\-09\\-18*\n' +
           '\u{00B7} Added search by "next week" timeframe',
-        '*\\[0\\.12\\.0\\] 2021\\-09\\-14*\n' +
-          '\u{00B7} Changed returned results to always be sorted in alphabetical order',
-        '*\\[0\\.11\\.0\\] 2021\\-08\\-08*\n' +
-          '\u{00B7} Changed default timeframe from "today" to "next" to return more useful information by default',
-        '*\\[0\\.10\\.0\\] 2021\\-08\\-07*\n' +
-          '\u{00B7} Added indefinite end date option',
-        '*\\[0\\.9\\.0\\] 2021\\-07\\-28*\n' +
-          '\u{00B7} Added /updates command to check the latest updates',
-        '*\\[0\\.8\\.0\\] 2021\\-07\\-28*\n' +
-          '\u{00B7} Added auto\\-expansion of recognised acronyms, e\\.g\\. "amk" to "ang mo kio", "tpy" to "toa payoh"',
       ];
       const expectedMessage = updateEntries.join('\n\n');
 

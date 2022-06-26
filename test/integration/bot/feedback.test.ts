@@ -67,7 +67,7 @@ describe('[bot] [integration] Feedback module', () => {
 
     await callBot(inputMessage);
     assertInputSaved(addInputToDBSpy, inputMessage);
-    assertBotResponse(sendMessageSpy, expectedMessage);
+    assertBotResponse(sendMessageSpy, { text: expectedMessage });
   });
 
   it('["/feedback great bot"] successfully adds a feedback entry', async () => {

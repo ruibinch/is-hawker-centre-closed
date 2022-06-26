@@ -110,7 +110,7 @@ describe('[bot] [integration] Favourites module', () => {
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
-      assertBotResponse(sendMessageSpy, expectedMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
     });
 
     it('["/del"] returns the explanatory message', async () => {
@@ -121,7 +121,7 @@ describe('[bot] [integration] Favourites module', () => {
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
-      assertBotResponse(sendMessageSpy, expectedMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
     });
   });
 

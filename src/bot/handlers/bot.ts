@@ -71,9 +71,12 @@ export const handler = Sentry.AWSLambda.wrapHandler(
       await saveInput(textSanitised, telegramUser);
 
       if (isCommand(textSanitised)) {
-        const commandMessage = makeCommandMessage(textSanitised);
-        if (commandMessage) {
-          await sendMessage({ chatId, message: commandMessage });
+        const commandMessageResult = makeCommandMessage(textSanitised);
+        if (commandMessageResult.isOk) {
+          await sendMessage({
+            chatId,
+            messageParams: commandMessageResult.value,
+          });
           return makeLambdaResponse(200);
         }
       }
@@ -120,7 +123,10 @@ export const handler = Sentry.AWSLambda.wrapHandler(
       }
 
       if (chatId !== undefined) {
-        await sendMessage({ chatId, message: makeGenericErrorMessage() });
+        await sendMessage({
+          chatId,
+          message: makeGenericErrorMessage(),
+        });
         return makeLambdaResponse(200);
       }
 
