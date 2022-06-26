@@ -16,7 +16,7 @@
   "general.error.unsupported-command.second": "请使用其中一个支持的命令：\n{{commands}}",
   "general.command-start.explanation.first": "查看一下您喜爱的小贩中心未来的关闭时期！{{emojis}}\n\n",
   "general.command-start.explanation.second": "发送小贩中心名称的一小部分来搜索，比如：`ang mo kio`，`85`，`bukit`。\n\n",
-  "general.command-start.explanation.third": "您能使用“`/help`”命令查看定制搜寻查询的其他方法和机器人的其他功能。",
+  "general.command-start.explanation.third": "查看帮助手册以了解机器人支持的更多功能和命令。",
   "general.command-help.explanation.search-section.first": "{{emoji}} *搜寻*\n\n",
   "general.command-help.explanation.search-section.second": "这个机器人在默认情况下搜索包括输入关键词的小贩中心与它们*未来的关闭时期*。\n\n",
   "general.command-help.explanation.search-section.third": "您能在关键词后指定支持*时间表*：\n",

@@ -47,7 +47,7 @@ describe('[bot] [integration] General module', () => {
       const expectedMessage =
         'An easy way to check when your favourite hawker centre is next closed\\! \u{1F35C}\u{1F35B}\u{1F367}\n\n' +
         'Simply send the bot *a part of the hawker centre name*, e\\.g\\. `ang mo kio`, `85`, `bukit`\\.\n\n' +
-        'Type in `/help` to see how you can customise your query further, as well as other features of the bot\\.';
+        'Check out the help manual for more features and commands supported by the bot\\.';
       const expectedReplyMarkup = {
         inline_keyboard: [
           [
