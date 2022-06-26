@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 import { Result, ResultType } from '../lib/Result';
+import features from './features';
 import { t } from './lang';
 import { TelegramSendMessageParams } from './telegram';
 import type { Command, Module } from './types';
@@ -121,16 +122,18 @@ export function makeCommandMessage(
         t('general.command-start.explanation.second') +
         t('general.command-start.explanation.third');
 
-      sendMessageParams.reply_markup = {
-        inline_keyboard: [
-          [
-            {
-              text: 'Help Manual',
-              web_app: { url: 'https://ihcc-webapp.vercel.app/' },
-            },
+      if (features('ENABLE_WEBAPP')) {
+        sendMessageParams.reply_markup = {
+          inline_keyboard: [
+            [
+              {
+                text: 'Help Manual',
+                web_app: { url: 'https://ihcc-webapp.vercel.app/' },
+              },
+            ],
           ],
-        ],
-      };
+        };
+      }
       break;
     }
     case '/help': {
