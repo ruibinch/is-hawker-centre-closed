@@ -120,6 +120,17 @@ export function makeCommandMessage(
         }) +
         t('general.command-start.explanation.second') +
         t('general.command-start.explanation.third');
+
+      sendMessageParams.reply_markup = {
+        inline_keyboard: [
+          [
+            {
+              text: 'Help Manual',
+              web_app: { url: 'https://ihcc-webapp.vercel.app/' },
+            },
+          ],
+        ],
+      };
       break;
     }
     case '/help': {
