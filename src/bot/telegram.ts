@@ -59,6 +59,43 @@ export type TelegramMessage = {
   left_chat_member?: unknown;
 };
 
+export type TelegramSendMessageParamsFull = {
+  chat_id: number | string;
+  text: string;
+  parse_mode?: 'MarkdownV2' | 'HTML' | 'Markdown';
+  entities?: unknown;
+  disable_web_page_preview?: boolean;
+  disable_notification?: boolean;
+  protect_content?: boolean;
+  reply_to_message_id?: boolean;
+  allow_sending_without_reply?: boolean;
+  // other reply_markup types excluded for brevity: https://core.telegram.org/bots/api#sendmessage
+  reply_markup?: {
+    // array of button rows
+    inline_keyboard: Array<Array<TelegramInlineKeyboardButton>>;
+  };
+};
+
+export type TelegramSendMessageParams = Omit<
+  TelegramSendMessageParamsFull,
+  'chat_id'
+>;
+
+export type TelegramInlineKeyboardButton = {
+  text: string;
+} & (
+  | {
+      url: string;
+    }
+  | {
+      web_app: TelegramWebAppInfo;
+    }
+);
+
+export type TelegramWebAppInfo = {
+  url: string;
+};
+
 export type WebhookInfoResponse = TelegramResponseBase & {
   result: {
     url: string;

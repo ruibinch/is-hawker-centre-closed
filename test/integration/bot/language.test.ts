@@ -67,7 +67,7 @@ describe('[bot] [integration] Language module', () => {
 
     await callBot(inputMessage);
     assertInputSaved(addInputToDBSpy, inputMessage);
-    assertBotResponse(sendMessageSpy, expectedMessage);
+    assertBotResponse(sendMessageSpy, { text: expectedMessage });
   });
 
   it('["/language invalid"] returns an error message when the language code is invalid', async () => {
