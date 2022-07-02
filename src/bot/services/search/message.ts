@@ -10,9 +10,9 @@ import { makeClosureListItem } from '../message';
 import { isSearchModifierTimeBased } from './searchModifier';
 import type { SearchModifier, SearchResponse } from './types';
 
-const MAX_RESULTS_PER_PAGE = 8;
+const MAX_RESULTS_PER_PAGE = 10;
 
-export function makeMessage(
+export function makeSearchResponseMessage(
   searchResponse: SearchResponse,
   currPage: number,
 ): TelegramSendMessageParams {
@@ -32,14 +32,15 @@ export function makeMessage(
             keyword: makeKeywordSnippet(keyword),
           });
   } else {
-    messageParams.text = (
+    const messageHeader = (
       isSearchModifierTimeBased(modifier)
-        ? makeMessageForTimeBasedModifier
-        : makeMessageForNonTimeBasedModifier
+        ? makeMessageHeaderForTimeBasedModifier
+        : makeMessageHeaderForNonTimeBasedModifier
     )(searchResponse);
+    const messageContent = makeClosuresListOutput(closures, currPage);
+    messageParams.text = messageHeader + messageContent;
 
-    // const listPagination = makeClosuresListPagination(closures, currPage);
-    const listPagination = undefined;
+    const listPagination = makeClosuresListPagination(closures, currPage);
     if (listPagination) {
       messageParams.reply_markup = { inline_keyboard: [listPagination] };
     }
@@ -51,7 +52,7 @@ export function makeSearchUnexpectedErrorMessage(): string {
   return t('search.error');
 }
 
-function makeMessageForTimeBasedModifier(
+function makeMessageHeaderForTimeBasedModifier(
   searchResponse: SearchResponse,
 ): string {
   const {
@@ -99,28 +100,21 @@ function makeMessageForTimeBasedModifier(
         },
       );
     }
-
-    messageText += makeClosuresListOutput(closures);
   }
 
   return messageText;
 }
 
-function makeMessageForNonTimeBasedModifier(
+function makeMessageHeaderForNonTimeBasedModifier(
   searchResponse: SearchResponse,
 ): string {
   const {
     params: { keyword },
-    closures,
   } = searchResponse;
 
-  let messageText = t('search.hawker-centres-next-closure', {
+  return t('search.hawker-centres-next-closure', {
     keyword: makeKeywordSnippet(keyword),
   });
-
-  messageText += makeClosuresListOutput(closures);
-
-  return messageText;
 }
 
 function makeClosuresListPagination(
@@ -131,14 +125,15 @@ function makeClosuresListPagination(
 
   const numPages = Math.ceil(closures.length / MAX_RESULTS_PER_PAGE);
 
+  // TODO: add icons to page numbers
   const paginationSet = new Set([1, numPages]);
   paginationSet.add(currPage);
   paginationSet.add(currPage - 1);
   paginationSet.add(currPage + 1);
 
-  const pagination = [...Array.from(paginationSet).filter((v) => v > 0)].sort(
-    (a, b) => a - b,
-  );
+  const pagination = [
+    ...Array.from(paginationSet).filter((v) => v >= 1 && v <= numPages),
+  ].sort((a, b) => a - b);
   return pagination.map((pageNumber) => ({
     text: `${pageNumber}`,
     callback_data: `$searchPagination ${pageNumber}`,
@@ -173,8 +168,14 @@ function makeTimePeriodSnippet(modifier: SearchModifier) {
   }
 }
 
-function makeClosuresListOutput(closures: Closure[]) {
-  return closures.map((closure) => makeClosureListItem(closure)).join('\n\n');
+function makeClosuresListOutput(closures: Closure[], currPage: number) {
+  const displayStartIndex = (currPage - 1) * MAX_RESULTS_PER_PAGE;
+  const displayEndIndex = currPage * MAX_RESULTS_PER_PAGE;
+
+  return closures
+    .filter((_, idx) => idx >= displayStartIndex && idx < displayEndIndex)
+    .map((closure) => makeClosureListItem(closure))
+    .join('\n\n');
 }
 
 function isSearchModifierInFuture(modifier: SearchModifier) {

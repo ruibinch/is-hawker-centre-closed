@@ -13,6 +13,7 @@ import {
   sendMessage,
   sendMessageWithChoices,
 } from '../sender';
+import { handleCallbackQuery } from '../services/callback';
 import {
   manageFavourites,
   maybeHandleFavouriteSelection,
@@ -78,19 +79,16 @@ export const handler = Sentry.AWSLambda.wrapHandler(
       // handle inline keyboard callback queries
 
       if (telegramUpdate.callback_query) {
-        const originalMessage = telegramUpdate.callback_query.message;
-        if (!originalMessage) {
-          // Message content is not available anymore as message is too old
-          // ref: https://core.telegram.org/bots/api#callbackquery
-          return makeLambdaResponse(204);
-        }
+        const { callback_query: callbackQuery } = telegramUpdate;
+        const callbackHandlerResult = await handleCallbackQuery({
+          userId: chatId,
+          callbackQuery,
+        });
+        if (callbackHandlerResult.isErr) throw new ServiceError();
 
-        const editMessageId = originalMessage.message_id;
         await editMessageText({
+          ...callbackHandlerResult.value,
           chatId,
-          editMessageId,
-          // TODO: update
-          message: 'TESTSETESTS',
         });
         return makeLambdaResponse(200);
       }
@@ -183,6 +181,5 @@ const getExecutionFn = (_textSanitised: string) => {
   if (isCommandInModule(_textSanitised, 'general')) {
     return manageGeneral;
   }
-
   return runSearch;
 };

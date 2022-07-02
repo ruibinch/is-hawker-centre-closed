@@ -29,4 +29,9 @@ export type BotResponse = {
   choices?: string[] | undefined;
 };
 
+export type BotResponseForCallback = BotResponse & {
+  editMessageId: number;
+};
+
 export type ServiceResponse = ResultType<BotResponse, void>;
+export type ServiceCallbackResponse = ResultType<BotResponseForCallback, void>;

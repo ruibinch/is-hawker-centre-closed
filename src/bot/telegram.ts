@@ -154,6 +154,9 @@ export function extractTelegramMessage(
   if (telegramUpdate.edited_message) {
     return telegramUpdate.edited_message;
   }
+  if (telegramUpdate.callback_query?.message) {
+    return telegramUpdate.callback_query.message;
+  }
 
   throw new TelegramUpdateError(JSON.stringify(telegramUpdate));
 }
