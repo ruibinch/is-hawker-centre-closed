@@ -8,10 +8,14 @@ import { validateToken } from '../auth';
 import { isCommand, isCommandInModule, makeCommandMessage } from '../commands';
 import { expandAcronymsInText, validateInputMessage } from '../inputHelpers';
 import { initDictionary } from '../lang';
-import { sendMessage, sendMessageWithChoices } from '../sender';
 import {
-  maybeHandleFavouriteSelection,
+  editMessageText,
+  sendMessage,
+  sendMessageWithChoices,
+} from '../sender';
+import {
   manageFavourites,
+  maybeHandleFavouriteSelection,
 } from '../services/favourites';
 import { manageFeedback } from '../services/feedback';
 import { manageGeneral } from '../services/general';
@@ -38,22 +42,25 @@ export const handler = Sentry.AWSLambda.wrapHandler(
       if (!validateToken(event.queryStringParameters)) {
         return makeLambdaResponse(403);
       }
-
       if (!event.body) {
         return makeLambdaResponse(400);
       }
 
       const telegramUpdate = JSON.parse(event.body) as TelegramUpdate;
+
       const telegramMessage = extractTelegramMessage(telegramUpdate);
       if (telegramMessage === null) {
         return makeLambdaResponse(204);
       }
 
+      /* initialisation */
+
       const { from: telegramUser } = telegramMessage;
       chatId = telegramMessage.chat.id;
-
       const { languageCode } = await getUserLanguageCode(telegramUser);
       initDictionary(languageCode);
+
+      /* validation */
 
       const validationResponse = validateInputMessage(telegramMessage);
       if (validationResponse.isErr) {
@@ -61,13 +68,35 @@ export const handler = Sentry.AWSLambda.wrapHandler(
         await sendMessage({ chatId, message: errorMessage });
         return makeLambdaResponse(200);
       }
-
       const { textSanitised } = validationResponse.value;
       if (textSanitised === null) {
         return makeLambdaResponse(204);
       }
 
-      // tmp: save all incoming inputs for now for better usage understanding
+      /* handling implementation */
+
+      // handle inline keyboard callback queries
+
+      if (telegramUpdate.callback_query) {
+        const originalMessage = telegramUpdate.callback_query.message;
+        if (!originalMessage) {
+          // Message content is not available anymore as message is too old
+          // ref: https://core.telegram.org/bots/api#callbackquery
+          return makeLambdaResponse(204);
+        }
+
+        const editMessageId = originalMessage.message_id;
+        await editMessageText({
+          chatId,
+          editMessageId,
+          // TODO: update
+          message: 'TESTSETESTS',
+        });
+        return makeLambdaResponse(200);
+      }
+
+      // handle standard user inputs
+
       await saveInput(textSanitised, telegramUser);
 
       if (isCommand(textSanitised)) {

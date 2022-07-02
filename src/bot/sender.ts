@@ -3,6 +3,7 @@ import axios from 'axios';
 import { TelegramMessageError } from '../errors/TelegramMessageError';
 import {
   makeTelegramApiBase,
+  TelegramEditMessageTextParams,
   TelegramResponseBase,
   TelegramSendMessageParams,
   TELEGRAM_MESSAGE_MAX_LENGTH,
@@ -24,7 +25,6 @@ export async function sendMessage(props: {
       '[bot > sender > sendMessage] TELEGRAM_BOT_TOKEN not defined',
     );
   }
-
   const telegramSendMessageUrl = `${makeTelegramApiBase(
     TELEGRAM_BOT_TOKEN,
   )}/sendMessage`;
@@ -134,6 +134,45 @@ export async function sendMessageWithChoices(props: {
         '[bot > sender > sendMessageWithChoices]',
         error.response.data,
       );
+      return error.response.data;
+    });
+
+  if (!response.ok) {
+    throw new TelegramMessageError(response);
+  }
+}
+
+export async function editMessageText(props: {
+  chatId: number;
+  message?: string | undefined;
+  messageParams?: TelegramSendMessageParams | undefined;
+  editMessageId: number;
+}): Promise<void> {
+  const { chatId, message: _message, messageParams, editMessageId } = props;
+  const message = _message ?? messageParams?.text;
+  if (!message) return;
+
+  if (!TELEGRAM_BOT_TOKEN) {
+    throw new Error(
+      '[bot > sender > editMessageText] TELEGRAM_BOT_TOKEN not defined',
+    );
+  }
+
+  const editMessageTextParams: TelegramEditMessageTextParams = {
+    chat_id: chatId,
+    message_id: editMessageId,
+    text: message,
+    parse_mode: 'MarkdownV2',
+    reply_markup: messageParams?.reply_markup,
+  };
+
+  const response: TelegramResponseBase = await axios
+    .get(`${makeTelegramApiBase(TELEGRAM_BOT_TOKEN)}/editMessageText`, {
+      params: editMessageTextParams,
+    })
+    .then((res) => res.data)
+    .catch((error) => {
+      console.error('[bot > sender > editMessageText]', error.response.data);
       return error.response.data;
     });
 
