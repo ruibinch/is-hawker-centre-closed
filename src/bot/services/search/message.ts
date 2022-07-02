@@ -174,7 +174,9 @@ function makeClosuresListOutput(closures: Closure[], currPage: number) {
 
   return closures
     .filter((_, idx) => idx >= displayStartIndex && idx < displayEndIndex)
-    .map((closure) => makeClosureListItem(closure))
+    .map((closure, idx) =>
+      makeClosureListItem(closure, displayStartIndex + idx + 1),
+    )
     .join('\n\n');
 }
 
