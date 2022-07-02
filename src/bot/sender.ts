@@ -3,6 +3,7 @@ import axios from 'axios';
 import { TelegramMessageError } from '../errors/TelegramMessageError';
 import {
   makeTelegramApiBase,
+  TelegramAnswerCallbackQueryParams,
   TelegramEditMessageTextParams,
   TelegramResponseBase,
   TelegramSendMessageParams,
@@ -173,6 +174,35 @@ export async function editMessageText(props: {
     .then((res) => res.data)
     .catch((error) => {
       console.error('[bot > sender > editMessageText]', error.response.data);
+      return error.response.data;
+    });
+
+  if (!response.ok) {
+    throw new TelegramMessageError(response);
+  }
+}
+
+export async function answerCallbackQuery(props: {
+  queryId: string;
+  text?: string;
+}) {
+  const { queryId, text } = props;
+
+  const answerCallbackQueryParams: TelegramAnswerCallbackQueryParams = {
+    callback_query_id: queryId,
+    text,
+  };
+
+  const response: TelegramResponseBase = await axios
+    .get(`${makeTelegramApiBase(TELEGRAM_BOT_TOKEN)}/answerCallbackQuery`, {
+      params: answerCallbackQueryParams,
+    })
+    .then((res) => res.data)
+    .catch((error) => {
+      console.error(
+        '[bot > sender > answerCallbackQuery]',
+        error.response.data,
+      );
       return error.response.data;
     });
 

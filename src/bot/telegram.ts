@@ -110,6 +110,14 @@ export type TelegramEditMessageTextParams = {
     | undefined;
 };
 
+export type TelegramAnswerCallbackQueryParams = {
+  callback_query_id: string;
+  text?: string | undefined;
+  show_alert?: boolean;
+  url?: string;
+  cache_time?: number;
+};
+
 export type TelegramInlineKeyboardButton = {
   text: string;
 } & (

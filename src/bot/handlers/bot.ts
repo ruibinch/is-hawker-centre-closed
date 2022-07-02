@@ -9,6 +9,7 @@ import { isCommand, isCommandInModule, makeCommandMessage } from '../commands';
 import { expandAcronymsInText, validateInputMessage } from '../inputHelpers';
 import { initDictionary } from '../lang';
 import {
+  answerCallbackQuery,
   editMessageText,
   sendMessage,
   sendMessageWithChoices,
@@ -90,6 +91,7 @@ export const handler = Sentry.AWSLambda.wrapHandler(
           ...callbackHandlerResult.value,
           chatId,
         });
+        await answerCallbackQuery({ queryId: callbackQuery.id });
         return makeLambdaResponse(200);
       }
 
