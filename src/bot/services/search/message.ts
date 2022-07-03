@@ -125,7 +125,6 @@ function makeClosuresListPagination(
 
   const numPages = Math.ceil(closures.length / MAX_RESULTS_PER_PAGE);
 
-  // TODO: add icons to page numbers
   const paginationSet = new Set([1, numPages]);
   paginationSet.add(currPage);
   paginationSet.add(currPage - 1);
@@ -134,9 +133,16 @@ function makeClosuresListPagination(
   const pagination = [
     ...Array.from(paginationSet).filter((v) => v >= 1 && v <= numPages),
   ].sort((a, b) => a - b);
-  return pagination.map((pageNumber) => ({
-    text: `${pageNumber}`,
-    callback_data: `$searchPagination ${pageNumber}`,
+  return pagination.map((page) => ({
+    text: (() => {
+      if (page === currPage) return `[ ${page} ]`;
+      if (page === 1) return `« ${page}`;
+      if (page === numPages) return `${page} »`;
+      if (page === currPage - 1) return `‹ ${page}`;
+      if (page === currPage + 1) return `${page} ›`;
+      return `${page}`; // should never reach here
+    })(),
+    callback_data: `$searchPagination ${page}`,
   }));
 }
 
