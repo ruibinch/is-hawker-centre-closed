@@ -1,4 +1,5 @@
 import { Result } from '../../lib/Result';
+import { t } from '../lang';
 import { TelegramCallbackQuery } from '../telegram';
 import { ServiceCallbackResponse } from '../types';
 import { runSearchWithPagination } from './search';
@@ -14,8 +15,11 @@ export async function handleCallbackQuery({
 
   // If originalMessage is undefined, message content is not available anymore as message is too old
   // ref: https://core.telegram.org/bots/api#callbackquery
-  if (!originalMessage || !queryData) {
-    return Result.Err();
+  if (!originalMessage) {
+    return Result.Err(t('callback.error.message-too-old'));
+  }
+  if (!queryData) {
+    return Result.Err(t('callback.error.no-data-found'));
   }
 
   const [queryCommand, queryDataDetails] = queryData.split(' ');
@@ -28,14 +32,14 @@ export async function handleCallbackQuery({
       pageNum,
     });
 
-    if (searchResult.isOk) {
-      return Result.Ok({
-        ...searchResult.value,
-        editMessageId: originalMessage.message_id,
-      });
+    if (searchResult.isErr) {
+      return Result.Err(t('callback.error.returning-search-results'));
     }
-    // TODO: error handling: show toast?
+    return Result.Ok({
+      ...searchResult.value,
+      editMessageId: originalMessage.message_id,
+    });
   }
 
-  return Result.Err();
+  return Result.Err(t('callback.error.handling-query'));
 }

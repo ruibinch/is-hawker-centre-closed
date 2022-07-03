@@ -184,13 +184,13 @@ export async function editMessageText(props: {
 
 export async function answerCallbackQuery(props: {
   queryId: string;
-  text?: string;
+  text?: string | void;
 }) {
   const { queryId, text } = props;
 
   const answerCallbackQueryParams: TelegramAnswerCallbackQueryParams = {
     callback_query_id: queryId,
-    text,
+    text: text ?? undefined,
   };
 
   const response: TelegramResponseBase = await axios

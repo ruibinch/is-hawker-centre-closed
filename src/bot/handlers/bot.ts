@@ -85,13 +85,19 @@ export const handler = Sentry.AWSLambda.wrapHandler(
           userId: chatId,
           callbackQuery,
         });
-        if (callbackHandlerResult.isErr) throw new ServiceError();
+        if (callbackHandlerResult.isErr) {
+          await answerCallbackQuery({
+            queryId: callbackQuery.id,
+            text: callbackHandlerResult.value,
+          });
+        } else {
+          await editMessageText({
+            ...callbackHandlerResult.value,
+            chatId,
+          });
+          await answerCallbackQuery({ queryId: callbackQuery.id });
+        }
 
-        await editMessageText({
-          ...callbackHandlerResult.value,
-          chatId,
-        });
-        await answerCallbackQuery({ queryId: callbackQuery.id });
         return makeLambdaResponse(200);
       }
 

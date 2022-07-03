@@ -34,4 +34,7 @@ export type BotResponseForCallback = BotResponse & {
 };
 
 export type ServiceResponse = ResultType<BotResponse, void>;
-export type ServiceCallbackResponse = ResultType<BotResponseForCallback, void>;
+export type ServiceCallbackResponse = ResultType<
+  BotResponseForCallback,
+  string | void
+>;
