@@ -1,12 +1,12 @@
 import { addInputToDB, Input } from '../../../models/Input';
 import { currentDate } from '../../../utils/date';
-import type { TelegramUser } from '../../telegram';
+import type { TelegramChat } from '../../telegram';
 
 export async function saveInput(
   text: string,
-  telegramUser: TelegramUser,
+  telegramChat: Pick<TelegramChat, 'id' | 'username'>,
 ): Promise<void> {
-  const { id: userId, username } = telegramUser;
+  const { id: userId, username } = telegramChat;
 
   const input = Input.create({
     inputId: `${userId}-${currentDate().getTime()}`,

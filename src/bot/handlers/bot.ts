@@ -57,7 +57,7 @@ export const handler = Sentry.AWSLambda.wrapHandler(
 
       /* initialisation */
 
-      const { from: telegramUser } = telegramMessage;
+      const { from: telegramUser, chat: telegramChat } = telegramMessage;
       chatId = telegramMessage.chat.id;
       const { languageCode } = await getUserLanguageCode(telegramUser);
       initDictionary(languageCode);
@@ -81,6 +81,13 @@ export const handler = Sentry.AWSLambda.wrapHandler(
 
       if (telegramUpdate.callback_query) {
         const { callback_query: callbackQuery } = telegramUpdate;
+        if (callbackQuery.data) {
+          await saveInput(
+            `${telegramMessage.date}::${callbackQuery.data}`,
+            telegramChat,
+          );
+        }
+
         const callbackHandlerResult = await handleCallbackQuery({
           userId: chatId,
           callbackQuery,
@@ -103,7 +110,7 @@ export const handler = Sentry.AWSLambda.wrapHandler(
 
       // handle standard user inputs
 
-      await saveInput(textSanitised, telegramUser);
+      await saveInput(textSanitised, telegramChat);
 
       if (isCommand(textSanitised)) {
         const commandMessageResult = makeCommandMessage(textSanitised);
