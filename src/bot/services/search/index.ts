@@ -1,5 +1,5 @@
 import { Result } from '../../../lib/Result';
-import { getAllInputs } from '../../../models/Input';
+import { getAllInputs, sortInputsByTime } from '../../../models/Input';
 import { isCommand } from '../../commands';
 import type { ServiceResponse } from '../../types';
 import { processSearch } from './logic';
@@ -31,11 +31,11 @@ export async function runSearch(
 
 export async function runSearchWithPagination({
   userId,
-  originalMessageDate,
+  originalMessageTimestamp,
   pageNum,
 }: {
   userId: number;
-  originalMessageDate: number;
+  originalMessageTimestamp: number;
   pageNum: number;
 }): Promise<ServiceResponse> {
   const getAllInputsResponse = await getAllInputs();
@@ -44,16 +44,20 @@ export async function runSearchWithPagination({
   }
   const inputsAll = getAllInputsResponse.value;
 
+  const inputsSorted = sortInputsByTime(inputsAll, 'desc');
+  // originalMessage.date is displayed in Unix time seconds
+  const originalMessageTimestampInMs = originalMessageTimestamp * 1000;
+  // consider an input to be matching if it falls within a 2s range
+  const MESSAGE_TIMESTAMP_THRESHOLD = 2000;
+
   // Find the last search term by this user
-  const originalInput = inputsAll.find((input) => {
-    // Divide by 1000 to remove milliseconds portion
-    const inputCreatedDate = Math.floor(
-      new Date(input.createdAt).getTime() / 1000,
-    );
+  const originalInput = inputsSorted.find((input) => {
+    const inputCreatedTimestampInMs = Number(input.inputId.split('-')[1]);
 
     return (
       input.userId === userId &&
-      inputCreatedDate === originalMessageDate &&
+      Math.abs(inputCreatedTimestampInMs - originalMessageTimestampInMs) <=
+        MESSAGE_TIMESTAMP_THRESHOLD &&
       !isCommand(input.text)
     );
   });

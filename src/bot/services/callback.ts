@@ -28,7 +28,7 @@ export async function handleCallbackQuery({
     const pageNum = Number(queryDataDetails);
     const searchResult = await runSearchWithPagination({
       userId,
-      originalMessageDate: originalMessage.date,
+      originalMessageTimestamp: originalMessage.date,
       pageNum,
     });
 
