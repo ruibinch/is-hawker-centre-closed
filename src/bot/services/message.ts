@@ -7,12 +7,21 @@ export function makeGenericErrorMessage(): string {
   return t('validation.error.generic');
 }
 
-export function makeClosureListItem(closure: Closure): string {
-  return t('common.hc-item', {
-    hcName: makeHawkerCentreName(closure.name, closure.nameSecondary),
-    closurePeriod: makeClosurePeriodSnippet(closure.startDate, closure.endDate),
-    closureReason: makeClosureReasonSnippet(closure.reason),
-  });
+export function makeClosureListItem(closure: Closure, index?: number): string {
+  return t(
+    index !== undefined
+      ? 'common.hc-item.with-index'
+      : 'common.hc-item.without-index',
+    {
+      index,
+      hcName: makeHawkerCentreName(closure.name, closure.nameSecondary),
+      closurePeriod: makeClosurePeriodSnippet(
+        closure.startDate,
+        closure.endDate,
+      ),
+      closureReason: makeClosureReasonSnippet(closure.reason),
+    },
+  );
 }
 
 export function makeHawkerCentreName(

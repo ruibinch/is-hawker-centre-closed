@@ -1,50 +1,68 @@
 import type { Closure } from '../../../models/Closure';
 import { currentDate, makeNextWeekInterval } from '../../../utils/date';
 import { t } from '../../lang';
+import {
+  TelegramInlineKeyboardButton,
+  TelegramSendMessageParams,
+} from '../../telegram';
 import { formatDateDisplay } from '../helpers';
 import { makeClosureListItem } from '../message';
 import { isSearchModifierTimeBased } from './searchModifier';
 import type { SearchModifier, SearchResponse } from './types';
 
-export function makeMessage(searchResponse: SearchResponse): string {
+const MAX_RESULTS_PER_PAGE = 10;
+
+export function makeSearchResponseMessage(
+  searchResponse: SearchResponse,
+  currPage: number,
+): TelegramSendMessageParams {
   const {
     params: { modifier, keyword },
     hasResults,
+    closures,
   } = searchResponse;
-  let reply: string;
+
+  const messageParams: TelegramSendMessageParams = { text: '' };
 
   if (!hasResults) {
-    reply =
+    messageParams.text =
       keyword.toLowerCase() === 'next'
         ? t('search.no-hawker-centres-exist.keyword-next')
         : t('search.no-hawker-centres-exist', {
             keyword: makeKeywordSnippet(keyword),
           });
   } else {
-    reply = (
+    const messageHeader = (
       isSearchModifierTimeBased(modifier)
-        ? makeMessageForTimeBasedModifier
-        : makeMessageForNonTimeBasedModifier
+        ? makeMessageHeaderForTimeBasedModifier
+        : makeMessageHeaderForNonTimeBasedModifier
     )(searchResponse);
+    const messageContent = makeClosuresListOutput(closures, currPage);
+    messageParams.text = messageHeader + messageContent;
+
+    const listPagination = makeClosuresListPagination(closures, currPage);
+    if (listPagination) {
+      messageParams.reply_markup = { inline_keyboard: [listPagination] };
+    }
   }
-  return reply;
+  return messageParams;
 }
 
 export function makeSearchUnexpectedErrorMessage(): string {
   return t('search.error');
 }
 
-function makeMessageForTimeBasedModifier(
+function makeMessageHeaderForTimeBasedModifier(
   searchResponse: SearchResponse,
 ): string {
   const {
     params: { keyword, modifier },
     closures,
   } = searchResponse;
-  let reply = '';
+  let messageText = '';
 
   if (closures.length === 0) {
-    reply = t(
+    messageText = t(
       isSearchModifierInFuture(modifier)
         ? 'search.no-hawker-centres-closed.future'
         : 'search.no-hawker-centres-closed.present',
@@ -67,12 +85,12 @@ function makeMessageForTimeBasedModifier(
           : 'search.hawker-centres-closed.without-keyword.plural.present';
       })();
 
-      reply = t(messageString, {
+      messageText = t(messageString, {
         numHC: closures.length,
         timePeriod: makeTimePeriodSnippet(modifier),
       });
     } else {
-      reply = t(
+      messageText = t(
         isSearchModifierInFuture(modifier)
           ? 'search.hawker-centres-closed.with-keyword.future'
           : 'search.hawker-centres-closed.with-keyword.present',
@@ -82,28 +100,50 @@ function makeMessageForTimeBasedModifier(
         },
       );
     }
-
-    reply += makeClosuresListOutput(closures);
   }
 
-  return reply;
+  return messageText;
 }
 
-function makeMessageForNonTimeBasedModifier(
+function makeMessageHeaderForNonTimeBasedModifier(
   searchResponse: SearchResponse,
 ): string {
   const {
     params: { keyword },
-    closures,
   } = searchResponse;
 
-  let reply = t('search.hawker-centres-next-closure', {
+  return t('search.hawker-centres-next-closure', {
     keyword: makeKeywordSnippet(keyword),
   });
+}
 
-  reply += makeClosuresListOutput(closures);
+function makeClosuresListPagination(
+  closures: Closure[],
+  currPage: number,
+): Array<TelegramInlineKeyboardButton> | undefined {
+  if (closures.length <= MAX_RESULTS_PER_PAGE) return undefined;
 
-  return reply;
+  const numPages = Math.ceil(closures.length / MAX_RESULTS_PER_PAGE);
+
+  const paginationSet = new Set([1, numPages]);
+  paginationSet.add(currPage);
+  paginationSet.add(currPage - 1);
+  paginationSet.add(currPage + 1);
+
+  const pagination = [
+    ...Array.from(paginationSet).filter((v) => v >= 1 && v <= numPages),
+  ].sort((a, b) => a - b);
+  return pagination.map((page) => ({
+    text: (() => {
+      if (page === currPage) return `[ ${page} ]`;
+      if (page === 1) return `« ${page}`;
+      if (page === numPages) return `${page} »`;
+      if (page === currPage - 1) return `‹ ${page}`;
+      if (page === currPage + 1) return `${page} ›`;
+      return `${page}`; // should never reach here
+    })(),
+    callback_data: `$searchPagination ${page === currPage ? 'null' : page}`,
+  }));
 }
 
 function makeKeywordSnippet(keyword: string) {
@@ -134,8 +174,16 @@ function makeTimePeriodSnippet(modifier: SearchModifier) {
   }
 }
 
-function makeClosuresListOutput(closures: Closure[]) {
-  return closures.map((closure) => makeClosureListItem(closure)).join('\n\n');
+function makeClosuresListOutput(closures: Closure[], currPage: number) {
+  const displayStartIndex = (currPage - 1) * MAX_RESULTS_PER_PAGE;
+  const displayEndIndex = currPage * MAX_RESULTS_PER_PAGE;
+
+  return closures
+    .filter((_, idx) => idx >= displayStartIndex && idx < displayEndIndex)
+    .map((closure, idx) =>
+      makeClosureListItem(closure, displayStartIndex + idx + 1),
+    )
+    .join('\n\n');
 }
 
 function isSearchModifierInFuture(modifier: SearchModifier) {

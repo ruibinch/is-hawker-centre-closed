@@ -1,4 +1,5 @@
 import { ResultType } from '../lib/Result';
+import { TelegramSendMessageParams } from './telegram';
 
 export type Module =
   | 'search'
@@ -23,8 +24,17 @@ export type ValidateResponseError = {
 };
 
 export type BotResponse = {
-  message: string;
+  message?: string;
+  messageParams?: TelegramSendMessageParams;
   choices?: string[] | undefined;
 };
 
+export type BotResponseForCallback = BotResponse & {
+  editMessageId: number;
+};
+
 export type ServiceResponse = ResultType<BotResponse, void>;
+export type ServiceCallbackResponse = ResultType<
+  BotResponseForCallback,
+  string | void
+>;

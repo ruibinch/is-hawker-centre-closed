@@ -34,6 +34,7 @@ export type TelegramUpdate = {
   update_id: number;
   message?: TelegramMessage;
   edited_message?: TelegramMessage;
+  callback_query?: TelegramCallbackQuery;
   my_chat_member?: unknown;
   chat_member?: unknown;
 };
@@ -59,10 +60,21 @@ export type TelegramMessage = {
   left_chat_member?: unknown;
 };
 
+export type TelegramCallbackQuery = {
+  id: string;
+  from: TelegramUser;
+  message?: TelegramMessage;
+  inline_message_id?: string;
+  data?: string;
+};
+
+type TelegramMessageParseMode = 'MarkdownV2' | 'HTML' | 'Markdown';
+
+// Ref: https://core.telegram.org/bots/api#sendmessage
 export type TelegramSendMessageParamsFull = {
   chat_id: number | string;
   text: string;
-  parse_mode?: 'MarkdownV2' | 'HTML' | 'Markdown';
+  parse_mode?: TelegramMessageParseMode;
   entities?: unknown;
   disable_web_page_preview?: boolean;
   disable_notification?: boolean;
@@ -81,6 +93,31 @@ export type TelegramSendMessageParams = Omit<
   'chat_id'
 >;
 
+// Ref: https://core.telegram.org/bots/api#editmessagetext
+export type TelegramEditMessageTextParams = {
+  chat_id: number | string;
+  message_id?: number;
+  inline_message_id?: string;
+  text: string;
+  parse_mode?: TelegramMessageParseMode;
+  entities?: unknown;
+  disable_web_page_preview?: boolean;
+  reply_markup?:
+    | {
+        // array of button rows
+        inline_keyboard: Array<Array<TelegramInlineKeyboardButton>>;
+      }
+    | undefined;
+};
+
+export type TelegramAnswerCallbackQueryParams = {
+  callback_query_id: string;
+  text?: string | undefined;
+  show_alert?: boolean;
+  url?: string;
+  cache_time?: number;
+};
+
 export type TelegramInlineKeyboardButton = {
   text: string;
 } & (
@@ -89,6 +126,9 @@ export type TelegramInlineKeyboardButton = {
     }
   | {
       web_app: TelegramWebAppInfo;
+    }
+  | {
+      callback_data: string;
     }
 );
 
@@ -121,6 +161,9 @@ export function extractTelegramMessage(
   }
   if (telegramUpdate.edited_message) {
     return telegramUpdate.edited_message;
+  }
+  if (telegramUpdate.callback_query?.message) {
+    return telegramUpdate.callback_query.message;
   }
 
   throw new TelegramUpdateError(JSON.stringify(telegramUpdate));

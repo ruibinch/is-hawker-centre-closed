@@ -8,10 +8,16 @@ import { validateToken } from '../auth';
 import { isCommand, isCommandInModule, makeCommandMessage } from '../commands';
 import { expandAcronymsInText, validateInputMessage } from '../inputHelpers';
 import { initDictionary } from '../lang';
-import { sendMessage, sendMessageWithChoices } from '../sender';
 import {
-  maybeHandleFavouriteSelection,
+  answerCallbackQuery,
+  editMessageText,
+  sendMessage,
+  sendMessageWithChoices,
+} from '../sender';
+import { handleCallbackQuery } from '../services/callback';
+import {
   manageFavourites,
+  maybeHandleFavouriteSelection,
 } from '../services/favourites';
 import { manageFeedback } from '../services/feedback';
 import { manageGeneral } from '../services/general';
@@ -38,22 +44,25 @@ export const handler = Sentry.AWSLambda.wrapHandler(
       if (!validateToken(event.queryStringParameters)) {
         return makeLambdaResponse(403);
       }
-
       if (!event.body) {
         return makeLambdaResponse(400);
       }
 
       const telegramUpdate = JSON.parse(event.body) as TelegramUpdate;
+
       const telegramMessage = extractTelegramMessage(telegramUpdate);
       if (telegramMessage === null) {
         return makeLambdaResponse(204);
       }
 
-      const { from: telegramUser } = telegramMessage;
-      chatId = telegramMessage.chat.id;
+      /* initialisation */
 
+      const { from: telegramUser, chat: telegramChat } = telegramMessage;
+      chatId = telegramMessage.chat.id;
       const { languageCode } = await getUserLanguageCode(telegramUser);
       initDictionary(languageCode);
+
+      /* validation */
 
       const validationResponse = validateInputMessage(telegramMessage);
       if (validationResponse.isErr) {
@@ -61,14 +70,47 @@ export const handler = Sentry.AWSLambda.wrapHandler(
         await sendMessage({ chatId, message: errorMessage });
         return makeLambdaResponse(200);
       }
-
       const { textSanitised } = validationResponse.value;
       if (textSanitised === null) {
         return makeLambdaResponse(204);
       }
 
-      // tmp: save all incoming inputs for now for better usage understanding
-      await saveInput(textSanitised, telegramUser);
+      /* handling implementation */
+
+      // handle inline keyboard callback queries
+
+      if (telegramUpdate.callback_query) {
+        const { callback_query: callbackQuery } = telegramUpdate;
+        if (callbackQuery.data) {
+          await saveInput(
+            `${telegramMessage.date}::${callbackQuery.data}`,
+            telegramChat,
+          );
+        }
+
+        const callbackHandlerResult = await handleCallbackQuery({
+          userId: chatId,
+          callbackQuery,
+        });
+        if (callbackHandlerResult.isErr) {
+          await answerCallbackQuery({
+            queryId: callbackQuery.id,
+            text: callbackHandlerResult.value,
+          });
+        } else {
+          await editMessageText({
+            ...callbackHandlerResult.value,
+            chatId,
+          });
+          await answerCallbackQuery({ queryId: callbackQuery.id });
+        }
+
+        return makeLambdaResponse(200);
+      }
+
+      // handle standard user inputs
+
+      await saveInput(textSanitised, telegramChat);
 
       if (isCommand(textSanitised)) {
         const commandMessageResult = makeCommandMessage(textSanitised);
@@ -106,12 +148,17 @@ export const handler = Sentry.AWSLambda.wrapHandler(
       }
 
       if (!botResponse) throw new ServiceError();
-      const { message, choices } = botResponse;
+      const { message, messageParams, choices } = botResponse;
 
       if (choices) {
-        await sendMessageWithChoices({ chatId, message, choices });
+        await sendMessageWithChoices({
+          chatId,
+          message,
+          messageParams,
+          choices,
+        });
       } else {
-        await sendMessage({ chatId, message });
+        await sendMessage({ chatId, message, messageParams });
       }
 
       return makeLambdaResponse(200);
@@ -149,6 +196,5 @@ const getExecutionFn = (_textSanitised: string) => {
   if (isCommandInModule(_textSanitised, 'general')) {
     return manageGeneral;
   }
-
   return runSearch;
 };
