@@ -25,6 +25,13 @@ type ChangelogEntry = {
 function getLatestUpdates(): ChangelogEntry[] {
   return [
     {
+      version: '\\[0\\.14\\.0\\]',
+      date: '2022\\-07\\-04',
+      details: [
+        'Implemented pagination for search result lists exceeding 10 entries',
+      ],
+    },
+    {
       version: '\\[0\\.13\\.0\\]',
       date: '2021\\-09\\-18',
       details: ['Added search by "next week" timeframe'],

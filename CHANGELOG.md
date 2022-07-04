@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.14.0] - 2022-07-04
+
+### Added
+
+- Pagination for search result lists exceeding 10 entries
+
 ## [0.13.0] - 2021-09-18
 
 ### Added
