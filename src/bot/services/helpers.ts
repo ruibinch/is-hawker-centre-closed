@@ -76,3 +76,8 @@ export function sortInDateAscThenAlphabeticalOrder(
 export function sortInAlphabeticalOrder(closures: Closure[]): Closure[] {
   return [...closures].sort((a, b) => a.name.localeCompare(b.name));
 }
+
+export function isCallbackQuery(s: string) {
+  const [, queryData] = s.split('::');
+  return queryData && queryData.startsWith('$');
+}

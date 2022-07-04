@@ -2,6 +2,7 @@ import { Result } from '../../../lib/Result';
 import { getAllInputs, sortInputsByTime } from '../../../models/Input';
 import { isCommand } from '../../commands';
 import type { ServiceResponse } from '../../types';
+import { isCallbackQuery } from '../helpers';
 import { processSearch } from './logic';
 import {
   makeSearchResponseMessage,
@@ -50,17 +51,22 @@ export async function runSearchWithPagination({
   // consider an input to be matching if it falls within a 2s range
   const MESSAGE_TIMESTAMP_THRESHOLD = 2000;
 
-  // Find the last search term by this user
-  const originalInput = inputsSorted.find((input) => {
-    const inputCreatedTimestampInMs = Number(input.inputId.split('-')[1]);
+  const originalInput = inputsSorted
+    // Filter non-search inputs
+    .filter(
+      ({ text: inputText }) =>
+        !isCommand(inputText) && !isCallbackQuery(inputText),
+    )
+    // Find the last matching search term by this user
+    .find((input) => {
+      const inputCreatedTimestampInMs = Number(input.inputId.split('-')[1]);
 
-    return (
-      input.userId === userId &&
-      Math.abs(inputCreatedTimestampInMs - originalMessageTimestampInMs) <=
-        MESSAGE_TIMESTAMP_THRESHOLD &&
-      !isCommand(input.text)
-    );
-  });
+      return (
+        input.userId === userId &&
+        Math.abs(inputCreatedTimestampInMs - originalMessageTimestampInMs) <=
+          MESSAGE_TIMESTAMP_THRESHOLD
+      );
+    });
   if (!originalInput) {
     return Result.Err();
   }
