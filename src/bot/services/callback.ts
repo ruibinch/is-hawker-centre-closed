@@ -25,11 +25,14 @@ export async function handleCallbackQuery({
   const [queryCommand, queryDataDetails] = queryData.split(' ');
 
   if (queryCommand === '$searchPagination') {
-    const pageNum = Number(queryDataDetails);
+    if (queryDataDetails === 'null') {
+      return Result.Err();
+    }
+
     const searchResult = await runSearchWithPagination({
       userId,
       originalMessageTimestamp: originalMessage.date,
-      pageNum,
+      pageNum: Number(queryDataDetails),
     });
 
     if (searchResult.isErr) {

@@ -142,7 +142,7 @@ function makeClosuresListPagination(
       if (page === currPage + 1) return `${page} ›`;
       return `${page}`; // should never reach here
     })(),
-    callback_data: `$searchPagination ${page}`,
+    callback_data: `$searchPagination ${page === currPage ? 'null' : page}`,
   }));
 }
 

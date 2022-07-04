@@ -207,6 +207,15 @@ export async function answerCallbackQuery(props: {
     });
 
   if (!response.ok) {
+    // Ignore error if old/new message content is the same
+    // This is usually prevented with "$searchPagination null" but it can slip through when tapping rapidly on the
+    // current page button after switching to it
+    if (
+      response.description?.startsWith('Bad request: message is not modified')
+    ) {
+      return;
+    }
+
     throw new TelegramMessageError(response);
   }
 }
