@@ -95,6 +95,14 @@ export async function sendMessage(props: {
     Promise.resolve([] as TelegramResponseBase[]),
   );
 
+  if (message.length > TELEGRAM_MESSAGE_MAX_LENGTH) {
+    // After implementation of search pagination, there should no longer be excessively long messages
+    // TODO: consider removing IIFE above for handling too-long messages in the future
+    throw new Error(
+      `Message should not exceed max allowed length of ${TELEGRAM_MESSAGE_MAX_LENGTH}`,
+    );
+  }
+
   const errorResponses = responses.filter((res) => !res.ok);
   if (errorResponses.length > 0) {
     // just throw the first response for convenience
