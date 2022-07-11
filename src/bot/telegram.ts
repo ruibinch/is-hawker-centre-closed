@@ -45,6 +45,7 @@ export type TelegramMessage = {
   date: number;
   chat: TelegramChat;
   text?: string | undefined;
+  entities?: TelegramMessageEntity[];
   sender_chat?: TelegramChat;
   via_bot?: TelegramUser;
   animation?: unknown;
@@ -58,6 +59,18 @@ export type TelegramMessage = {
   voice?: unknown;
   new_chat_members?: unknown;
   left_chat_member?: unknown;
+  reply_markup?: TelegramInlineKeyboardMarkup;
+};
+
+type TelegramMessageEntity = {
+  // prettier-ignore
+  // eslint-disable-next-line max-len
+  type: 'mention' | 'hashtag' | 'cashtag' | 'bot_command' | 'url' | 'email' | 'phone_number' | 'bold' | 'italic' | 'underline' | 'strikethrough' | 'spoiler' | 'code' | 'pre' | 'text_link' | 'text_mention';
+  offset: number;
+  length: number;
+  url?: string;
+  user?: TelegramUser;
+  language?: string;
 };
 
 export type TelegramCallbackQuery = {
@@ -65,6 +78,7 @@ export type TelegramCallbackQuery = {
   from: TelegramUser;
   message?: TelegramMessage;
   inline_message_id?: string;
+  chat_instance: string;
   data?: string;
 };
 
@@ -75,17 +89,14 @@ export type TelegramSendMessageParamsFull = {
   chat_id: number | string;
   text: string;
   parse_mode?: TelegramMessageParseMode;
-  entities?: unknown;
+  entities?: TelegramMessageEntity[];
   disable_web_page_preview?: boolean;
   disable_notification?: boolean;
   protect_content?: boolean;
   reply_to_message_id?: boolean;
   allow_sending_without_reply?: boolean;
   // other reply_markup types excluded for brevity: https://core.telegram.org/bots/api#sendmessage
-  reply_markup?: {
-    // array of button rows
-    inline_keyboard: Array<Array<TelegramInlineKeyboardButton>>;
-  };
+  reply_markup?: TelegramInlineKeyboardMarkup;
 };
 
 export type TelegramSendMessageParams = Omit<
@@ -100,14 +111,9 @@ export type TelegramEditMessageTextParams = {
   inline_message_id?: string;
   text: string;
   parse_mode?: TelegramMessageParseMode;
-  entities?: unknown;
+  entities?: TelegramMessageEntity[];
   disable_web_page_preview?: boolean;
-  reply_markup?:
-    | {
-        // array of button rows
-        inline_keyboard: Array<Array<TelegramInlineKeyboardButton>>;
-      }
-    | undefined;
+  reply_markup?: TelegramInlineKeyboardMarkup | undefined;
 };
 
 export type TelegramAnswerCallbackQueryParams = {
@@ -116,6 +122,11 @@ export type TelegramAnswerCallbackQueryParams = {
   show_alert?: boolean;
   url?: string;
   cache_time?: number;
+};
+
+export type TelegramInlineKeyboardMarkup = {
+  // array of button rows
+  inline_keyboard: Array<Array<TelegramInlineKeyboardButton>>;
 };
 
 export type TelegramInlineKeyboardButton = {

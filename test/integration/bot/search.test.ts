@@ -272,16 +272,23 @@ describe('[bot] [integration] Search module', () => {
         'There are *8* hawker centres that are closed this month:\n\n' +
         '1\\. *Devon Corporation*\n_01\\-Nov to 30\\-Apr; other works_\n\n' +
         '2\\. *Littleroot Town*\n_today to tomorrow_\n\n' +
-        '3\\. *Melville City*\n_today_\n\n' +
-        '4\\. *Mossdeep Gym \\(Psychics in space\\)*\n_05\\-Jan_\n\n' +
-        '5\\. *Oldale Town*\n_15\\-Jan to 18\\-Jan_\n\n' +
-        '6\\. *Oldale Town*\n_30\\-Jan to 31\\-Jan_\n\n' +
-        '7\\. *Route 118 near Melville City*\n_21\\-Jan to 24\\-Jan_\n\n' +
-        '8\\. *Slateport City*\n_tomorrow_';
+        '3\\. *Melville City*\n_today_';
+      const expectedReplyMarkup = {
+        inline_keyboard: [
+          [
+            { callback_data: '$searchPagination null', text: '[ 1 ]' },
+            { callback_data: '$searchPagination 2', text: '2 ›' },
+            { callback_data: '$searchPagination 3', text: '3 »' },
+          ],
+        ],
+      };
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
-      assertBotResponse(sendMessageSpy, { text: expectedMessage });
+      assertBotResponse(sendMessageSpy, {
+        text: expectedMessage,
+        reply_markup: expectedReplyMarkup,
+      });
     });
 
     it('["Month"] returns all closures occurring in the current month, when there is a single closure', async () => {

@@ -1,6 +1,7 @@
 import type { TelegramUser } from '../../../../src/bot/telegram';
 import type { Closure } from '../../../../src/models/Closure';
 import type { HawkerCentre } from '../../../../src/models/HawkerCentre';
+import { Input } from '../../../../src/models/Input';
 import type { User } from '../../../../src/models/User';
 
 export const mockClosures: Closure[] = [
@@ -310,3 +311,13 @@ export const mockTelegramUser: TelegramUser = {
   last_name: 'Ketchum',
   username: 'ashketchum',
 };
+
+export const mockInputs: Input[] = [
+  {
+    inputId: '1-1609804800000000',
+    userId: 1,
+    username: 'ashketchum',
+    text: 'littleroot',
+    createdAt: '2021-01-05T00:00:00.000Z',
+  },
+];
