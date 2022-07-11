@@ -2,12 +2,13 @@
 import { parseISO } from 'date-fns';
 
 import * as sender from '../../../src/bot/sender';
-import * as searchLogic from '../../../src/bot/services/search/logic';
+import * as SearchLogicFile from '../../../src/bot/services/search/logic';
 import { AWSError } from '../../../src/errors/AWSError';
 import { Result } from '../../../src/lib/Result';
+import * as ClosureFile from '../../../src/models/Closure';
 import * as InputFile from '../../../src/models/Input';
 import * as UserFile from '../../../src/models/User';
-import { mockClosures, mockInputs } from './__mocks__/db';
+import { mockClosures } from './__mocks__/db';
 import { makeTelegramCallbackQuery } from './__mocks__/telegram';
 import {
   assertBotResponse,
@@ -27,6 +28,7 @@ describe('[bot] [integration] Callback queries', () => {
   let addInputToDBSpy: jest.SpyInstance;
   let getAllInputsSpy: jest.SpyInstance;
   let processSearchSpy: jest.SpyInstance;
+  let getAllClosuresSpy: jest.SpyInstance;
 
   beforeAll(() => {
     getUserByIdSpy = jest
@@ -66,7 +68,7 @@ describe('[bot] [integration] Callback queries', () => {
     inputId: '1-1609804800000000',
     userId: 1,
     username: 'ashketchum',
-    text: 'littleroot',
+    text: 'month',
     createdAt: '2021-01-05T00:00:00.000Z',
   };
 
@@ -74,7 +76,7 @@ describe('[bot] [integration] Callback queries', () => {
     inputId: '1-1609891200000000',
     userId: 1,
     username: 'ashketchum',
-    text: 'littleroot',
+    text: 'month',
     createdAt: '2021-01-06T00:00:00.000Z',
   };
 
@@ -85,28 +87,31 @@ describe('[bot] [integration] Callback queries', () => {
         .mockImplementation(() =>
           Promise.resolve(Result.Ok([inputWithinTimeThreshold])),
         );
-      processSearchSpy = jest
-        .spyOn(searchLogic, 'processSearch')
-        .mockImplementation(() =>
-          Promise.resolve(
-            Result.Ok({
-              params: { keyword: 'littleroot', modifier: 'next' },
-              hasResults: true,
-              closures: [],
-            }),
-          ),
-        );
+      getAllClosuresSpy = jest
+        .spyOn(ClosureFile, 'getAllClosures')
+        .mockImplementation(() => Promise.resolve(Result.Ok(mockClosures)));
     });
 
     afterAll(() => {
       getAllInputsSpy.mockRestore();
-      processSearchSpy.mockRestore();
+      getAllClosuresSpy.mockRestore();
     });
 
     it('correctly edits message and returns callback response', async () => {
-      const callbackQueryData = '$searchPagination 2';
+      const callbackQueryData = '$searchPagination 3';
       const expectedMessage =
-        'Here are the hawker centres containing the keyword *littleroot* and their next closure dates:\n\n';
+        'There are *8* hawker centres that are closed this month:\n\n' +
+        '7\\. *Route 118 near Melville City*\n_21\\-Jan to 24\\-Jan_\n\n' +
+        '8\\. *Slateport City*\n_tomorrow_';
+      const expectedReplyMarkup = {
+        inline_keyboard: [
+          [
+            { callback_data: '$searchPagination 1', text: '« 1' },
+            { callback_data: '$searchPagination 2', text: '‹ 2' },
+            { callback_data: '$searchPagination null', text: '[ 3 ]' },
+          ],
+        ],
+      };
 
       await callBot(
         undefined,
@@ -114,8 +119,11 @@ describe('[bot] [integration] Callback queries', () => {
         makeTelegramCallbackQuery({ data: callbackQueryData }),
       );
 
-      assertInputSaved(addInputToDBSpy, '1609804800000::$searchPagination 2');
-      assertBotResponse(editMessageTextSpy, { text: expectedMessage });
+      assertInputSaved(addInputToDBSpy, '1609804800000::$searchPagination 3');
+      assertBotResponse(editMessageTextSpy, {
+        text: expectedMessage,
+        reply_markup: expectedReplyMarkup,
+      });
       assertBotCallbackResponse(answerCallbackQuerySpy);
     });
   });
@@ -189,7 +197,7 @@ describe('[bot] [integration] Callback queries', () => {
           Promise.resolve(Result.Ok([inputWithinTimeThreshold])),
         );
       processSearchSpy = jest
-        .spyOn(searchLogic, 'processSearch')
+        .spyOn(SearchLogicFile, 'processSearch')
         .mockImplementation(() => Promise.resolve(Result.Err()));
 
       const expectedMessage = 'Error returning search results';

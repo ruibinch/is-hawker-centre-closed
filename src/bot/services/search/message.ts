@@ -10,7 +10,7 @@ import { makeClosureListItem } from '../message';
 import { isSearchModifierTimeBased } from './searchModifier';
 import type { SearchModifier, SearchResponse } from './types';
 
-const MAX_RESULTS_PER_PAGE = 10;
+const MAX_RESULTS_PER_PAGE = process.env.NODE_ENV === 'test' ? 3 : 10;
 
 export function makeSearchResponseMessage(
   searchResponse: SearchResponse,
@@ -140,6 +140,7 @@ function makeClosuresListPagination(
       if (page === numPages) return `${page} »`;
       if (page === currPage - 1) return `‹ ${page}`;
       if (page === currPage + 1) return `${page} ›`;
+      /* istanbul ignore next */
       return `${page}`; // should never reach here
     })(),
     callback_data: `$searchPagination ${page === currPage ? 'null' : page}`,
