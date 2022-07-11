@@ -2,7 +2,9 @@ import type { APIGatewayProxyEvent, Context } from 'aws-lambda';
 
 import { handler as botHandler } from '../../../../src/bot/handlers/bot';
 import { handler as notificationsTriggerHandler } from '../../../../src/bot/handlers/notificationsTrigger';
+import { answerCallbackQuery } from '../../../../src/bot/sender';
 import type {
+  TelegramAnswerCallbackQueryParams,
   TelegramMessage,
   TelegramSendMessageParams,
   TelegramUpdate,
@@ -66,6 +68,21 @@ export const assertBotResponse = (
 
   if (expectedChoices) {
     expectedObject.choices = expectedChoices;
+  }
+
+  expect(spy).toHaveBeenCalledWith(expect.objectContaining(expectedObject));
+};
+
+export const assertBotCallbackResponse = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  spy: jest.SpyInstance<any, any>,
+  expectedMessage?: string,
+): void => {
+  const expectedObject: Parameters<typeof answerCallbackQuery>[0] = {
+    queryId: '9876543210',
+  };
+  if (expectedMessage) {
+    expectedObject.text = expectedMessage;
   }
 
   expect(spy).toHaveBeenCalledWith(expect.objectContaining(expectedObject));
