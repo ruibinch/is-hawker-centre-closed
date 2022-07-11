@@ -16,6 +16,8 @@ export async function handleCallbackQuery({
   // If originalMessage is undefined, message content is not available anymore as message is too old
   // ref: https://core.telegram.org/bots/api#callbackquery
   if (!originalMessage) {
+    // this flow will never be reached as there is an early return when extractTelegramMessage returns null
+    // TODO: possibly revise this behaviour
     return Result.Err(t('callback.error.message-too-old'));
   }
   if (!queryData) {
