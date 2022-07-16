@@ -39,6 +39,9 @@ export type HawkerCentreClosureRecord = {
   other_works_startdate: string;
   other_works_enddate: string;
   remarks_other_works: string;
+  latitude_hc: string;
+  longitude_hc: string;
+  google_3d_view: string;
 };
 
 // Parsed data

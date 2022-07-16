@@ -87,17 +87,19 @@ function generateClosure(props: {
   };
 }
 
-export function getHawkerCentresList(closures: Closure[]): HawkerCentre[] {
-  const hawkerCentres = closures.map((closure) => ({
-    hawkerCentreId: closure.hawkerCentreId,
-    name: closure.name,
-    nameSecondary: closure.nameSecondary,
-  }));
+export function generateHawkerCentres(
+  recordsRaw: HawkerCentreClosureRecord[],
+): HawkerCentre[] {
+  return recordsRaw.map((recordRaw) => {
+    const { _id: hawkerCentreId, address_myenv: address, name } = recordRaw;
 
-  // remove duplicate entries
-  const hawkerCentresDeduplicated = hawkerCentres.filter(
-    (hc, idx, self) =>
-      self.findIndex((hc2) => hc.hawkerCentreId === hc2.hawkerCentreId) === idx,
-  );
-  return hawkerCentresDeduplicated;
+    const [namePrimary, nameSecondary] = parseHawkerCentreName(name);
+
+    return {
+      hawkerCentreId,
+      address,
+      name: namePrimary,
+      nameSecondary,
+    };
+  });
 }

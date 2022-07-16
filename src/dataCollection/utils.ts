@@ -37,6 +37,9 @@ export async function getRawRecords(): Promise<HawkerCentreClosureRecord[]> {
         other_works_startdate: record.other_works_startdate,
         other_works_enddate: record.other_works_enddate,
         remarks_other_works: record.remarks_other_works,
+        latitude_hc: record.latitude_hc,
+        longitude_hc: record.longitude_hc,
+        google_3d_view: record.google_3d_view,
       }));
     });
 }
