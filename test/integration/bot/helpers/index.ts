@@ -4,11 +4,10 @@ import { handler as botHandler } from '../../../../src/bot/handlers/bot';
 import { handler as notificationsTriggerHandler } from '../../../../src/bot/handlers/notificationsTrigger';
 import { answerCallbackQuery } from '../../../../src/bot/sender';
 import type {
-  TelegramAnswerCallbackQueryParams,
   TelegramMessage,
   TelegramSendMessageParams,
   TelegramUpdate,
-} from '../../../../src/bot/telegram';
+} from '../../../../src/telegram';
 import { makeTelegramMessage } from '../__mocks__/telegram';
 
 export const makeBotWrapper =

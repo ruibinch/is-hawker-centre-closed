@@ -1,5 +1,5 @@
 import { Result } from '../../../lib/Result';
-import type { TelegramUser } from '../../telegram';
+import type { TelegramUser } from '../../../telegram';
 import type { ServiceResponse } from '../../types';
 import { addFeedback } from './logic';
 import {

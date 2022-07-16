@@ -8,7 +8,7 @@ import {
   TelegramResponseBase,
   TelegramSendMessageParams,
   TELEGRAM_MESSAGE_MAX_LENGTH,
-} from './telegram';
+} from '../telegram';
 
 const { TELEGRAM_BOT_TOKEN } = process.env;
 

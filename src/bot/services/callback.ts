@@ -1,6 +1,6 @@
 import { Result } from '../../lib/Result';
+import { TelegramCallbackQuery } from '../../telegram';
 import { t } from '../lang';
-import { TelegramCallbackQuery } from '../telegram';
 import { ServiceCallbackResponse } from '../types';
 import { runSearchWithPagination } from './search';
 

@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 
 import { ServiceError } from '../../errors/ServiceError';
 import { makeLambdaResponse } from '../../ext/aws/lambda';
+import { extractTelegramMessage, TelegramUpdate } from '../../telegram';
 import { validateToken } from '../auth';
 import { isCommand, isCommandInModule, makeCommandMessage } from '../commands';
 import { expandAcronymsInText, validateInputMessage } from '../inputHelpers';
@@ -25,7 +26,6 @@ import { saveInput } from '../services/input';
 import { getUserLanguageCode, manageLanguage } from '../services/language';
 import { makeGenericErrorMessage } from '../services/message';
 import { runSearch } from '../services/search';
-import { extractTelegramMessage, TelegramUpdate } from '../telegram';
 import type { BotResponse } from '../types';
 
 dotenv.config();

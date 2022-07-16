@@ -1,6 +1,6 @@
 import { addInputToDB, Input } from '../../../models/Input';
+import type { TelegramChat } from '../../../telegram';
 import { currentDate } from '../../../utils/date';
-import type { TelegramChat } from '../../telegram';
 
 export async function saveInput(
   text: string,

@@ -5,8 +5,8 @@ import {
   updateUserLanguageCode,
   User,
 } from '../../../models/User';
+import type { TelegramUser } from '../../../telegram';
 import { initDictionary, type Language } from '../../lang';
-import type { TelegramUser } from '../../telegram';
 import type { GetUserLanguageCodeResponse } from './types';
 
 export async function updateLanguage(props: {
