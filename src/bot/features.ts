@@ -4,8 +4,8 @@ type Features = Record<string, Record<Stage, boolean>>;
 
 const _features: Features = {
   ENABLE_WEBAPP: {
-    dev: false,
-    prod: true,
+    dev: true,
+    prod: false,
   },
 };
 
