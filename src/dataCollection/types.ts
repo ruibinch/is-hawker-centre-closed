@@ -28,6 +28,7 @@ export type HawkerCentreClosureRecord = {
   _id: number;
   name: string;
   address_myenv: string;
+  status: string;
   q1_cleaningstartdate: string;
   q1_cleaningenddate: string;
   q2_cleaningstartdate: string;

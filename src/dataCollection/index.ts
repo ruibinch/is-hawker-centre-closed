@@ -90,16 +90,18 @@ function generateClosure(props: {
 export function generateHawkerCentres(
   recordsRaw: HawkerCentreClosureRecord[],
 ): HawkerCentre[] {
-  return recordsRaw.map((recordRaw) => {
-    const { _id: hawkerCentreId, address_myenv: address, name } = recordRaw;
+  return recordsRaw
+    .filter(({ status }) => status !== 'Under Construction')
+    .map((recordRaw) => {
+      const { _id: hawkerCentreId, address_myenv: address, name } = recordRaw;
 
-    const [namePrimary, nameSecondary] = parseHawkerCentreName(name);
+      const [namePrimary, nameSecondary] = parseHawkerCentreName(name);
 
-    return {
-      hawkerCentreId,
-      address,
-      name: namePrimary,
-      nameSecondary,
-    };
-  });
+      return {
+        hawkerCentreId,
+        address,
+        name: namePrimary,
+        nameSecondary,
+      };
+    });
 }
