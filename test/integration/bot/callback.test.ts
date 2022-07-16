@@ -1,13 +1,13 @@
 /* eslint-disable max-len */
 import { parseISO } from 'date-fns';
 
-import * as sender from '../../../src/bot/sender';
 import * as SearchLogicFile from '../../../src/bot/services/search/logic';
 import { AWSError } from '../../../src/errors/AWSError';
 import { Result } from '../../../src/lib/Result';
 import * as ClosureFile from '../../../src/models/Closure';
 import * as InputFile from '../../../src/models/Input';
 import * as UserFile from '../../../src/models/User';
+import * as telegramMethods from '../../../src/telegram/methods';
 import { mockClosures } from './__mocks__/db';
 import { makeTelegramCallbackQuery } from './__mocks__/telegram';
 import {
@@ -41,10 +41,10 @@ describe('[bot] [integration] Callback queries', () => {
 
   beforeEach(() => {
     editMessageTextSpy = jest
-      .spyOn(sender, 'editMessageText')
+      .spyOn(telegramMethods, 'editMessageText')
       .mockImplementation(() => Promise.resolve());
     answerCallbackQuerySpy = jest
-      .spyOn(sender, 'answerCallbackQuery')
+      .spyOn(telegramMethods, 'answerCallbackQuery')
       .mockImplementation(() => Promise.resolve());
     addInputToDBSpy = jest
       .spyOn(InputFile, 'addInputToDB')

@@ -1,14 +1,14 @@
 import axios from 'axios';
 
 import { TelegramMessageError } from '../errors/TelegramMessageError';
+import { makeTelegramApiBase } from './helpers';
 import {
-  makeTelegramApiBase,
   TelegramAnswerCallbackQueryParams,
   TelegramEditMessageTextParams,
   TelegramResponseBase,
   TelegramSendMessageParams,
   TELEGRAM_MESSAGE_MAX_LENGTH,
-} from './telegram';
+} from './types';
 
 const { TELEGRAM_BOT_TOKEN } = process.env;
 

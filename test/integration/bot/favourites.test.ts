@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
 import { parseISO } from 'date-fns';
 
-import * as sender from '../../../src/bot/sender';
 import * as favouritesIndex from '../../../src/bot/services/favourites/index';
 import * as feedbackIndex from '../../../src/bot/services/feedback/index';
 import * as searchIndex from '../../../src/bot/services/search/index';
@@ -11,6 +10,7 @@ import * as ClosureFile from '../../../src/models/Closure';
 import * as HawkerCentreFile from '../../../src/models/HawkerCentre';
 import * as InputFile from '../../../src/models/Input';
 import * as UserFile from '../../../src/models/User';
+import * as telegramMethods from '../../../src/telegram/methods';
 import {
   mockHawkerCentres,
   mockClosures,
@@ -51,10 +51,10 @@ describe('[bot] [integration] Favourites module', () => {
 
   beforeEach(() => {
     sendMessageSpy = jest
-      .spyOn(sender, 'sendMessage')
+      .spyOn(telegramMethods, 'sendMessage')
       .mockImplementation(() => Promise.resolve());
     sendMessageWithChoicesSpy = jest
-      .spyOn(sender, 'sendMessageWithChoices')
+      .spyOn(telegramMethods, 'sendMessageWithChoices')
       .mockImplementation();
     getAllHawkerCentresSpy = jest
       .spyOn(HawkerCentreFile, 'getAllHawkerCentres')

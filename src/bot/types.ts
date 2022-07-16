@@ -1,5 +1,5 @@
 import { ResultType } from '../lib/Result';
-import { TelegramSendMessageParams } from './telegram';
+import { TelegramSendMessageParams } from '../telegram';
 
 export type Module =
   | 'search'

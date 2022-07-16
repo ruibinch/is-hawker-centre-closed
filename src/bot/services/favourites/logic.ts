@@ -17,8 +17,8 @@ import {
   User,
   UserFavourite,
 } from '../../../models/User';
+import type { TelegramUser } from '../../../telegram';
 import { currentDate } from '../../../utils/date';
-import type { TelegramUser } from '../../telegram';
 import { getNextOccurringClosure } from '../helpers';
 import {
   MAX_CHOICES,

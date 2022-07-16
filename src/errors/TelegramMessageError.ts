@@ -1,4 +1,4 @@
-import type { TelegramResponseBase } from '../bot/telegram';
+import type { TelegramResponseBase } from '../telegram';
 
 export class TelegramMessageError extends Error {
   constructor(response: TelegramResponseBase) {

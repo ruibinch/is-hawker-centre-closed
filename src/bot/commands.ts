@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
 import { Result, ResultType } from '../lib/Result';
+import { TelegramSendMessageParams } from '../telegram';
 import features from './features';
 import { t } from './lang';
-import { TelegramSendMessageParams } from './telegram';
 import type { Command, Module } from './types';
 
 export const COMMANDS: Command[] = [
