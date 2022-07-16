@@ -2,11 +2,11 @@ import type { APIGatewayProxyEvent, Context } from 'aws-lambda';
 
 import { handler as botHandler } from '../../../../src/bot/handlers/bot';
 import { handler as notificationsTriggerHandler } from '../../../../src/bot/handlers/notificationsTrigger';
-import { answerCallbackQuery } from '../../../../src/bot/sender';
-import type {
-  TelegramMessage,
-  TelegramSendMessageParams,
-  TelegramUpdate,
+import {
+  answerCallbackQuery,
+  type TelegramMessage,
+  type TelegramSendMessageParams,
+  type TelegramUpdate,
 } from '../../../../src/telegram';
 import { makeTelegramMessage } from '../__mocks__/telegram';
 

@@ -6,12 +6,12 @@ import type {
 } from 'aws-lambda';
 
 import { handler as botHandler } from '../../../src/bot/handlers/bot';
-import * as sender from '../../../src/bot/sender';
 import * as searchFeature from '../../../src/bot/services/search';
 import { AWSError } from '../../../src/errors/AWSError';
 import { Result } from '../../../src/lib/Result';
 import * as InputFile from '../../../src/models/Input';
 import * as UserFile from '../../../src/models/User';
+import * as telegramMethods from '../../../src/telegram/methods';
 import { assertBotResponse, makeBotWrapper } from './helpers';
 
 describe('[bot] [integration] Validation module', () => {
@@ -30,7 +30,7 @@ describe('[bot] [integration] Validation module', () => {
 
   beforeEach(() => {
     sendMessageSpy = jest
-      .spyOn(sender, 'sendMessage')
+      .spyOn(telegramMethods, 'sendMessage')
       .mockImplementation(() => Promise.resolve());
     addInputToDBSpy = jest
       .spyOn(InputFile, 'addInputToDB')

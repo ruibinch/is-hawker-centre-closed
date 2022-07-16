@@ -4,17 +4,18 @@ import dotenv from 'dotenv';
 
 import { ServiceError } from '../../errors/ServiceError';
 import { makeLambdaResponse } from '../../ext/aws/lambda';
-import { extractTelegramMessage, TelegramUpdate } from '../../telegram';
-import { validateToken } from '../auth';
-import { isCommand, isCommandInModule, makeCommandMessage } from '../commands';
-import { expandAcronymsInText, validateInputMessage } from '../inputHelpers';
-import { initDictionary } from '../lang';
 import {
+  extractTelegramMessage,
+  TelegramUpdate,
   answerCallbackQuery,
   editMessageText,
   sendMessage,
   sendMessageWithChoices,
-} from '../sender';
+} from '../../telegram';
+import { validateToken } from '../auth';
+import { isCommand, isCommandInModule, makeCommandMessage } from '../commands';
+import { expandAcronymsInText, validateInputMessage } from '../inputHelpers';
+import { initDictionary } from '../lang';
 import { handleCallbackQuery } from '../services/callback';
 import {
   manageFavourites,

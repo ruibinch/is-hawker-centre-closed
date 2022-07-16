@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
-import * as sender from '../../../src/bot/sender';
 import * as searchLogic from '../../../src/bot/services/search/logic';
 import { AWSError } from '../../../src/errors/AWSError';
 import { Result } from '../../../src/lib/Result';
 import * as InputFile from '../../../src/models/Input';
 import * as UserFile from '../../../src/models/User';
+import * as telegramMethods from '../../../src/telegram/methods';
 import { assertBotResponse, assertInputSaved, makeBotWrapper } from './helpers';
 
 describe('[bot] [integration] General module', () => {
@@ -23,7 +23,7 @@ describe('[bot] [integration] General module', () => {
 
   beforeEach(() => {
     sendMessageSpy = jest
-      .spyOn(sender, 'sendMessage')
+      .spyOn(telegramMethods, 'sendMessage')
       .mockImplementation(() => Promise.resolve());
     addInputToDBSpy = jest
       .spyOn(InputFile, 'addInputToDB')

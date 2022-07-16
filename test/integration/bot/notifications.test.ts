@@ -1,12 +1,12 @@
 /* eslint-disable max-len */
 import { parseISO } from 'date-fns';
 
-import * as sender from '../../../src/bot/sender';
 import { AWSError } from '../../../src/errors/AWSError';
 import * as discord from '../../../src/ext/discord';
 import { Result } from '../../../src/lib/Result';
 import * as ClosureFile from '../../../src/models/Closure';
 import * as UserFile from '../../../src/models/User';
+import * as telegramMethods from '../../../src/telegram/methods';
 import { mockClosures, mockUsers } from './__mocks__/db';
 import { assertBotResponse, makeNotificationsWrapper } from './helpers';
 
@@ -30,7 +30,7 @@ describe('[bot] [integration] Notifications module', () => {
 
   beforeEach(() => {
     sendMessageSpy = jest
-      .spyOn(sender, 'sendMessage')
+      .spyOn(telegramMethods, 'sendMessage')
       .mockImplementation(() => Promise.resolve());
     sendDiscordAdminMessageSpy = jest
       .spyOn(discord, 'sendDiscordAdminMessage')

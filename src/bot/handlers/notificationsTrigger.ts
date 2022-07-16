@@ -4,8 +4,8 @@ import dotenv from 'dotenv';
 
 import { makeLambdaResponse } from '../../ext/aws/lambda';
 import { sendDiscordAdminMessage } from '../../ext/discord';
+import { sendMessage } from '../../telegram/methods';
 import { getStage } from '../../utils/stage';
-import { sendMessage } from '../sender';
 import { constructNotifications } from '../services/notifications';
 import type { NotificationMessage } from '../services/notifications/types';
 
