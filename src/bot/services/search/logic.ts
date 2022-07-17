@@ -82,7 +82,14 @@ export function filterByKeyword(closures: Closure[], keyword: string) {
     return closures;
   }
 
-  const searchKeywords = keyword.split(' ');
+  // These are general hawker centre keywords that do not help in narrowing the search so they can be omitted.
+  // prettier-ignore
+  const IGNORE_KEYWORDS = [
+    'food','fare','hawker','center','centre','opening','hours','and'
+  ]
+  const searchKeywords = keyword
+    .split(' ')
+    .filter((word) => !IGNORE_KEYWORDS.includes(word));
 
   return closures.filter((closure) =>
     searchKeywords.every((searchKeyword) => {
