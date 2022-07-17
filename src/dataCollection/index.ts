@@ -1,5 +1,6 @@
 import type { ClosureReason, Closure } from '../models/Closure';
 import type { HawkerCentre } from '../models/HawkerCentre';
+import hcKeywords from './hcKeywords';
 import type { HawkerCentreClosureRecord } from './types';
 import { generateHash, parseClosureDate, parseHawkerCentreName } from './utils';
 
@@ -75,29 +76,37 @@ function generateClosure(props: {
     endDate,
   );
   const [namePrimary, nameSecondary] = parseHawkerCentreName(name);
+  const keywords = hcKeywords[namePrimary];
 
   return {
     id,
     hawkerCentreId,
     name: namePrimary,
     nameSecondary,
+    keywords,
     reason,
     startDate,
     endDate,
   };
 }
 
-export function getHawkerCentresList(closures: Closure[]): HawkerCentre[] {
-  const hawkerCentres = closures.map((closure) => ({
-    hawkerCentreId: closure.hawkerCentreId,
-    name: closure.name,
-    nameSecondary: closure.nameSecondary,
-  }));
+export function generateHawkerCentres(
+  recordsRaw: HawkerCentreClosureRecord[],
+): HawkerCentre[] {
+  return recordsRaw
+    .filter(({ status }) => status !== 'Under Construction')
+    .map((recordRaw) => {
+      const { _id: hawkerCentreId, address_myenv: address, name } = recordRaw;
 
-  // remove duplicate entries
-  const hawkerCentresDeduplicated = hawkerCentres.filter(
-    (hc, idx, self) =>
-      self.findIndex((hc2) => hc.hawkerCentreId === hc2.hawkerCentreId) === idx,
-  );
-  return hawkerCentresDeduplicated;
+      const [namePrimary, nameSecondary] = parseHawkerCentreName(name);
+      const keywords = hcKeywords[namePrimary];
+
+      return {
+        hawkerCentreId,
+        address,
+        name: namePrimary,
+        nameSecondary,
+        keywords,
+      };
+    });
 }

@@ -12,9 +12,14 @@ import type { HawkerCentre } from './HawkerCentre';
 initAWSConfig();
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
-export type Closure = HawkerCentre & ClosureObject;
+type HawkerCentreInfo = Pick<
+  HawkerCentre,
+  'hawkerCentreId' | 'name' | 'nameSecondary' | 'keywords'
+>;
 
-export type ClosurePartial = HawkerCentre & Partial<ClosureObject>;
+export type Closure = HawkerCentreInfo & ClosureObject;
+
+export type ClosurePartial = HawkerCentreInfo & Partial<ClosureObject>;
 
 export type ClosureReason = 'cleaning' | 'others';
 

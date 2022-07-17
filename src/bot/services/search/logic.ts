@@ -74,15 +74,22 @@ function parseSearchTerm(term: string): SearchObject {
 }
 
 /**
- * Filters the list of closures by keyword matching the hawker centre name or secondary name.
+ * Filters the list of closures by keyword matching the hawker centre name/secondary name/keywords.
  * Searches across the individual words in the input keyword.
  */
-function filterByKeyword(closures: Closure[], keyword: string) {
+export function filterByKeyword(closures: Closure[], keyword: string) {
   if (keyword === '') {
     return closures;
   }
 
-  const searchKeywords = keyword.split(' ');
+  // These are general hawker centre keywords that do not help in narrowing the search so they can be omitted.
+  // prettier-ignore
+  const IGNORE_KEYWORDS = [
+    'food','fare','hawker','center','centre','opening','hours','and'
+  ]
+  const searchKeywords = keyword
+    .split(' ')
+    .filter((word) => !IGNORE_KEYWORDS.includes(word));
 
   return closures.filter((closure) =>
     searchKeywords.every((searchKeyword) => {
@@ -90,7 +97,9 @@ function filterByKeyword(closures: Closure[], keyword: string) {
       return (
         filterRegex.test(closure.name.toLowerCase()) ||
         (closure.nameSecondary &&
-          filterRegex.test(closure.nameSecondary.toLowerCase()))
+          filterRegex.test(closure.nameSecondary.toLowerCase())) ||
+        (closure.keywords &&
+          closure.keywords.some((hcKeyword) => filterRegex.test(hcKeyword)))
       );
     }),
   );

@@ -26,6 +26,7 @@ export async function getRawRecords(): Promise<HawkerCentreClosureRecord[]> {
         _id: record._id,
         name: record.name,
         address_myenv: record.address_myenv,
+        status: record.status,
         q1_cleaningstartdate: record.q1_cleaningstartdate,
         q1_cleaningenddate: record.q1_cleaningenddate,
         q2_cleaningstartdate: record.q2_cleaningstartdate,
@@ -37,6 +38,9 @@ export async function getRawRecords(): Promise<HawkerCentreClosureRecord[]> {
         other_works_startdate: record.other_works_startdate,
         other_works_enddate: record.other_works_enddate,
         remarks_other_works: record.remarks_other_works,
+        latitude_hc: record.latitude_hc,
+        longitude_hc: record.longitude_hc,
+        google_3d_view: record.google_3d_view,
       }));
     });
 }

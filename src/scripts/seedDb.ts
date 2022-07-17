@@ -1,6 +1,6 @@
 import {
   generateClosures,
-  getHawkerCentresList,
+  generateHawkerCentres,
   getRawRecords,
   writeFile,
 } from '../dataCollection';
@@ -16,10 +16,10 @@ const [isUploadToAws] = args;
 export async function run(
   props: { shouldWriteFile: boolean } = { shouldWriteFile: true },
 ): Promise<void> {
-  const getRawRecordsResponse = await getRawRecords();
+  const recordsRaw = await getRawRecords();
 
-  const closures = generateClosures(getRawRecordsResponse);
-  const hawkerCentres = getHawkerCentresList(closures);
+  const closures = generateClosures(recordsRaw);
+  const hawkerCentres = generateHawkerCentres(recordsRaw);
 
   const { closuresDedupe, hawkerCentresDedupe } = deduplicateEntries({
     closures,

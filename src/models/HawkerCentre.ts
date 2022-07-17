@@ -13,21 +13,29 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 export type HawkerCentreProps = {
   hawkerCentreId: number;
+  address: string;
   name: string;
   nameSecondary?: string | undefined;
+  keywords?: string[];
 };
 
 export class HawkerCentre {
   hawkerCentreId: number;
 
+  address: string;
+
   name: string;
 
   nameSecondary?: string | undefined;
 
+  keywords?: string[] | undefined;
+
   private constructor(props: HawkerCentreProps) {
     this.hawkerCentreId = props.hawkerCentreId;
+    this.address = props.address;
     this.name = props.name;
     this.nameSecondary = props.nameSecondary;
+    this.keywords = props.keywords;
   }
 
   static getTableName(): string {

@@ -107,6 +107,22 @@ export function sanitiseInputText(text: string): string {
 
 const ACRONYMS: [string, string][] = [
   ['amk', 'ang mo kio'],
+  ['bt', 'bukit'],
+  ['clem', 'clementi'],
+  ['ecp', 'east coast park'],
+  ['hg', 'hougang'],
+  ['je', 'jurong east'],
+  ['jln', 'jalan'],
+  ['las', 'lorong ah soo'],
+  ['lor', 'lorong'],
+  ['mkt', 'market'],
+  ['nth', 'north'],
+  ['oth', 'our tampines hub'],
+  ['rd', 'road'],
+  ['srgn', 'serangoon'],
+  ['st', 'street'],
+  ['sth', 'south'],
+  ['tamp', 'tampines'],
   ['tpy', 'toa payoh'],
 ];
 
