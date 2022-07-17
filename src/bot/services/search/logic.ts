@@ -77,7 +77,7 @@ function parseSearchTerm(term: string): SearchObject {
  * Filters the list of closures by keyword matching the hawker centre name/secondary name/keywords.
  * Searches across the individual words in the input keyword.
  */
-function filterByKeyword(closures: Closure[], keyword: string) {
+export function filterByKeyword(closures: Closure[], keyword: string) {
   if (keyword === '') {
     return closures;
   }
