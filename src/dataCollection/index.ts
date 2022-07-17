@@ -1,5 +1,6 @@
 import type { ClosureReason, Closure } from '../models/Closure';
 import type { HawkerCentre } from '../models/HawkerCentre';
+import hcKeywords from './hcKeywords';
 import type { HawkerCentreClosureRecord } from './types';
 import { generateHash, parseClosureDate, parseHawkerCentreName } from './utils';
 
@@ -75,12 +76,14 @@ function generateClosure(props: {
     endDate,
   );
   const [namePrimary, nameSecondary] = parseHawkerCentreName(name);
+  const keywords = hcKeywords[namePrimary];
 
   return {
     id,
     hawkerCentreId,
     name: namePrimary,
     nameSecondary,
+    keywords,
     reason,
     startDate,
     endDate,
@@ -96,12 +99,14 @@ export function generateHawkerCentres(
       const { _id: hawkerCentreId, address_myenv: address, name } = recordRaw;
 
       const [namePrimary, nameSecondary] = parseHawkerCentreName(name);
+      const keywords = hcKeywords[namePrimary];
 
       return {
         hawkerCentreId,
         address,
         name: namePrimary,
         nameSecondary,
+        keywords,
       };
     });
 }

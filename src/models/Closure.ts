@@ -14,7 +14,7 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 type HawkerCentreInfo = Pick<
   HawkerCentre,
-  'hawkerCentreId' | 'name' | 'nameSecondary'
+  'hawkerCentreId' | 'name' | 'nameSecondary' | 'keywords'
 >;
 
 export type Closure = HawkerCentreInfo & ClosureObject;
