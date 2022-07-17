@@ -25,6 +25,11 @@ type ChangelogEntry = {
 function getLatestUpdates(): ChangelogEntry[] {
   return [
     {
+      version: '\\[0\\.15\\.0\\]',
+      date: '2022\\-07\\-17',
+      details: ['Improved search filter logic'],
+    },
+    {
       version: '\\[0\\.14\\.0\\]',
       date: '2022\\-07\\-04',
       details: [

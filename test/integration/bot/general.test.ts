@@ -108,6 +108,8 @@ describe('[bot] [integration] General module', () => {
     it('["/updates"] returns the latest updates', async () => {
       const inputMessage = '/updates';
       const updateEntries = [
+        '*\\[0\\.15\\.0\\] 2022\\-07\\-17*\n' +
+          '\u{00B7} Improved search filter logic',
         '*\\[0\\.14\\.0\\] 2022\\-07\\-04*\n' +
           '\u{00B7} Implemented pagination for search result lists exceeding 10 entries',
         '*\\[0\\.13\\.0\\] 2021\\-09\\-18*\n' +

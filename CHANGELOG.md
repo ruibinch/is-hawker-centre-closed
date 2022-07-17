@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 
+## [0.15.0] - 2022-07-17
+
+### Changed
+
+- Improved search filter logic
+  - Allow for searching by specific keywords
+  - Remove general words from the search keyword when performing search
+
+### Fixed
+
+- User input being returned erroneously in the expanded form when performing search
+
 ## [0.14.0] - 2022-07-04
 
 ### Added
