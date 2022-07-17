@@ -1,6 +1,6 @@
 import hawkerCentresData from '../../../data/hawkerCentres-20220626.json';
-import { expandAcronymsInText } from '../../../src/bot/inputHelpers';
 import { filterByKeyword } from '../../../src/bot/services/search';
+import { expandAcronyms } from '../../../src/bot/services/search/searchHelpers';
 import hcKeywords from '../../../src/dataCollection/hcKeywords';
 import { Closure } from '../../../src/models/Closure';
 
@@ -13,8 +13,8 @@ describe('[unit] bot > search', () => {
     }));
 
   describe('filterByKeyword', () => {
-    const runSearch = (searchTerm: string) => {
-      const searchKeyword = expandAcronymsInText(searchTerm);
+    const runSearch = (keyword: string) => {
+      const searchKeyword = keyword.split(' ').map(expandAcronyms).join(' ');
       // @ts-expect-error skip irrelevant Closure props
       const results = filterByKeyword(closures, searchKeyword);
       return results;

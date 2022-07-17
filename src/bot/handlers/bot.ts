@@ -5,16 +5,16 @@ import dotenv from 'dotenv';
 import { ServiceError } from '../../errors/ServiceError';
 import { makeLambdaResponse } from '../../ext/aws/lambda';
 import {
-  extractTelegramMessage,
-  TelegramUpdate,
   answerCallbackQuery,
   editMessageText,
+  extractTelegramMessage,
   sendMessage,
   sendMessageWithChoices,
+  TelegramUpdate,
 } from '../../telegram';
 import { validateToken } from '../auth';
 import { isCommand, isCommandInModule, makeCommandMessage } from '../commands';
-import { expandAcronymsInText, validateInputMessage } from '../inputHelpers';
+import { validateInputMessage } from '../inputHelpers';
 import { initDictionary } from '../lang';
 import { handleCallbackQuery } from '../services/callback';
 import {
@@ -124,12 +124,10 @@ export const handler = Sentry.AWSLambda.wrapHandler(
         }
       }
 
-      const textExpanded = expandAcronymsInText(textSanitised);
-
       // eslint-disable-next-line max-len
       // must always first check if the user is in favourites mode so that isInFavouritesMode can be toggled back to false if applicable
       const maybeHandleFavouriteSelectionResult =
-        await maybeHandleFavouriteSelection(textExpanded, telegramUser);
+        await maybeHandleFavouriteSelection(textSanitised, telegramUser);
 
       let botResponse: BotResponse | undefined;
 
@@ -137,9 +135,9 @@ export const handler = Sentry.AWSLambda.wrapHandler(
         botResponse = maybeHandleFavouriteSelectionResult.value;
       } else {
         // If favourites flow is not applicable, perform customary handling
-        const executionFn = getExecutionFn(textExpanded);
+        const executionFn = getExecutionFn(textSanitised);
         const executionFnResponse = await executionFn(
-          textExpanded,
+          textSanitised,
           telegramUser,
         );
 

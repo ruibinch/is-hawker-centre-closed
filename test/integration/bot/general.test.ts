@@ -120,34 +120,6 @@ describe('[bot] [integration] General module', () => {
     });
   });
 
-  describe('expandable inputs', () => {
-    let processSearchSpy: jest.SpyInstance;
-
-    beforeEach(() => {
-      processSearchSpy = jest
-        .spyOn(searchLogic, 'processSearch')
-        .mockReturnValue(Promise.resolve(Result.Err(new AWSError())));
-    });
-
-    afterEach(() => {
-      processSearchSpy.mockRestore();
-    });
-
-    test('"tpy" should expand to "toa payoh"', async () => {
-      const inputMessage = 'tpy lorong 5';
-
-      await callBot(inputMessage);
-      expect(processSearchSpy).toHaveBeenCalledWith('toa payoh lorong 5');
-    });
-
-    test('"amk" should expand to "ang mo kio"', async () => {
-      const inputMessage = '10 amk';
-
-      await callBot(inputMessage);
-      expect(processSearchSpy).toHaveBeenCalledWith('10 ang mo kio');
-    });
-  });
-
   describe('empty input', () => {
     it('returns the correct error message', async () => {
       const inputMessage = '';
