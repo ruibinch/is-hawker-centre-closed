@@ -76,8 +76,8 @@ describe('[bot] [integration] General module', () => {
         '• `tdy` / `today`\n• `tmr` / `tomorrow`\n• `next week`\n• `month`\n• `next month`\n• `next` \\(_default_\\)\n\n' +
         'You can also search *by timeframe* alone\\.\n\n' +
         'Examples:\n' +
-        '• "`bedok next week`" will display the hawker centres containing the keyword __bedok__ that are closed __next week__\n' +
-        '• "`jurong next`" will display the hawker centres containing the keyword __jurong__ and their __next closure dates__\n' +
+        '• "`bedok next week`" will display the hawker centres relating to the keyword __bedok__ that are closed __next week__\n' +
+        '• "`jurong next`" will display the hawker centres relating to the keyword __jurong__ and their __next closure dates__\n' +
         '• "`tomorrow`" will display all hawker centres that are closed __tomorrow__\n\n' +
         '\u{1F31F} *Favourites*\n\n' +
         'You can manage your favourite hawker centres via the `/fav` and `/del` commands\\.\n\n' +
@@ -117,34 +117,6 @@ describe('[bot] [integration] General module', () => {
 
       await callBot(inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
-    });
-  });
-
-  describe('expandable inputs', () => {
-    let processSearchSpy: jest.SpyInstance;
-
-    beforeEach(() => {
-      processSearchSpy = jest
-        .spyOn(searchLogic, 'processSearch')
-        .mockReturnValue(Promise.resolve(Result.Err(new AWSError())));
-    });
-
-    afterEach(() => {
-      processSearchSpy.mockRestore();
-    });
-
-    test('"tpy" should expand to "toa payoh"', async () => {
-      const inputMessage = 'tpy lorong 5';
-
-      await callBot(inputMessage);
-      expect(processSearchSpy).toHaveBeenCalledWith('toa payoh lorong 5');
-    });
-
-    test('"amk" should expand to "ang mo kio"', async () => {
-      const inputMessage = '10 amk';
-
-      await callBot(inputMessage);
-      expect(processSearchSpy).toHaveBeenCalledWith('10 ang mo kio');
     });
   });
 

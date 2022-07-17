@@ -15,6 +15,7 @@ import { type Closure, getAllClosures } from '../../../models/Closure';
 import { notEmpty } from '../../../utils';
 import { currentDate, makeNextWeekInterval } from '../../../utils/date';
 import { getNextOccurringClosure, sortInAlphabeticalOrder } from '../helpers';
+import { expandAcronyms, isRelevantKeyword } from './searchHelpers';
 import { extractSearchModifier } from './searchModifier';
 import type { SearchModifier, SearchObject, SearchResponse } from './types';
 
@@ -82,14 +83,10 @@ export function filterByKeyword(closures: Closure[], keyword: string) {
     return closures;
   }
 
-  // These are general hawker centre keywords that do not help in narrowing the search so they can be omitted.
-  // prettier-ignore
-  const IGNORE_KEYWORDS = [
-    'food','fare','hawker','center','centre','opening','hours','and'
-  ]
   const searchKeywords = keyword
     .split(' ')
-    .filter((word) => !IGNORE_KEYWORDS.includes(word));
+    .map(expandAcronyms)
+    .filter(isRelevantKeyword);
 
   return closures.filter((closure) =>
     searchKeywords.every((searchKeyword) => {

@@ -104,36 +104,3 @@ export function sanitiseInputText(text: string): string {
 
   return textSanitised;
 }
-
-const ACRONYMS: [string, string][] = [
-  ['amk', 'ang mo kio'],
-  ['bt', 'bukit'],
-  ['clem', 'clementi'],
-  ['ecp', 'east coast park'],
-  ['hg', 'hougang'],
-  ['je', 'jurong east'],
-  ['jln', 'jalan'],
-  ['las', 'lorong ah soo'],
-  ['lor', 'lorong'],
-  ['mkt', 'market'],
-  ['nth', 'north'],
-  ['oth', 'our tampines hub'],
-  ['rd', 'road'],
-  ['srgn', 'serangoon'],
-  ['st', 'street'],
-  ['sth', 'south'],
-  ['tamp', 'tampines'],
-  ['tpy', 'toa payoh'],
-];
-
-export function expandAcronymsInText(text: string): string {
-  let textSplit = text.split(' ');
-
-  ACRONYMS.forEach(([acronym, acronymExpanded]) => {
-    textSplit = textSplit.map((word) =>
-      word.toLowerCase() === acronym ? acronymExpanded : word,
-    );
-  });
-
-  return textSplit.join(' ');
-}
