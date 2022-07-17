@@ -74,7 +74,7 @@ function parseSearchTerm(term: string): SearchObject {
 }
 
 /**
- * Filters the list of closures by keyword matching the hawker centre name or secondary name.
+ * Filters the list of closures by keyword matching the hawker centre name/secondary name/keywords.
  * Searches across the individual words in the input keyword.
  */
 function filterByKeyword(closures: Closure[], keyword: string) {
@@ -90,7 +90,9 @@ function filterByKeyword(closures: Closure[], keyword: string) {
       return (
         filterRegex.test(closure.name.toLowerCase()) ||
         (closure.nameSecondary &&
-          filterRegex.test(closure.nameSecondary.toLowerCase()))
+          filterRegex.test(closure.nameSecondary.toLowerCase())) ||
+        (closure.keywords &&
+          closure.keywords.some((hcKeyword) => filterRegex.test(hcKeyword)))
       );
     }),
   );
