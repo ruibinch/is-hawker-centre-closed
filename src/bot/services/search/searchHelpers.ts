@@ -17,6 +17,7 @@ const ACRONYMS: Record<string, string> = {
   sth: 'south',
   tamp: 'tampines',
   tpy: 'toa payoh',
+  upp: 'upper',
 };
 
 export function expandAcronyms(word: string) {
