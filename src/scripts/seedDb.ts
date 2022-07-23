@@ -10,8 +10,7 @@ import { HawkerCentre, uploadHawkerCentres } from '../models/HawkerCentre';
 import { currentDateInYYYYMMDD } from '../utils/date';
 import { getStage } from '../utils/stage';
 
-const args = process.argv.slice(2);
-const [isUploadToAws] = args;
+const CLI_DRY_RUN = process.env['CLI_DRY_RUN'] ?? false;
 
 export async function run(
   props: { shouldWriteFile: boolean } = { shouldWriteFile: true },
@@ -43,7 +42,8 @@ export async function run(
     );
   }
 
-  if (isUploadToAws !== 'false') {
+  if (!CLI_DRY_RUN) {
+    console.log('Uploading to AWS');
     await uploadClosures(closuresDedupe);
     await uploadHawkerCentres(hawkerCentresDedupe);
   }

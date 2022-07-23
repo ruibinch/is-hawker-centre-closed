@@ -8,8 +8,7 @@ import { sleep } from '../utils';
 import { formatDateWithTime } from '../utils/date';
 import { getStage } from '../utils/stage';
 
-const args = process.argv.slice(2);
-const [keyword] = args;
+const CLI_KEYWORD = process.env['CLI_KEYWORD'];
 
 initAWSConfig();
 const dynamoDb = new AWS.DynamoDB();
@@ -90,15 +89,19 @@ async function restoreBackup(tableName: string) {
 }
 
 async function run() {
-  if (keyword === 'all') {
+  if (CLI_KEYWORD === 'all') {
     await restoreBackup(TABLE_USERS);
     await restoreBackup(TABLE_FEEDBACK);
-  } else if (keyword === 'users') {
+  } else if (CLI_KEYWORD === 'users') {
     await restoreBackup(TABLE_USERS);
-  } else if (keyword === 'feedback') {
+  } else if (CLI_KEYWORD === 'feedback') {
     await restoreBackup(TABLE_FEEDBACK);
   } else {
-    throw new Error(`"${keyword}" is not an accepted keyword`);
+    throw new Error(
+      CLI_KEYWORD === undefined
+        ? 'No keyword specified'
+        : `"${CLI_KEYWORD}" is not an accepted keyword`,
+    );
   }
 
   process.exit(0);
