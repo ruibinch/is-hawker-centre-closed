@@ -82,6 +82,7 @@ provider:
           Action:
             - dynamodb:Scan
             - dynamodb:PutItem
+            - dynamodb:CreateBackup
           Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_INPUTS}-${self:provider.stage}'
         - Effect: Allow
           Action:

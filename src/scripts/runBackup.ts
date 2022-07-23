@@ -1,7 +1,12 @@
 import * as AWS from 'aws-sdk';
 
 import { DBError } from '../errors/DBError';
-import { initAWSConfig, TABLE_FEEDBACK, TABLE_USERS } from '../ext/aws/config';
+import {
+  initAWSConfig,
+  TABLE_FEEDBACK,
+  TABLE_INPUTS,
+  TABLE_USERS,
+} from '../ext/aws/config';
 import { sendDiscordAdminMessage } from '../ext/discord';
 import { notEmpty } from '../utils';
 import { currentDateInYYYYMMDD, formatDateWithTime } from '../utils/date';
@@ -11,7 +16,7 @@ initAWSConfig();
 const dynamoDb = new AWS.DynamoDB();
 const stage = getStage();
 
-const TABLES_TO_BACKUP = [TABLE_USERS, TABLE_FEEDBACK];
+const TABLES_TO_BACKUP = [TABLE_USERS, TABLE_FEEDBACK, TABLE_INPUTS];
 
 function getTablesToBackup() {
   return TABLES_TO_BACKUP.map((tableName) => `${tableName}-${stage}`);
@@ -74,11 +79,13 @@ function getBackupsForTables(backupSummaries: AWS.DynamoDB.BackupSummaries) {
 }
 
 function getBackupsToDelete(backupsForTables: Record<string, BackupEntry[]>) {
+  // keep last 1 backup in prod, and none in dev (this excludes the backup to be createdg)
+  const NUM_BACKUPS_RETAIN = stage === 'prod' ? 1 : 0;
+
   return Object.values(backupsForTables).reduce(
     (_backupsToDelete: string[], backupsForTable) => {
-      // keep the latest 3 backups, i.e. first 3 array entries
       const backupsToDeleteForTable = backupsForTable
-        .slice(3)
+        .slice(NUM_BACKUPS_RETAIN)
         .map((backupEntry) => backupEntry.backupArn);
 
       return [..._backupsToDelete, ...backupsToDeleteForTable];
@@ -116,7 +123,7 @@ async function deleteBackups() {
     .filter(notEmpty);
 
   await sendDiscordAdminMessage([
-    `**[${stage}] BACKUPS DELETED**`,
+    `**[${stage}] 🗄❌ BACKUPS DELETED**`,
     `${responsesOutput.length === 0 ? '-' : responsesOutput.join('\n')}`,
   ]);
 }
@@ -143,7 +150,7 @@ async function createBackups() {
     .filter(notEmpty);
 
   await sendDiscordAdminMessage([
-    `**[${stage}] BACKUPS CREATED**`,
+    `**[${stage}] 🗄☑️ BACKUPS CREATED**`,
     `${responsesOutput.length === 0 ? '-' : responsesOutput.join('\n')}`,
   ]);
 }
