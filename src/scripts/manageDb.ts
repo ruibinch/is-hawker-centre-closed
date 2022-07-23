@@ -14,8 +14,7 @@ import { User } from '../models/User';
 import { notEmpty, wrapPromise, sleep, WrappedPromise } from '../utils';
 import { getStage } from '../utils/stage';
 
-const args = process.argv.slice(2);
-const [operationArg] = args;
+const CLI_OPERATION = process.env['CLI_OPERATION'];
 
 initAWSConfig();
 const dynamoDb = new AWS.DynamoDB();
@@ -198,7 +197,7 @@ async function resetTables(): Promise<NEAData | null> {
 }
 
 export async function run(operationInput?: string): Promise<NEAData | null> {
-  const operation = operationInput ?? operationArg;
+  const operation = operationInput ?? CLI_OPERATION;
 
   if (operation === 'create') {
     await createTables();
@@ -209,7 +208,11 @@ export async function run(operationInput?: string): Promise<NEAData | null> {
     return resetResult;
   }
 
-  throw new Error(`unrecognised operation name "${operation}"`);
+  throw new Error(
+    operation === undefined
+      ? 'No operation name specified'
+      : `Unrecognised operation name "${operation}"`,
+  );
 }
 
 if (require.main === module) {
