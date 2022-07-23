@@ -31,5 +31,5 @@ const IGNORE_GENERAL_KEYWORDS = [
 ]
 
 export function isRelevantKeyword(word: string) {
-  return !IGNORE_GENERAL_KEYWORDS.includes(word);
+  return !IGNORE_GENERAL_KEYWORDS.includes(word.toLowerCase());
 }
