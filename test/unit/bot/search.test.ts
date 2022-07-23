@@ -1,6 +1,5 @@
 import hawkerCentresData from '../../../data/hawkerCentres-20220626.json';
 import { filterByKeyword } from '../../../src/bot/services/search';
-import { expandAcronyms } from '../../../src/bot/services/search/searchHelpers';
 import hcKeywords from '../../../src/dataCollection/hcKeywords';
 import { Closure } from '../../../src/models/Closure';
 
@@ -14,9 +13,8 @@ describe('[unit] bot > search', () => {
 
   describe('filterByKeyword', () => {
     const runSearch = (keyword: string) => {
-      const searchKeyword = keyword.split(' ').map(expandAcronyms).join(' ');
       // @ts-expect-error skip irrelevant Closure props
-      const results = filterByKeyword(closures, searchKeyword);
+      const results = filterByKeyword(closures, keyword);
       return results;
     };
 
@@ -61,22 +59,22 @@ describe('[unit] bot > search', () => {
     });
 
     it('expands search term', () => {
-      expect(runSearch('ecp')).toContainEqual(
+      expect(runSearch('ECP')).toContainEqual(
         expect.objectContaining({
           name: 'East Coast Lagoon Food Village',
         }),
       );
-      expect(runSearch('havelock rd')).toContainEqual(
+      expect(runSearch('Havelock rd')).toContainEqual(
         expect.objectContaining({
           name: 'Havelock Road Blk 22A/B',
         }),
       );
-      expect(runSearch('jln kukoh')).toContainEqual(
+      expect(runSearch('Jln Kukoh')).toContainEqual(
         expect.objectContaining({
           name: 'Jalan Kukoh Blk 1',
         }),
       );
-      expect(runSearch('las')).toContainEqual(
+      expect(runSearch('LAS')).toContainEqual(
         expect.objectContaining({
           name: 'Hougang Ave 1 Blk 105',
           keywords: ['lorong ah soo'],
@@ -92,17 +90,23 @@ describe('[unit] bot > search', () => {
           name: 'Our Tampines Hub',
         }),
       );
-      expect(runSearch('smith st')).toContainEqual(
+      expect(runSearch('Smith ST')).toContainEqual(
         expect.objectContaining({
           name: 'Smith Street Blk 335',
         }),
       );
-      expect(runSearch('tamp round')).toContainEqual(
+      expect(runSearch('TAMP round')).toContainEqual(
         expect.objectContaining({
           name: 'Tampines Street 11 Blk 137',
           nameSecondary: 'Tampines Round Market and Food Centre',
         }),
       );
+    });
+
+    it('filters out irrelevant keywords', () => {
+      expect(runSearch('yishun park OPENING HOURS')).toHaveLength(1);
+      expect(runSearch('eunos fOOD Fare')).toHaveLength(1);
+      expect(runSearch('Bedok Hawker Centre')).toHaveLength(9);
     });
   });
 });
