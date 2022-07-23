@@ -86,8 +86,6 @@ export function generateHash(...inputs: string[]): string {
 }
 
 export function writeFile(output: unknown[], filename: string): void {
-  fs.writeFile(`./data/${filename}`, JSON.stringify(output), (err) => {
-    if (err) throw err;
-    console.log(`Data successfully written to ${filename}`);
-  });
+  fs.writeFileSync(`./data/${filename}`, JSON.stringify(output, null, 4));
+  console.log(`Data successfully written to ${filename}`);
 }
