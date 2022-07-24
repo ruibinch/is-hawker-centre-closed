@@ -80,6 +80,7 @@ provider:
           Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_FEEDBACK}-${self:provider.stage}'
         - Effect: Allow
           Action:
+            - dynamodb:Query
             - dynamodb:Scan
             - dynamodb:PutItem
             - dynamodb:CreateBackup

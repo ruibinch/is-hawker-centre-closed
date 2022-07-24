@@ -101,6 +101,41 @@ export async function getAllInputs(): Promise<ResultType<Input[], Error>> {
   }
 }
 
+export async function getInputsFromUserBetweenTimestamps({
+  userId,
+  fromTimestamp,
+  toTimestamp,
+}: {
+  userId: number;
+  fromTimestamp: number;
+  toTimestamp: number;
+}): Promise<ResultType<Input[], Error>> {
+  try {
+    const queryOutput = await dynamoDb
+      // API ref: https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Query.html
+      .query({
+        TableName: Input.getTableName(),
+        ExpressionAttributeValues: {
+          ':userId': userId,
+          ':fromTs': fromTimestamp,
+          ':toTs': toTimestamp,
+        },
+        KeyConditionExpression:
+          // BETWEEN check is inclusive of the from/to bounds
+          'userId = :userId AND createdAtTimestamp BETWEEN :fromTs AND :toTs',
+      })
+      .promise();
+
+    if (queryOutput.$response.error || !queryOutput.Items) {
+      return Result.Err(new AWSError());
+    }
+
+    return Result.Ok(queryOutput.Items as Input[]);
+  } catch (err) {
+    return Result.Err(wrapUnknownError(err));
+  }
+}
+
 export async function addInputToDB(
   input: Input,
 ): Promise<ResultType<void, Error>> {
