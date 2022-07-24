@@ -17,6 +17,7 @@ type InputProps = {
   userId: number;
   username?: string | undefined;
   text: string;
+  createdAtTimestamp?: number;
 };
 
 export class Input {
@@ -30,12 +31,15 @@ export class Input {
 
   createdAt: string;
 
+  createdAtTimestamp?: number | undefined;
+
   private constructor(props: InputProps) {
     this.inputId = props.inputId;
     this.userId = props.userId;
     this.username = props.username;
     this.text = props.text;
     this.createdAt = formatISO(currentDate());
+    this.createdAtTimestamp = currentDate().getTime();
   }
 
   static create(props: InputProps): Input {
@@ -50,13 +54,21 @@ export class Input {
     return {
       ...getDynamoDBBillingDetails(),
       TableName: this.getTableName(),
+      // composite primary key of userId + createdAtTimestamp
       KeySchema: [
         {
-          AttributeName: 'inputId',
+          AttributeName: 'userId',
           KeyType: 'HASH',
         },
+        {
+          AttributeName: 'createdAtTimestamp',
+          KeyType: 'RANGE',
+        },
       ],
-      AttributeDefinitions: [{ AttributeName: 'inputId', AttributeType: 'S' }],
+      AttributeDefinitions: [
+        { AttributeName: 'userId', AttributeType: 'N' },
+        { AttributeName: 'createdAtTimestamp', AttributeType: 'N' },
+      ],
     };
   }
 }
