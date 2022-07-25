@@ -49,7 +49,7 @@ async function recreateInputsTable() {
 }
 
 async function addCreatedAtTimestampColumn(inputs: Input[]) {
-  const inputsNew = inputs.map((input) => {
+  return inputs.map((input) => {
     if (!('inputId' in input)) {
       return input;
     }
@@ -60,7 +60,18 @@ async function addCreatedAtTimestampColumn(inputs: Input[]) {
       createdAtTimestamp: Number(input.inputId.split('-')[1]),
     };
   });
+}
 
+async function removeDeprecatedColumns(inputs: Input[]) {
+  return inputs.map((input) => ({
+    userId: input.userId,
+    username: input.username,
+    text: input.text,
+    createdAtTimestamp: input.createdAtTimestamp,
+  }));
+}
+
+async function uploadInputs(inputsNew: Input[]) {
   const addInputResults = await Promise.all(
     inputsNew.map((input) => addInputToDB(input)),
   );
@@ -83,7 +94,15 @@ async function addCreatedAtTimestampColumn(inputs: Input[]) {
 export async function run(): Promise<void> {
   const inputs = await getInputs();
   await recreateInputsTable();
-  await addCreatedAtTimestampColumn(inputs);
+
+  const inputsWithCreatedAtTimestamp = await addCreatedAtTimestampColumn(
+    inputs,
+  );
+  const inputsLatest = await removeDeprecatedColumns(
+    inputsWithCreatedAtTimestamp,
+  );
+
+  await uploadInputs(inputsLatest);
 }
 
 if (require.main === module) {
