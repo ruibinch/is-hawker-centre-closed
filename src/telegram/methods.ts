@@ -23,7 +23,7 @@ export async function sendMessage(props: {
 
   if (!TELEGRAM_BOT_TOKEN) {
     throw new Error(
-      '[bot > sender > sendMessage] TELEGRAM_BOT_TOKEN not defined',
+      '[telegram > methods > sendMessage] TELEGRAM_BOT_TOKEN not defined',
     );
   }
   const telegramSendMessageUrl = `${makeTelegramApiBase(
@@ -81,7 +81,7 @@ export async function sendMessage(props: {
           .get(telegramSendMessageUrl, makeSendMessageParams(telegramMessage))
           .then((res) => res.data)
           .catch((error) => {
-            console.error('[bot > sender > sendMessage]', {
+            console.error('[telegram > methods > sendMessage]', {
               telegramResponse: error.response.data,
               message,
             });
@@ -122,7 +122,7 @@ export async function sendMessageWithChoices(props: {
 
   if (!TELEGRAM_BOT_TOKEN) {
     throw new Error(
-      '[bot > sender > sendMessageWithChoices] TELEGRAM_BOT_TOKEN not defined',
+      '[telegram > methods > sendMessageWithChoices] TELEGRAM_BOT_TOKEN not defined',
     );
   }
 
@@ -140,7 +140,7 @@ export async function sendMessageWithChoices(props: {
     .then((res) => res.data)
     .catch((error) => {
       console.error(
-        '[bot > sender > sendMessageWithChoices]',
+        '[telegram > methods > sendMessageWithChoices]',
         error.response.data,
       );
       return error.response.data;
@@ -163,7 +163,7 @@ export async function editMessageText(props: {
 
   if (!TELEGRAM_BOT_TOKEN) {
     throw new Error(
-      '[bot > sender > editMessageText] TELEGRAM_BOT_TOKEN not defined',
+      '[telegram > methods > editMessageText] TELEGRAM_BOT_TOKEN not defined',
     );
   }
 
@@ -181,7 +181,10 @@ export async function editMessageText(props: {
     })
     .then((res) => res.data)
     .catch((error) => {
-      console.error('[bot > sender > editMessageText]', error.response.data);
+      console.error(
+        '[telegram > methods > editMessageText]',
+        error.response.data,
+      );
       return error.response.data;
     });
 
@@ -208,7 +211,7 @@ export async function answerCallbackQuery(props: {
     .then((res) => res.data)
     .catch((error) => {
       console.error(
-        '[bot > sender > answerCallbackQuery]',
+        '[telegram > methods > answerCallbackQuery]',
         error.response.data,
       );
       return error.response.data;
