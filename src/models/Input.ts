@@ -1,5 +1,4 @@
 import * as AWS from 'aws-sdk';
-import { formatISO } from 'date-fns';
 
 import { AWSError } from '../errors/AWSError';
 import { initAWSConfig, TABLE_INPUTS } from '../ext/aws/config';
@@ -12,33 +11,21 @@ import { getStage } from '../utils/stage';
 initAWSConfig();
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
-type InputProps = {
-  inputId: string;
-  userId: number;
-  username?: string | undefined;
-  text: string;
-  createdAtTimestamp?: number;
-};
+type InputProps = Omit<Input, 'createdAtTimestamp'>;
 
 export class Input {
-  inputId: string;
-
   userId: number;
 
   username?: string | undefined;
 
   text: string;
 
-  createdAt: string;
-
-  createdAtTimestamp?: number | undefined;
+  createdAtTimestamp: number;
 
   private constructor(props: InputProps) {
-    this.inputId = props.inputId;
     this.userId = props.userId;
     this.username = props.username;
     this.text = props.text;
-    this.createdAt = formatISO(currentDate());
     this.createdAtTimestamp = currentDate().getTime();
   }
 
@@ -77,9 +64,8 @@ type SortOrder = 'asc' | 'desc';
 
 export function sortInputsByTime(inputs: Input[], order: SortOrder) {
   return [...inputs].sort((a, b) => {
-    // inputId is of format `{{userId}}-{{unixTime}}`
-    const aTime = Number(a.inputId.split('-')[1]);
-    const bTime = Number(b.inputId.split('-')[1]);
+    const aTime = a.createdAtTimestamp;
+    const bTime = b.createdAtTimestamp;
 
     return order === 'asc' ? aTime - bTime : bTime - aTime;
   });
@@ -144,7 +130,6 @@ export async function addInputToDB(
       .put({
         TableName: Input.getTableName(),
         Item: input,
-        ConditionExpression: 'attribute_not_exists(inputId)',
       })
       .promise();
 

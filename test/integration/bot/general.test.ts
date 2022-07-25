@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-import * as searchLogic from '../../../src/bot/services/search/logic';
 import { AWSError } from '../../../src/errors/AWSError';
 import { Result } from '../../../src/lib/Result';
 import * as InputFile from '../../../src/models/Input';

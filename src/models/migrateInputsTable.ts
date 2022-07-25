@@ -56,6 +56,7 @@ async function addCreatedAtTimestampColumn(inputs: Input[]) {
 
     return {
       ...input,
+      // @ts-expect-error inputId is ascertained to exist here
       createdAtTimestamp: Number(input.inputId.split('-')[1]),
     };
   });

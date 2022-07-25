@@ -26,10 +26,10 @@ export function formatDateWithTime(date: Date): string {
 }
 
 /**
- * Returns a date in YYYY-MM-DD format from a full ISO string.
+ * Returns a date in YYYY-MM-DD format from a Unix timestamp.
  */
-export function getDateIgnoringTime(dateString: string): string {
-  return dateString.substring(0, 10);
+export function getDateIgnoringTime(timestamp: number): string {
+  return new Date(timestamp).toISOString().substring(0, 10);
 }
 
 /**

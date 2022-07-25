@@ -65,11 +65,10 @@ describe('[bot] [integration] Callback queries', () => {
   });
 
   const inputWithinTimeThreshold = {
-    inputId: '1-1609804800000000',
     userId: 1,
     username: 'ashketchum',
     text: 'month',
-    createdAt: '2021-01-05T00:00:00.000Z',
+    createdAtTimestamp: 1609804800000000,
   };
 
   describe('when data exists in DB', () => {

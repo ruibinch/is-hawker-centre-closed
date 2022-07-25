@@ -36,6 +36,7 @@
     "run:print-commands": "ts-node src/scripts/printBotCommands.ts",
     "run:print-description": "ts-node src/scripts/printBotDescription.ts",
     "deduplicate": "npx yarn-deduplicate yarn.lock && yarn install",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .ts",
     "test": "TZ=UTC jest",
     "prettify": "prettier --write \"**/*.{ts,js,json}\""
