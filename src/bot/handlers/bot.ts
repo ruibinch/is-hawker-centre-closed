@@ -32,7 +32,8 @@ import type { BotResponse } from '../types';
 dotenv.config();
 
 Sentry.AWSLambda.init({
-  dsn: process.env.SENTRY_DSN,
+  // TODO: consider a config/env folder instead of solely relying on .env file
+  dsn: process.env.NODE_ENV === 'test' ? '' : process.env.SENTRY_DSN,
   tracesSampleRate: 1.0, // sends 100% of errors to Sentry
 });
 
