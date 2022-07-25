@@ -26,7 +26,7 @@ describe('[bot] [integration] Callback queries', () => {
   let editMessageTextSpy: jest.SpyInstance;
   let answerCallbackQuerySpy: jest.SpyInstance;
   let addInputToDBSpy: jest.SpyInstance;
-  let getAllInputsSpy: jest.SpyInstance;
+  let getInputsFromUserBetweenTimestampsSpy: jest.SpyInstance;
   let processSearchSpy: jest.SpyInstance;
   let getAllClosuresSpy: jest.SpyInstance;
 
@@ -65,25 +65,16 @@ describe('[bot] [integration] Callback queries', () => {
   });
 
   const inputWithinTimeThreshold = {
-    inputId: '1-1609804800000000',
     userId: 1,
     username: 'ashketchum',
     text: 'month',
-    createdAt: '2021-01-05T00:00:00.000Z',
-  };
-
-  const inputOutsideTimeThreshold = {
-    inputId: '1-1609891200000000',
-    userId: 1,
-    username: 'ashketchum',
-    text: 'month',
-    createdAt: '2021-01-06T00:00:00.000Z',
+    createdAtTimestamp: 1609804800000000,
   };
 
   describe('when data exists in DB', () => {
     beforeAll(() => {
-      getAllInputsSpy = jest
-        .spyOn(InputFile, 'getAllInputs')
+      getInputsFromUserBetweenTimestampsSpy = jest
+        .spyOn(InputFile, 'getInputsFromUserBetweenTimestamps')
         .mockImplementation(() =>
           Promise.resolve(Result.Ok([inputWithinTimeThreshold])),
         );
@@ -93,7 +84,7 @@ describe('[bot] [integration] Callback queries', () => {
     });
 
     afterAll(() => {
-      getAllInputsSpy.mockRestore();
+      getInputsFromUserBetweenTimestampsSpy.mockRestore();
       getAllClosuresSpy.mockRestore();
     });
 
@@ -165,34 +156,32 @@ describe('[bot] [integration] Callback queries', () => {
     });
 
     it('when getAllInputs returns an error', async () => {
-      getAllInputsSpy = jest
-        .spyOn(InputFile, 'getAllInputs')
+      getInputsFromUserBetweenTimestampsSpy = jest
+        .spyOn(InputFile, 'getInputsFromUserBetweenTimestamps')
         .mockImplementation(() => Promise.resolve(Result.Err()));
 
       const expectedMessage = 'Error returning search results';
       await callBot(undefined, undefined, makeTelegramCallbackQuery());
 
       assertBotCallbackResponse(answerCallbackQuerySpy, expectedMessage);
-      getAllInputsSpy.mockRestore();
+      getInputsFromUserBetweenTimestampsSpy.mockRestore();
     });
 
     it('when there is no matching input within the time threshold', async () => {
-      getAllInputsSpy = jest
-        .spyOn(InputFile, 'getAllInputs')
-        .mockImplementation(() =>
-          Promise.resolve(Result.Ok([inputOutsideTimeThreshold])),
-        );
+      getInputsFromUserBetweenTimestampsSpy = jest
+        .spyOn(InputFile, 'getInputsFromUserBetweenTimestamps')
+        .mockImplementation(() => Promise.resolve(Result.Ok([])));
 
       const expectedMessage = 'Error returning search results';
       await callBot(undefined, undefined, makeTelegramCallbackQuery());
 
       assertBotCallbackResponse(answerCallbackQuerySpy, expectedMessage);
-      getAllInputsSpy.mockRestore();
+      getInputsFromUserBetweenTimestampsSpy.mockRestore();
     });
 
     it('when processSearch returns an error', async () => {
-      getAllInputsSpy = jest
-        .spyOn(InputFile, 'getAllInputs')
+      getInputsFromUserBetweenTimestampsSpy = jest
+        .spyOn(InputFile, 'getInputsFromUserBetweenTimestamps')
         .mockImplementation(() =>
           Promise.resolve(Result.Ok([inputWithinTimeThreshold])),
         );
@@ -204,7 +193,7 @@ describe('[bot] [integration] Callback queries', () => {
       await callBot(undefined, undefined, makeTelegramCallbackQuery());
 
       assertBotCallbackResponse(answerCallbackQuerySpy, expectedMessage);
-      getAllInputsSpy.mockRestore();
+      getInputsFromUserBetweenTimestampsSpy.mockRestore();
       processSearchSpy.mockRestore();
     });
   });

@@ -1,5 +1,8 @@
 import { Result } from '../../../lib/Result';
-import { getAllInputs, sortInputsByTime } from '../../../models/Input';
+import {
+  getInputsFromUserBetweenTimestamps,
+  sortInputsByTime,
+} from '../../../models/Input';
 import { isCommand } from '../../commands';
 import type { ServiceResponse } from '../../types';
 import { isCallbackQuery } from '../helpers';
@@ -39,34 +42,29 @@ export async function runSearchWithPagination({
   originalMessageTimestamp: number;
   pageNum: number;
 }): Promise<ServiceResponse> {
-  const getAllInputsResponse = await getAllInputs();
-  if (getAllInputsResponse.isErr) {
-    return Result.Err();
-  }
-  const inputsAll = getAllInputsResponse.value;
-
-  const inputsSorted = sortInputsByTime(inputsAll, 'desc');
   // originalMessage.date is displayed in Unix time seconds
   const originalMessageTimestampInMs = originalMessageTimestamp * 1000;
   // consider an input to be matching if it falls within a 2s range
   const MESSAGE_TIMESTAMP_THRESHOLD = 2000;
 
-  const originalInput = inputsSorted
-    // Filter non-search inputs
-    .filter(
-      ({ text: inputText }) =>
-        !isCommand(inputText) && !isCallbackQuery(inputText),
-    )
-    // Find the last matching search term by this user
-    .find((input) => {
-      const inputCreatedTimestampInMs = Number(input.inputId.split('-')[1]);
+  const getInputsResponse = await getInputsFromUserBetweenTimestamps({
+    userId,
+    fromTimestamp: originalMessageTimestampInMs - MESSAGE_TIMESTAMP_THRESHOLD,
+    toTimestamp: originalMessageTimestampInMs + MESSAGE_TIMESTAMP_THRESHOLD,
+  });
+  if (getInputsResponse.isErr) {
+    return Result.Err();
+  }
 
-      return (
-        input.userId === userId &&
-        Math.abs(inputCreatedTimestampInMs - originalMessageTimestampInMs) <=
-          MESSAGE_TIMESTAMP_THRESHOLD
-      );
-    });
+  const inputsRaw = getInputsResponse.value;
+  // Filter non-search inputs
+  const inputs = inputsRaw.filter(
+    ({ text: inputText }) =>
+      !isCommand(inputText) && !isCallbackQuery(inputText),
+  );
+  const inputsSorted = sortInputsByTime(inputs, 'desc');
+
+  const originalInput = inputsSorted.length === 0 ? undefined : inputsSorted[0];
   if (!originalInput) {
     return Result.Err();
   }

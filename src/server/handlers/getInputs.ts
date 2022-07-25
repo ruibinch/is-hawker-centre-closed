@@ -42,7 +42,9 @@ export const handler: APIGatewayProxyHandler = async (
       return false;
     }
 
-    const inputCreatedDate = parseISO(getDateIgnoringTime(input.createdAt));
+    const inputCreatedDate = parseISO(
+      getDateIgnoringTime(input.createdAtTimestamp),
+    );
 
     if (params.fromDate) {
       const fromDate = parseISO(params.fromDate);

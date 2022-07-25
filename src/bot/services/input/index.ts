@@ -1,6 +1,5 @@
 import { addInputToDB, Input } from '../../../models/Input';
 import type { TelegramChat } from '../../../telegram';
-import { currentDate } from '../../../utils/date';
 
 export async function saveInput(
   text: string,
@@ -9,7 +8,6 @@ export async function saveInput(
   const { id: userId, username } = telegramChat;
 
   const input = Input.create({
-    inputId: `${userId}-${currentDate().getTime()}`,
     userId,
     username,
     text,

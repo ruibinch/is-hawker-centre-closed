@@ -3,12 +3,7 @@ import type {
   APIGatewayProxyHandler,
   APIGatewayProxyResult,
 } from 'aws-lambda';
-import {
-  eachMonthOfInterval,
-  eachWeekOfInterval,
-  isBefore,
-  parseISO,
-} from 'date-fns';
+import { eachMonthOfInterval, eachWeekOfInterval, isBefore } from 'date-fns';
 import dotenv from 'dotenv';
 
 import { makeLambdaResponse } from '../../ext/aws/lambda';
@@ -33,7 +28,7 @@ export const handler: APIGatewayProxyHandler = async (
   const inputs = getAllInputsResponse.value;
   const inputsSortedAsc = sortInputsByTime(inputs, 'asc');
 
-  const firstInputDate = parseISO(inputsSortedAsc[0].createdAt);
+  const firstInputDate = new Date(inputsSortedAsc[0].createdAtTimestamp);
   const today = currentDate();
   const weeksList = eachWeekOfInterval(
     {
@@ -55,7 +50,7 @@ export const handler: APIGatewayProxyHandler = async (
   let currentMonthIndex = 0;
 
   inputsSortedAsc.forEach((input) => {
-    const inputCreatedDate = parseISO(input.createdAt);
+    const inputCreatedDate = new Date(input.createdAtTimestamp);
 
     const startOfNextWeek = weeksList[currentWeekIndex + 1];
     if (isBefore(inputCreatedDate, startOfNextWeek)) {
