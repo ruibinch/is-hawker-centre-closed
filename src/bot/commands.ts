@@ -69,10 +69,14 @@ export function isCommand(s: string): boolean {
   return s.startsWith('/') && s.split(' ').length === 1;
 }
 
-export function isCommandInModule(s: string, module: Module): boolean {
+/**
+ * Returns if a keyword is a command under the specified module.
+ * If the module is omitted, the check is done across all modules.
+ */
+export function isCommandInModule(s: string, module?: Module): boolean {
   const [command] = s.split(' ');
 
-  return COMMANDS.filter((cmd) => cmd.module === module)
+  return COMMANDS.filter((cmd) => (module ? cmd.module === module : true))
     .map((cmd) => cmd.endpoint)
     .includes(command);
 }
