@@ -58,10 +58,25 @@ async function getInputsForSearch() {
     inputs = JSON.parse(inputsFile) as Input[];
   }
 
-  return inputs.filter(
-    ({ text: inputText }) =>
-      !isCommandInModule(inputText) && !isCallbackQuery(inputText),
+  return (
+    inputs
+      // ignore own account
+      .filter(({ userId }) => userId !== 60238293)
+      .filter(
+        ({ text: inputText }) =>
+          !isCommandInModule(inputText) && !isCallbackQuery(inputText),
+      )
   );
+}
+
+function getIgnoreTerms() {
+  const ignoreFile = fs.readFileSync(
+    `./src/scripts/analyseSearchResponses.ignore`,
+    { encoding: 'utf8' },
+  );
+  return ignoreFile
+    .split('\n')
+    .filter((term) => term !== '' && !term.startsWith('//'));
 }
 
 async function analyseSearchResponses(
@@ -75,10 +90,16 @@ async function analyseSearchResponses(
     }),
   );
 
+  const ignoreTerms = getIgnoreTerms();
+
   const emptySearchResponses = searchResponses
     .filter(notNil)
     .filter((searchResponse) => !searchResponse.hasResults)
-    .map((searchResponse) => searchResponse.params);
+    .map((searchResponse) => searchResponse.params)
+    .filter(
+      ({ keyword, modifier }) =>
+        !ignoreTerms.includes(`${keyword}::${modifier}`),
+    );
 
   const emptySearchResponsesDict = emptySearchResponses.reduce(
     (dict: Record<string, number>, { keyword, modifier }) => {
@@ -111,14 +132,14 @@ async function run() {
   const inputsForSearch = await getInputsForSearch();
   const closures = await getClosures();
 
-  const emptyResponsesDict = await analyseSearchResponses(
+  const emptyResponses = await analyseSearchResponses(
     inputsForSearch,
     closures,
   );
 
   console.log({
-    totalCount: Object.entries(emptyResponsesDict).length,
-    data: emptyResponsesDict,
+    totalCount: Object.entries(emptyResponses).length,
+    data: emptyResponses,
   });
 }
 

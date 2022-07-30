@@ -1,0 +1,21 @@
+// irrelevant
+Yes::next
+Hiring::next
+Next::next
+Try::next
+Yesterday::next
+Monday::next
+Today::tomorrow
+
+// accidental/missing starting slash
+/ fav::next
+Help::next
+List::next
+
+// does not exist
+Woodlands::next
+Bugis::next
+Punggol::next
+
+// typos
+Lorong ah soo market::next
