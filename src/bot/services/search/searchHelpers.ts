@@ -1,5 +1,6 @@
 const ACRONYMS: Record<string, string> = {
   amk: 'ang mo kio',
+  blk: 'block',
   bt: 'bukit',
   clem: 'clementi',
   ecp: 'east coast park',
@@ -9,6 +10,7 @@ const ACRONYMS: Record<string, string> = {
   las: 'lorong ah soo',
   lor: 'lorong',
   mkt: 'market',
+  markets: 'market',
   nth: 'north',
   oth: 'our tampines hub',
   rd: 'road',
@@ -27,7 +29,7 @@ export function expandAcronyms(word: string) {
 // These are general hawker centre keywords that do not help in narrowing the search so they can be omitted
 // prettier-ignore
 const IGNORE_GENERAL_KEYWORDS = [
-  'food','fare','hawker','center','centre','opening','hours','and'
+  'food','fare','hawker','center','centre','complex','opening','hours','block','road','jalan','and','the'
 ]
 
 export function isRelevantKeyword(word: string) {
