@@ -32,11 +32,11 @@ export const handler: APIGatewayProxyHandler = async (
   const users = getAllUsersResponse.value;
   const hawkerCentreIdToCountMap = users.reduce(
     (map: Record<string, number>, user) => {
-      user.favourites.forEach(({ hawkerCentreId }) => {
-        if (hawkerCentreId in map) {
-          map[hawkerCentreId] = map[hawkerCentreId] + 1;
+      user.favourites.forEach(({ hawkerCentreName }) => {
+        if (hawkerCentreName in map) {
+          map[hawkerCentreName] = map[hawkerCentreName] + 1;
         } else {
-          map[hawkerCentreId] = 1;
+          map[hawkerCentreName] = 1;
         }
       });
 

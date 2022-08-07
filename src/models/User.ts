@@ -20,7 +20,7 @@ const userCache = new NodeCache({
 });
 
 export type UserFavourite = {
-  hawkerCentreId: number;
+  hawkerCentreName: string;
   dateAdded: string;
 };
 

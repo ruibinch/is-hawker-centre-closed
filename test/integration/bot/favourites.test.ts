@@ -31,7 +31,7 @@ describe('[bot] [integration] Favourites module', () => {
 
   // dynamodb mocks
   let getAllHawkerCentresSpy: jest.SpyInstance;
-  let getHawkerCentreByIdSpy: jest.SpyInstance;
+  let getHawkerCentreByNameSpy: jest.SpyInstance;
   let getUserByIdSpy: jest.SpyInstance;
   let updateUserFavouritesSpy: jest.SpyInstance;
   let updateUserInFavouritesModeSpy: jest.SpyInstance;
@@ -59,8 +59,8 @@ describe('[bot] [integration] Favourites module', () => {
     getAllHawkerCentresSpy = jest
       .spyOn(HawkerCentreFile, 'getAllHawkerCentres')
       .mockImplementation(() => Promise.resolve(Result.Ok(mockHawkerCentres)));
-    getHawkerCentreByIdSpy = jest
-      .spyOn(HawkerCentreFile, 'getHawkerCentreById')
+    getHawkerCentreByNameSpy = jest
+      .spyOn(HawkerCentreFile, 'getHawkerCentreByName')
       .mockImplementation(() =>
         Promise.resolve(Result.Ok(mockHawkerCentres[0])),
       );
@@ -86,7 +86,7 @@ describe('[bot] [integration] Favourites module', () => {
     sendMessageWithChoicesSpy.mockRestore();
 
     getAllHawkerCentresSpy.mockRestore();
-    getHawkerCentreByIdSpy.mockRestore();
+    getHawkerCentreByNameSpy.mockRestore();
     updateUserFavouritesSpy.mockRestore();
     updateUserInFavouritesModeSpy.mockRestore();
     updateUserNotificationsSpy.mockRestore();
@@ -262,7 +262,7 @@ describe('[bot] [integration] Favourites module', () => {
           1,
           expect.arrayContaining([
             {
-              hawkerCentreId: 12,
+              hawkerCentreName: 'Slateport Market',
               dateAdded: '2021-01-05T11:30:25Z',
             },
           ]),
@@ -327,7 +327,7 @@ describe('[bot] [integration] Favourites module', () => {
           1,
           expect.not.arrayContaining([
             {
-              hawkerCentreId: 1,
+              hawkerCentreName: 'Littleroot Town',
               dateAdded: '2021-01-15T17:30:52+08:00',
             },
           ]),
@@ -373,9 +373,9 @@ describe('[bot] [integration] Favourites module', () => {
         expect(updateUserFavouritesSpy).not.toHaveBeenCalled();
       });
 
-      it('[error] returns an unexpected error message when attempting to delete a saved hawker centre, but getHawkerCentreById returns an error', async () => {
-        getHawkerCentreByIdSpy = jest
-          .spyOn(HawkerCentreFile, 'getHawkerCentreById')
+      it('[error] returns an unexpected error message when attempting to delete a saved hawker centre, but getHawkerCentreByName returns an error', async () => {
+        getHawkerCentreByNameSpy = jest
+          .spyOn(HawkerCentreFile, 'getHawkerCentreByName')
           .mockImplementation(() =>
             Promise.resolve(Result.Err(new AWSError())),
           );
@@ -621,7 +621,7 @@ describe('[bot] [integration] Favourites module', () => {
           languageCode: 'en',
           favourites: [
             {
-              hawkerCentreId: 12,
+              hawkerCentreName: 'Slateport Market',
               dateAdded: '2021-01-05T11:30:25Z',
             },
           ],
@@ -797,7 +797,7 @@ describe('[bot] [integration] Favourites module', () => {
           1,
           expect.arrayContaining([
             {
-              hawkerCentreId: 38,
+              hawkerCentreName: 'Sootopolis Gym',
               dateAdded: '2021-01-05T11:30:25Z',
             },
           ]),
