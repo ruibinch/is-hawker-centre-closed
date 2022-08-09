@@ -4,12 +4,14 @@ import dotenv from 'dotenv';
 
 import { makeLambdaResponse } from '../../ext/aws/lambda';
 import { run as executeCheckHealthiness } from '../../scripts/checkHealthiness';
+import { getStage } from '../../utils/stage';
 
 dotenv.config();
 
 Sentry.AWSLambda.init({
   dsn: process.env.SENTRY_DSN,
   tracesSampleRate: 1.0, // sends 100% of errors to Sentry
+  environment: getStage(),
 });
 
 export const handler = Sentry.AWSLambda.wrapHandler(

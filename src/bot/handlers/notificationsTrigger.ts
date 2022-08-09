@@ -14,6 +14,7 @@ dotenv.config();
 Sentry.AWSLambda.init({
   dsn: process.env.SENTRY_DSN,
   tracesSampleRate: 1.0, // sends 100% of errors to Sentry
+  environment: getStage(),
 });
 
 export const handler = Sentry.AWSLambda.wrapHandler(

@@ -12,6 +12,7 @@ import {
   sendMessageWithChoices,
   TelegramUpdate,
 } from '../../telegram';
+import { getStage } from '../../utils/stage';
 import { validateToken } from '../auth';
 import { isCommand, isCommandInModule, makeCommandMessage } from '../commands';
 import { validateInputMessage } from '../inputHelpers';
@@ -35,6 +36,7 @@ Sentry.AWSLambda.init({
   // TODO: consider a config/env folder instead of solely relying on .env file
   dsn: process.env.NODE_ENV === 'test' ? '' : process.env.SENTRY_DSN,
   tracesSampleRate: 1.0, // sends 100% of errors to Sentry
+  environment: getStage(),
 });
 
 export const handler = Sentry.AWSLambda.wrapHandler(
