@@ -5,7 +5,7 @@ import { Result, type ResultType } from '../../../lib/Result';
 import { getAllClosures } from '../../../models/Closure';
 import {
   getAllHawkerCentres,
-  getHawkerCentreById,
+  getHawkerCentreByName,
   HawkerCentre,
 } from '../../../models/HawkerCentre';
 import {
@@ -75,12 +75,12 @@ export async function addHCToFavourites(props: {
   telegramUser: TelegramUser;
 }): Promise<ResultType<AddHCResponse, Error>> {
   const {
-    hawkerCentre: { hawkerCentreId },
+    hawkerCentre: { name: hawkerCentreName },
     telegramUser: { id: userId, username },
   } = props;
 
   const addFavHC: UserFavourite = {
-    hawkerCentreId,
+    hawkerCentreName,
     dateAdded: formatISO(currentDate()),
   };
 
@@ -103,18 +103,18 @@ export async function addHCToFavourites(props: {
   }
 
   const user = getUserResponse.value;
-  const userFavourites = user.favourites.map((fav) => fav.hawkerCentreId);
+  const userFavourites = user.favourites.map((fav) => fav.hawkerCentreName);
 
   // Check if hawker centre already exists in the favourites list
-  if (userFavourites.includes(addFavHC.hawkerCentreId)) {
+  if (userFavourites.includes(addFavHC.hawkerCentreName)) {
     return Result.Ok({
       isDuplicate: true,
     });
   }
 
   // Save list in ascending order of hawkerCentreId
-  const favouritesUpdated = [...user.favourites, addFavHC].sort(
-    (a, b) => a.hawkerCentreId - b.hawkerCentreId,
+  const favouritesUpdated = [...user.favourites, addFavHC].sort((a, b) =>
+    a.hawkerCentreName.localeCompare(b.hawkerCentreName),
   );
 
   const updateUserResponse = await updateUserFavourites(
@@ -157,11 +157,11 @@ export async function deleteHCFromFavourites(props: {
   }
 
   // get details of HC to be deleted
-  const delHawkerCentreId = user.favourites[deleteIdx].hawkerCentreId;
-  const getHCByIdResponse = await getHawkerCentreById(delHawkerCentreId);
-  if (getHCByIdResponse.isErr) return getHCByIdResponse;
+  const delHawkerCentreName = user.favourites[deleteIdx].hawkerCentreName;
+  const getHCByNameResponse = await getHawkerCentreByName(delHawkerCentreName);
+  if (getHCByNameResponse.isErr) return getHCByNameResponse;
 
-  const delHawkerCentre = getHCByIdResponse.value;
+  const delHawkerCentre = getHCByNameResponse.value;
 
   const favouritesUpdated = [...user.favourites];
   favouritesUpdated.splice(deleteIdx, 1);
@@ -194,7 +194,7 @@ export async function getUserFavouritesWithClosures(
   }
 
   const user = getUserResponse.value;
-  const userFavHCIds = user.favourites.map((fav) => fav.hawkerCentreId);
+  const userFavHCNames = user.favourites.map((fav) => fav.hawkerCentreName);
 
   const getAllClosuresResponse = await getAllClosures();
   if (getAllClosuresResponse.isErr) return getAllClosuresResponse;
@@ -204,9 +204,9 @@ export async function getUserFavouritesWithClosures(
   if (getAllHCResponse.isErr) return getAllHCResponse;
   const hawkerCentres = getAllHCResponse.value;
 
-  const userFavsWithClosures = userFavHCIds.map((favHCId) => {
+  const userFavsWithClosures = userFavHCNames.map((favHCName) => {
     const closuresForHawkerCentre = closuresAll.filter(
-      (closure) => closure.hawkerCentreId === favHCId,
+      (closure) => closure.name === favHCName,
     );
 
     const nextOccurringClosure = getNextOccurringClosure(
@@ -215,13 +215,11 @@ export async function getUserFavouritesWithClosures(
 
     // if there is no next occurring closure, fallback to returning the basic info
     if (!nextOccurringClosure) {
-      const hawkerCentre = hawkerCentres.find(
-        (hc) => hc.hawkerCentreId === favHCId,
-      );
+      const hawkerCentre = hawkerCentres.find((hc) => hc.name === favHCName);
       /* istanbul ignore next */
       if (!hawkerCentre) {
         throw new Error(
-          `Missing hawker centre entry for hawkerCentreId ${favHCId}`,
+          `Missing hawker centre entry for hawker centre "${favHCName}"`,
         );
       }
       return hawkerCentre;

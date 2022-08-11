@@ -249,15 +249,15 @@ export const mockUser: User = {
   languageCode: 'en',
   favourites: [
     {
-      hawkerCentreId: 1,
+      hawkerCentreName: 'Littleroot Town',
       dateAdded: '2021-01-15T17:30:52+08:00',
     },
     {
-      hawkerCentreId: 6,
+      hawkerCentreName: 'Verdanturf Town',
       dateAdded: '2021-01-10T08:22:20+08:00',
     },
     {
-      hawkerCentreId: 37,
+      hawkerCentreName: 'Mossdeep Gym',
       dateAdded: '2021-01-01T15:00:00+08:00',
     },
   ],
@@ -272,7 +272,7 @@ export const mockUserWithOneFav: User = {
   languageCode: 'en',
   favourites: [
     {
-      hawkerCentreId: 6,
+      hawkerCentreName: 'Verdanturf Town',
       dateAdded: '2021-01-15T17:30:52+08:00',
     },
   ],
@@ -313,11 +313,11 @@ export const mockUsers: User[] = [
     languageCode: 'zh',
     favourites: [
       {
-        hawkerCentreId: 5,
+        hawkerCentreName: 'Melville City',
         dateAdded: '2021-01-08T09:05:12+08:00',
       },
       {
-        hawkerCentreId: 6,
+        hawkerCentreName: 'Verdanturf Town',
         dateAdded: '2021-01-08T09:05:45+08:00',
       },
     ],

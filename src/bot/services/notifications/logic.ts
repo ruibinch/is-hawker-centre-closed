@@ -32,9 +32,9 @@ export async function getUsersWithFavsClosedToday(): Promise<
 
   const usersWithFavsClosedToday = usersWithNotifications.reduce(
     (_usersWithFavsClosedToday: UserWithClosure[], user) => {
-      const userFavHCIds = user.favourites.map((fav) => fav.hawkerCentreId);
+      const userFavHCNames = user.favourites.map((fav) => fav.hawkerCentreName);
       const applicableClosures = closuresCurrent.filter((closure) =>
-        userFavHCIds.includes(closure.hawkerCentreId),
+        userFavHCNames.includes(closure.name),
       );
 
       if (applicableClosures.length > 0) {

@@ -119,3 +119,24 @@ export async function getHawkerCentreById(
     return Result.Err(wrapUnknownError(err));
   }
 }
+
+// TODO: update when primary key is changed for HawkerCentre table
+export async function getHawkerCentreByName(
+  hawkerCentreName: string,
+): Promise<ResultType<HawkerCentre, Error>> {
+  const getAllHawkerCentresResult = await getAllHawkerCentres();
+  if (getAllHawkerCentresResult.isErr) {
+    return Result.Err(getAllHawkerCentresResult.value);
+  }
+
+  const hawkerCentres = getAllHawkerCentresResult.value;
+  const hawkerCentreMatch = hawkerCentres.find(
+    (hawkerCentre) => hawkerCentre.name === hawkerCentreName,
+  );
+
+  return hawkerCentreMatch
+    ? Result.Ok(hawkerCentreMatch)
+    : Result.Err(
+        new Error(`No hawker centre match found with name ${hawkerCentreName}`),
+      );
+}
