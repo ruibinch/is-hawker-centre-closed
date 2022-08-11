@@ -2,6 +2,17 @@
 
 ## [Unreleased]
 
+## [0.16.0] - 2022-08-11
+
+### Changed
+
+- Updated to new schema of inputs table
+- Saved `hawkerCentreName` instead of `hawkerCentreId` in user favourites
+
+### Security
+
+- Added API gateway rule to only allow access to endpoints from IP address in Telegram's CIDR range
+
 ## [0.15.0] - 2022-07-17
 
 ### Changed
