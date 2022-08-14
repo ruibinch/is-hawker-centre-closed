@@ -122,6 +122,31 @@ export async function getInputsFromUserBetweenTimestamps({
   }
 }
 
+export async function getInputsFromTimestamp(
+  fromTimestamp: number,
+): Promise<ResultType<Input[], Error>> {
+  try {
+    const queryOutput = await dynamoDb
+      // API ref: https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Query.html
+      .query({
+        TableName: Input.getTableName(),
+        ExpressionAttributeValues: {
+          ':fromTs': fromTimestamp,
+        },
+        KeyConditionExpression: 'createdAtTimestamp >= :fromTs',
+      })
+      .promise();
+
+    if (queryOutput.$response.error || !queryOutput.Items) {
+      return Result.Err(new AWSError());
+    }
+
+    return Result.Ok(queryOutput.Items as Input[]);
+  } catch (err) {
+    return Result.Err(wrapUnknownError(err));
+  }
+}
+
 export async function addInputToDB(
   input: Input,
 ): Promise<ResultType<void, Error>> {
