@@ -7,10 +7,11 @@ import {
   TelegramEditMessageTextParams,
   TelegramResponseBase,
   TelegramSendMessageParams,
-  TELEGRAM_MESSAGE_MAX_LENGTH,
 } from './types';
 
 const { TELEGRAM_BOT_TOKEN } = process.env;
+
+const TELEGRAM_MESSAGE_MAX_LENGTH = 4096;
 
 export async function sendMessage(props: {
   chatId: number;
