@@ -5,6 +5,8 @@ import type { ExtractSearchModifierResult, SearchModifier } from './types';
 const SEARCH_MODIFIERS = [
   'tdy',
   'today',
+  'week',
+  'this week',
   'next week',
   'month',
   'next month',
@@ -48,12 +50,15 @@ function parseSearchModifier(s: string): SearchModifier | undefined {
       return 'nextMonth';
     case 'next week':
       return 'nextWeek';
+    case 'this week':
+      return 'week';
     case 'tmr':
       return 'tomorrow';
     case 'tdy':
       return 'today';
     case 'today':
     case 'tomorrow':
+    case 'week':
     case 'month':
     case 'next':
       return str;
