@@ -1,4 +1,5 @@
 import fs from 'fs';
+import path from 'path';
 
 import { isCommandInModule } from '../bot/commands';
 import { isCallbackQuery } from '../bot/services/helpers';
@@ -33,7 +34,10 @@ async function getClosures() {
     }
 
     const closuresFile = fs.readFileSync(
-      `./data/closures-${closuresFileVersion}.json`,
+      path.resolve(
+        __dirname,
+        `../../data/closures-${closuresFileVersion}.json`,
+      ),
       { encoding: 'utf8' },
     );
     closures = JSON.parse(closuresFile);
@@ -52,9 +56,10 @@ async function getInputsForSearch() {
     }
     inputs = getAllInputsResult.value;
   } else {
-    const inputsFile = fs.readFileSync(`./data/inputs-prod.json`, {
-      encoding: 'utf8',
-    });
+    const inputsFile = fs.readFileSync(
+      path.resolve(__dirname, `../../data/inputs-prod.json`),
+      { encoding: 'utf8' },
+    );
     inputs = JSON.parse(inputsFile) as Input[];
   }
 
@@ -71,7 +76,7 @@ async function getInputsForSearch() {
 
 function getIgnoreTerms() {
   const ignoreFile = fs.readFileSync(
-    `./src/scripts/analyseSearchResponses.ignore`,
+    path.resolve(__dirname, `analyseSearchResponses.ignore`),
     { encoding: 'utf8' },
   );
   return ignoreFile
