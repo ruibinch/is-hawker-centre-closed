@@ -1,8 +1,6 @@
 // Ref: https://core.telegram.org/bots/api
 // NOTE: not a comprehensive type definition, the less-used fields are ignored
 
-export const TELEGRAM_MESSAGE_MAX_LENGTH = 4096;
-
 export type TelegramResponseBase = {
   ok: boolean;
   error_code?: number;
