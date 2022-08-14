@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.17.0] - 2022-08-14
+
+### Added
+
+- Search by "week"/"this week" timeframe
+
 ## [0.16.0] - 2022-08-11
 
 ### Changed

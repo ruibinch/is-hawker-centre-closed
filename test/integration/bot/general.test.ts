@@ -72,7 +72,7 @@ describe('[bot] [integration] General module', () => {
         '\u{1F50D} *Search*\n\n' +
         'By default, the bot returns the *next closure dates* of the hawker centres matching your search query\\.\n\n' +
         'You can modify the search behaviour by adding one of these supported *timeframes* at the end:\n' +
-        '• `tdy` / `today`\n• `tmr` / `tomorrow`\n• `next week`\n• `month`\n• `next month`\n• `next` \\(_default_\\)\n\n' +
+        '• `tdy` / `today`\n• `tmr` / `tomorrow`\n• `week` / `this week`\n• `next week`\n• `month`\n• `next month`\n• `next` \\(_default_\\)\n\n' +
         'You can also search *by timeframe* alone\\.\n\n' +
         'Examples:\n' +
         '• "`bedok next week`" will display the hawker centres relating to the keyword __bedok__ that are closed __next week__\n' +
@@ -107,12 +107,14 @@ describe('[bot] [integration] General module', () => {
     it('["/updates"] returns the latest updates', async () => {
       const inputMessage = '/updates';
       const updateEntries = [
+        '*\\[0\\.17\\.0\\] 2022\\-08\\-14*\n' +
+          '\u{00B7} Added search by "week"/"this week" timeframe',
+        '*\\[0\\.16\\.0\\] 2022\\-08\\-11*\n' +
+          '\u{00B7} Updated data schema and improved bot security',
         '*\\[0\\.15\\.0\\] 2022\\-07\\-17*\n' +
           '\u{00B7} Improved search filter logic',
         '*\\[0\\.14\\.0\\] 2022\\-07\\-04*\n' +
           '\u{00B7} Implemented pagination for search result lists exceeding 10 entries',
-        '*\\[0\\.13\\.0\\] 2021\\-09\\-18*\n' +
-          '\u{00B7} Added search by "next week" timeframe',
       ];
       const expectedMessage = updateEntries.join('\n\n');
 

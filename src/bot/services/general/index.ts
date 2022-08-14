@@ -25,6 +25,16 @@ type ChangelogEntry = {
 function getLatestUpdates(): ChangelogEntry[] {
   return [
     {
+      version: '\\[0\\.17\\.0\\]',
+      date: '2022\\-08\\-14',
+      details: ['Added search by "week"/"this week" timeframe'],
+    },
+    {
+      version: '\\[0\\.16\\.0\\]',
+      date: '2022\\-08\\-11',
+      details: ['Updated data schema and improved bot security'],
+    },
+    {
       version: '\\[0\\.15\\.0\\]',
       date: '2022\\-07\\-17',
       details: ['Improved search filter logic'],
@@ -35,11 +45,6 @@ function getLatestUpdates(): ChangelogEntry[] {
       details: [
         'Implemented pagination for search result lists exceeding 10 entries',
       ],
-    },
-    {
-      version: '\\[0\\.13\\.0\\]',
-      date: '2021\\-09\\-18',
-      details: ['Added search by "next week" timeframe'],
     },
   ];
 }
