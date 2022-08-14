@@ -55,14 +55,34 @@ export function isRecent(dateString: string): boolean {
 }
 
 /**
- * Returns the start and end date range of next week.
+ * Returns the start and end date range of this week.
  * Each week is defined to start on Monday 00:00:00 and end on Sunday 23:59:59.
  */
-export function makeNextWeekInterval(date: Date): {
+export function makeThisWeekInterval(today: Date): {
   start: Date;
   end: Date;
 } {
-  const oneWeekFromToday = addWeeks(date, 1);
+  const thisWeekStart = eachWeekOfInterval(
+    { start: today, end: today },
+    { weekStartsOn: 1 },
+  )[0];
+  const thisWeekEnd = endOfDay(addDays(thisWeekStart, 6));
+
+  return {
+    start: thisWeekStart,
+    end: thisWeekEnd,
+  };
+}
+
+/**
+ * Returns the start and end date range of next week.
+ * Each week is defined to start on Monday 00:00:00 and end on Sunday 23:59:59.
+ */
+export function makeNextWeekInterval(today: Date): {
+  start: Date;
+  end: Date;
+} {
+  const oneWeekFromToday = addWeeks(today, 1);
   const nextWeekStart = eachWeekOfInterval(
     { start: oneWeekFromToday, end: oneWeekFromToday },
     { weekStartsOn: 1 },

@@ -232,6 +232,50 @@ describe('[bot] [integration] Search module', () => {
       assertBotResponse(sendMessageSpy, { text: expectedMessage });
     });
 
+    it('["Week" / "This week"] returns all closures occurring in this week, when there are multiple closures', async () => {
+      dateSpy = jest
+        .spyOn(Date, 'now')
+        // 2021-02-07 is a Sunday; this week should have a date range [2021-02-01, 2021-02-07]
+        .mockImplementation(() => parseISO('2021-02-07T00:00:00').valueOf());
+
+      const inputMessage1 = 'Week';
+      const inputMessage2 = 'This week';
+      const expectedMessage =
+        'There are *3* hawker centres that are closed this week \\(01\\-Feb to 07\\-Feb\\):\n\n' +
+        '1\\. *Devon Corporation*\n_01\\-Nov to 30\\-Apr; other works_\n\n' +
+        '2\\. *Melville City*\n_01\\-Feb to 28\\-Feb; other works_\n\n' +
+        '3\\. *Rustboro City*\n_02\\-Feb to 05\\-Feb_';
+
+      await callBot(inputMessage1);
+      assertInputSaved(addInputToDBSpy, inputMessage1);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
+
+      await callBot(inputMessage2);
+      assertInputSaved(addInputToDBSpy, inputMessage2);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
+    });
+
+    it('["Week" / "This week"] returns all closures occurring in this week, when there is a single closure', async () => {
+      dateSpy = jest
+        .spyOn(Date, 'now')
+        // 2020-12-27 is a Sunday; the next week should have a date range [2020-12-21, 2020-12-27]
+        .mockImplementation(() => parseISO('2020-12-27T00:00:00').valueOf());
+
+      const inputMessage1 = 'Week';
+      const inputMessage2 = 'This week';
+      const expectedMessage =
+        'There is *1* hawker centre that is closed this week \\(21\\-Dec to 27\\-Dec\\):\n\n' +
+        '1\\. *Devon Corporation*\n_01\\-Nov to 30\\-Apr; other works_';
+
+      await callBot(inputMessage1);
+      assertInputSaved(addInputToDBSpy, inputMessage1);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
+
+      await callBot(inputMessage2);
+      assertInputSaved(addInputToDBSpy, inputMessage2);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
+    });
+
     it('["Next week"] returns all closures occurring in the next week, when there are multiple closures', async () => {
       dateSpy = jest
         .spyOn(Date, 'now')
@@ -253,7 +297,7 @@ describe('[bot] [integration] Search module', () => {
     it('["Next week"] returns all closures occurring in the next week, when there is a single closure', async () => {
       dateSpy = jest
         .spyOn(Date, 'now')
-        // 2021-12-20` is a Sunday; the next week should have a date range [2020-12-21, 2020-12-27]
+        // 2020-12-20` is a Sunday; the next week should have a date range [2020-12-21, 2020-12-27]
         .mockImplementation(() => parseISO('2020-12-20T00:00:00').valueOf());
 
       const inputMessage = 'Next week';

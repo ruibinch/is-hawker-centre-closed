@@ -3,7 +3,11 @@ import {
   TelegramInlineKeyboardButton,
   TelegramSendMessageParams,
 } from '../../../telegram';
-import { currentDate, makeNextWeekInterval } from '../../../utils/date';
+import {
+  currentDate,
+  makeNextWeekInterval,
+  makeThisWeekInterval,
+} from '../../../utils/date';
 import { t } from '../../lang';
 import { formatDateDisplay } from '../helpers';
 import { makeClosureListItem } from '../message';
@@ -157,6 +161,14 @@ function makeTimePeriodSnippet(modifier: SearchModifier) {
       return t('common.time.today');
     case 'tomorrow':
       return t('common.time.tomorrow');
+    case 'week': {
+      const thisWeekInterval = makeThisWeekInterval(currentDate());
+
+      return `${t('common.time.this-week')} \\(${t('common.time.time-period', {
+        startDate: formatDateDisplay(thisWeekInterval.start),
+        endDate: formatDateDisplay(thisWeekInterval.end),
+      })}\\)`;
+    }
     case 'nextWeek': {
       const nextWeekInterval = makeNextWeekInterval(currentDate());
 
@@ -194,6 +206,7 @@ function isSearchModifierInFuture(modifier: SearchModifier) {
     case 'nextMonth':
       return true;
     case 'today':
+    case 'week':
     case 'month':
     default:
       return false;
