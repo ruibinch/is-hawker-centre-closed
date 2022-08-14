@@ -21,13 +21,17 @@ import type { SearchModifier, SearchObject, SearchResponse } from './types';
 
 export async function processSearch(
   term: string,
+  closuresArg?: Closure[],
 ): Promise<ResultType<SearchResponse, Error>> {
   const searchParams = parseSearchTerm(term);
   const { keyword, modifier } = searchParams;
 
-  const getAllClosuresResponse = await getAllClosures();
-  if (getAllClosuresResponse.isErr) return getAllClosuresResponse;
-  const closuresAll = getAllClosuresResponse.value;
+  let closuresAll = closuresArg;
+  if (!closuresAll) {
+    const getAllClosuresResponse = await getAllClosures();
+    if (getAllClosuresResponse.isErr) return getAllClosuresResponse;
+    closuresAll = getAllClosuresResponse.value;
+  }
 
   const closuresFilteredByKeyword = filterByKeyword(closuresAll, keyword);
 
