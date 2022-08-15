@@ -181,6 +181,14 @@ functions:
       - schedule: cron(28 20 * * ? *)
     maximumEventAge: 60
     maximumRetryAttempts: 0
+  analyseSearchResponsesTrigger:
+    handler: ${self:custom.botHandlers}/analyseSearchResponsesTrigger.handler
+    timeout: 30
+    events:
+      # runs every Sun at 20:30 UTC, or 4:30am SGT
+      - schedule: cron(30 20 ? * sun *)
+    maximumEventAge: 60
+    maximumRetryAttempts: 0
   # server
   getInputs:
     handler: ${self:custom.serverHandlers}/getInputs.handler

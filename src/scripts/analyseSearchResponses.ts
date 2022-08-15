@@ -83,13 +83,18 @@ async function getInputsForSearch({
 }
 
 function getIgnoreTerms() {
-  const ignoreFile = fs.readFileSync(
-    path.resolve(__dirname, `analyseSearchResponses.ignore`),
-    { encoding: 'utf8' },
-  );
-  return ignoreFile
-    .split('\n')
-    .filter((term) => term !== '' && !term.startsWith('//'));
+  try {
+    const ignoreFile = fs.readFileSync(
+      path.resolve(__dirname, `analyseSearchResponses.ignore`),
+      { encoding: 'utf8' },
+    );
+    return ignoreFile
+      .split('\n')
+      .filter((term) => term !== '' && !term.startsWith('//'));
+  } catch (err) {
+    console.error('[analyseSearchResponses > getIgnoreTerms]', err);
+    return [];
+  }
 }
 
 async function analyseSearchResponses({
