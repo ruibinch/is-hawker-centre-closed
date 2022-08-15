@@ -6,20 +6,16 @@ import { isCallbackQuery } from '../bot/services/helpers';
 import { processSearch } from '../bot/services/search';
 import { initAWSConfig } from '../ext/aws/config';
 import { Closure, getAllClosures } from '../models/Closure';
-import { getAllInputs, Input } from '../models/Input';
+import { getInputsFromTimestamp, Input } from '../models/Input';
 
+const [minEmptyResponsesFromArgs] = process.argv.slice(2);
 const closuresFileVersion = process.env['VERSION'] ?? undefined;
-const useDDB = process.env['USE_DDB'] ?? false;
-
-if (useDDB) {
-  initAWSConfig();
-}
 
 function notNil<T>(value: T | null | undefined): value is T {
   return !(value === null || value === undefined);
 }
 
-async function getClosures() {
+async function getClosures({ useDDB }: { useDDB: boolean }) {
   let closures: Closure[];
 
   if (useDDB) {
@@ -46,18 +42,30 @@ async function getClosures() {
   return closures;
 }
 
-async function getInputsForSearch() {
+async function getInputsForSearch({
+  useDDB,
+  startTimestamp,
+}: {
+  useDDB: boolean;
+  startTimestamp: number | undefined;
+}) {
   let inputs: Input[];
 
   if (useDDB) {
-    const getAllInputsResult = await getAllInputs();
-    if (getAllInputsResult.isErr) {
-      throw getAllInputsResult.value;
+    if (startTimestamp === undefined) {
+      throw new Error('Missing startTimestamp value');
     }
-    inputs = getAllInputsResult.value;
+
+    const getInputsResult = await getInputsFromTimestamp(
+      Number(startTimestamp),
+    );
+    if (getInputsResult.isErr) {
+      throw getInputsResult.value;
+    }
+    inputs = getInputsResult.value;
   } else {
     const inputsFile = fs.readFileSync(
-      path.resolve(__dirname, `../../data/inputs-prod.json`),
+      path.resolve(__dirname, '../../data/inputs-prod.json'),
       { encoding: 'utf8' },
     );
     inputs = JSON.parse(inputsFile) as Input[];
@@ -84,10 +92,15 @@ function getIgnoreTerms() {
     .filter((term) => term !== '' && !term.startsWith('//'));
 }
 
-async function analyseSearchResponses(
-  inputsForSearch: Input[],
-  closures: Closure[],
-) {
+async function analyseSearchResponses({
+  inputsForSearch,
+  closures,
+  minEmptyResponses,
+}: {
+  inputsForSearch: Input[];
+  closures: Closure[];
+  minEmptyResponses: number;
+}) {
   const searchResponses = await Promise.all(
     inputsForSearch.map(async (input) => {
       const searchResult = await processSearch(input.text, closures);
@@ -122,8 +135,7 @@ async function analyseSearchResponses(
   const emptySearchResponsesDictSorted = Object.entries(
     emptySearchResponsesDict,
   )
-    // only consider empty responses with multiple entries
-    .filter(([, value]) => value > 1)
+    .filter(([, value]) => value >= minEmptyResponses)
     .sort((a, b) => b[1] - a[1])
     .reduce((dict: Record<string, number>, [key, count]) => {
       dict[key] = count;
@@ -133,23 +145,42 @@ async function analyseSearchResponses(
   return emptySearchResponsesDictSorted;
 }
 
-async function run() {
-  const inputsForSearch = await getInputsForSearch();
-  const closures = await getClosures();
+export async function run(props: {
+  minEmptyResponses: number;
+  useDDB: boolean;
+  startTimestamp: number | undefined;
+}) {
+  const { minEmptyResponses, useDDB, startTimestamp } = props;
+  if (useDDB) {
+    initAWSConfig();
+  }
 
-  const emptyResponses = await analyseSearchResponses(
+  const inputsForSearch = await getInputsForSearch({ useDDB, startTimestamp });
+  const closures = await getClosures({ useDDB });
+
+  const emptyResponses = await analyseSearchResponses({
     inputsForSearch,
     closures,
-  );
+    minEmptyResponses,
+  });
 
   console.log({
-    totalCount: Object.entries(emptyResponses).length,
+    count: Object.entries(emptyResponses).length,
     data: emptyResponses,
   });
+  return emptyResponses;
 }
 
 if (require.main === module) {
-  run().then(() => {
+  run({
+    minEmptyResponses: minEmptyResponsesFromArgs
+      ? Number(minEmptyResponsesFromArgs)
+      : 1,
+    useDDB: Boolean(process.env['USE_DDB']),
+    startTimestamp: process.env['START_TIMESTAMP']
+      ? Number(process.env['START_TIMESTAMP'])
+      : undefined,
+  }).then(() => {
     process.exit(0);
   });
 }
