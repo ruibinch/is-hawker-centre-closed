@@ -12,6 +12,7 @@ import {
 
 import { Result, type ResultType } from '../../../lib/Result';
 import { type Closure, getAllClosures } from '../../../models/Closure';
+import { HawkerCentre } from '../../../models/HawkerCentre';
 import { notEmpty } from '../../../utils';
 import {
   currentDate,
@@ -83,12 +84,15 @@ function parseSearchTerm(term: string): SearchObject {
 }
 
 /**
- * Filters the list of closures by keyword matching the hawker centre name/secondary name/keywords.
+ * Filters the list of closures/hawker centres by keyword matching the hawker centre name/secondary name/keywords.
  * Searches across the individual words in the input keyword.
  */
-export function filterByKeyword(closures: Closure[], keyword: string) {
+export function filterByKeyword<T extends Closure | HawkerCentre>(
+  items: T[],
+  keyword: string,
+): T[] {
   if (keyword === '') {
-    return closures;
+    return items;
   }
 
   const searchKeywords = keyword
@@ -96,15 +100,15 @@ export function filterByKeyword(closures: Closure[], keyword: string) {
     .map(expandAcronyms)
     .filter(isRelevantKeyword);
 
-  return closures.filter((closure) =>
+  return items.filter((item) =>
     searchKeywords.every((searchKeyword) => {
       const filterRegex = new RegExp(`\\b${searchKeyword.toLowerCase()}`);
       return (
-        filterRegex.test(closure.name.toLowerCase()) ||
-        (closure.nameSecondary &&
-          filterRegex.test(closure.nameSecondary.toLowerCase())) ||
-        (closure.keywords &&
-          closure.keywords.some((hcKeyword) => filterRegex.test(hcKeyword)))
+        filterRegex.test(item.name.toLowerCase()) ||
+        (item.nameSecondary &&
+          filterRegex.test(item.nameSecondary.toLowerCase())) ||
+        (item.keywords &&
+          item.keywords.some((hcKeyword) => filterRegex.test(hcKeyword)))
       );
     }),
   );
