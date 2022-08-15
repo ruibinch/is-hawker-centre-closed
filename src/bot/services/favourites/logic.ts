@@ -20,6 +20,7 @@ import {
 import type { TelegramUser } from '../../../telegram';
 import { currentDate } from '../../../utils/date';
 import { getNextOccurringClosure } from '../helpers';
+import { filterByKeyword } from '../search';
 import {
   MAX_CHOICES,
   NOTIFICATION_OFF_KEYWORDS,
@@ -352,24 +353,4 @@ export async function manageNotifications(props: {
     operation: 'write',
     newValue: newNotificationsValue,
   };
-}
-
-/**
- * Filters the list of hawker centres by keyword matching the hawker centre name or secondary name.
- */
-function filterByKeyword(
-  hawkerCentres: HawkerCentre[],
-  keyword: string,
-): HawkerCentre[] {
-  const searchKeywords = keyword.split(' ');
-
-  return hawkerCentres.filter((hc) =>
-    searchKeywords.every((searchKeyword) => {
-      const filterRegex = new RegExp(`\\b${searchKeyword.toLowerCase()}`);
-      return (
-        filterRegex.test(hc.name.toLowerCase()) ||
-        (hc.nameSecondary && filterRegex.test(hc.nameSecondary.toLowerCase()))
-      );
-    }),
-  );
 }
