@@ -53,7 +53,7 @@ describe('[unit] bot > search', () => {
       expect(runSearch('mei ling')).toContainEqual(
         expect.objectContaining({
           name: 'Mei Chin Road Blk 159',
-          keywords: ['mei ling'],
+          keywords: ['mei ling', 'meiling', 'stirling'],
         }),
       );
     });
