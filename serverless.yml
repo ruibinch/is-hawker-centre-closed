@@ -52,11 +52,13 @@ provider:
         Action: execute-api:Invoke
         Resource:
           - execute-api:/*
+      # Only allow access to /bot endpoint from Telegram IP ranges
+      # ref: https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-control-access-using-iam-policies-to-invoke-api.html#api-gateway-iam-policy-resource-format-for-executing-api
       - Effect: Deny
         Principal: '*'
         Action: execute-api:Invoke
         Resource:
-          - execute-api:/*
+          - execute-api:/prod/POST/bot
         Condition:
           NotIpAddress:
             aws:SourceIp:
