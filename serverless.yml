@@ -129,6 +129,10 @@ provider:
           Action:
             - dynamodb:DeleteBackup
           Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_FEEDBACK}-${self:provider.stage}/backup/*'
+        - Effect: Allow
+          Action:
+            - dynamodb:DeleteBackup
+          Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_INPUTS}-${self:provider.stage}/backup/*'
 
 package:
   patterns:
