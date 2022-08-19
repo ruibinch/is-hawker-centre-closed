@@ -14,7 +14,11 @@ const hcKeywords: Record<string, string[]> = {
   'Circuit Road Blk 80': ['mattar'],
   'Circuit Road Blk 89': ['mattar'],
   'East Coast Lagoon Food Village': ['east coast', 'east coast park'],
-  'Fernvale Hawker Centre and Market': ['sengkang', 'seng kang'],
+  'Fernvale Hawker Centre and Market': [
+    'sengkang',
+    'seng kang',
+    'sengkang west',
+  ],
   'Geylang Bahru Blk 69': ['kallang bahru'],
   'Ghim Moh Road Blk 20': ['buona vista'],
   'Golden Mile Food Centre': ['beach'],
