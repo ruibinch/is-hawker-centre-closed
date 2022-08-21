@@ -13,6 +13,7 @@ export type Command = {
   endpoint: string;
   hasExplanation: boolean;
   description: string;
+  isStartingSlashOptional?: boolean;
 };
 
 export type ValidateResponseOk = {

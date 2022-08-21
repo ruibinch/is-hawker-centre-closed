@@ -138,8 +138,14 @@ describe('[bot] [integration] General module', () => {
     });
 
     it('["/weather"] correctly calls getWeatherReport', async () => {
-      const inputMessage1 = '/weather';
-      await callBot(inputMessage1);
+      const inputMessage = '/weather';
+      await callBot(inputMessage);
+      expect(getWeatherReportSpy).toHaveBeenCalled();
+    });
+
+    it('["Weather"] correctly calls getWeatherReport', async () => {
+      const inputMessage = 'Weather';
+      await callBot(inputMessage);
       expect(getWeatherReportSpy).toHaveBeenCalled();
     });
   });
