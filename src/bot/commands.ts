@@ -56,6 +56,12 @@ export const COMMANDS: Command[] = [
   },
   {
     module: 'general',
+    endpoint: '/weather',
+    hasExplanation: false,
+    description: "Check today's weather report",
+  },
+  {
+    module: 'general',
     endpoint: '/updates',
     hasExplanation: false,
     description: 'Check the latest updates',
