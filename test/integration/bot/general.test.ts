@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+import * as weatherService from '../../../src/bot/services/general/weather';
 import { AWSError } from '../../../src/errors/AWSError';
 import { Result } from '../../../src/lib/Result';
 import * as InputFile from '../../../src/models/Input';
@@ -104,6 +105,18 @@ describe('[bot] [integration] General module', () => {
   });
 
   describe('general module', () => {
+    let getWeatherReportSpy: jest.SpyInstance;
+
+    beforeAll(() => {
+      getWeatherReportSpy = jest
+        .spyOn(weatherService, 'getWeatherReport')
+        .mockImplementation(() => Promise.resolve(Result.Ok()));
+    });
+
+    afterEach(() => {
+      getWeatherReportSpy.mockClear();
+    });
+
     it('["/updates"] returns the latest updates', async () => {
       const inputMessage = '/updates';
       const updateEntries = [
@@ -122,6 +135,12 @@ describe('[bot] [integration] General module', () => {
 
       await callBot(inputMessage);
       assertBotResponse(sendMessageSpy, expectedMessage);
+    });
+
+    it('["/weather"] correctly calls getWeatherReport', async () => {
+      const inputMessage1 = '/weather';
+      await callBot(inputMessage1);
+      expect(getWeatherReportSpy).toHaveBeenCalled();
     });
   });
 

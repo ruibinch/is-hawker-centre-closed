@@ -7,7 +7,6 @@ export async function manageGeneral(text: string): Promise<ServiceResponse> {
   if (text === '/updates') {
     return getLatestUpdates();
   }
-  /* istanbul ignore next */
   if (text === '/weather') {
     return getWeatherReport();
   }
