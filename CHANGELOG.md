@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.18.0] - 2022-08-21
+
+### Added
+
+- "/weather" command
+
 ## [0.17.0] - 2022-08-14
 
 ### Added

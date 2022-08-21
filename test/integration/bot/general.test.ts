@@ -107,6 +107,8 @@ describe('[bot] [integration] General module', () => {
     it('["/updates"] returns the latest updates', async () => {
       const inputMessage = '/updates';
       const updateEntries = [
+        '*\\[0\\.18\\.0\\] 2022\\-08\\-21*\n' +
+          '\u{00B7} Added "/weather" command',
         '*\\[0\\.17\\.0\\] 2022\\-08\\-14*\n' +
           '\u{00B7} Added search by "week"/"this week" timeframe',
         '*\\[0\\.16\\.0\\] 2022\\-08\\-11*\n' +

@@ -23,6 +23,11 @@ type ChangelogEntry = {
 function getChangelogEntries(): ChangelogEntry[] {
   return [
     {
+      version: '\\[0\\.18\\.0\\]',
+      date: '2022\\-08\\-21',
+      details: ['Added "/weather" command'],
+    },
+    {
       version: '\\[0\\.17\\.0\\]',
       date: '2022\\-08\\-14',
       details: ['Added search by "week"/"this week" timeframe'],
