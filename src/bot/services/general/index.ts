@@ -1,50 +1,11 @@
-/* eslint-disable max-len */
 import { Result } from '../../../lib/Result';
 import type { ServiceResponse } from '../../types';
+import { getLatestUpdates } from './updates';
 
-export async function manageGeneral(): Promise<ServiceResponse> {
-  const changelogEntries = getLatestUpdates();
+export async function manageGeneral(text: string): Promise<ServiceResponse> {
+  if (text === '/updates') {
+    return getLatestUpdates();
+  }
 
-  const messageForEntries = changelogEntries.map((changelogEntry) => {
-    const { version, date, details } = changelogEntry;
-    return (
-      `*${version} ${date}*\n` +
-      `${details.map((detail) => `\u{00B7} ${detail}`).join('\n')}`
-    );
-  });
-
-  return Result.Ok({ message: messageForEntries.join('\n\n') });
-}
-
-type ChangelogEntry = {
-  version: string;
-  date: string;
-  details: string[];
-};
-
-function getLatestUpdates(): ChangelogEntry[] {
-  return [
-    {
-      version: '\\[0\\.17\\.0\\]',
-      date: '2022\\-08\\-14',
-      details: ['Added search by "week"/"this week" timeframe'],
-    },
-    {
-      version: '\\[0\\.16\\.0\\]',
-      date: '2022\\-08\\-11',
-      details: ['Updated data schema and improved bot security'],
-    },
-    {
-      version: '\\[0\\.15\\.0\\]',
-      date: '2022\\-07\\-17',
-      details: ['Improved search filter logic'],
-    },
-    {
-      version: '\\[0\\.14\\.0\\]',
-      date: '2022\\-07\\-04',
-      details: [
-        'Implemented pagination for search result lists exceeding 10 entries',
-      ],
-    },
-  ];
+  return Result.Err();
 }
