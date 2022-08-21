@@ -95,7 +95,7 @@ describe('[bot] [integration] General module', () => {
       const expectedMessage =
         "Woops, that isn't a supported command\\.\n\n" +
         'Please try again with one of the following:\n' +
-        '/start, /help, /list, /fav, /del, /notify, /language, /feedback, /updates';
+        '/start, /help, /list, /fav, /del, /notify, /language, /feedback, /weather, /updates';
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
@@ -103,7 +103,7 @@ describe('[bot] [integration] General module', () => {
     });
   });
 
-  describe('updates module', () => {
+  describe('general module', () => {
     it('["/updates"] returns the latest updates', async () => {
       const inputMessage = '/updates';
       const updateEntries = [
