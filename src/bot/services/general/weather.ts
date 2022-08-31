@@ -110,6 +110,7 @@ function makeTimePeriodsWeatherInfo(weatherForecast: WeatherForecastInfo) {
   };
 
   return periods
+    .slice(0, periods.length - 1)
     .map((period) => {
       const periodStart = new Date(period.time.start);
       const periodEnd = new Date(period.time.end);
