@@ -59,6 +59,7 @@ export const COMMANDS: Command[] = [
     endpoint: '/weather',
     hasExplanation: false,
     description: "Check today's weather report",
+    isStartingSlashOptional: true,
   },
   {
     module: 'general',
@@ -80,10 +81,17 @@ export function isCommand(s: string): boolean {
  * If the module is omitted, the check is done across all modules.
  */
 export function isCommandInModule(s: string, module?: Module): boolean {
-  const [command] = s.split(' ');
+  const command = s.split(' ')[0].toLowerCase();
 
   return COMMANDS.filter((cmd) => (module ? cmd.module === module : true))
-    .map((cmd) => cmd.endpoint)
+    .reduce((_commandsList: string[], cmd) => {
+      if (cmd.isStartingSlashOptional) {
+        _commandsList.push(...[cmd.endpoint, cmd.endpoint.replace('/', '')]);
+      } else {
+        _commandsList.push(cmd.endpoint);
+      }
+      return _commandsList;
+    }, [])
     .includes(command);
 }
 
