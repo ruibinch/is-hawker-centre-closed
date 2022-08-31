@@ -25,3 +25,11 @@ export function extractTelegramMessage(
 
   throw new TelegramUpdateError(JSON.stringify(telegramUpdate));
 }
+
+export function escapeCharacters(s: string) {
+  const charactersRegex = new RegExp(
+    '_|\\*|\\[|\\]|\\(|\\)|~|`|>|#|\\+|-|=|||{|}|.|!',
+    'g',
+  );
+  return s.replace(charactersRegex, (match) => (match ? `\\${match}` : ''));
+}
