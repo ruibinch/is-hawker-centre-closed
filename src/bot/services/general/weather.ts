@@ -3,6 +3,7 @@ import axios from 'axios';
 import { addHours, format } from 'date-fns';
 
 import { Result } from '../../../lib/Result';
+import { escapeCharacters } from '../../../telegram';
 import { currentDate } from '../../../utils/date';
 
 type WeatherForecastResponse = {
@@ -74,6 +75,7 @@ export async function getWeatherReport() {
 function makeGeneralWeatherInfo(weatherForecast: WeatherForecastInfo) {
   const { general: generalForecast } = weatherForecast;
 
+  const forecast = generalForecast.forecast;
   const tempLow = generalForecast.temperature.low;
   const tempHigh = generalForecast.temperature.high;
   const rhLow = generalForecast.relative_humidity.low;
@@ -83,6 +85,7 @@ function makeGeneralWeatherInfo(weatherForecast: WeatherForecastInfo) {
   const windDirection = generalForecast.wind.direction;
 
   return (
+    `*Forecast*: ${escapeCharacters(forecast)}\n` +
     `*Temperature*: ${tempLow}°C to ${tempHigh}°C\n` +
     `*Relative Humidity*: ${rhLow}% to ${rhHigh}%\n` +
     `*Wind*: ${windDirection} ${windLow}\\-${windHigh}km/h`
@@ -114,11 +117,11 @@ function makeTimePeriodsWeatherInfo(weatherForecast: WeatherForecastInfo) {
 
       return (
         `*${formatDate(periodStart)} \\- ${formatDate(periodEnd)}*\n` +
-        `• North: ${regions.north}\n` +
-        `• South: ${regions.south}\n` +
-        `• East: ${regions.east}\n` +
-        `• West: ${regions.west}\n` +
-        `• Central: ${regions.central}`
+        `• North: ${escapeCharacters(regions.north)}\n` +
+        `• South: ${escapeCharacters(regions.south)}\n` +
+        `• East: ${escapeCharacters(regions.east)}\n` +
+        `• West: ${escapeCharacters(regions.west)}\n` +
+        `• Central: ${escapeCharacters(regions.central)}`
       );
     })
     .join('\n');
