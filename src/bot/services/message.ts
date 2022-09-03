@@ -1,4 +1,4 @@
-import type { Closure, ClosureReason } from '../../models/Closure';
+import type { ClosurePartial, ClosureReason } from '../../models/Closure';
 import { escapeCharacters } from '../../telegram';
 import { isIndefiniteEndDate } from '../../utils/date';
 import { t } from '../lang';
@@ -8,21 +8,37 @@ export function makeGenericErrorMessage(): string {
   return t('validation.error.generic');
 }
 
-export function makeClosureListItem(closure: Closure, index?: number): string {
-  return t(
+export function makeClosureListItem(
+  closure: ClosurePartial,
+  index?: number,
+): string {
+  const { name, nameSecondary, startDate, endDate, reason, remarks } = closure;
+
+  const [indexString, closurePeriodString, closureReasonString] =
     index !== undefined
-      ? 'common.hc-item.with-index'
-      : 'common.hc-item.without-index',
-    {
-      index,
-      hcName: makeHawkerCentreName(closure.name, closure.nameSecondary),
-      closurePeriod: makeClosurePeriodSnippet(
-        closure.startDate,
-        closure.endDate,
-      ),
-      closureReason: makeClosureReasonSnippet(closure.reason, closure.remarks),
-    },
-  );
+      ? [
+          'common.hc-item.with-index',
+          'common.hc-item.closure-period.indented',
+          'common.hc-item.closure-reason.indented',
+        ]
+      : [
+          'common.hc-item.without-index',
+          'common.hc-item.closure-period',
+          'common.hc-item.closure-reason',
+        ];
+
+  return t(indexString, {
+    index,
+    hcName: makeHawkerCentreName(name, nameSecondary),
+    closurePeriod: (() => {
+      const closurePeriod = makeClosurePeriodSnippet(startDate, endDate);
+      return closurePeriod ? t(closurePeriodString, { closurePeriod }) : '';
+    })(),
+    closureReason: (() => {
+      const closureReason = makeClosureReasonSnippet(reason, remarks);
+      return closureReason ? t(closureReasonString, { closureReason }) : '';
+    })(),
+  });
 }
 
 export function makeHawkerCentreName(
@@ -39,9 +55,11 @@ export function makeHawkerCentreName(
 }
 
 export function makeClosurePeriodSnippet(
-  startDate: string,
-  endDate: string,
+  startDate: string | undefined,
+  endDate: string | undefined,
 ): string {
+  if (!startDate || !endDate) return '';
+
   if (isIndefiniteEndDate(endDate)) {
     return t('common.time.time-period.indefinite-end-date', {
       startDate: formatDateDisplay(startDate, true),
@@ -64,14 +82,12 @@ export function makeClosureReasonSnippet(
   remarks: string | null | undefined,
 ): string {
   if (remarks) {
-    return `\n${escapeCharacters(remarks)}`;
+    return escapeCharacters(remarks);
   }
 
   switch (reason) {
     case 'others':
-      return t('common.hc-item.closure-reason', {
-        reason: t(`common.closure-reason.others`),
-      });
+      return t('common.closure-reason.others');
     default:
       return '';
   }
