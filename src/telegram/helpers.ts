@@ -28,7 +28,7 @@ export function extractTelegramMessage(
 
 export function escapeCharacters(s: string) {
   const charactersRegex = new RegExp(
-    '_|\\*|\\[|\\]|\\(|\\)|~|`|>|#|\\+|-|=|||{|}|.|!',
+    '_|\\*|\\[|\\]|\\(|\\)|~|`|>|#|\\+|-|=|\\||{|}|\\.|!',
     'g',
   );
   return s.replace(charactersRegex, (match) => (match ? `\\${match}` : ''));
