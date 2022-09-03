@@ -63,7 +63,7 @@ export const handler = Sentry.AWSLambda.wrapHandler(
 
       const { from: telegramUser, chat: telegramChat } = telegramMessage;
       chatId = telegramMessage.chat.id;
-      const { languageCode } = await getUserLanguageCode(telegramUser);
+      const { languageCode } = await getUserLanguageCode(chatId);
       initDictionary(languageCode);
 
       /* validation */
