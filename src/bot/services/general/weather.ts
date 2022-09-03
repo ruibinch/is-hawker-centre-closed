@@ -131,7 +131,7 @@ function makeTimePeriodsWeatherInfo(weatherForecast: WeatherForecastInfo) {
 function makeLastUpdatedInfo(weatherForecast: WeatherForecastInfo) {
   const lastUpdated = format(
     new Date(weatherForecast.update_timestamp),
-    'd/MM/yyyy HH:mm:ss',
+    'dd/MM/yyyy HH:mm:ss',
   );
 
   return `_Last updated: ${lastUpdated}_`;
