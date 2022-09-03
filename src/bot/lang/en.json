@@ -106,5 +106,6 @@
   "common.time.next-week": "next week",
   "common.time.this-month": "this month",
   "common.time.next-month": "next month",
-  "common.time.date-format": "dd\\-MMM"
+  "common.time.date-format": "dd\\-MMM",
+  "common.time.date-format.with-year": "dd\\-MMM\\-yyyy"
 }
