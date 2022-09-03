@@ -53,10 +53,8 @@ function isValidLanguageCode(langCode: string): langCode is Language {
  * Returns the `languageCode` value of the associated user.
  */
 export async function getUserLanguageCode(
-  telegramUser: TelegramUser,
+  userId: number,
 ): Promise<GetUserLanguageCodeResponse> {
-  const { id: userId } = telegramUser;
-
   const getUserResponse = await getUserById(userId);
 
   if (getUserResponse.isErr) {
