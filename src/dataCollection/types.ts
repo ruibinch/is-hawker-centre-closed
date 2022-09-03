@@ -31,12 +31,16 @@ export type HawkerCentreClosureRecord = {
   status: string;
   q1_cleaningstartdate: string;
   q1_cleaningenddate: string;
+  remarks_q1: string;
   q2_cleaningstartdate: string;
   q2_cleaningenddate: string;
+  remarks_q2: string;
   q3_cleaningstartdate: string;
   q3_cleaningenddate: string;
+  remarks_q3: string;
   q4_cleaningstartdate: string;
   q4_cleaningenddate: string;
+  remarks_q4: string;
   other_works_startdate: string;
   other_works_enddate: string;
   remarks_other_works: string;

@@ -28,6 +28,7 @@ type HawkerCentreClosureProps = {
   reason: ClosureReason;
   startDate: string;
   endDate: string;
+  remarks?: string;
 };
 
 export class ClosureObject {
@@ -39,11 +40,14 @@ export class ClosureObject {
 
   endDate: string;
 
+  remarks: string | null | undefined;
+
   private constructor(props: HawkerCentreClosureProps) {
     this.id = props.id;
     this.reason = props.reason;
     this.startDate = props.startDate;
     this.endDate = props.endDate;
+    this.remarks = props.remarks;
   }
 
   static create(props: HawkerCentreClosureProps): ClosureObject {
