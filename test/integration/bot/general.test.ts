@@ -120,6 +120,10 @@ describe('[bot] [integration] General module', () => {
     it('["/updates"] returns the latest updates', async () => {
       const inputMessage = '/updates';
       const updateEntries = [
+        '*\\[0\\.19\\.0\\] 2022\\-09\\-04*\n' +
+          '\u{00B7} Displayed closure remarks if applicable\n' +
+          '\u{00B7} Standardised list display across modules\n' +
+          "\u{00B7} Fixed user's preferred language not being reflected correctly in paginated search results",
         '*\\[0\\.18\\.0\\] 2022\\-08\\-21*\n' +
           '\u{00B7} Added "/weather" command',
         '*\\[0\\.17\\.0\\] 2022\\-08\\-14*\n' +

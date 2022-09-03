@@ -26,6 +26,15 @@ type ChangelogEntry = {
 function getChangelogEntries(): ChangelogEntry[] {
   return [
     {
+      version: '[0.19.0]',
+      date: '2022-09-04',
+      details: [
+        'Displayed closure remarks if applicable',
+        'Standardised list display across modules',
+        "Fixed user's preferred language not being reflected correctly in paginated search results",
+      ],
+    },
+    {
       version: '[0.18.0]',
       date: '2022-08-21',
       details: ['Added "/weather" command'],

@@ -2,6 +2,20 @@
 
 ## [Unreleased]
 
+## [0.19.0] - 2022-09-04
+
+### Added
+
+- Display closure remarks for more context if applicable
+
+### Changed
+
+- Standardise list display across search, favourites and notification modules
+
+### Fixed
+
+- User's preferred language was not being reflected correctly in paginated search results
+
 ## [0.18.0] - 2022-08-21
 
 ### Added
