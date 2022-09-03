@@ -409,11 +409,9 @@ describe('[bot] [integration] Favourites module', () => {
         const inputMessage = '/list';
         const expectedMessage =
           'Your favourite hawker centres and their next closure dates are:\n\n' +
-          '1\\. *Littleroot Town*\n' +
-          '2\\. *Verdanturf Town*\n' +
-          '    _08\\-Feb to 09\\-Feb_\n' +
-          '3\\. *Mossdeep Gym \\(Psychics in space\\)*\n' +
-          '    _today_';
+          '1\\. *Littleroot Town*\n\n' +
+          '2\\. *Verdanturf Town*\n    _08\\-Feb to 09\\-Feb_\n\n' +
+          '3\\. *Mossdeep Gym \\(Psychics in space\\)*\n    _today_';
 
         await callBot(inputMessage);
         assertInputSaved(addInputToDBSpy, inputMessage);

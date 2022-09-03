@@ -3,7 +3,7 @@ import { t } from '../../lang';
 import { makeClosureListItem } from '../message';
 
 export function makeNotificationMessage(closures: Closure[]): string {
-  let reply = t(
+  const header = t(
     closures.length === 1
       ? 'notifications.overview.singular'
       : 'notifications.overview.plural',
@@ -12,11 +12,9 @@ export function makeNotificationMessage(closures: Closure[]): string {
       numHC: closures.length,
     },
   );
+  const closuresList = closures
+    .map((closure) => makeClosureListItem(closure))
+    .join('\n\n');
 
-  const closuresInText = closures.map((closure) =>
-    makeClosureListItem(closure),
-  );
-
-  reply += closuresInText.join('\n\n');
-  return reply;
+  return `${header}${closuresList}`;
 }

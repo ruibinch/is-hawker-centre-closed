@@ -29,12 +29,16 @@ export async function getRawRecords(): Promise<HawkerCentreClosureRecord[]> {
         status: record.status,
         q1_cleaningstartdate: record.q1_cleaningstartdate,
         q1_cleaningenddate: record.q1_cleaningenddate,
+        remarks_q1: record.remarks_q1,
         q2_cleaningstartdate: record.q2_cleaningstartdate,
         q2_cleaningenddate: record.q2_cleaningenddate,
+        remarks_q2: record.remarks_q2,
         q3_cleaningstartdate: record.q3_cleaningstartdate,
         q3_cleaningenddate: record.q3_cleaningenddate,
+        remarks_q3: record.remarks_q3,
         q4_cleaningstartdate: record.q4_cleaningstartdate,
         q4_cleaningenddate: record.q4_cleaningenddate,
+        remarks_q4: record.remarks_q4,
         other_works_startdate: record.other_works_startdate,
         other_works_enddate: record.other_works_enddate,
         remarks_other_works: record.remarks_other_works,
@@ -79,6 +83,10 @@ export function parseClosureDate(s: string): string | null {
 
   const [day, month, year] = s.split('/');
   return `${year}-${padValueTo2Digits(month)}-${padValueTo2Digits(day)}`;
+}
+
+export function parseClosureRemarks(s: string): string | null {
+  return s !== 'nil' ? s : null;
 }
 
 export function generateHash(...inputs: string[]): string {

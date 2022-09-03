@@ -92,8 +92,8 @@ describe('[bot] [integration] Callback queries', () => {
       const callbackQueryData = '$searchPagination 3';
       const expectedMessage =
         'There are *8* hawker centres that are closed this month:\n\n' +
-        '7\\. *Route 118 near Melville City*\n_21\\-Jan to 24\\-Jan_\n\n' +
-        '8\\. *Slateport City*\n_tomorrow_';
+        '7\\. *Route 118 near Melville City*\n    _21\\-Jan to 24\\-Jan_\n\n' +
+        '8\\. *Slateport City*\n    _tomorrow_';
       const expectedReplyMarkup = {
         inline_keyboard: [
           [

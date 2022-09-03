@@ -1,11 +1,7 @@
 import type { ClosurePartial } from '../../../models/Closure';
 import type { HawkerCentre } from '../../../models/HawkerCentre';
 import { t } from '../../lang';
-import {
-  makeClosurePeriodSnippet,
-  makeClosureReasonSnippet,
-  makeHawkerCentreName,
-} from '../message';
+import { makeClosureListItem } from '../message';
 import { MAX_CHOICES } from './constants';
 
 export function makeAddHCMessage(props: {
@@ -84,22 +80,8 @@ export function makeFavouritesListMessage(
   }
 
   const hcOutput = hawkerCentresWithClosures
-    .map((hc, idx) => {
-      const { name, nameSecondary, startDate, endDate, reason } = hc;
-
-      return t('favourites.item', {
-        index: idx + 1,
-        hcName: makeHawkerCentreName(name, nameSecondary),
-        nextClosureDetails:
-          startDate && endDate
-            ? t('favourites.item.closure-details', {
-                closurePeriod: makeClosurePeriodSnippet(startDate, endDate),
-                closureReason: makeClosureReasonSnippet(reason),
-              })
-            : '',
-      });
-    })
-    .join('\n');
+    .map((hc, idx) => makeClosureListItem(hc, idx + 1))
+    .join('\n\n');
 
   return t('favourites.list', {
     hcOutput,

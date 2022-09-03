@@ -64,7 +64,7 @@ describe('[bot] [integration] Notifications module', () => {
         '*Verdanturf Town*\n_today to tomorrow_',
       '\u{1F4A1} 注意！今天有2个您喜爱的小贩中心关闭。\n\n' +
         '*Verdanturf Town*\n _今天至明天_\n\n' +
-        '*Melville City*\n _2月1日至2月28日; 其他工程_',
+        '*Melville City*\n _2月1日至2月28日_\n _其他工程_',
     ];
 
     await callNotifications();
