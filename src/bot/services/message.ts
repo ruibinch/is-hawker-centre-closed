@@ -1,3 +1,5 @@
+import { isSameYear, parseISO } from 'date-fns';
+
 import type { ClosurePartial, ClosureReason } from '../../models/Closure';
 import { escapeCharacters } from '../../telegram';
 import { isIndefiniteEndDate } from '../../utils/date';
@@ -62,17 +64,29 @@ export function makeClosurePeriodSnippet(
 
   if (isIndefiniteEndDate(endDate)) {
     return t('common.time.time-period.indefinite-end-date', {
-      startDate: formatDateDisplay(startDate, true),
+      startDate: formatDateDisplay(startDate, {
+        shouldDisplayTemporalPronoun: true,
+      }),
     });
   }
 
   if (startDate === endDate) {
-    return formatDateDisplay(startDate, true);
+    return formatDateDisplay(startDate, {
+      shouldDisplayTemporalPronoun: true,
+    });
   }
 
+  const shouldShowYear = !isSameYear(parseISO(startDate), parseISO(endDate));
+
   return t('common.time.time-period', {
-    startDate: formatDateDisplay(startDate, true),
-    endDate: formatDateDisplay(endDate, true),
+    startDate: formatDateDisplay(startDate, {
+      shouldDisplayTemporalPronoun: true,
+      shouldShowYear,
+    }),
+    endDate: formatDateDisplay(endDate, {
+      shouldDisplayTemporalPronoun: true,
+      shouldShowYear,
+    }),
   });
 }
 

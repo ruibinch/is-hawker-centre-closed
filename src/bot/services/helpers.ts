@@ -32,9 +32,16 @@ export function getNextOccurringClosure(
  */
 export function formatDateDisplay(
   dateRaw: string | Date,
-  shouldDisplayTemporalPronoun = false,
+  options?: {
+    shouldDisplayTemporalPronoun?: boolean;
+    shouldShowYear?: boolean;
+  },
 ): string {
   const date = dateRaw instanceof Date ? dateRaw : parseISO(dateRaw);
+  const shouldDisplayTemporalPronoun =
+    options?.shouldDisplayTemporalPronoun ?? false;
+  const shouldShowYear = options?.shouldShowYear ?? false;
+
   if (shouldDisplayTemporalPronoun) {
     if (isYesterday(date)) {
       return t('common.time.yesterday');
@@ -47,7 +54,12 @@ export function formatDateDisplay(
     }
   }
 
-  return format(date, t('common.time.date-format'));
+  return format(
+    date,
+    shouldShowYear
+      ? t('common.time.date-format.with-year')
+      : t('common.time.date-format'),
+  );
 }
 
 /**
