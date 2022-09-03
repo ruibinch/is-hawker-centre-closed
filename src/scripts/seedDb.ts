@@ -4,6 +4,10 @@ import {
   getRawRecords,
   writeFile,
 } from '../dataCollection';
+import {
+  generateManualClosures,
+  generateManualHawkerCentres,
+} from '../dataCollection/manualData';
 import { sendDiscordAdminMessage } from '../ext/discord';
 import { Closure, uploadClosures } from '../models/Closure';
 import { HawkerCentre, uploadHawkerCentres } from '../models/HawkerCentre';
@@ -17,35 +21,41 @@ export async function run(
 ): Promise<void> {
   const recordsRaw = await getRawRecords();
 
-  const closures = generateClosures(recordsRaw);
-  const hawkerCentres = generateHawkerCentres(recordsRaw);
+  const closuresFromApi = generateClosures(recordsRaw);
+  const hawkerCentresFromApi = generateHawkerCentres(recordsRaw);
 
   const { closuresDedupe, hawkerCentresDedupe } = deduplicateEntries({
-    closures,
-    hawkerCentres,
+    closures: closuresFromApi,
+    hawkerCentres: hawkerCentresFromApi,
   });
+
+  const closures = [...closuresDedupe, ...generateManualClosures()];
+  const hawkerCentres = [
+    ...hawkerCentresDedupe,
+    ...generateManualHawkerCentres(),
+  ];
 
   await sendDiscordAdminMessage([
     `**[${getStage()}]  🌱 SEEDING DB**`,
     'Data obtained from data.gov.sg API:',
-    `  1. ${closures.length} closures`,
-    `  2. ${hawkerCentres.length} hawker centres`,
+    `  1. ${closuresFromApi.length} closures`,
+    `  2. ${hawkerCentresFromApi.length} hawker centres`,
     'After de-duplication:',
     `  1. ${closuresDedupe.length} closures`,
     `  2. ${hawkerCentresDedupe.length} hawker centres`,
+    'After adding manual entries:',
+    `  1. ${closures.length} closures`,
+    `  2. ${hawkerCentres.length} hawker centres`,
   ]);
   if (props.shouldWriteFile) {
-    writeFile(closuresDedupe, `closures-${currentDateInYYYYMMDD()}.json`);
-    writeFile(
-      hawkerCentresDedupe,
-      `hawkerCentres-${currentDateInYYYYMMDD()}.json`,
-    );
+    writeFile(closures, `closures-${currentDateInYYYYMMDD()}.json`);
+    writeFile(hawkerCentres, `hawkerCentres-${currentDateInYYYYMMDD()}.json`);
   }
 
   if (!CLI_DRY_RUN) {
     console.log('Uploading to AWS');
-    await uploadClosures(closuresDedupe);
-    await uploadHawkerCentres(hawkerCentresDedupe);
+    await uploadClosures(closures);
+    await uploadHawkerCentres(hawkerCentres);
   }
 }
 
