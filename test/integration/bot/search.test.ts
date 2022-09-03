@@ -359,7 +359,7 @@ describe('[bot] [integration] Search module', () => {
       const expectedMessage =
         'There are *3* hawker centres that will be closed next month:\n\n' +
         '1\\. *Devon Corporation*\n_01\\-Nov to 30\\-Apr; other works_\n\n' +
-        '2\\. *Lavaridge Gym*\n_01\\-Apr to 05\\-May; other works_\n\n' +
+        '2\\. *Lavaridge Gym*\n_01\\-Apr to 05\\-May\nFlannery is going to Mt\\. Chimney for R&R\\!_\n\n' +
         '3\\. *Petalburg Gym*\n_30\\-Mar till indefinitely; other works_';
 
       await callBot(inputMessage);

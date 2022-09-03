@@ -1,4 +1,5 @@
 import type { Closure, ClosureReason } from '../../models/Closure';
+import { escapeCharacters } from '../../telegram';
 import { isIndefiniteEndDate } from '../../utils/date';
 import { t } from '../lang';
 import { formatDateDisplay } from './helpers';
@@ -19,7 +20,7 @@ export function makeClosureListItem(closure: Closure, index?: number): string {
         closure.startDate,
         closure.endDate,
       ),
-      closureReason: makeClosureReasonSnippet(closure.reason),
+      closureReason: makeClosureReasonSnippet(closure.reason, closure.remarks),
     },
   );
 }
@@ -57,9 +58,15 @@ export function makeClosurePeriodSnippet(
   });
 }
 
+// "remarks" takes priority if defined; it should be displayed on a new line
 export function makeClosureReasonSnippet(
   reason: ClosureReason | undefined,
+  remarks: string | null | undefined,
 ): string {
+  if (remarks) {
+    return `\n${escapeCharacters(remarks)}`;
+  }
+
   switch (reason) {
     case 'others':
       return t('common.hc-item.closure-reason', {

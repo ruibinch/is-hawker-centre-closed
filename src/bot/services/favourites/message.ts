@@ -85,7 +85,7 @@ export function makeFavouritesListMessage(
 
   const hcOutput = hawkerCentresWithClosures
     .map((hc, idx) => {
-      const { name, nameSecondary, startDate, endDate, reason } = hc;
+      const { name, nameSecondary, startDate, endDate, reason, remarks } = hc;
 
       return t('favourites.item', {
         index: idx + 1,
@@ -94,7 +94,7 @@ export function makeFavouritesListMessage(
           startDate && endDate
             ? t('favourites.item.closure-details', {
                 closurePeriod: makeClosurePeriodSnippet(startDate, endDate),
-                closureReason: makeClosureReasonSnippet(reason),
+                closureReason: makeClosureReasonSnippet(reason, remarks),
               })
             : '',
       });

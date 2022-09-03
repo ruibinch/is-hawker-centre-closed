@@ -109,7 +109,7 @@ export const mockClosures: Closure[] = [
     id: '111',
     hawkerCentreId: 34,
     reason: 'others',
-    remarks: null,
+    remarks: 'Flannery is going to Mt. Chimney for R&R!',
     name: 'Lavaridge Gym',
     startDate: '2021-04-01',
     endDate: '2021-05-05',
