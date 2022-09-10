@@ -16,18 +16,27 @@ export function makeClosureListItem(
 ): string {
   const { name, nameSecondary, startDate, endDate, reason, remarks } = closure;
 
-  const [indexString, closurePeriodString, closureReasonString] =
-    index !== undefined
-      ? [
-          'common.hc-item.with-index',
-          'common.hc-item.closure-period.indented',
-          'common.hc-item.closure-reason.indented',
-        ]
-      : [
-          'common.hc-item.without-index',
-          'common.hc-item.closure-period',
-          'common.hc-item.closure-reason',
-        ];
+  const [indexString, closurePeriodString, closureReasonString] = (() => {
+    if (index === undefined) {
+      return [
+        'common.hc-item.without-index',
+        'common.hc-item.closure-period',
+        'common.hc-item.closure-reason',
+      ];
+    }
+    if (index < 10) {
+      return [
+        'common.hc-item.with-index',
+        'common.hc-item.closure-period.indent-small',
+        'common.hc-item.closure-reason.indent-small',
+      ];
+    }
+    return [
+      'common.hc-item.with-index',
+      'common.hc-item.closure-period.indent-large',
+      'common.hc-item.closure-reason.indent-large',
+    ];
+  })();
 
   return t(indexString, {
     index,
