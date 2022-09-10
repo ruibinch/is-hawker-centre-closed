@@ -159,29 +159,29 @@ functions:
   scanNewEntriesTrigger:
     handler: ${self:custom.botHandlers}/scanNewEntriesTrigger.handler
     events:
-      # runs every Sun at 20:00 UTC, or 4am SGT
-      - schedule: cron(0 20 ? * sun *)
+      # runs every Sun at 20:03 UTC, or 4:03am SGT
+      - schedule: cron(3 20 ? * sun *)
     maximumEventAge: 60
     maximumRetryAttempts: 0
   runBackupTrigger:
     handler: ${self:custom.botHandlers}/runBackupTrigger.handler
     timeout: 30
     events:
-      # runs every Sun at 20:05 UTC, or 4:05am SGT
-      - schedule: cron(5 20 ? * sun *)
+      # runs every Sun at 20:08 UTC, or 4:08am SGT
+      - schedule: cron(8 20 ? * sun *)
     maximumEventAge: 60
     maximumRetryAttempts: 0
   syncDbTrigger:
     handler: ${self:custom.botHandlers}/syncDbTrigger.handler
     timeout: 600
     events:
-      # runs daily at 20:10 UTC, or 4:10am SGT
-      - schedule: cron(10 20 * * ? *)
+      # runs daily at 20:13 UTC, or 4:13am SGT
+      - schedule: cron(13 20 * * ? *)
     maximumEventAge: 60
     maximumRetryAttempts: 0
   checkHealthinessTrigger:
     handler: ${self:custom.botHandlers}/checkHealthinessTrigger.handler
-    timeout: 30
+    timeout: 600
     events:
       # runs daily at 20:28 UTC, or 4:28am SGT
       - schedule: cron(28 20 * * ? *)
@@ -191,8 +191,8 @@ functions:
     handler: ${self:custom.botHandlers}/analyseSearchResponsesTrigger.handler
     timeout: 30
     events:
-      # runs every Sun at 20:30 UTC, or 4:30am SGT
-      - schedule: cron(30 20 ? * sun *)
+      # runs every Sun at 20:38 UTC, or 4:38am SGT
+      - schedule: cron(38 20 ? * sun *)
     maximumEventAge: 60
     maximumRetryAttempts: 0
   # server
