@@ -18,6 +18,7 @@ import {
   UserFavourite,
 } from '../../../models/User';
 import type { TelegramUser } from '../../../telegram';
+import { notEmpty } from '../../../utils';
 import { currentDate } from '../../../utils/date';
 import { getNextOccurringClosure } from '../helpers';
 import { filterByKeyword } from '../search';
@@ -205,29 +206,26 @@ export async function getUserFavouritesWithClosures(
   if (getAllHCResponse.isErr) return getAllHCResponse;
   const hawkerCentres = getAllHCResponse.value;
 
-  const userFavsWithClosures = userFavHCNames.map((favHCName) => {
-    const closuresForHawkerCentre = closuresAll.filter(
-      (closure) => closure.name === favHCName,
-    );
+  const userFavsWithClosures = userFavHCNames
+    .map((favHCName) => {
+      const closuresForHawkerCentre = closuresAll.filter(
+        (closure) => closure.name === favHCName,
+      );
 
-    const nextOccurringClosure = getNextOccurringClosure(
-      closuresForHawkerCentre,
-    );
+      const nextOccurringClosure = getNextOccurringClosure(
+        closuresForHawkerCentre,
+      );
 
-    // if there is no next occurring closure, fallback to returning the basic info
-    if (!nextOccurringClosure) {
-      const hawkerCentre = hawkerCentres.find((hc) => hc.name === favHCName);
-      /* istanbul ignore next */
-      if (!hawkerCentre) {
-        throw new Error(
-          `Missing hawker centre entry for hawker centre "${favHCName}"`,
-        );
+      // if there is no next occurring closure, fallback to returning the basic info
+      if (!nextOccurringClosure) {
+        // this can be potentially undefined, if a previously favourited hawker centre no longer exists now
+        // the undefined values will be removed in the filter operation below
+        return hawkerCentres.find((hc) => hc.name === favHCName);
       }
-      return hawkerCentre;
-    }
 
-    return nextOccurringClosure;
-  });
+      return nextOccurringClosure;
+    })
+    .filter(notEmpty);
 
   return Result.Ok({
     closures: userFavsWithClosures,
