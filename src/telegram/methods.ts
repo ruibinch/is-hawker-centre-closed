@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import { TelegramMessageError } from '../errors/TelegramMessageError';
+import { MESSAGE_NOT_MODIFIED_ERROR } from './constants';
 import { makeTelegramApiBase } from './helpers';
 import {
   TelegramAnswerCallbackQueryParams,
@@ -189,7 +190,10 @@ export async function editMessageText(props: {
       return error.response.data;
     });
 
-  if (!response.ok) {
+  if (
+    !response.ok &&
+    !response.description?.includes(MESSAGE_NOT_MODIFIED_ERROR)
+  ) {
     throw new TelegramMessageError(response);
   }
 }
