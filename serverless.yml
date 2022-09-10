@@ -181,7 +181,7 @@ functions:
     maximumRetryAttempts: 0
   checkHealthinessTrigger:
     handler: ${self:custom.botHandlers}/checkHealthinessTrigger.handler
-    timeout: 30
+    timeout: 600
     events:
       # runs daily at 20:28 UTC, or 4:28am SGT
       - schedule: cron(28 20 * * ? *)

@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 
 import { makeLambdaResponse } from '../../ext/aws/lambda';
 import { run as executeCheckHealthiness } from '../../scripts/checkHealthiness';
+import { run as executeSyncDb } from '../../scripts/syncDb';
 import { getStage } from '../../utils/stage';
 
 dotenv.config();
@@ -22,6 +23,9 @@ export const handler = Sentry.AWSLambda.wrapHandler(
     } catch (error) {
       console.error('[checkHealthinessTrigger]', error);
       Sentry.captureException(error);
+
+      // re-run sync again when health check fails
+      await executeSyncDb();
 
       return makeLambdaResponse(400);
     }
