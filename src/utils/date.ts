@@ -40,6 +40,13 @@ export function isIndefiniteEndDate(dateString: string): boolean {
 }
 
 /**
+ * "2111-01-01" for start and end date is used to represent a permanent closure.
+ */
+export function isPermanentlyClosedDate(dateString: string): boolean {
+  return dateString === '2111-01-01';
+}
+
+/**
  * Returns if the input date string is "recent". This is used in the script to get new users/feedback entries.
  *
  * "recent" is a dynamic definition - for now, it will be defined as 1 week.

@@ -2,7 +2,7 @@ import { isSameYear, parseISO } from 'date-fns';
 
 import type { ClosurePartial, ClosureReason } from '../../models/Closure';
 import { escapeCharacters } from '../../telegram';
-import { isIndefiniteEndDate } from '../../utils/date';
+import { isIndefiniteEndDate, isPermanentlyClosedDate } from '../../utils/date';
 import { t } from '../lang';
 import { formatDateDisplay } from './helpers';
 
@@ -70,6 +70,10 @@ export function makeClosurePeriodSnippet(
   endDate: string | undefined,
 ): string {
   if (!startDate || !endDate) return '';
+
+  if (isPermanentlyClosedDate(endDate)) {
+    return t('common.time.time-period.permanent-closure');
+  }
 
   if (isIndefiniteEndDate(endDate)) {
     return t('common.time.time-period.indefinite-end-date', {
