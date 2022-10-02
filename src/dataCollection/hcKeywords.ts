@@ -7,6 +7,7 @@ const hcKeywords: Record<string, string[]> = {
   'Bedok North Street 1 Blk 216': ['heartbeat'],
   'Bedok North Street 4 Blk 85': ['feng shan'],
   'Berseh Food Centre': ['besar', 'jalan besar'],
+  'Buffalo Road Blk 665': ['little india'],
   'Bukit Merah Central Blk 163': ['henderson'],
   'Bukit Panjang Hawker Centre and Market': ['bangkit'],
   'Bukit Timah Market': ['beauty world'],
