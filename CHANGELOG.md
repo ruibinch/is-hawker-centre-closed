@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+## [0.20.0] - 2022-10-02
+
+### Added
+
+- Display recently permanently closed hawker centres
+
+### Fixed
+
+- Do not throw error when a favourited hawker centre no longer exists
+
 ## [0.19.0] - 2022-09-04
 
 ### Added

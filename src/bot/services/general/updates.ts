@@ -26,6 +26,14 @@ type ChangelogEntry = {
 function getChangelogEntries(): ChangelogEntry[] {
   return [
     {
+      version: '[0.20.0]',
+      date: '2022-10-02',
+      details: [
+        'Added support for recently permanently closed hawker centres',
+        'Fixed error when a favourited hawker centre no longer exists',
+      ],
+    },
+    {
       version: '[0.19.0]',
       date: '2022-09-04',
       details: [
