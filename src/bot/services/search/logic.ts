@@ -20,7 +20,10 @@ import {
   makeThisWeekInterval,
 } from '../../../utils/date';
 import { getNextOccurringClosure, sortInAlphabeticalOrder } from '../helpers';
-import { expandAcronyms, isRelevantKeyword } from './searchHelpers';
+import {
+  expandAcronymsAndSpellcheck,
+  isRelevantKeyword,
+} from './searchHelpers';
 import { extractSearchModifier } from './searchModifier';
 import type { SearchModifier, SearchObject, SearchResponse } from './types';
 
@@ -97,7 +100,7 @@ export function filterByKeyword<T extends Closure | HawkerCentre>(
 
   const searchKeywords = keyword
     .split(' ')
-    .map(expandAcronyms)
+    .map(expandAcronymsAndSpellcheck)
     .filter(isRelevantKeyword);
 
   return items.filter((item) =>

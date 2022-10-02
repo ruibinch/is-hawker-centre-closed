@@ -22,8 +22,14 @@ const ACRONYMS: Record<string, string> = {
   upp: 'upper',
 };
 
-export function expandAcronyms(word: string) {
-  return ACRONYMS[word.toLowerCase()] ?? word;
+const SPELLCHECK: Record<string, string> = {
+  'kebun bahru': 'kebun baru',
+  raja: 'rajah',
+};
+
+export function expandAcronymsAndSpellcheck(word: string) {
+  const wordLowercase = word.toLowerCase();
+  return ACRONYMS[wordLowercase] ?? SPELLCHECK[wordLowercase] ?? word;
 }
 
 // These are general hawker centre keywords that do not help in narrowing the search so they can be omitted
