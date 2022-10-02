@@ -100,6 +100,7 @@
   "common.hc-item.closure-reason.indent-large": "\n       _{{closureReason}}_",
   "common.closure-reason.others": "Other works",
   "common.time.time-period": "{{startDate}} to {{endDate}}",
+  "common.time.time-period.permanent-closure": "Permanently closed",
   "common.time.time-period.indefinite-end-date": "{{startDate}} till indefinitely",
   "common.time.yesterday": "yesterday",
   "common.time.today": "today",
