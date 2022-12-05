@@ -1,4 +1,5 @@
 import { type NEAData } from '../dataCollection';
+import { getFromS3, listObjects } from '../ext/aws/s3';
 import { sendDiscordAdminMessage } from '../ext/discord';
 import { type Closure, getAllClosures, isClosure } from '../models/Closure';
 import { getAllHawkerCentres, type HawkerCentre } from '../models/HawkerCentre';
@@ -7,18 +8,66 @@ import { getStage } from '../utils/stage';
 import { run as executeManageDb } from './manageDb';
 import { run as executeSeedDb } from './seedDb';
 
+const ARTIFACTS_BUCKET = process.env.ARTIFACTS_BUCKET;
+
 export async function run(): Promise<void> {
-  const resetDbResult = await executeManageDb('reset');
+  const preResetData = await getPreResetData();
+
+  await executeManageDb('reset');
+
   await executeSeedDb({ shouldWriteFile: false });
 
-  await findPreAndPostResetDiffs(resetDbResult);
+  await findPreAndPostResetDiffs(preResetData);
 }
 
-async function findPreAndPostResetDiffs(resetDbResult: NEAData | null) {
-  if (resetDbResult === null) {
-    return;
+/**
+ * Gets the closures/hawkerCentres data saved in S3 prior to re-seeding.
+ */
+async function getPreResetData() {
+  const listObjectsResponse = await listObjects(ARTIFACTS_BUCKET);
+  if (listObjectsResponse.isErr) {
+    throw listObjectsResponse.value;
   }
 
+  const bucketObjectKeys = listObjectsResponse.value.map((d) => d.Key);
+  const closuresObjectKey = bucketObjectKeys.find((key) =>
+    key?.startsWith('closures'),
+  );
+  const hawkerCentresObjectKey = bucketObjectKeys.find((key) =>
+    key?.startsWith('hawkerCentres'),
+  );
+  if (!closuresObjectKey || !hawkerCentresObjectKey) {
+    throw new Error(
+      `Missing closures object ("${closuresObjectKey}") or hawkerCentres object ("${hawkerCentresObjectKey}")`,
+    );
+  }
+
+  const getClosuresObjectResponse = await getFromS3(
+    ARTIFACTS_BUCKET,
+    closuresObjectKey,
+  );
+  const getHawkerCentresObjectResponse = await getFromS3(
+    ARTIFACTS_BUCKET,
+    hawkerCentresObjectKey,
+  );
+  if (getClosuresObjectResponse.isErr) {
+    throw getClosuresObjectResponse.value;
+  }
+  if (getHawkerCentresObjectResponse.isErr) {
+    throw getHawkerCentresObjectResponse.value;
+  }
+
+  const closures: Closure[] = JSON.parse(getClosuresObjectResponse.value);
+  const hawkerCentres: HawkerCentre[] = JSON.parse(
+    getHawkerCentresObjectResponse.value,
+  );
+  return { closures, hawkerCentres };
+}
+
+/**
+ * Compares the closures/hawkerCentres data before and after DB reset.
+ */
+async function findPreAndPostResetDiffs(preResetData: NEAData) {
   const getAllClosuresResponse = await getAllClosures();
   const getAllHCResponse = await getAllHawkerCentres();
   if (getAllClosuresResponse.isErr) {
@@ -29,7 +78,7 @@ async function findPreAndPostResetDiffs(resetDbResult: NEAData | null) {
   }
 
   const { closures: closuresBefore, hawkerCentres: hawkerCentresBefore } =
-    resetDbResult;
+    preResetData;
   const closuresAfter = getAllClosuresResponse.value;
   const hawkerCentresAfter = getAllHCResponse.value;
 
