@@ -6,12 +6,13 @@ import { DBError } from '../errors/DBError';
 import { initAWSConfig } from '../ext/aws/config';
 import { DDB_PROPAGATE_DURATION } from '../ext/aws/dynamodb';
 import { sendDiscordAdminMessage } from '../ext/discord';
-import { getAllClosures, ClosureObject } from '../models/Closure';
+import { Result, ResultType } from '../lib/Result';
+import { ClosureObject, getAllClosures } from '../models/Closure';
 import { Feedback } from '../models/Feedback';
 import { getAllHawkerCentres, HawkerCentre } from '../models/HawkerCentre';
 import { Input } from '../models/Input';
 import { User } from '../models/User';
-import { notEmpty, wrapPromise, sleep, WrappedPromise } from '../utils';
+import { sleep, WrappedPromise, wrapPromise } from '../utils';
 import { getStage } from '../utils/stage';
 
 const CLI_OPERATION = process.env['CLI_OPERATION'];
@@ -19,11 +20,11 @@ const CLI_OPERATION = process.env['CLI_OPERATION'];
 initAWSConfig();
 const dynamoDb = new AWS.DynamoDB();
 
-type DynamoDBOperationResult = {
-  success: boolean;
-  message: string | undefined;
-};
+type DynamoDBOperationResult = ResultType<string | undefined, string>;
 
+/**
+ * Parses DynamoDB operation results into neat ResultType outputs.
+ */
 function parseDynamoDBPromises(
   outputs: WrappedPromise<
     PromiseResult<
@@ -34,53 +35,48 @@ function parseDynamoDBPromises(
 ): DynamoDBOperationResult[] {
   return outputs.map((output) => {
     if ('error' in output) {
-      return {
-        success: false,
-        message: output.error.message,
-      };
+      return Result.Err(output.error.message);
     }
 
-    return {
-      success: true,
-      message: output.result.TableDescription?.TableName,
-    };
+    return Result.Ok(output.result.TableDescription?.TableName);
   });
 }
 
 function makeListOutput(results: DynamoDBOperationResult[]) {
-  const resultsDefined = results.filter(notEmpty);
+  if (results.length === 0) return '-';
 
-  return resultsDefined.length === 0
-    ? '-'
-    : resultsDefined
-        .map((result, idx) => `${idx + 1}. ${result.message}`)
-        .join('\n');
+  return results.map((result, idx) => `${idx + 1}. ${result.value}`).join('\n');
 }
 
-async function createTables() {
-  const createTableOutputs = await Promise.all(
-    [
-      dynamoDb.createTable(ClosureObject.getSchema()).promise(),
-      dynamoDb.createTable(HawkerCentre.getSchema()).promise(),
-      dynamoDb.createTable(User.getSchema()).promise(),
-      dynamoDb.createTable(Feedback.getSchema()).promise(),
-      dynamoDb.createTable(Input.getSchema()).promise(),
-    ].map(wrapPromise),
-  );
+async function createTables(
+  _tableSchemasToCreate?: AWS.DynamoDB.CreateTableInput[],
+) {
+  const tableSchemasToCreate = _tableSchemasToCreate ?? [
+    ClosureObject.getSchema(),
+    HawkerCentre.getSchema(),
+    User.getSchema(),
+    Feedback.getSchema(),
+    Input.getSchema(),
+  ];
 
+  const createTableOutputs = await Promise.all(
+    tableSchemasToCreate
+      .map((tableSchema) => dynamoDb.createTable(tableSchema).promise())
+      .map(wrapPromise),
+  );
   const createTableOutputsParsed = parseDynamoDBPromises(createTableOutputs);
-  const successOutputs = createTableOutputsParsed.filter(
-    (result) => result.success,
-  );
-  const failureOutputs = createTableOutputsParsed.filter(
-    (result) => !result.success,
-  );
+  const successOutputs = createTableOutputsParsed.filter((res) => res.isOk);
+  const failureOutputs = createTableOutputsParsed.filter((res) => res.isErr);
 
   await sendDiscordAdminMessage([
     `**[${getStage()}]  📢 DB TABLES CREATED**`,
     `${makeListOutput(successOutputs)}`,
-    `\nError creating the following tables:`,
-    `${makeListOutput(failureOutputs)}`,
+    ...(failureOutputs.length > 0
+      ? [
+          `\nError creating the following tables:`,
+          `${makeListOutput(failureOutputs)}`,
+        ]
+      : []),
   ]);
 
   if (failureOutputs.length > 0) {
@@ -88,34 +84,35 @@ async function createTables() {
   }
 }
 
-async function deleteTables() {
-  const deleteTableOutputs = await Promise.all(
-    [
-      dynamoDb
-        .deleteTable({ TableName: ClosureObject.getTableName() })
-        .promise(),
-      dynamoDb
-        .deleteTable({ TableName: HawkerCentre.getTableName() })
-        .promise(),
-      dynamoDb.deleteTable({ TableName: User.getTableName() }).promise(),
-      dynamoDb.deleteTable({ TableName: Feedback.getTableName() }).promise(),
-      dynamoDb.deleteTable({ TableName: Input.getTableName() }).promise(),
-    ].map(wrapPromise),
-  );
+async function deleteTables(_tablesToDelete?: string[]) {
+  const tablesToDelete = _tablesToDelete ?? [
+    ClosureObject.getTableName(),
+    HawkerCentre.getTableName(),
+    User.getTableName(),
+    Feedback.getTableName(),
+    Input.getTableName(),
+  ];
 
+  const deleteTableOutputs = await Promise.all(
+    tablesToDelete
+      .map((tableName) =>
+        dynamoDb.deleteTable({ TableName: tableName }).promise(),
+      )
+      .map(wrapPromise),
+  );
   const deleteTableOutputsParsed = parseDynamoDBPromises(deleteTableOutputs);
-  const successOutputs = deleteTableOutputsParsed.filter(
-    (result) => result.success,
-  );
-  const failureOutputs = deleteTableOutputsParsed.filter(
-    (result) => !result.success,
-  );
+  const successOutputs = deleteTableOutputsParsed.filter((res) => res.isOk);
+  const failureOutputs = deleteTableOutputsParsed.filter((res) => res.isErr);
 
   await sendDiscordAdminMessage([
     `**[${getStage()}]  📢 DB TABLES DELETED**`,
     `${makeListOutput(successOutputs)}`,
-    `\nError deleting the following tables:`,
-    `${makeListOutput(failureOutputs)}`,
+    ...(failureOutputs.length > 0
+      ? [
+          `\nError deleting the following tables:`,
+          `${makeListOutput(failureOutputs)}`,
+        ]
+      : []),
   ]);
 
   if (failureOutputs.length > 0) {
@@ -136,27 +133,23 @@ async function resetTables(): Promise<NEAData | null> {
     throw getAllClosuresResponse.value;
   }
 
-  const numEntriesInClosuresTable = getAllClosuresResponse.value.length;
-  const numEntriesInHCTable = getAllHCResponse.value.length;
-
   const deleteTableOutputs = await Promise.all(
+    // prettier-ignore
     [
-      dynamoDb
-        .deleteTable({ TableName: ClosureObject.getTableName() })
-        .promise(),
-      dynamoDb
-        .deleteTable({ TableName: HawkerCentre.getTableName() })
-        .promise(),
+      dynamoDb.deleteTable({ TableName: ClosureObject.getTableName() }).promise(),
+      dynamoDb.deleteTable({ TableName: HawkerCentre.getTableName() }).promise(),
     ].map(wrapPromise),
   );
   const deleteTableOutputsParsed = parseDynamoDBPromises(deleteTableOutputs);
 
+  const numEntriesInClosuresTable = getAllClosuresResponse.value.length;
+  const numEntriesInHCTable = getAllHCResponse.value.length;
   await sendDiscordAdminMessage([
     `**[${getStage()}]  📢 RESET IN PROGRESS**`,
     `Deleted tables:`,
     ...[
-      [deleteTableOutputsParsed[0].message, numEntriesInClosuresTable],
-      [deleteTableOutputsParsed[1].message, numEntriesInHCTable],
+      [deleteTableOutputsParsed[0].value, numEntriesInClosuresTable],
+      [deleteTableOutputsParsed[1].value, numEntriesInHCTable],
     ].map(
       ([tableName, numEntries], idx) =>
         `${idx + 1}. ${tableName} (${numEntries} entries)`,
@@ -172,12 +165,8 @@ async function resetTables(): Promise<NEAData | null> {
     ].map(wrapPromise),
   );
   const createTableOutputsParsed = parseDynamoDBPromises(createTableOutputs);
-  const successOutputs = createTableOutputsParsed.filter(
-    (result) => result.success,
-  );
-  const failureOutputs = createTableOutputsParsed.filter(
-    (result) => !result.success,
-  );
+  const successOutputs = createTableOutputsParsed.filter((res) => res.isOk);
+  const failureOutputs = createTableOutputsParsed.filter((res) => res.isErr);
   await sendDiscordAdminMessage([
     `**[${getStage()}]  📢 RESET IN PROGRESS**`,
     `Created tables:`,
