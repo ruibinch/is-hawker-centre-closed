@@ -1,15 +1,14 @@
 import * as AWS from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
 
-import type { NEAData } from '../dataCollection';
 import { DBError } from '../errors/DBError';
 import { initAWSConfig } from '../ext/aws/config';
 import { DDB_PROPAGATE_DURATION } from '../ext/aws/dynamodb';
 import { sendDiscordAdminMessage } from '../ext/discord';
 import { Result, ResultType } from '../lib/Result';
-import { ClosureObject, getAllClosures } from '../models/Closure';
+import { ClosureObject } from '../models/Closure';
 import { Feedback } from '../models/Feedback';
-import { getAllHawkerCentres, HawkerCentre } from '../models/HawkerCentre';
+import { HawkerCentre } from '../models/HawkerCentre';
 import { Input } from '../models/Input';
 import { User } from '../models/User';
 import { sleep, WrappedPromise, wrapPromise } from '../utils';
@@ -123,69 +122,20 @@ async function deleteTables(_tablesToDelete?: string[]) {
 /**
  * Deletes and recreates the Closures and HawkerCentre tables.
  */
-async function resetTables(): Promise<NEAData | null> {
-  const getAllHCResponse = await getAllHawkerCentres();
-  const getAllClosuresResponse = await getAllClosures();
-  if (getAllHCResponse.isErr) {
-    throw getAllHCResponse.value;
-  }
-  if (getAllClosuresResponse.isErr) {
-    throw getAllClosuresResponse.value;
-  }
+async function resetTables() {
+  await sendDiscordAdminMessage(`**[${getStage()}]  📢🔄 RESET IN PROGRESS **`);
 
-  const deleteTableOutputs = await Promise.all(
-    // prettier-ignore
-    [
-      dynamoDb.deleteTable({ TableName: ClosureObject.getTableName() }).promise(),
-      dynamoDb.deleteTable({ TableName: HawkerCentre.getTableName() }).promise(),
-    ].map(wrapPromise),
-  );
-  const deleteTableOutputsParsed = parseDynamoDBPromises(deleteTableOutputs);
-
-  const numEntriesInClosuresTable = getAllClosuresResponse.value.length;
-  const numEntriesInHCTable = getAllHCResponse.value.length;
-  await sendDiscordAdminMessage([
-    `**[${getStage()}]  📢 RESET IN PROGRESS**`,
-    `Deleted tables:`,
-    ...[
-      [deleteTableOutputsParsed[0].value, numEntriesInClosuresTable],
-      [deleteTableOutputsParsed[1].value, numEntriesInHCTable],
-    ].map(
-      ([tableName, numEntries], idx) =>
-        `${idx + 1}. ${tableName} (${numEntries} entries)`,
-    ),
+  await deleteTables([
+    ClosureObject.getTableName(),
+    HawkerCentre.getTableName(),
   ]);
 
   await sleep(DDB_PROPAGATE_DURATION);
 
-  const createTableOutputs = await Promise.all(
-    [
-      dynamoDb.createTable(ClosureObject.getSchema()).promise(),
-      dynamoDb.createTable(HawkerCentre.getSchema()).promise(),
-    ].map(wrapPromise),
-  );
-  const createTableOutputsParsed = parseDynamoDBPromises(createTableOutputs);
-  const successOutputs = createTableOutputsParsed.filter((res) => res.isOk);
-  const failureOutputs = createTableOutputsParsed.filter((res) => res.isErr);
-  await sendDiscordAdminMessage([
-    `**[${getStage()}]  📢 RESET IN PROGRESS**`,
-    `Created tables:`,
-    `${makeListOutput(successOutputs)}`,
-    `\nError creating the following tables:`,
-    `${makeListOutput(failureOutputs)}`,
-  ]);
-
-  if (failureOutputs.length > 0) {
-    throw new DBError(makeListOutput(failureOutputs));
-  }
-
-  return {
-    closures: getAllClosuresResponse.value,
-    hawkerCentres: getAllHCResponse.value,
-  };
+  await createTables([ClosureObject.getSchema(), HawkerCentre.getSchema()]);
 }
 
-export async function run(operationInput?: string): Promise<NEAData | null> {
+export async function run(operationInput?: string) {
   const operation = operationInput ?? CLI_OPERATION;
 
   if (operation === 'create') {
@@ -193,15 +143,14 @@ export async function run(operationInput?: string): Promise<NEAData | null> {
   } else if (operation === 'delete') {
     await deleteTables();
   } else if (operation === 'reset') {
-    const resetResult = await resetTables();
-    return resetResult;
+    await resetTables();
+  } else {
+    throw new Error(
+      operation === undefined
+        ? 'No operation name specified'
+        : `Unrecognised operation name "${operation}"`,
+    );
   }
-
-  throw new Error(
-    operation === undefined
-      ? 'No operation name specified'
-      : `Unrecognised operation name "${operation}"`,
-  );
 }
 
 if (require.main === module) {
