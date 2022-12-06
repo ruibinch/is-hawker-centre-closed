@@ -91,14 +91,16 @@ async function findPreAndPostResetDiffs(preResetData: NEAData) {
 
   await sendDiscordAdminMessage([
     `**[${getStage()}]  🔁 SYNC SUMMARY**`,
+    `Before: ${closuresBefore.length} closures, ${hawkerCentresBefore.length} hawker centres`,
+    `After: ${closuresAfter.length} closures, ${hawkerCentresAfter.length} hawker centres\n`,
     `${closuresAdded.length} closure(s) added`,
-    `${prettifyJSON(closuresAdded)}`,
+    ...(closuresAdded.length ? prettifyJSON(closuresAdded) : []),
     `${closuresDeleted.length} closure(s) deleted`,
-    `${prettifyJSON(closuresDeleted)}`,
+    ...(closuresDeleted.length ? prettifyJSON(closuresDeleted) : []),
     `${hawkerCentresAdded.length} hawker centre(s) added`,
-    `${prettifyJSON(hawkerCentresAdded)}`,
+    ...(hawkerCentresAdded.length ? prettifyJSON(hawkerCentresAdded) : []),
     `${hawkerCentresDeleted.length} hawker centre(s) deleted`,
-    `${prettifyJSON(hawkerCentresDeleted)}`,
+    ...(hawkerCentresDeleted.length ? prettifyJSON(hawkerCentresDeleted) : []),
   ]);
 }
 
