@@ -1,7 +1,7 @@
-import hawkerCentresData from '../../../data/hawkerCentres-20220626.json';
 import { filterByKeyword } from '../../../src/bot/services/search';
 import hcKeywords from '../../../src/dataCollection/hcKeywords';
 import { Closure } from '../../../src/models/Closure';
+import hawkerCentresData from '../../mockData/mockHawkerCentres.json';
 
 describe('[unit] bot > search', () => {
   const closures: Array<Pick<Closure, 'name' | 'nameSecondary' | 'keywords'>> =

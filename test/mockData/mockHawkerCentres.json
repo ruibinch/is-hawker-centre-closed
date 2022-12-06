@@ -1,0 +1,687 @@
+[
+  {
+    "hawkerCentreId": 1,
+    "address": "2, Adam Road, Singapore 289876",
+    "name": "Adam Road Food Centre",
+    "keywords": ["botanic"]
+  },
+  {
+    "hawkerCentreId": 2,
+    "address": "Blk 117, Aljunied Ave 2, Singapore 380117",
+    "name": "Aljunied Ave 2 Blk 117",
+    "nameSecondary": "Blk 117 Aljunied Market and Food Centre",
+    "keywords": ["geylang east"]
+  },
+  {
+    "hawkerCentreId": 3,
+    "address": "National Development Building, Annex B, Telok Ayer Street, Singapore 069111",
+    "name": "Amoy Street Food Centre",
+    "nameSecondary": "Telok Ayer Food Centre"
+  },
+  {
+    "hawkerCentreId": 4,
+    "address": "Blk 226D, Ang Mo Kio Ave 1, Singapore 564226",
+    "name": "Ang Mo Kio Ave 1 Blk 226D",
+    "nameSecondary": "Kebun Baru Market and Food Centre"
+  },
+  {
+    "hawkerCentreId": 5,
+    "address": "Blk 341, Ang Mo Kio Ave 1, Singapore 560341",
+    "name": "Ang Mo Kio Ave 1 Blk 341",
+    "nameSecondary": "Teck Ghee Court"
+  },
+  {
+    "hawkerCentreId": 6,
+    "address": "Blk 409, Ang Mo Kio Ave 10, Singapore 560409",
+    "name": "Ang Mo Kio Ave 10 Blk 409",
+    "nameSecondary": "Teck Ghee Square"
+  },
+  {
+    "hawkerCentreId": 7,
+    "address": "Blk 453A, Ang Mo Kio Ave 10, Singapore 561453",
+    "name": "Ang Mo Kio Ave 10 Blk 453A",
+    "nameSecondary": "Chong Boon Market and Food Centre"
+  },
+  {
+    "hawkerCentreId": 8,
+    "address": "Blk 527, Ang Mo Kio Ave 10, Singapore 560527",
+    "name": "Ang Mo Kio Ave 10 Blk 527",
+    "nameSecondary": "Cheng San Market and Cooked Food Centre",
+    "keywords": ["chengsan"]
+  },
+  {
+    "hawkerCentreId": 9,
+    "address": "Blk 160/162, Ang Mo Kio Ave 4, Singapore 560160/560162",
+    "name": "Ang Mo Kio Ave 4 Blk 160/162",
+    "nameSecondary": "Mayflower Market"
+  },
+  {
+    "hawkerCentreId": 10,
+    "address": "Blk 628, Ang Mo Kio Ave 4, Singapore 560628",
+    "name": "Ang Mo Kio Ave 4 Blk 628",
+    "nameSecondary": "Ang Mo Kio 628 Market"
+  },
+  {
+    "hawkerCentreId": 11,
+    "address": "Blk 724, Ang Mo Kio Ave 6, Singapore 560724",
+    "name": "Ang Mo Kio Ave 6 Blk 724",
+    "nameSecondary": "Blk 724 Ang Mo Kio Market",
+    "keywords": ["ang mo kio central"]
+  },
+  {
+    "hawkerCentreId": 12,
+    "address": "Blk 226H, Ang Mo Kio Street 22, Singapore 568226",
+    "name": "Ang Mo Kio Street 22 Blk 226H",
+    "nameSecondary": "Kebun Baru Food Centre"
+  },
+  {
+    "hawkerCentreId": 13,
+    "address": "1, Bedok Road, Singapore 469572",
+    "name": "Bedok Food Centre",
+    "keywords": ["kew"]
+  },
+  {
+    "hawkerCentreId": 14,
+    "address": "Blk 216, Bedok North Street 1, Singapore 460216",
+    "name": "Bedok North Street 1 Blk 216",
+    "keywords": ["heartbeat"]
+  },
+  {
+    "hawkerCentreId": 15,
+    "address": "Blk 511, Bedok North Street 3, Singapore 460511",
+    "name": "Bedok North Street 3 Blk 511",
+    "nameSecondary": "Kaki Bukit 511 Market and Food Centre"
+  },
+  {
+    "hawkerCentreId": 16,
+    "address": "Blk 538, Bedok North Street 3, Singapore 460538",
+    "name": "Bedok North Street 3 Blk 538"
+  },
+  {
+    "hawkerCentreId": 17,
+    "address": "Blk 85, Bedok North Street 4, Singapore 460085",
+    "name": "Bedok North Street 4 Blk 85",
+    "nameSecondary": "85 Fengshan Centre",
+    "keywords": ["feng shan"]
+  },
+  {
+    "hawkerCentreId": 18,
+    "address": "Blk 630, Bedok Reservoir Road, Singapore 470630",
+    "name": "Bedok Reservoir Road Blk 630"
+  },
+  {
+    "hawkerCentreId": 19,
+    "address": "Blk 16, Bedok South Road, Singapore 460016",
+    "name": "Bedok South Road Blk 16"
+  },
+  {
+    "hawkerCentreId": 20,
+    "address": "Blk 29, Bendemeer Road, Singapore 330029",
+    "name": "Bendemeer Road Blk 29",
+    "nameSecondary": "Bendemeer Market and Food Centre"
+  },
+  {
+    "hawkerCentreId": 21,
+    "address": "38A, Beo Crescent, Singapore 169982",
+    "name": "Beo Crescent Market"
+  },
+  {
+    "hawkerCentreId": 22,
+    "address": "166, Jalan Besar, Singapore 208877",
+    "name": "Berseh Food Centre",
+    "keywords": ["besar", "jalan besar"]
+  },
+  {
+    "hawkerCentreId": 23,
+    "address": "Blk 221A/B, Boon Lay Place, Singapore 641221/642221",
+    "name": "Boon Lay Place Blk 221A/B",
+    "nameSecondary": "Boon Lay Place Market and Food Village"
+  },
+  {
+    "hawkerCentreId": 24,
+    "address": "Blk 665, Buffalo Road, Singapore 210665",
+    "name": "Buffalo Road Blk 665",
+    "nameSecondary": "Tekka Centre/Zhu Jiao Market",
+    "keywords": ["little india"]
+  },
+  {
+    "hawkerCentreId": 25,
+    "address": "Blk 163, Bukit Merah Central, Singapore 150163",
+    "name": "Bukit Merah Central Blk 163",
+    "nameSecondary": "Bukit Merah Central Food Centre",
+    "keywords": ["henderson"]
+  },
+  {
+    "hawkerCentreId": 26,
+    "address": "Blk 120, Bukit Merah Lane, Singapore 150120",
+    "name": "Bukit Merah Lane 1 Blk 120",
+    "nameSecondary": "Alexandra Village Food Centre"
+  },
+  {
+    "hawkerCentreId": 27,
+    "address": "Blk 115, Bukit Merah View, Singapore 151115",
+    "name": "Bukit Merah View Blk 115",
+    "nameSecondary": "Blk 115 Bukit Merah View Market and Food Centre"
+  },
+  {
+    "hawkerCentreId": 28,
+    "address": "2 Bukit Panjang Ring Road, Singapore 679947",
+    "name": "Bukit Panjang Hawker Centre and Market",
+    "keywords": ["bangkit"]
+  },
+  {
+    "hawkerCentreId": 29,
+    "address": "51, Upper Bukit Timah Road, Singapore 588215",
+    "name": "Bukit Timah Market",
+    "keywords": ["beauty world"]
+  },
+  {
+    "hawkerCentreId": 30,
+    "address": "Blk 41A, Cambridge Road, Singapore 211041",
+    "name": "Cambridge Road Blk 41A",
+    "nameSecondary": "Pek Kio Market and Food Centre"
+  },
+  {
+    "hawkerCentreId": 31,
+    "address": "Blk 2/3, Changi Village Road, Singapore 500002/500003",
+    "name": "Changi Village Blk 2 and 3"
+  },
+  {
+    "hawkerCentreId": 32,
+    "address": "20, Kensington Park Road, Singapore 557269",
+    "name": "Chomp Chomp Food Centre"
+  },
+  {
+    "hawkerCentreId": 33,
+    "address": "51 Hougang Avenue 9, Singapore 538776",
+    "name": "Ci Yuan Hawker Centre",
+    "keywords": ["ciyuan"]
+  },
+  {
+    "hawkerCentreId": 34,
+    "address": "Blk 79/79A, Circuit Road, Singapore 370079/371079",
+    "name": "Circuit Road Blk 79/79A"
+  },
+  {
+    "hawkerCentreId": 35,
+    "address": "Blk 80, Circuit Road, Singapore 370080",
+    "name": "Circuit Road Blk 80",
+    "nameSecondary": "80 Circuit Road Market and Food Centre",
+    "keywords": ["mattar"]
+  },
+  {
+    "hawkerCentreId": 36,
+    "address": "Blk 89, Circuit Road, Singapore 370089",
+    "name": "Circuit Road Blk 89",
+    "keywords": ["mattar"]
+  },
+  {
+    "hawkerCentreId": 37,
+    "address": "Blk 353, Clementi Ave 2, Singapore 120353",
+    "name": "Clementi Ave 2 Blk 353",
+    "nameSecondary": "Clementi Ave 2 Market/Cooked Food Centre"
+  },
+  {
+    "hawkerCentreId": 38,
+    "address": "Blk 448, Clementi Ave 3, Singapore 120448",
+    "name": "Clementi Ave 3 Blk 448"
+  },
+  {
+    "hawkerCentreId": 39,
+    "address": "Blk 726, Clementi West Street 2, Singapore 120726",
+    "name": "Clementi West Street 2 Blk 726"
+  },
+  {
+    "hawkerCentreId": 40,
+    "address": "31, Commonwealth Crescent, Singapore 149644",
+    "name": "Commonwealth Crescent Market"
+  },
+  {
+    "hawkerCentreId": 41,
+    "address": "271, Onan Road, Singapore 424768",
+    "name": "Dunman Food Centre"
+  },
+  {
+    "hawkerCentreId": 42,
+    "address": "1220, East Coast Parkway, Singapore 468960",
+    "name": "East Coast Lagoon Food Village",
+    "keywords": ["east coast", "east coast park"]
+  },
+  {
+    "hawkerCentreId": 43,
+    "address": "Blk 7, Empress Road, Singapore 260007",
+    "name": "Empress Road Blk 7",
+    "nameSecondary": "Empress Road Market and Food Centre"
+  },
+  {
+    "hawkerCentreId": 44,
+    "address": "Blk 4A, Eunos Crescent, Singapore 402004",
+    "name": "Eunos Crescent Blk 4A"
+  },
+  {
+    "hawkerCentreId": 45,
+    "address": "21 Sengkang West Avenue Singapore 797650",
+    "name": "Fernvale Hawker Centre and Market",
+    "keywords": ["sengkang", "seng kang", "sengkang west"]
+  },
+  {
+    "hawkerCentreId": 46,
+    "address": "Blk 69, Geylang Bahru, Singapore 330069",
+    "name": "Geylang Bahru Blk 69",
+    "nameSecondary": "Blk 69 Geylang Bahru Market and Food Centre",
+    "keywords": ["kallang bahru"]
+  },
+  {
+    "hawkerCentreId": 47,
+    "address": "1, Geylang Serai, Singapore 402001",
+    "name": "Geylang Serai Market"
+  },
+  {
+    "hawkerCentreId": 48,
+    "address": "Blk 20, Ghim Moh Road, Singapore 270020",
+    "name": "Ghim Moh Road Blk 20",
+    "keywords": ["buona vista"]
+  },
+  {
+    "hawkerCentreId": 49,
+    "address": "505, Beach Road, Singapore 199583",
+    "name": "Golden Mile Food Centre",
+    "keywords": ["beach"]
+  },
+  {
+    "hawkerCentreId": 50,
+    "address": "Blk 13/14, Haig Road, Singapore 430013/430014",
+    "name": "Haig Road Blk 13/14",
+    "nameSecondary": "Haig Road Market and Cooked Food Centre"
+  },
+  {
+    "hawkerCentreId": 51,
+    "address": "Blk 22A/B, Havelock Road, Singapore 161022/162022",
+    "name": "Havelock Road Blk 22A/B",
+    "nameSecondary": "Havelock Road Cooked Food Centre"
+  },
+  {
+    "hawkerCentreId": 52,
+    "address": "Blk 44, Holland Drive, Singapore 270044",
+    "name": "Holland Drive Blk 44",
+    "nameSecondary": "Holland Drive Market and Food Centre"
+  },
+  {
+    "hawkerCentreId": 53,
+    "address": "1, Lorong Mambong, Singapore 277700",
+    "name": "Holland Village Market and Food Centre"
+  },
+  {
+    "hawkerCentreId": 54,
+    "address": "Blk 105, Hougang Ave 1, Singapore 530105",
+    "name": "Hougang Ave 1 Blk 105",
+    "nameSecondary": "Hougang 105 Hainanese Village Centre",
+    "keywords": ["lorong ah soo"]
+  },
+  {
+    "hawkerCentreId": 55,
+    "address": "Blk 209, Hougang Street 21, Singapore 530209",
+    "name": "Hougang Street 21 Blk 209",
+    "nameSecondary": "Kovan Hougang Market and Food Centre"
+  },
+  {
+    "hawkerCentreId": 56,
+    "address": "Blk 4A, Jalan Batu, Singapore 432004",
+    "name": "Jalan Batu Blk 4A",
+    "nameSecondary": "Blk 4A Jalan Batu Hawker Centre/Market"
+  },
+  {
+    "hawkerCentreId": 57,
+    "address": "Blk 112, Jalan Bukit Merah, Singapore 160112",
+    "name": "Jalan Bukit Merah Blk 112",
+    "nameSecondary": "Blk 112 Jalan Bukit Merah Market and Food Centre"
+  },
+  {
+    "hawkerCentreId": 58,
+    "address": "Blk 6, Jalan Bukit Merah, Singapore 150006",
+    "name": "Jalan Bukit Merah Blk 6",
+    "nameSecondary": "ABC Brickworks Market/Food Centre"
+  },
+  {
+    "hawkerCentreId": 59,
+    "address": "Blk 1, Jalan Kukoh, Singapore 161001",
+    "name": "Jalan Kukoh Blk 1",
+    "nameSecondary": "Kukoh 21 Food Centre"
+  },
+  {
+    "hawkerCentreId": 60,
+    "address": "Blk 347, Jurong East Ave 1, Singapore 600347",
+    "name": "Jurong East Ave 1 Blk 347",
+    "nameSecondary": "Yuhua Market and Hawker Centre",
+    "keywords": ["yu hua"]
+  },
+  {
+    "hawkerCentreId": 61,
+    "address": "Blk 254, Jurong East Street 24, Singapore 600254",
+    "name": "Jurong East Street 24 Blk 254",
+    "nameSecondary": "Yuhua Village Market and Food Centre",
+    "keywords": ["yu hua"]
+  },
+  {
+    "hawkerCentreId": 63,
+    "address": "Blk 505, Jurong West Street 52, Singapore 640505",
+    "name": "Jurong West Street 52 Blk 505",
+    "keywords": ["hongkah", "hong kah"]
+  },
+  {
+    "hawkerCentreId": 64,
+    "address": "17, Old Airport Road, Singapore 397972",
+    "name": "Kallang Estate Fresh Market and Food Centre"
+  },
+  {
+    "hawkerCentreId": 65,
+    "address": "Blk 676, Woodlands Drive 71, Singapore 730676",
+    "name": "Kampung Admiralty Hawker Centre"
+  },
+  {
+    "hawkerCentreId": 66,
+    "address": "38A Margaret Drive, Singapore 142038",
+    "name": "Margaret Drive Hawker Centre"
+  },
+  {
+    "hawkerCentreId": 67,
+    "address": "Blk 84, Marine Parade Central, Singapore 440084",
+    "name": "Marine Parade Central Blk 84",
+    "nameSecondary": "84 Marine Parade Central Market and Food Centre"
+  },
+  {
+    "hawkerCentreId": 68,
+    "address": "Blk 50A, Marine Terrace, Singapore 441050",
+    "name": "Marine Terrace Blk 50A",
+    "nameSecondary": "50A Marine Terrace"
+  },
+  {
+    "hawkerCentreId": 69,
+    "address": "CapitaSpring, 86 Market Street, Singapore 048947",
+    "name": "Market Street Hawker Centre"
+  },
+  {
+    "hawkerCentreId": 70,
+    "address": "Blk 20/21, Marsiling Lane, Singapore 730020/730021",
+    "name": "Marsiling Lane Blk 20/21"
+  },
+  {
+    "hawkerCentreId": 71,
+    "address": "Blk 4,Woodlands St 12,Singapore738623",
+    "name": "Marsiling Mall Hawker Centre"
+  },
+  {
+    "hawkerCentreId": 72,
+    "address": "1, Kadayanallur Street, Singapore 069184",
+    "name": "Maxwell Food Centre",
+    "nameSecondary": "Kim Hua Market"
+  },
+  {
+    "hawkerCentreId": 73,
+    "address": "Blk 159, Mei Chin Road, Singapore 140159",
+    "name": "Mei Chin Road Blk 159",
+    "nameSecondary": "Mei Chin Road Market",
+    "keywords": ["mei ling", "meiling", "stirling"]
+  },
+  {
+    "hawkerCentreId": 74,
+    "address": "Blk 32, New Market Road, Singapore 050032",
+    "name": "New Upper Changi Road Blk 208B",
+    "nameSecondary": "Bedok Interchange Food Centre"
+  },
+  {
+    "hawkerCentreId": 76,
+    "address": "Blk 58, New Upper Changi Road, Singapore 461058",
+    "name": "New Upper Changi Road Blk 58",
+    "keywords": ["bedok south"]
+  },
+  {
+    "hawkerCentreId": 77,
+    "address": "500, Clemenceau Ave North, Singapore 229495",
+    "name": "Newton Food Centre"
+  },
+  {
+    "hawkerCentreId": 78,
+    "address": "861, North Bridge Road, Singapore 198783",
+    "name": "North Bridge Road Market"
+  },
+  {
+    "hawkerCentreId": 79,
+    "address": "Blk 51, Old Airport Road, Singapore 390051",
+    "name": "Old Airport Road Blk 51",
+    "nameSecondary": "51 Old Airport Road Food Centre and Shopping Mall",
+    "keywords": ["kallang airport"]
+  },
+  {
+    "hawkerCentreId": 80,
+    "address": "1 Punggol Drive Singapore 828629",
+    "name": "One Punggol Hawker Centre"
+  },
+  {
+    "hawkerCentreId": 81,
+    "address": "1 Tampines Walk, Singapore 528523",
+    "name": "Our Tampines Hub"
+  },
+  {
+    "hawkerCentreId": 82,
+    "address": "121, Pasir Panjang Road, Singapore 118543",
+    "name": "Pasir Panjang Food Centre"
+  },
+  {
+    "hawkerCentreId": 83,
+    "address": "Blk 110, Pasir Ris Central, Singapore 519641",
+    "name": "Pasir Ris Central Hawker Centre"
+  },
+  {
+    "hawkerCentreId": 84,
+    "address": "Blk 270, Queen Street, Singapore 180270",
+    "name": "Queen Street Blk 270",
+    "nameSecondary": "Albert Centre",
+    "keywords": ["waterloo"]
+  },
+  {
+    "hawkerCentreId": 85,
+    "address": "Blk 79, Redhill Lane, Singapore 150079",
+    "name": "Redhill Lane Blk 79",
+    "nameSecondary": "Redhill Market",
+    "keywords": ["red hill"]
+  },
+  {
+    "hawkerCentreId": 86,
+    "address": "Blk 85, Redhill Lane, Singapore 150085",
+    "name": "Redhill Lane Blk 85",
+    "nameSecondary": "Redhill Food Centre",
+    "keywords": ["red hill"]
+  },
+  {
+    "hawkerCentreId": 87,
+    "address": "590, Upper Thomson Road, Singapore 574419",
+    "name": "Sembawang Hills Food Centre",
+    "nameSecondary": "Jalan Leban Food Centre",
+    "keywords": ["upper thomson"]
+  },
+  {
+    "hawkerCentreId": 88,
+    "address": "49A, Serangoon Garden Way, Singapore 555945",
+    "name": "Serangoon Garden Market"
+  },
+  {
+    "hawkerCentreId": 89,
+    "address": "Blk 320, Shunfu Road, Singapore 570320",
+    "name": "Shunfu Road Blk 320",
+    "nameSecondary": "Shunfu Mart"
+  },
+  {
+    "hawkerCentreId": 90,
+    "address": "Blk 49, Sims Place, Singapore 380049",
+    "name": "Sims Place Blk 49",
+    "nameSecondary": "Sims Vista Market and Food Centre"
+  },
+  {
+    "hawkerCentreId": 91,
+    "address": "Blk 335, Smith Street, Singapore 050335",
+    "name": "Smith Street Blk 335",
+    "nameSecondary": "Chinatown Complex Market"
+  },
+  {
+    "hawkerCentreId": 92,
+    "address": "3, Yung Sheng Road, Singapore 618499",
+    "name": "Taman Jurong Market and Food Centre",
+    "keywords": ["yuan ching"]
+  },
+  {
+    "hawkerCentreId": 93,
+    "address": "Blk 137, Tampines Street 11, Singapore 521137",
+    "name": "Tampines Street 11 Blk 137",
+    "nameSecondary": "Tampines Round Market and Food Centre"
+  },
+  {
+    "hawkerCentreId": 94,
+    "address": "48A, Tanglin Halt Road, Singapore 148813",
+    "name": "Tanglin Halt Market"
+  },
+  {
+    "hawkerCentreId": 95,
+    "address": "Blk 6, Tanjong Pagar Plaza, Singapore 081006",
+    "name": "Tanjong Pagar Plaza Blk 6",
+    "nameSecondary": "Blk 6 Tanjong Pagar Plaza Market and Food Centre"
+  },
+  {
+    "hawkerCentreId": 96,
+    "address": "Blk 37A, Teban Garden Road, Singapore 601037",
+    "name": "Teban Gardens Road Blk 37A",
+    "nameSecondary": "Teban Gardens Market and Food Centre"
+  },
+  {
+    "hawkerCentreId": 97,
+    "address": "Blk 11, Telok Blangah Crescent, Singapore 090011",
+    "name": "Telok Blangah Crescent Blk 11",
+    "nameSecondary": "11 Telok Blangah Crescent Market and Food Centre"
+  },
+  {
+    "hawkerCentreId": 98,
+    "address": "Blk 79, Telok Blangah Drive, Singapore 100079",
+    "name": "Telok Blangah Drive Blk 79",
+    "nameSecondary": "Telok Blangah Food Centre"
+  },
+  {
+    "hawkerCentreId": 99,
+    "address": "Blk 82, Telok Blangah Drive, Singapore 100082",
+    "name": "Telok Blangah Drive Blk 82",
+    "nameSecondary": "Telok Blangah Market"
+  },
+  {
+    "hawkerCentreId": 100,
+    "address": "Blk 36, Telok Blangah Rise, Singapore 090036",
+    "name": "Telok Blangah Rise Blk 36",
+    "nameSecondary": "Telok Blangah Rise Market"
+  },
+  {
+    "hawkerCentreId": 101,
+    "address": "30, Seng Poh Road, Singapore 168898",
+    "name": "Tiong Bahru Market"
+  },
+  {
+    "hawkerCentreId": 102,
+    "address": "Blk 127, Lorong 1 Toa Payoh, Singapore 310127",
+    "name": "Toa Payoh Lorong 1 Blk 127",
+    "nameSecondary": "Toa Payoh West Market and Food Court"
+  },
+  {
+    "hawkerCentreId": 103,
+    "address": "Blk 74, Lorong 4 Toa Payoh, Singapore 310074",
+    "name": "Toa Payoh Lorong 4 Blk 74",
+    "nameSecondary": "Toa Payoh Vista Market"
+  },
+  {
+    "hawkerCentreId": 104,
+    "address": "Blk 93, Lorong 4 Toa Payoh, Singapore 310093",
+    "name": "Toa Payoh Lorong 4 Blk 93"
+  },
+  {
+    "hawkerCentreId": 105,
+    "address": "Blk 75, Lorong 5 Toa Payoh, Singapore 310075",
+    "name": "Toa Payoh Lorong 5 Blk 75"
+  },
+  {
+    "hawkerCentreId": 106,
+    "address": "Blk 22, Lorong 7 Toa Payoh, Singapore 310022",
+    "name": "Toa Payoh Lorong 7 Blk 22",
+    "nameSecondary": "Kim Keat Palm Market and Food Centre"
+  },
+  {
+    "hawkerCentreId": 107,
+    "address": "Blk 210, Lorong 8 Toa Payoh, Singapore 310210",
+    "name": "Toa Payoh Lorong 8 Blk 210"
+  },
+  {
+    "hawkerCentreId": 108,
+    "address": "Blk 17, Upper Boon Keng Road, Singapore 380017",
+    "name": "Upper Boon Keng Road Blk 17",
+    "nameSecondary": "Blk 17 Upper Boon Keng Market and Food Centre"
+  },
+  {
+    "hawkerCentreId": 109,
+    "address": "Blk 531A, Upper Cross Street, Singapore 051531",
+    "name": "Upper Cross Street Blk 531A",
+    "nameSecondary": "Hong Lim Food Centre and Market"
+  },
+  {
+    "hawkerCentreId": 110,
+    "address": "Blk 502, West Coast Drive, Singapore 120502",
+    "name": "West Coast Drive Blk 502",
+    "nameSecondary": "Ayer Rajah Market"
+  },
+  {
+    "hawkerCentreId": 111,
+    "address": "Blk 503, West Coast Drive, Singapore 120503",
+    "name": "West Coast Drive Blk 503",
+    "nameSecondary": "Ayer Rajah Food Centre"
+  },
+  {
+    "hawkerCentreId": 112,
+    "address": "Blk 90, Whampoa Drive, Singapore 320090",
+    "name": "Whampoa Drive Blk 90",
+    "nameSecondary": "Whampoa Drive Makan Place/Whampoa Food Centre"
+  },
+  {
+    "hawkerCentreId": 113,
+    "address": "Blk 91/92, Whampoa Drive, Singapore 320091/320092",
+    "name": "Whampoa Drive Blk 91/92",
+    "nameSecondary": "Whampoa Drive Makan Place/Whampoa Market"
+  },
+  {
+    "hawkerCentreId": 114,
+    "address": "Blk 51, Yishun Avenue 11, Singapore 768867",
+    "name": "Yishun Park Hawker Centre"
+  },
+  {
+    "hawkerCentreId": 115,
+    "address": "Blk 104/105, Yishun Ring Road, Singapore 760104/760105",
+    "name": "Yishun Ring Road Blk 104/105",
+    "nameSecondary": "Chong Pang Market and Food Centre"
+  },
+  {
+    "hawkerCentreId": 116,
+    "address": "70, Zion Road, Singapore 247792",
+    "name": "Zion Riverside Food Centre"
+  },
+  {
+    "hawkerCentreId": 999,
+    "address": "2, Seah Im Rd, Singapore 099114",
+    "keywords": [
+      "harbourfront",
+      "vivo",
+      "vivocity",
+      "pasir panjang",
+      "sentosa"
+    ],
+    "name": "Seah Im Food Centre"
+  },
+  {
+    "hawkerCentreId": 998,
+    "address": "Blk 1A/ 2A/ 3A, Commonwealth Drive, Singapore 140001/140002/140003",
+    "keywords": ["tanglin halt"],
+    "name": "Commonwealth Drive Blk 1A/2A/3A"
+  }
+]
