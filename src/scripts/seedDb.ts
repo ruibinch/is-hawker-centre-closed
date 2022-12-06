@@ -8,6 +8,7 @@ import {
   generateManualClosures,
   generateManualHawkerCentres,
 } from '../dataCollection/manualData';
+import { deleteAllObjectsExcept, saveToS3 } from '../ext/aws/s3';
 import { sendDiscordAdminMessage } from '../ext/discord';
 import { Closure, uploadClosures } from '../models/Closure';
 import { HawkerCentre, uploadHawkerCentres } from '../models/HawkerCentre';
@@ -15,6 +16,7 @@ import { currentDateInYYYYMMDD } from '../utils/date';
 import { getStage } from '../utils/stage';
 
 const CLI_DRY_RUN = process.env['CLI_DRY_RUN'] ?? false;
+const ARTIFACTS_BUCKET = process.env.ARTIFACTS_BUCKET;
 
 export async function run(
   props: { shouldWriteFile: boolean } = { shouldWriteFile: true },
@@ -35,6 +37,9 @@ export async function run(
     ...generateManualHawkerCentres(),
   ];
 
+  const closuresFilename = `closures-${currentDateInYYYYMMDD()}.json`;
+  const hawkerCentresFilename = `hawkerCentres-${currentDateInYYYYMMDD()}.json`;
+
   await sendDiscordAdminMessage([
     `**[${getStage()}]  🌱 SEEDING DB**`,
     'Data obtained from data.gov.sg API:',
@@ -48,14 +53,27 @@ export async function run(
     `  2. ${hawkerCentres.length} hawker centres`,
   ]);
   if (props.shouldWriteFile) {
-    writeFile(closures, `closures-${currentDateInYYYYMMDD()}.json`);
-    writeFile(hawkerCentres, `hawkerCentres-${currentDateInYYYYMMDD()}.json`);
+    writeFile(closures, closuresFilename);
+    writeFile(hawkerCentres, hawkerCentresFilename);
   }
 
   if (!CLI_DRY_RUN) {
-    console.log('Uploading to AWS');
+    console.log('Uploading to DynamoDB');
     await uploadClosures(closures);
     await uploadHawkerCentres(hawkerCentres);
+
+    if (getStage() === 'prod') {
+      console.log('Saving to S3');
+      await saveToS3(ARTIFACTS_BUCKET, {
+        [closuresFilename]: closures,
+        [hawkerCentresFilename]: hawkerCentres,
+      });
+      // only keep most recent entry
+      await deleteAllObjectsExcept(ARTIFACTS_BUCKET, [
+        closuresFilename,
+        hawkerCentresFilename,
+      ]);
+    }
   }
 }
 

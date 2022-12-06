@@ -13,16 +13,10 @@ declare namespace NodeJS {
     // Telegram
     TELEGRAM_BOT_TOKEN: string;
 
-    // Discord
-    DISCORD_BOT_TOKEN: string;
-    DISCORD_ADMIN_DEV_CHANNEL_ID: string;
-    DISCORD_ADMIN_PROD_CHANNEL_ID: string;
-
-    // Environment
+    // AWS environment
     REGION: string;
     APIG_DEV: string;
     APIG_PROD: string;
-    SENTRY_DSN: string;
 
     // DynamoDB table names
     TABLE_CLOSURES: string;
@@ -30,6 +24,17 @@ declare namespace NodeJS {
     TABLE_USERS: string;
     TABLE_FEEDBACK: string;
     TABLE_INPUTS: string;
+
+    // S3 bucket names
+    ARTIFACTS_BUCKET: string;
+
+    // Discord
+    DISCORD_BOT_TOKEN: string;
+    DISCORD_ADMIN_DEV_CHANNEL_ID: string;
+    DISCORD_ADMIN_PROD_CHANNEL_ID: string;
+
+    // Sentry
+    SENTRY_DSN: string;
 
     // Server
     SERVER_AUTH_TOKEN: string;

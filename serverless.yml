@@ -133,6 +133,16 @@ provider:
           Action:
             - dynamodb:DeleteBackup
           Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_INPUTS}-${self:provider.stage}/backup/*'
+        - Effect: Allow
+          Action:
+            - s3:CreateBucket
+          Resource: 'arn:aws:s3:::${env:ARTIFACTS_BUCKET}'
+        - Effect: Allow
+          Action:
+            - s3:DeleteObject
+            - s3:GetObject
+            - s3:PutObject
+          Resource: 'arn:aws:s3:::${env:ARTIFACTS_BUCKET}/*'
 
 package:
   patterns:
