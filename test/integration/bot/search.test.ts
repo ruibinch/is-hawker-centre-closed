@@ -201,7 +201,7 @@ describe('[bot] [integration] Search module', () => {
       const inputMessage2 = 'Today';
       const expectedMessage =
         'There are *3* hawker centres that are closed today:\n\n' +
-        '1\\. *Devon Corporation*\n     _01\\-Nov to 30\\-Apr_\n     _Other works_\n\n' +
+        '1\\. *Devon Corporation*\n     _01\\-Nov\\-2020 to 30\\-Apr\\-2021_\n     _Other works_\n\n' +
         '2\\. *Littleroot Town*\n     _today to tomorrow_\n\n' +
         '3\\. *Melville City*\n     _today_';
 
@@ -219,7 +219,7 @@ describe('[bot] [integration] Search module', () => {
       const inputMessage2 = 'Tomorrow';
       const expectedMessage =
         'There are *3* hawker centres that will be closed tomorrow:\n\n' +
-        '1\\. *Devon Corporation*\n     _01\\-Nov to 30\\-Apr_\n     _Other works_\n\n' +
+        '1\\. *Devon Corporation*\n     _01\\-Nov\\-2020 to 30\\-Apr\\-2021_\n     _Other works_\n\n' +
         '2\\. *Littleroot Town*\n     _today to tomorrow_\n\n' +
         '3\\. *Slateport City*\n     _tomorrow_';
 
@@ -242,7 +242,7 @@ describe('[bot] [integration] Search module', () => {
       const inputMessage2 = 'This week';
       const expectedMessage =
         'There are *3* hawker centres that are closed this week \\(01\\-Feb to 07\\-Feb\\):\n\n' +
-        '1\\. *Devon Corporation*\n     _01\\-Nov to 30\\-Apr_\n     _Other works_\n\n' +
+        '1\\. *Devon Corporation*\n     _01\\-Nov\\-2020 to 30\\-Apr\\-2021_\n     _Other works_\n\n' +
         '2\\. *Melville City*\n     _01\\-Feb to 28\\-Feb_\n     _Other works_\n\n' +
         '3\\. *Rustboro City*\n     _02\\-Feb to 05\\-Feb_';
 
@@ -265,7 +265,7 @@ describe('[bot] [integration] Search module', () => {
       const inputMessage2 = 'This week';
       const expectedMessage =
         'There is *1* hawker centre that is closed this week \\(21\\-Dec to 27\\-Dec\\):\n\n' +
-        '1\\. *Devon Corporation*\n     _01\\-Nov to 30\\-Apr_\n     _Other works_';
+        '1\\. *Devon Corporation*\n     _01\\-Nov\\-2020 to 30\\-Apr\\-2021_\n     _Other works_';
 
       await callBot(inputMessage1);
       assertInputSaved(addInputToDBSpy, inputMessage1);
@@ -285,7 +285,7 @@ describe('[bot] [integration] Search module', () => {
       const inputMessage = 'Next week';
       const expectedMessage =
         'There are *3* hawker centres that will be closed next week \\(01\\-Feb to 07\\-Feb\\):\n\n' +
-        '1\\. *Devon Corporation*\n     _01\\-Nov to 30\\-Apr_\n     _Other works_\n\n' +
+        '1\\. *Devon Corporation*\n     _01\\-Nov\\-2020 to 30\\-Apr\\-2021_\n     _Other works_\n\n' +
         '2\\. *Melville City*\n     _tomorrow to 28\\-Feb_\n     _Other works_\n\n' +
         '3\\. *Rustboro City*\n     _02\\-Feb to 05\\-Feb_';
 
@@ -303,7 +303,7 @@ describe('[bot] [integration] Search module', () => {
       const inputMessage = 'Next week';
       const expectedMessage =
         'There is *1* hawker centre that will be closed next week \\(21\\-Dec to 27\\-Dec\\):\n\n' +
-        '1\\. *Devon Corporation*\n     _01\\-Nov to 30\\-Apr_\n     _Other works_';
+        '1\\. *Devon Corporation*\n     _01\\-Nov\\-2020 to 30\\-Apr\\-2021_\n     _Other works_';
 
       await callBot(inputMessage);
       assertInputSaved(addInputToDBSpy, inputMessage);
@@ -314,7 +314,7 @@ describe('[bot] [integration] Search module', () => {
       const inputMessage = 'Month';
       const expectedMessage =
         'There are *8* hawker centres that are closed this month:\n\n' +
-        '1\\. *Devon Corporation*\n     _01\\-Nov to 30\\-Apr_\n     _Other works_\n\n' +
+        '1\\. *Devon Corporation*\n     _01\\-Nov\\-2020 to 30\\-Apr\\-2021_\n     _Other works_\n\n' +
         '2\\. *Littleroot Town*\n     _today to tomorrow_\n\n' +
         '3\\. *Melville City*\n     _today_';
       const expectedReplyMarkup = {
@@ -358,7 +358,7 @@ describe('[bot] [integration] Search module', () => {
       const inputMessage = 'Next month';
       const expectedMessage =
         'There are *3* hawker centres that will be closed next month:\n\n' +
-        '1\\. *Devon Corporation*\n     _01\\-Nov to 30\\-Apr_\n     _Other works_\n\n' +
+        '1\\. *Devon Corporation*\n     _01\\-Nov\\-2020 to 30\\-Apr\\-2021_\n     _Other works_\n\n' +
         '2\\. *Lavaridge Gym*\n     _01\\-Apr to 05\\-May_\n     _Flannery is going to Mt\\. Chimney for R&R\\!_\n\n' +
         '3\\. *Petalburg Gym*\n     _30\\-Mar till indefinitely_\n     _Other works_';
 
