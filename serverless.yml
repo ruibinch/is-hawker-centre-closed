@@ -44,6 +44,7 @@ provider:
     TABLE_USERS: ${env:TABLE_USERS}
     TABLE_FEEDBACK: ${env:TABLE_FEEDBACK}
     TABLE_INPUTS: ${env:TABLE_INPUTS}
+    ARTIFACTS_BUCKET: ${env:ARTIFACTS_BUCKET}
     SERVER_AUTH_TOKEN: ${env:SERVER_AUTH_TOKEN}
   apiGateway:
     resourcePolicy:
@@ -136,6 +137,7 @@ provider:
         - Effect: Allow
           Action:
             - s3:CreateBucket
+            - s3:ListBucket
           Resource: 'arn:aws:s3:::${env:ARTIFACTS_BUCKET}'
         - Effect: Allow
           Action:
