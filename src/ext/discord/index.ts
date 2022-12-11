@@ -1,6 +1,8 @@
 import Discord from 'discord.js';
 import dotenv from 'dotenv';
 
+import { notEmpty } from '../../utils';
+
 dotenv.config();
 const client = new Discord.Client();
 // These are not defined using stage params as they are run via standalone scripts as well
@@ -11,12 +13,12 @@ const DISCORD_BOT_LOGIN_TIMEOUT_MS = 60000;
 const DISCORD_MESSAGE_MAX_LENGTH = 2000;
 
 export async function sendDiscordAdminMessage(
-  messageRaw: string | string[],
+  messageRaw: string | (string | null)[],
 ): Promise<void> {
   await executeBotLogin();
 
   const message = Array.isArray(messageRaw)
-    ? messageRaw.join('\n')
+    ? messageRaw.filter(notEmpty).join('\n')
     : messageRaw;
   const channel = await client.channels.fetch(getAdminChannelId(message));
   if (!(channel instanceof Discord.TextChannel)) return;

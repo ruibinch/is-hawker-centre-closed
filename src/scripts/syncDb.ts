@@ -94,13 +94,13 @@ async function findPreAndPostResetDiffs(preResetData: NEAData) {
     `Before: ${closuresBefore.length} closures, ${hawkerCentresBefore.length} hawker centres`,
     `After: ${closuresAfter.length} closures, ${hawkerCentresAfter.length} hawker centres\n`,
     `${closuresAdded.length} closure(s) added`,
-    ...(closuresAdded.length ? prettifyJSON(closuresAdded) : []),
+    closuresAdded.length > 0 ? prettifyJSON(closuresAdded) : null,
     `${closuresDeleted.length} closure(s) deleted`,
-    ...(closuresDeleted.length ? prettifyJSON(closuresDeleted) : []),
+    closuresDeleted.length > 0 ? prettifyJSON(closuresDeleted) : null,
     `${hawkerCentresAdded.length} hawker centre(s) added`,
-    ...(hawkerCentresAdded.length ? prettifyJSON(hawkerCentresAdded) : []),
+    hawkerCentresAdded.length > 0 ? prettifyJSON(hawkerCentresAdded) : null,
     `${hawkerCentresDeleted.length} hawker centre(s) deleted`,
-    ...(hawkerCentresDeleted.length ? prettifyJSON(hawkerCentresDeleted) : []),
+    hawkerCentresDeleted.length > 0 ? prettifyJSON(hawkerCentresDeleted) : null,
   ]);
 }
 
