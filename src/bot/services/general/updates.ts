@@ -26,6 +26,13 @@ type ChangelogEntry = {
 function getChangelogEntries(): ChangelogEntry[] {
   return [
     {
+      version: '[0.20.1]',
+      date: '2022-12-25',
+      details: [
+        'Fixed missing hawker centre search results when no next closure date is available',
+      ],
+    },
+    {
       version: '[0.20.0]',
       date: '2022-10-02',
       details: [

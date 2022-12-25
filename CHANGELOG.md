@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.20.1] - 2022-12-25
+
+### Fixed
+
+- Missing hawker centre search results when no next closure date is available
+
 ## [0.20.0] - 2022-10-02
 
 ### Added
