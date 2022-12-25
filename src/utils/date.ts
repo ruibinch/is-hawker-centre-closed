@@ -33,20 +33,6 @@ export function getDateIgnoringTime(timestamp: number): string {
 }
 
 /**
- * "2100-01-01" is used to represent an indefinite end date.
- */
-export function isIndefiniteEndDate(dateString: string): boolean {
-  return dateString === '2100-01-01';
-}
-
-/**
- * "2111-01-01" for start and end date is used to represent a permanent closure.
- */
-export function isPermanentlyClosedDate(dateString: string): boolean {
-  return dateString === '2111-01-01';
-}
-
-/**
  * Returns if the input date string is "recent". This is used in the script to get new users/feedback entries.
  *
  * "recent" is a dynamic definition - for now, it will be defined as 1 week.
@@ -102,8 +88,19 @@ export function makeNextWeekInterval(today: Date): {
   };
 }
 
+// Hacky dates for representation of various edge cases
 export enum HackyDate {
+  INDEFINITE_END_DATE = '2100-01-01',
+  PERMANENTLY_CLOSED_DATE = '2111-01-01',
   NO_NEXT_CLOSURE_DATE_AVAILABLE = '2122-01-01',
+}
+
+export function isIndefiniteEndDate(dateString: string): boolean {
+  return dateString === HackyDate.INDEFINITE_END_DATE;
+}
+
+export function isPermanentlyClosedDate(dateString: string): boolean {
+  return dateString === HackyDate.PERMANENTLY_CLOSED_DATE;
 }
 
 export function isNoNextClosureDateAvailable(dateString: string): boolean {

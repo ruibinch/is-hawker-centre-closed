@@ -3,6 +3,7 @@ import type { HawkerCentre } from '../../../../src/models/HawkerCentre';
 import { Input } from '../../../../src/models/Input';
 import type { User } from '../../../../src/models/User';
 import type { TelegramUser } from '../../../../src/telegram';
+import { HackyDate } from '../../../../src/utils/date';
 
 export const mockClosures: Closure[] = [
   {
@@ -121,7 +122,7 @@ export const mockClosures: Closure[] = [
     remarks: null,
     name: 'Petalburg Gym',
     startDate: '2021-03-30',
-    endDate: '2100-01-01',
+    endDate: HackyDate.INDEFINITE_END_DATE,
   },
   {
     id: '111',
