@@ -16,6 +16,7 @@ import { HawkerCentre } from '../../../models/HawkerCentre';
 import { notEmpty } from '../../../utils';
 import {
   currentDate,
+  HackyDate,
   makeNextWeekInterval,
   makeThisWeekInterval,
 } from '../../../utils/date';
@@ -184,6 +185,7 @@ function filterByDate(closures: Closure[], modifier: SearchModifier) {
 
 /**
  * Returns a list of upcoming closures for each hawker centre in the input closures list.
+ * If the hawker centre has no upcoming closure, return a dummy closure object with start/end date set to "2122-01-01".
  */
 function getNextClosuresForEachHC(closures: Closure[]) {
   const closuresByHC = closures.reduce(
@@ -197,9 +199,40 @@ function getNextClosuresForEachHC(closures: Closure[]) {
     {},
   );
 
-  const nextClosuresForEachHC = Object.values(closuresByHC)
-    .map((closuresList) => getNextOccurringClosure(closuresList))
-    .filter(notEmpty);
+  const nextClosuresByHC = Object.entries(closuresByHC).reduce(
+    (_nextClosuresByHC: Record<string, Closure>, closuresByHCEntry) => {
+      const [hawkerCentreId, hawkerCentreClosures] = closuresByHCEntry;
 
-  return nextClosuresForEachHC;
+      // If the hawker centre has a next occurring closure, return it, else we return a dummy value
+      // This avoids the hawker centre from being omitted entirely in the output list
+      const nextOccurringClosureWithFallback: Closure | undefined = (() => {
+        const nextOccurringClosure =
+          getNextOccurringClosure(hawkerCentreClosures);
+        if (nextOccurringClosure) return nextOccurringClosure;
+
+        // If this hawker centre doesn't even have any reference Closure object, just ignore it for convenience's sake
+        const sampleClosureObject: Closure | undefined =
+          hawkerCentreClosures[0];
+        if (!sampleClosureObject) return undefined;
+
+        // Set start/end date to dummy date, reset reason and remarks to prevent additional output details
+        return {
+          ...sampleClosureObject,
+          startDate: HackyDate.NO_NEXT_CLOSURE_DATE_AVAILABLE,
+          endDate: HackyDate.NO_NEXT_CLOSURE_DATE_AVAILABLE,
+          reason: 'cleaning',
+          remarks: null,
+          id: `${hawkerCentreId}__${HackyDate.NO_NEXT_CLOSURE_DATE_AVAILABLE}`,
+        };
+      })();
+
+      if (nextOccurringClosureWithFallback) {
+        _nextClosuresByHC[hawkerCentreId] = nextOccurringClosureWithFallback;
+      }
+      return _nextClosuresByHC;
+    },
+    {},
+  );
+
+  return Object.values(nextClosuresByHC);
 }

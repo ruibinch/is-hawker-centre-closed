@@ -4,6 +4,7 @@
 
 import { Closure } from '../models/Closure';
 import { HawkerCentre } from '../models/HawkerCentre';
+import { HackyDate } from '../utils/date';
 import { generateHash } from './utils';
 
 const seahImHc: HawkerCentre = {
@@ -41,8 +42,8 @@ export function generateManualClosures(): Closure[] {
 
   const tanglinHaltClosure = (() => {
     const reason = 'others' as const;
-    const startDate = '2111-01-01';
-    const endDate = '2111-01-01';
+    const startDate = HackyDate.PERMANENTLY_CLOSED_DATE;
+    const endDate = HackyDate.PERMANENTLY_CLOSED_DATE;
 
     return {
       // prettier-ignore
