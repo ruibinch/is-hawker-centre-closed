@@ -2,7 +2,11 @@ import { isSameYear, parseISO } from 'date-fns';
 
 import type { ClosurePartial, ClosureReason } from '../../models/Closure';
 import { escapeCharacters } from '../../telegram';
-import { isIndefiniteEndDate, isPermanentlyClosedDate } from '../../utils/date';
+import {
+  isIndefiniteEndDate,
+  isNoNextClosureDateAvailable,
+  isPermanentlyClosedDate,
+} from '../../utils/date';
 import { t } from '../lang';
 import { formatDateDisplay } from './helpers';
 
@@ -71,10 +75,13 @@ export function makeClosurePeriodSnippet(
 ): string {
   if (!startDate || !endDate) return '';
 
+  // Hacky date checks
   if (isPermanentlyClosedDate(endDate)) {
     return t('common.time.time-period.permanent-closure');
   }
-
+  if (isNoNextClosureDateAvailable(endDate)) {
+    return t('common.time.time-period.no-next-closure-date-available');
+  }
   if (isIndefiniteEndDate(endDate)) {
     return t('common.time.time-period.indefinite-end-date', {
       startDate: formatDateDisplay(startDate, {

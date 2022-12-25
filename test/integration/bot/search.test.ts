@@ -196,6 +196,17 @@ describe('[bot] [integration] Search module', () => {
       assertBotResponse(sendMessageSpy, { text: expectedMessage });
     });
 
+    it('["sootopolis"] returns a message stating that no next closure date is available', async () => {
+      const inputMessage = 'sootopolis';
+      const expectedMessage =
+        'Here are the hawker centres relating to the keyword *sootopolis* and their next closure dates:\n\n' +
+        '1\\. *Sootopolis Gym*\n     _No next closure date available_';
+
+      await callBot(inputMessage);
+      assertInputSaved(addInputToDBSpy, inputMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
+    });
+
     it('["Tdy" / "Today"] returns all closures occurring today', async () => {
       const inputMessage1 = 'Tdy';
       const inputMessage2 = 'Today';

@@ -123,6 +123,15 @@ export const mockClosures: Closure[] = [
     startDate: '2021-03-30',
     endDate: '2100-01-01',
   },
+  {
+    id: '111',
+    hawkerCentreId: 38,
+    name: 'Sootopolis Gym',
+    reason: 'cleaning',
+    remarks: null,
+    startDate: '2020-01-01',
+    endDate: '2020-01-01',
+  },
 ];
 
 export const mockHawkerCentres: HawkerCentre[] = [

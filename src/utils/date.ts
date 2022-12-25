@@ -101,3 +101,11 @@ export function makeNextWeekInterval(today: Date): {
     end: nextWeekEnd,
   };
 }
+
+export enum HackyDate {
+  NO_NEXT_CLOSURE_DATE_AVAILABLE = '2122-01-01',
+}
+
+export function isNoNextClosureDateAvailable(dateString: string): boolean {
+  return dateString === HackyDate.NO_NEXT_CLOSURE_DATE_AVAILABLE;
+}

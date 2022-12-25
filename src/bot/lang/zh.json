@@ -101,6 +101,7 @@
   "common.closure-reason.others": "其他工程",
   "common.time.time-period": "{{startDate}}至{{endDate}}",
   "common.time.time-period.permanent-closure": "永久关闭",
+  "common.time.time-period.no-next-closure-date-available": "没有下个关闭时期",
   "common.time.time-period.indefinite-end-date": "{{startDate}}直到无限期",
   "common.time.yesterday": "昨天",
   "common.time.today": "今天",
