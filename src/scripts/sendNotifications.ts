@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 
 import { sendNotifications } from '../bot/handlers/notificationsTrigger';
 import type { NotificationMessage } from '../bot/services/notifications/types';
+import { escapeCharacters } from '../telegram';
 
 dotenv.config();
 
@@ -15,7 +16,10 @@ export async function run(): Promise<void> {
       userId: 60238293,
       message: 'TESTING',
     },
-  ];
+  ].map((notification) => ({
+    ...notification,
+    message: escapeCharacters(notification.message),
+  }));
 
   const notificationsResult = await sendNotifications(notifications);
   console.info('sendNotifications result', notificationsResult);
