@@ -6,13 +6,7 @@ type OverrideInfo = {
   newValue: string;
 };
 
-const OVERRIDES: OverrideInfo[] = [
-  {
-    id: 74,
-    attributeName: 'name',
-    newValue: 'New Upper Changi Road Blk 208B (Bedok Interchange Food Centre)',
-  },
-];
+const OVERRIDES: OverrideInfo[] = [];
 
 /**
  * Performs a manual override of some records.
