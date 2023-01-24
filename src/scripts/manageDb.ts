@@ -129,10 +129,10 @@ async function resetTables() {
     ClosureObject.getTableName(),
     HawkerCentre.getTableName(),
   ]);
-
   await sleep(DDB_PROPAGATE_DURATION);
 
   await createTables([ClosureObject.getSchema(), HawkerCentre.getSchema()]);
+  await sleep(DDB_PROPAGATE_DURATION);
 }
 
 export async function run(operationInput?: string) {
