@@ -131,7 +131,15 @@ async function resetTables() {
   ]);
   await sleep(DDB_PROPAGATE_DURATION);
 
-  await createTables([ClosureObject.getSchema(), HawkerCentre.getSchema()]);
+  // primitive method of 1 retry
+  // creation might fail if the deletion has not fully propagated yet
+  try {
+    await createTables([ClosureObject.getSchema(), HawkerCentre.getSchema()]);
+  } catch (err) {
+    // if table creation failed the first time, wait again before retrying
+    await sleep(DDB_PROPAGATE_DURATION);
+    await createTables([ClosureObject.getSchema(), HawkerCentre.getSchema()]);
+  }
   await sleep(DDB_PROPAGATE_DURATION);
 }
 
