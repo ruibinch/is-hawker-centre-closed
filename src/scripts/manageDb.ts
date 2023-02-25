@@ -125,13 +125,36 @@ async function deleteTables(_tablesToDelete?: string[]) {
 async function resetTables() {
   await sendDiscordAdminMessage(`**[${getStage()}]  📢🔄 RESET IN PROGRESS **`);
 
-  await deleteTables([
-    ClosureObject.getTableName(),
-    HawkerCentre.getTableName(),
-  ]);
-  await sleep(DDB_PROPAGATE_DURATION);
+  try {
+    await deleteTables([
+      ClosureObject.getTableName(),
+      HawkerCentre.getTableName(),
+    ]);
+    await sleep(DDB_PROPAGATE_DURATION);
+  } catch (err) {
+    if (
+      err instanceof DBError &&
+      // consider if having a custom error is better, e.g. DBTableNotFoundError
+      err.message.includes('Requested resource not found')
+    ) {
+      await sendDiscordAdminMessage(
+        `⚠️ Unable to find tables, skipping deletion;\n${err.message}`,
+      );
+    } else {
+      // still throw error for other errors in case it's some weird scenario
+      throw err;
+    }
+  }
 
-  await createTables([ClosureObject.getSchema(), HawkerCentre.getSchema()]);
+  // primitive method of 1 retry
+  // creation might fail if the deletion has not fully propagated yet
+  try {
+    await createTables([ClosureObject.getSchema(), HawkerCentre.getSchema()]);
+  } catch (err) {
+    // if table creation failed the first time, wait again before retrying
+    await sleep(DDB_PROPAGATE_DURATION);
+    await createTables([ClosureObject.getSchema(), HawkerCentre.getSchema()]);
+  }
   await sleep(DDB_PROPAGATE_DURATION);
 }
 
