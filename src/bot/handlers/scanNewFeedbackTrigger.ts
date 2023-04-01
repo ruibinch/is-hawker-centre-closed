@@ -3,7 +3,7 @@ import type { APIGatewayProxyResult } from 'aws-lambda';
 import dotenv from 'dotenv';
 
 import { makeLambdaResponse } from '../../ext/aws/lambda';
-import { run as executeScanNewEntries } from '../../scripts/scanNewEntries';
+import { run as executeScanNewFeedback } from '../../scripts/scanNewFeedback';
 import { getStage } from '../../utils/stage';
 
 dotenv.config();
@@ -17,10 +17,10 @@ Sentry.AWSLambda.init({
 export const handler = Sentry.AWSLambda.wrapHandler(
   async (): Promise<APIGatewayProxyResult> => {
     try {
-      await executeScanNewEntries();
+      await executeScanNewFeedback(1);
       return makeLambdaResponse(204);
     } catch (error) {
-      console.error('[scanNewEntriesTrigger]', error);
+      console.error('[scanNewFeedbackTrigger]', error);
       Sentry.captureException(error);
 
       return makeLambdaResponse(400);

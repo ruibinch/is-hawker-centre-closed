@@ -13,10 +13,14 @@ custom:
     includeModules: true
   botHandlers: src/bot/handlers
   serverHandlers: src/server/handlers
+  scanNewFeedbackTriggerEnabled:
+    dev: false
+    prod: true
 
 plugins:
   - serverless-webpack
   - serverless-offline
+  - serverless-disable-functions
 
 params:
   prod:
@@ -37,6 +41,7 @@ provider:
     DISCORD_BOT_TOKEN: ${env:DISCORD_BOT_TOKEN}
     DISCORD_ADMIN_DEV_CHANNEL_ID: ${env:DISCORD_ADMIN_DEV_CHANNEL_ID}
     DISCORD_ADMIN_PROD_CHANNEL_ID: ${env:DISCORD_ADMIN_PROD_CHANNEL_ID}
+    DISCORD_FEEDBACK_CHANNEL_ID: ${env:DISCORD_FEEDBACK_CHANNEL_ID}
     REGION: ${env:REGION}
     SENTRY_DSN: ${env:SENTRY_DSN}
     TABLE_CLOSURES: ${env:TABLE_CLOSURES}
@@ -168,11 +173,12 @@ functions:
       - schedule: cron(0 22 * * ? *)
     maximumEventAge: 60
     maximumRetryAttempts: 0
-  scanNewEntriesTrigger:
-    handler: ${self:custom.botHandlers}/scanNewEntriesTrigger.handler
+  scanNewFeedbackTrigger:
+    handler: ${self:custom.botHandlers}/scanNewFeedbackTrigger.handler
+    enabled: ${self:custom.scanNewFeedbackTriggerEnabled.${opt:stage}}
     events:
-      # runs every Sat at 20:03 UTC, or 4:03am SGT
-      - schedule: cron(3 20 ? * sat *)
+      # runs daily at 20:03 UTC, or 4:03am SGT
+      - schedule: cron(3 20 * * ? *)
     maximumEventAge: 60
     maximumRetryAttempts: 0
   runBackupTrigger:

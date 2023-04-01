@@ -8,6 +8,7 @@ const client = new Discord.Client();
 // These are not defined using stage params as they are run via standalone scripts as well
 const adminDevChannelId = process.env.DISCORD_ADMIN_DEV_CHANNEL_ID ?? '';
 const adminProdChannelId = process.env.DISCORD_ADMIN_PROD_CHANNEL_ID ?? '';
+const adminFeedbackChannelId = process.env.DISCORD_FEEDBACK_CHANNEL_ID ?? '';
 
 const DISCORD_BOT_LOGIN_TIMEOUT_MS = 60000;
 const DISCORD_MESSAGE_MAX_LENGTH = 2000;
@@ -55,6 +56,23 @@ export async function sendDiscordAdminMessage(
       ),
     Promise.resolve([] as Array<Discord.Message | null>),
   );
+}
+
+export async function sendDiscordFeedbackMessage(
+  messageRaw: string | string[],
+) {
+  await executeBotLogin();
+
+  const message = Array.isArray(messageRaw)
+    ? messageRaw.join('\n')
+    : messageRaw;
+  const channel = await client.channels.fetch(adminFeedbackChannelId);
+  if (!(channel instanceof Discord.TextChannel)) return;
+
+  await channel.send(message).catch((err) => {
+    console.error('[discord > sendDiscordFeedbackMessage]', err);
+    return null;
+  });
 }
 
 // Add timeout of 60s to bot login to prevent indefinite retries when Discord API is down
