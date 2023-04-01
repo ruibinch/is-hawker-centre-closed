@@ -5140,6 +5140,11 @@ serialize-javascript@^6.0.0:
   dependencies:
     randombytes "^2.1.0"
 
+serverless-disable-functions@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/serverless-disable-functions/-/serverless-disable-functions-1.0.0.tgz#d93ac66084e829f93542220c2c2a5410a1339c4b"
+  integrity sha512-wUfndxhUlfK8ICqeSWqoAHUtotWlRYGffAeuqwp7iwqkM/utch3XO6i+0H7mkOx3X/Zd1G4A9ivzvZg0Vo9JYw==
+
 serverless-offline@8.3.1:
   version "8.3.1"
   resolved "https://registry.yarnpkg.com/serverless-offline/-/serverless-offline-8.3.1.tgz#1ae3dd0a75f3359723db3c2058fdba009ffe4523"

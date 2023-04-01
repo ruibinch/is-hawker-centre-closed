@@ -13,10 +13,14 @@ custom:
     includeModules: true
   botHandlers: src/bot/handlers
   serverHandlers: src/server/handlers
+  scanNewFeedbackTriggerEnabled:
+    dev: false
+    prod: true
 
 plugins:
   - serverless-webpack
   - serverless-offline
+  - serverless-disable-functions
 
 params:
   prod:
@@ -171,6 +175,7 @@ functions:
     maximumRetryAttempts: 0
   scanNewFeedbackTrigger:
     handler: ${self:custom.botHandlers}/scanNewFeedbackTrigger.handler
+    enabled: ${self:custom.scanNewFeedbackTriggerEnabled.${opt:stage}}
     events:
       # runs daily at 20:03 UTC, or 4:03am SGT
       - schedule: cron(3 20 * * ? *)

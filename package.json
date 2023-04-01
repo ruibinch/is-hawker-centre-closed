@@ -60,6 +60,7 @@
     "i18n-extract": "0.6.7",
     "jest": "27.4.5",
     "prettier": "2.5.1",
+    "serverless-disable-functions": "^1.0.0",
     "serverless-offline": "8.3.1",
     "serverless-webpack": "5.6.0",
     "ts-jest": "27.1.2",
