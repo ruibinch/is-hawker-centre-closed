@@ -169,11 +169,11 @@ functions:
       - schedule: cron(0 22 * * ? *)
     maximumEventAge: 60
     maximumRetryAttempts: 0
-  scanNewEntriesTrigger:
-    handler: ${self:custom.botHandlers}/scanNewEntriesTrigger.handler
+  scanNewFeedbackTrigger:
+    handler: ${self:custom.botHandlers}/scanNewFeedbackTrigger.handler
     events:
-      # runs every Sat at 20:03 UTC, or 4:03am SGT
-      - schedule: cron(3 20 ? * sat *)
+      # runs daily at 20:03 UTC, or 4:03am SGT
+      - schedule: cron(3 20 * * ? *)
     maximumEventAge: 60
     maximumRetryAttempts: 0
   runBackupTrigger:
