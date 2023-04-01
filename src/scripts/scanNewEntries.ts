@@ -19,10 +19,10 @@ async function scanNewEntries() {
   }
 
   const newUsers = getAllUsersResponse.value.filter((entry) =>
-    isRecent(entry.createdAt),
+    isRecent(entry.createdAt, 7),
   );
   const newFeedback = getAllFeedbackResponse.value.filter((entry) =>
-    isRecent(entry.createdAt),
+    isRecent(entry.createdAt, 7),
   );
 
   const newUsersOutput = newUsers.map((user, idx) => {

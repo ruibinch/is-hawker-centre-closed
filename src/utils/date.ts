@@ -33,16 +33,14 @@ export function getDateIgnoringTime(timestamp: number): string {
 }
 
 /**
- * Returns if the input date string is "recent". This is used in the script to get new users/feedback entries.
- *
- * "recent" is a dynamic definition - for now, it will be defined as 1 week.
+ * Returns if the input date string is "recent", as denoted by the `withinDays` param value.
  */
-export function isRecent(dateString: string): boolean {
+export function isRecent(dateString: string, withinDays: number): boolean {
   const date = new Date(dateString);
   const today = currentDate();
 
   return isWithinInterval(date, {
-    start: subDays(today, 7),
+    start: subDays(today, withinDays),
     end: today,
   });
 }
