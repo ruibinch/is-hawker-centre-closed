@@ -120,6 +120,8 @@ describe('[bot] [integration] General module', () => {
     it('["/updates"] returns the latest updates', async () => {
       const inputMessage = '/updates';
       const updateEntries = [
+        '*\\[0\\.21\\.0\\] 2023\\-06\\-18*\n' +
+          '\u{00B7} Implemented fuzzy search for better search matching',
         '*\\[0\\.20\\.1\\] 2022\\-12\\-25*\n' +
           '\u{00B7} Fixed missing hawker centre search results when no next closure date is available',
         '*\\[0\\.20\\.0\\] 2022\\-10\\-02*\n' +

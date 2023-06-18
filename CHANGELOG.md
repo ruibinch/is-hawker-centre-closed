@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.21.0] - 2023-06-18
+
+### Added
+
+- Fuzzy search for better search matching
+
 ## [0.20.1] - 2022-12-25
 
 ### Fixed
