@@ -133,7 +133,10 @@ export async function getInputsFromTimestamp(
     const inputsFromTimestamp = inputsAll.filter(
       (input) => input.createdAtTimestamp >= fromTimestamp,
     );
-    return Result.Ok(inputsFromTimestamp);
+    const inputsFromTimestampSorted = [...inputsFromTimestamp].sort(
+      (a, b) => a.createdAtTimestamp - b.createdAtTimestamp,
+    );
+    return Result.Ok(inputsFromTimestampSorted);
 
     // TODO: restructure inputs table schema to allow for full querying by timestamp (e.g. using year as a key)
 

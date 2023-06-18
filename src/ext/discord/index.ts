@@ -8,7 +8,8 @@ const client = new Discord.Client();
 // These are not defined using stage params as they are run via standalone scripts as well
 const adminDevChannelId = process.env.DISCORD_ADMIN_DEV_CHANNEL_ID ?? '';
 const adminProdChannelId = process.env.DISCORD_ADMIN_PROD_CHANNEL_ID ?? '';
-const adminFeedbackChannelId = process.env.DISCORD_FEEDBACK_CHANNEL_ID ?? '';
+const feedbackChannelId = process.env.DISCORD_FEEDBACK_CHANNEL_ID ?? '';
+const analysisChannelId = process.env.DISCORD_ANALYSIS_CHANNEL_ID ?? '';
 
 const DISCORD_BOT_LOGIN_TIMEOUT_MS = 60000;
 const DISCORD_MESSAGE_MAX_LENGTH = 2000;
@@ -66,11 +67,23 @@ export async function sendDiscordFeedbackMessage(
   const message = Array.isArray(messageRaw)
     ? messageRaw.join('\n')
     : messageRaw;
-  const channel = await client.channels.fetch(adminFeedbackChannelId);
+  const channel = await client.channels.fetch(feedbackChannelId);
   if (!(channel instanceof Discord.TextChannel)) return;
 
   await channel.send(message).catch((err) => {
     console.error('[discord > sendDiscordFeedbackMessage]', err);
+    return null;
+  });
+}
+
+export async function sendDiscordAnalysisMessage(message: string) {
+  await executeBotLogin();
+
+  const channel = await client.channels.fetch(analysisChannelId);
+  if (!(channel instanceof Discord.TextChannel)) return;
+
+  await channel.send(message).catch((err) => {
+    console.error('[discord > sendDiscordAnalysisMessage]', err);
     return null;
   });
 }
