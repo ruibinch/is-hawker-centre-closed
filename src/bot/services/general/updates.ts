@@ -26,6 +26,11 @@ type ChangelogEntry = {
 function getChangelogEntries(): ChangelogEntry[] {
   return [
     {
+      version: '[0.21.0]',
+      date: '2023-06-18',
+      details: ['Implemented fuzzy search for better search matching'],
+    },
+    {
       version: '[0.20.1]',
       date: '2022-12-25',
       details: [

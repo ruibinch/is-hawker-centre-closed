@@ -3,6 +3,7 @@ const ACRONYMS: Record<string, string> = {
   blk: 'block',
   bt: 'bukit',
   clem: 'clementi',
+  ctr: 'centre',
   ecp: 'east coast park',
   hg: 'hougang',
   je: 'jurong east',

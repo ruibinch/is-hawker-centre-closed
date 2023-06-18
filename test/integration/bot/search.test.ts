@@ -79,6 +79,17 @@ describe('[bot] [integration] Search module', () => {
       assertBotResponse(sendMessageSpy, { text: expectedMessage });
     });
 
+    it('["littlerot"] returns closures based on fuzzy matching', async () => {
+      const inputMessage = 'littlerot';
+      const expectedMessage =
+        'Here are the hawker centres relating to the keyword *littlerot* and their next closure dates:\n\n' +
+        '1\\. *Littleroot Town*\n     _today to tomorrow_';
+
+      await callBot(inputMessage);
+      assertInputSaved(addInputToDBSpy, inputMessage);
+      assertBotResponse(sendMessageSpy, { text: expectedMessage });
+    });
+
     it('["littleroot today"] returns a single closure occurring today', async () => {
       const inputMessage = 'littleroot today';
       const expectedMessage =
