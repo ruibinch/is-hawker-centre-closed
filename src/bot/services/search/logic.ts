@@ -9,14 +9,14 @@ import {
   startOfDay,
   startOfMonth,
 } from 'date-fns';
+import Fuse from 'fuse.js';
 
 import { Result, type ResultType } from '../../../lib/Result';
-import { type Closure, getAllClosures } from '../../../models/Closure';
+import { getAllClosures, type Closure } from '../../../models/Closure';
 import { HawkerCentre } from '../../../models/HawkerCentre';
-import { notEmpty } from '../../../utils';
 import {
-  currentDate,
   HackyDate,
+  currentDate,
   makeNextWeekInterval,
   makeThisWeekInterval,
 } from '../../../utils/date';
@@ -104,8 +104,8 @@ export function filterByKeyword<T extends Closure | HawkerCentre>(
     .map(expandAcronymsAndSpellcheck)
     .filter(isRelevantKeyword);
 
-  return items.filter((item) =>
-    searchKeywords.every((searchKeyword) => {
+  const exactMatches = items.filter((item) => {
+    return searchKeywords.every((searchKeyword) => {
       const filterRegex = new RegExp(`\\b${searchKeyword.toLowerCase()}`);
       return (
         filterRegex.test(item.name.toLowerCase()) ||
@@ -114,8 +114,40 @@ export function filterByKeyword<T extends Closure | HawkerCentre>(
         (item.keywords &&
           item.keywords.some((hcKeyword) => filterRegex.test(hcKeyword)))
       );
-    }),
+    });
+  });
+  if (exactMatches.length > 0) {
+    return exactMatches;
+  }
+
+  // only use fuzzy search when no exact matches are found
+  const fuse = new Fuse(items, {
+    includeScore: true,
+    isCaseSensitive: false,
+    ignoreLocation: true,
+    threshold: 0.3, // TODO: to evaluate threshold
+    keys: ['name', 'nameSecondary', 'keywords'],
+  });
+
+  const fuzzyMatchesWithScore = searchKeywords.reduce(
+    (_fuzzyMatches: { item: T; score: number | undefined }[], k) => {
+      const results = fuse.search(k);
+      const matches = results.map((result) => ({
+        item: result.item,
+        score: result.score,
+      }));
+
+      _fuzzyMatches.push(...matches);
+      return _fuzzyMatches;
+    },
+    [],
   );
+  const fuzzyMatches = [...fuzzyMatchesWithScore]
+    // best match comes first
+    .sort((a, b) => (a.score ?? 0) - (b.score ?? 0))
+    .map((match) => match.item);
+
+  return fuzzyMatches;
 }
 
 /**
