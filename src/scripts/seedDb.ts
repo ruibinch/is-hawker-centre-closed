@@ -43,14 +43,14 @@ export async function run(
   await sendDiscordAdminMessage([
     `**[${getStage()}]  🌱 SEEDING DB**`,
     'Data obtained from data.gov.sg API:',
-    `  1. ${closuresFromApi.length} closures`,
-    `  2. ${hawkerCentresFromApi.length} hawker centres`,
+    `1. ${closuresFromApi.length} closures`,
+    `2. ${hawkerCentresFromApi.length} hawker centres`,
     'After de-duplication:',
-    `  1. ${closuresDedupe.length} closures`,
-    `  2. ${hawkerCentresDedupe.length} hawker centres`,
+    `1. ${closuresDedupe.length} closures`,
+    `2. ${hawkerCentresDedupe.length} hawker centres`,
     'After adding manual entries:',
-    `  1. ${closures.length} closures`,
-    `  2. ${hawkerCentres.length} hawker centres`,
+    `1. ${closures.length} closures`,
+    `2. ${hawkerCentres.length} hawker centres`,
   ]);
   if (props.shouldWriteFile) {
     writeFile(closures, closuresFilename);
@@ -58,12 +58,10 @@ export async function run(
   }
 
   if (!CLI_DRY_RUN) {
-    console.log('Uploading to DynamoDB');
     await uploadClosures(closures);
     await uploadHawkerCentres(hawkerCentres);
 
     if (getStage() === 'prod') {
-      console.log('Saving to S3');
       await saveToS3(ARTIFACTS_BUCKET, {
         [closuresFilename]: closures,
         [hawkerCentresFilename]: hawkerCentres,

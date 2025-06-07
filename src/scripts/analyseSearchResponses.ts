@@ -4,7 +4,6 @@ import path from 'path';
 import { isCommandInModule } from '../bot/commands';
 import { isCallbackQuery } from '../bot/services/helpers';
 import { processSearch } from '../bot/services/search';
-import { initAWSConfig } from '../ext/aws/config';
 import { Closure, getAllClosures } from '../models/Closure';
 import { getInputsFromTimestamp, Input } from '../models/Input';
 
@@ -156,9 +155,6 @@ export async function run(props: {
   startTimestamp: number | undefined;
 }) {
   const { minEmptyResponses, useDDB, startTimestamp } = props;
-  if (useDDB) {
-    initAWSConfig();
-  }
 
   const inputsForSearch = await getInputsForSearch({ useDDB, startTimestamp });
   const closures = await getClosures({ useDDB });

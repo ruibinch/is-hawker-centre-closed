@@ -1,9 +1,14 @@
-import * as AWS from 'aws-sdk';
-import { PromiseResult } from 'aws-sdk/lib/request';
+import {
+  CreateTableCommand,
+  CreateTableCommandOutput,
+  CreateTableInput,
+  DeleteTableCommand,
+  DeleteTableOutput,
+} from '@aws-sdk/client-dynamodb';
 
+import { AWSError } from '../errors/AWSError';
 import { DBError } from '../errors/DBError';
-import { initAWSConfig } from '../ext/aws/config';
-import { DDB_PROPAGATE_DURATION } from '../ext/aws/dynamodb';
+import { DDB_PROPAGATE_DURATION, ddbDocClient } from '../ext/aws/dynamodb';
 import { sendDiscordAdminMessage } from '../ext/discord';
 import { Result, ResultType } from '../lib/Result';
 import { ClosureObject } from '../models/Closure';
@@ -11,33 +16,25 @@ import { Feedback } from '../models/Feedback';
 import { HawkerCentre } from '../models/HawkerCentre';
 import { Input } from '../models/Input';
 import { User } from '../models/User';
-import { sleep, WrappedPromise, wrapPromise } from '../utils';
+import { sleep } from '../utils';
 import { getStage } from '../utils/stage';
 
 const CLI_OPERATION = process.env['CLI_OPERATION'];
-
-initAWSConfig();
-const dynamoDb = new AWS.DynamoDB();
 
 type DynamoDBOperationResult = ResultType<string | undefined, string>;
 
 /**
  * Parses DynamoDB operation results into neat ResultType outputs.
  */
-function parseDynamoDBPromises(
-  outputs: WrappedPromise<
-    PromiseResult<
-      AWS.DynamoDB.CreateTableOutput | AWS.DynamoDB.DeleteTableOutput,
-      AWS.AWSError
-    >
-  >[],
+function parseDynamoDBOutputs(
+  outputs: (CreateTableCommandOutput | DeleteTableOutput | AWSError)[],
 ): DynamoDBOperationResult[] {
   return outputs.map((output) => {
-    if ('error' in output) {
-      return Result.Err(output.error.message);
+    if (output instanceof AWSError) {
+      return Result.Err(output.message);
     }
 
-    return Result.Ok(output.result.TableDescription?.TableName);
+    return Result.Ok(output.TableDescription?.TableName);
   });
 }
 
@@ -47,9 +44,7 @@ function makeListOutput(results: DynamoDBOperationResult[]) {
   return results.map((result, idx) => `${idx + 1}. ${result.value}`).join('\n');
 }
 
-async function createTables(
-  _tableSchemasToCreate?: AWS.DynamoDB.CreateTableInput[],
-) {
+async function createTables(_tableSchemasToCreate?: CreateTableInput[]) {
   const tableSchemasToCreate = _tableSchemasToCreate ?? [
     ClosureObject.getSchema(),
     HawkerCentre.getSchema(),
@@ -59,11 +54,14 @@ async function createTables(
   ];
 
   const createTableOutputs = await Promise.all(
-    tableSchemasToCreate
-      .map((tableSchema) => dynamoDb.createTable(tableSchema).promise())
-      .map(wrapPromise),
+    tableSchemasToCreate.map(async (tableSchema) => {
+      const command = new CreateTableCommand(tableSchema);
+      return ddbDocClient
+        .send(command)
+        .catch((err) => new AWSError(err.message ?? 'Unknown error'));
+    }),
   );
-  const createTableOutputsParsed = parseDynamoDBPromises(createTableOutputs);
+  const createTableOutputsParsed = parseDynamoDBOutputs(createTableOutputs);
   const successOutputs = createTableOutputsParsed.filter((res) => res.isOk);
   const failureOutputs = createTableOutputsParsed.filter((res) => res.isErr);
 
@@ -93,13 +91,14 @@ async function deleteTables(_tablesToDelete?: string[]) {
   ];
 
   const deleteTableOutputs = await Promise.all(
-    tablesToDelete
-      .map((tableName) =>
-        dynamoDb.deleteTable({ TableName: tableName }).promise(),
-      )
-      .map(wrapPromise),
+    tablesToDelete.map(async (tableName) => {
+      const command = new DeleteTableCommand({ TableName: tableName });
+      return ddbDocClient
+        .send(command)
+        .catch((err) => new AWSError(err.message ?? 'Unknown error'));
+    }),
   );
-  const deleteTableOutputsParsed = parseDynamoDBPromises(deleteTableOutputs);
+  const deleteTableOutputsParsed = parseDynamoDBOutputs(deleteTableOutputs);
   const successOutputs = deleteTableOutputsParsed.filter((res) => res.isOk);
   const failureOutputs = deleteTableOutputsParsed.filter((res) => res.isErr);
 

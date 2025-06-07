@@ -1,17 +1,18 @@
-import * as AWS from 'aws-sdk';
+import {
+  DeleteTableCommand,
+  ListBackupsCommand,
+  RestoreTableFromBackupCommand,
+} from '@aws-sdk/client-dynamodb';
 
 import { DBError } from '../errors/DBError';
-import { initAWSConfig, TABLE_FEEDBACK, TABLE_USERS } from '../ext/aws/config';
-import { DDB_PROPAGATE_DURATION } from '../ext/aws/dynamodb';
+import { TABLE_FEEDBACK, TABLE_USERS } from '../ext/aws/config';
+import { DDB_PROPAGATE_DURATION, ddbDocClient } from '../ext/aws/dynamodb';
 import { sendDiscordAdminMessage } from '../ext/discord';
 import { sleep } from '../utils';
 import { formatDateWithTime } from '../utils/date';
 import { getStage } from '../utils/stage';
 
 const CLI_KEYWORD = process.env['CLI_KEYWORD'];
-
-initAWSConfig();
-const dynamoDb = new AWS.DynamoDB();
 
 function makeSuccessMessage(s: string) {
   return `**RESTORE SUCCESSFUL**\n${s}`;
@@ -26,7 +27,8 @@ function makeInProgressMessage(s: string) {
 }
 
 async function restoreBackup(tableName: string) {
-  const backupsList = await dynamoDb.listBackups().promise();
+  const listBackupsCommand = new ListBackupsCommand();
+  const backupsList = await ddbDocClient.send(listBackupsCommand);
   if (!backupsList.BackupSummaries) {
     const errorMessage = makeErrorMessage('Unable to view list of backups');
     await sendDiscordAdminMessage(errorMessage);
@@ -61,9 +63,10 @@ async function restoreBackup(tableName: string) {
     throw new DBError(errorMessage);
   }
 
-  const deleteOutput = await dynamoDb
-    .deleteTable({ TableName: fullTableName })
-    .promise();
+  const deleteTableCommand = new DeleteTableCommand({
+    TableName: fullTableName,
+  });
+  const deleteOutput = await ddbDocClient.send(deleteTableCommand);
   await sendDiscordAdminMessage(
     makeInProgressMessage(
       `Deleted table "${deleteOutput.TableDescription?.TableName}"`,
@@ -72,17 +75,18 @@ async function restoreBackup(tableName: string) {
 
   await sleep(DDB_PROPAGATE_DURATION);
 
-  const restoreOutput = await dynamoDb
-    .restoreTableFromBackup({
-      BackupArn: latestBackupArn,
-      TargetTableName: fullTableName,
-    })
-    .promise();
+  const restoreTableFromBackupCommand = new RestoreTableFromBackupCommand({
+    BackupArn: latestBackupArn,
+    TargetTableName: fullTableName,
+  });
+  const restoreOutput = await ddbDocClient.send(restoreTableFromBackupCommand);
   const restoreSummary = restoreOutput.TableDescription?.RestoreSummary;
   const restoreMessage = `Restored backup "${
     restoreSummary ? restoreSummary.SourceBackupArn : 'null'
   }" created at "${
-    restoreSummary ? formatDateWithTime(restoreSummary.RestoreDateTime) : 'null'
+    restoreSummary?.RestoreDateTime
+      ? formatDateWithTime(restoreSummary.RestoreDateTime)
+      : 'null'
   }" to table "${fullTableName}"`;
 
   await sendDiscordAdminMessage(makeSuccessMessage(restoreMessage));

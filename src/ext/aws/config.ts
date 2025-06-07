@@ -1,13 +1,9 @@
-import * as AWS from 'aws-sdk';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-export const initAWSConfig = (): void => {
-  AWS.config.update({
-    // reads from .env file
-    region: process.env.REGION,
-  });
+export const awsConfig = {
+  region: process.env.REGION,
 };
 
 // reads from .env file

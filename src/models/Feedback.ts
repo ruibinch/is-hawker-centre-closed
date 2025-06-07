@@ -1,16 +1,14 @@
-import * as AWS from 'aws-sdk';
+import { CreateTableInput } from '@aws-sdk/client-dynamodb';
+import { PutCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
 import { formatISO } from 'date-fns';
 
 import { AWSError } from '../errors/AWSError';
-import { initAWSConfig, TABLE_FEEDBACK } from '../ext/aws/config';
-import { getDynamoDBBillingDetails } from '../ext/aws/dynamodb';
+import { TABLE_FEEDBACK } from '../ext/aws/config';
+import { ddbDocClient, getDynamoDBBillingDetails } from '../ext/aws/dynamodb';
 import { Result, type ResultType } from '../lib/Result';
-import { wrapUnknownError } from '../utils';
+import { prettifyJSON, wrapUnknownError } from '../utils';
 import { currentDate } from '../utils/date';
 import { getStage } from '../utils/stage';
-
-initAWSConfig();
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 type FeedbackProps = {
   feedbackId: string;
@@ -46,7 +44,7 @@ export class Feedback {
     return `${TABLE_FEEDBACK}-${getStage()}`;
   }
 
-  static getSchema(): AWS.DynamoDB.CreateTableInput {
+  static getSchema(): CreateTableInput {
     return {
       ...getDynamoDBBillingDetails(),
       TableName: this.getTableName(),
@@ -67,17 +65,13 @@ export async function addFeedbackToDB(
   feedback: Feedback,
 ): Promise<ResultType<void, Error>> {
   try {
-    const putOutput = await dynamoDb
-      .put({
-        TableName: Feedback.getTableName(),
-        Item: feedback,
-        ConditionExpression: 'attribute_not_exists(feedbackId)',
-      })
-      .promise();
-
-    if (putOutput.$response.error) {
-      return Result.Err(new AWSError());
-    }
+    console.info(`Adding feedback to DB: ${prettifyJSON(feedback)}`);
+    const command = new PutCommand({
+      TableName: Feedback.getTableName(),
+      Item: feedback,
+      ConditionExpression: 'attribute_not_exists(feedbackId)',
+    });
+    await ddbDocClient.send(command);
 
     return Result.Ok();
   } catch (err) {
@@ -87,12 +81,12 @@ export async function addFeedbackToDB(
 
 export async function getAllFeedback(): Promise<ResultType<Feedback[], Error>> {
   try {
-    const scanOutput = await dynamoDb
-      .scan({ TableName: Feedback.getTableName() })
-      .promise();
+    console.info(`Fetching all feedback from ${Feedback.getTableName()}`);
+    const command = new ScanCommand({ TableName: Feedback.getTableName() });
+    const scanOutput = await ddbDocClient.send(command);
 
     if (!scanOutput.Items) {
-      return Result.Err(new AWSError());
+      throw new AWSError('[getAllFeedback] Missing items in scan output');
     }
 
     return Result.Ok(scanOutput.Items as Feedback[]);

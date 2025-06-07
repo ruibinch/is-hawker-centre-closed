@@ -1,6 +1,6 @@
 export class AWSError extends Error {
-  constructor() {
-    super('AWS operation error');
+  constructor(message?: string | null | undefined) {
+    super(`AWS operation error: ${message}`);
 
     Object.setPrototypeOf(this, AWSError.prototype);
   }
