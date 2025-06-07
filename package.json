@@ -43,13 +43,12 @@
     "prettify": "prettier --write \"**/*.{ts,js,json}\""
   },
   "devDependencies": {
-    "@types/aws-lambda": "8.10.89",
+    "@types/aws-lambda": "8.10.149",
     "@types/i18n-js": "3.8.2",
     "@types/jest": "27.0.3",
     "@types/node": "20.10.0",
     "@typescript-eslint/eslint-plugin": "5.8.1",
     "@typescript-eslint/parser": "5.8.1",
-    "aws-sdk": "2.1267.0",
     "eslint": "8.5.0",
     "eslint-config-airbnb-typescript": "16.1.0",
     "eslint-config-prettier": "8.3.0",
