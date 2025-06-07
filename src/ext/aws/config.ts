@@ -3,6 +3,10 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+export const awsConfig = {
+  region: process.env.REGION,
+};
+
 export const initAWSConfig = (): void => {
   AWS.config.update({
     // reads from .env file
