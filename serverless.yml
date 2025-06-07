@@ -2,15 +2,14 @@ org: ruibinch
 app: ihcc
 service: ishawkercentreclosed
 
-frameworkVersion: '3'
+frameworkVersion: ^4.17.0
 configValidationMode: error
 
-useDotenv: true
-
 custom:
-  webpack:
-    packager: yarn
-    includeModules: true
+  build:
+    esbuild:
+      bundle: true
+      minify: false
   botHandlers: src/bot/handlers
   serverHandlers: src/server/handlers
   scanNewFeedbackTriggerEnabled:
@@ -18,15 +17,16 @@ custom:
     prod: true
 
 plugins:
-  - serverless-webpack
   - serverless-offline
   - serverless-disable-functions
 
-params:
+stages:
   prod:
-    TELEGRAM_BOT_TOKEN: ${env:TELEGRAM_BOT_TOKEN_PROD}
+    params:
+      TELEGRAM_BOT_TOKEN: ${env:TELEGRAM_BOT_TOKEN_PROD}
   dev:
-    TELEGRAM_BOT_TOKEN: ${env:TELEGRAM_BOT_TOKEN_DEV}
+    params:
+      TELEGRAM_BOT_TOKEN: ${env:TELEGRAM_BOT_TOKEN_DEV}
 
 provider:
   name: aws
@@ -175,7 +175,7 @@ functions:
     maximumRetryAttempts: 0
   scanNewFeedbackTrigger:
     handler: ${self:custom.botHandlers}/scanNewFeedbackTrigger.handler
-    enabled: ${self:custom.scanNewFeedbackTriggerEnabled.${opt:stage}}
+    enabled: ${self:custom.scanNewFeedbackTriggerEnabled.${opt:stage, 'dev'}}
     events:
       # runs daily at 20:03 UTC, or 4:03am SGT
       - schedule: cron(3 20 * * ? *)
