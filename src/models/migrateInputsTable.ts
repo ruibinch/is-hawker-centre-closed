@@ -1,14 +1,13 @@
-import * as AWS from 'aws-sdk';
+import {
+  CreateTableCommand,
+  DeleteTableCommand,
+} from '@aws-sdk/client-dynamodb';
 import fs from 'fs';
 
-import { initAWSConfig } from '../ext/aws/config';
-import { DDB_PROPAGATE_DURATION } from '../ext/aws/dynamodb';
+import { DDB_PROPAGATE_DURATION, ddbDocClient } from '../ext/aws/dynamodb';
 import { sleep } from '../utils';
 import { getStage } from '../utils/stage';
 import { addInputToDB, getAllInputs, Input } from './Input';
-
-initAWSConfig();
-const dynamoDb = new AWS.DynamoDB();
 
 async function getInputs() {
   const getAllInputsResult = await getAllInputs();
@@ -28,21 +27,15 @@ async function getInputs() {
 }
 
 async function recreateInputsTable() {
-  const deleteTableOutput = await dynamoDb
-    .deleteTable({ TableName: Input.getTableName() })
-    .promise();
-  if (deleteTableOutput.$response.error) {
-    throw deleteTableOutput.$response.error;
-  }
+  const deleteTableCommand = new DeleteTableCommand({
+    TableName: Input.getTableName(),
+  });
+  await ddbDocClient.send(deleteTableCommand);
 
   await sleep(DDB_PROPAGATE_DURATION);
 
-  const createTableOutput = await dynamoDb
-    .createTable(Input.getSchema())
-    .promise();
-  if (createTableOutput.$response.error) {
-    throw createTableOutput.$response.error;
-  }
+  const createTableCommand = new CreateTableCommand(Input.getSchema());
+  await ddbDocClient.send(createTableCommand);
 
   // wait for 16secs cause kiasu
   await sleep(DDB_PROPAGATE_DURATION * 4);

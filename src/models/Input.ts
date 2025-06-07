@@ -1,15 +1,13 @@
-import * as AWS from 'aws-sdk';
+import { CreateTableInput } from '@aws-sdk/client-dynamodb';
+import { PutCommand, QueryCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
 
 import { AWSError } from '../errors/AWSError';
-import { initAWSConfig, TABLE_INPUTS } from '../ext/aws/config';
-import { getDynamoDBBillingDetails } from '../ext/aws/dynamodb';
+import { TABLE_INPUTS } from '../ext/aws/config';
+import { ddbDocClient, getDynamoDBBillingDetails } from '../ext/aws/dynamodb';
 import { Result, type ResultType } from '../lib/Result';
-import { wrapUnknownError } from '../utils';
+import { prettifyJSON, wrapUnknownError } from '../utils';
 import { currentDate } from '../utils/date';
 import { getStage } from '../utils/stage';
-
-initAWSConfig();
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 type InputProps = Omit<Input, 'createdAtTimestamp'>;
 
@@ -37,7 +35,7 @@ export class Input {
     return `${TABLE_INPUTS}-${getStage()}`;
   }
 
-  static getSchema(): AWS.DynamoDB.CreateTableInput {
+  static getSchema(): CreateTableInput {
     return {
       ...getDynamoDBBillingDetails(),
       TableName: this.getTableName(),
@@ -73,12 +71,12 @@ export function sortInputsByTime(inputs: Input[], order: SortOrder) {
 
 export async function getAllInputs(): Promise<ResultType<Input[], Error>> {
   try {
-    const scanOutput = await dynamoDb
-      .scan({ TableName: Input.getTableName() })
-      .promise();
+    console.info(`Fetching all inputs from table: ${Input.getTableName()}`);
+    const command = new ScanCommand({ TableName: Input.getTableName() });
+    const scanOutput = await ddbDocClient.send(command);
 
     if (!scanOutput.Items) {
-      return Result.Err(new AWSError());
+      throw new AWSError('[getAllInputs] Missing items in scan output');
     }
 
     return Result.Ok(scanOutput.Items as Input[]);
@@ -97,23 +95,27 @@ export async function getInputsFromUserBetweenTimestamps({
   toTimestamp: number;
 }): Promise<ResultType<Input[], Error>> {
   try {
-    const queryOutput = await dynamoDb
-      // API ref: https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Query.html
-      .query({
-        TableName: Input.getTableName(),
-        ExpressionAttributeValues: {
-          ':userId': userId,
-          ':fromTs': fromTimestamp,
-          ':toTs': toTimestamp,
-        },
-        KeyConditionExpression:
-          // BETWEEN check is inclusive of the from/to bounds
-          'userId = :userId AND createdAtTimestamp BETWEEN :fromTs AND :toTs',
-      })
-      .promise();
+    console.info(
+      `Fetching inputs for userId=${userId} between timestamps ${fromTimestamp} and ${toTimestamp}`,
+    );
+    // API ref=https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Query.html
+    const command = new QueryCommand({
+      TableName: Input.getTableName(),
+      ExpressionAttributeValues: {
+        ':userId': userId,
+        ':fromTs': fromTimestamp,
+        ':toTs': toTimestamp,
+      },
+      KeyConditionExpression:
+        // BETWEEN check is inclusive of the from/to bounds
+        'userId = :userId AND createdAtTimestamp BETWEEN :fromTs AND :toTs',
+    });
+    const queryOutput = await ddbDocClient.send(command);
 
-    if (queryOutput.$response.error || !queryOutput.Items) {
-      return Result.Err(new AWSError());
+    if (!queryOutput.Items) {
+      throw new AWSError(
+        `[getInputsFromUserBetweenTimestamps] Missing items in query output`,
+      );
     }
 
     return Result.Ok(queryOutput.Items as Input[]);
@@ -162,16 +164,12 @@ export async function addInputToDB(
   input: Input,
 ): Promise<ResultType<void, Error>> {
   try {
-    const putOutput = await dynamoDb
-      .put({
-        TableName: Input.getTableName(),
-        Item: input,
-      })
-      .promise();
-
-    if (putOutput.$response.error) {
-      return Result.Err(new AWSError());
-    }
+    console.info(`Adding input to DB: ${prettifyJSON(input)}`);
+    const command = new PutCommand({
+      TableName: Input.getTableName(),
+      Item: input,
+    });
+    await ddbDocClient.send(command);
 
     return Result.Ok();
   } catch (err) {

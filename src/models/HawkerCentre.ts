@@ -1,15 +1,13 @@
-import * as AWS from 'aws-sdk';
+import { CreateTableInput } from '@aws-sdk/client-dynamodb';
+import { GetCommand, PutCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
 
 import { AWSError } from '../errors/AWSError';
-import { initAWSConfig, TABLE_HC } from '../ext/aws/config';
-import { getDynamoDBBillingDetails } from '../ext/aws/dynamodb';
+import { TABLE_HC } from '../ext/aws/config';
+import { ddbDocClient, getDynamoDBBillingDetails } from '../ext/aws/dynamodb';
 import { sendDiscordAdminMessage } from '../ext/discord';
 import { Result, type ResultType } from '../lib/Result';
 import { wrapUnknownError } from '../utils';
 import { getStage } from '../utils/stage';
-
-initAWSConfig();
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 export type HawkerCentreProps = {
   hawkerCentreId: number;
@@ -42,7 +40,7 @@ export class HawkerCentre {
     return `${TABLE_HC}-${getStage()}`;
   }
 
-  static getSchema(): AWS.DynamoDB.CreateTableInput {
+  static getSchema(): CreateTableInput {
     return {
       ...getDynamoDBBillingDetails(),
       TableName: this.getTableName(),
@@ -64,16 +62,18 @@ export async function uploadHawkerCentres(
 ): Promise<void> {
   const hcTable = HawkerCentre.getTableName();
 
+  console.info(
+    `Uploading ${hawkerCentres.length} hawker centres to table ${hcTable}`,
+  );
   await Promise.all(
-    hawkerCentres.map((hawkerCentre) =>
-      dynamoDb
-        .put({
-          TableName: hcTable,
-          Item: hawkerCentre,
-          ConditionExpression: 'attribute_not_exists(hawkerCentreId)',
-        })
-        .promise(),
-    ),
+    hawkerCentres.map((hawkerCentre) => {
+      const command = new PutCommand({
+        TableName: hcTable,
+        Item: hawkerCentre,
+        ConditionExpression: 'attribute_not_exists(hawkerCentreId)',
+      });
+      ddbDocClient.send(command);
+    }),
   );
   await sendDiscordAdminMessage([
     `**[${getStage()}]  🌱 SEEDING DB**`,
@@ -85,12 +85,14 @@ export async function getAllHawkerCentres(): Promise<
   ResultType<HawkerCentre[], Error>
 > {
   try {
-    const scanOutput = await dynamoDb
-      .scan({ TableName: HawkerCentre.getTableName() })
-      .promise();
+    console.info(
+      `Fetching all hawker centres from table ${HawkerCentre.getTableName()}`,
+    );
+    const command = new ScanCommand({ TableName: HawkerCentre.getTableName() });
+    const scanOutput = await ddbDocClient.send(command);
 
     if (!scanOutput.Items) {
-      return Result.Err(new AWSError());
+      throw new AWSError('Missing items in scan output');
     }
 
     return Result.Ok(scanOutput.Items as HawkerCentre[]);
@@ -103,15 +105,17 @@ export async function getHawkerCentreById(
   hawkerCentreId: number,
 ): Promise<ResultType<HawkerCentre, Error>> {
   try {
-    const getOutput = await dynamoDb
-      .get({
-        TableName: HawkerCentre.getTableName(),
-        Key: { hawkerCentreId },
-      })
-      .promise();
+    console.info(
+      `Fetching hawker centre with id=${hawkerCentreId} from table ${HawkerCentre.getTableName()}`,
+    );
+    const command = new GetCommand({
+      TableName: HawkerCentre.getTableName(),
+      Key: { hawkerCentreId },
+    });
+    const getOutput = await ddbDocClient.send(command);
 
     if (!getOutput.Item) {
-      return Result.Err(new AWSError());
+      throw new AWSError('Missing item in get output');
     }
 
     return Result.Ok(getOutput.Item as HawkerCentre);

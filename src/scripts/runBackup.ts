@@ -1,19 +1,19 @@
-import * as AWS from 'aws-sdk';
+import {
+  BackupDetails,
+  BackupSummary,
+  CreateBackupCommand,
+  DeleteBackupCommand,
+  ListBackupsCommand,
+} from '@aws-sdk/client-dynamodb';
 
 import { DBError } from '../errors/DBError';
-import {
-  initAWSConfig,
-  TABLE_FEEDBACK,
-  TABLE_INPUTS,
-  TABLE_USERS,
-} from '../ext/aws/config';
+import { TABLE_FEEDBACK, TABLE_INPUTS, TABLE_USERS } from '../ext/aws/config';
+import { ddbDocClient } from '../ext/aws/dynamodb';
 import { sendDiscordAdminMessage } from '../ext/discord';
 import { notEmpty } from '../utils';
 import { currentDateInYYYYMMDD, formatDateWithTime } from '../utils/date';
 import { getStage } from '../utils/stage';
 
-initAWSConfig();
-const dynamoDb = new AWS.DynamoDB();
 const stage = getStage();
 
 const TABLES_TO_BACKUP = [TABLE_USERS, TABLE_FEEDBACK, TABLE_INPUTS];
@@ -22,14 +22,14 @@ function getTablesToBackup() {
   return TABLES_TO_BACKUP.map((tableName) => `${tableName}-${stage}`);
 }
 
-function generateBackupDetailsOutput(
-  backupDetails: AWS.DynamoDB.BackupDetails,
-) {
+function generateBackupDetailsOutput(backupDetails: BackupDetails) {
   const { BackupName, BackupSizeBytes, BackupCreationDateTime } = backupDetails;
 
-  return `${BackupName} (${
-    BackupSizeBytes ?? 'unknown'
-  } bytes; created at ${formatDateWithTime(BackupCreationDateTime)})`;
+  return `${BackupName} (${BackupSizeBytes ?? 'unknown'} bytes; created at ${
+    BackupCreationDateTime
+      ? formatDateWithTime(BackupCreationDateTime)
+      : 'unknown'
+  })`;
 }
 
 type BackupEntry = {
@@ -37,7 +37,7 @@ type BackupEntry = {
   backupCreationDateTime: Date;
 };
 
-function getBackupsForTables(backupSummaries: AWS.DynamoDB.BackupSummaries) {
+function getBackupsForTables(backupSummaries: BackupSummary[]) {
   const backupsForTables = backupSummaries.reduce(
     (_backupsForTables: Record<string, BackupEntry[]>, summary) => {
       if (
@@ -95,22 +95,28 @@ function getBackupsToDelete(backupsForTables: Record<string, BackupEntry[]>) {
 }
 
 async function deleteBackups() {
-  const backupsList = await dynamoDb.listBackups().promise();
-  if (!backupsList.BackupSummaries) {
+  const listBackupsCommand = new ListBackupsCommand();
+  const backupsList = await ddbDocClient.send(listBackupsCommand);
+  const backupSummaries = backupsList.BackupSummaries;
+
+  if (!backupSummaries) {
     const errorMessage =
       '🚨 **BACKUP DELETION UNSUCCESSFUL**\nUnable to view list of backups';
     await sendDiscordAdminMessage(`[${stage}] ${errorMessage}`);
     throw new DBError(errorMessage);
   }
 
-  const backupsForTables = getBackupsForTables(backupsList.BackupSummaries);
+  const backupsForTables = getBackupsForTables(backupSummaries);
 
   const backupsToDelete = getBackupsToDelete(backupsForTables);
 
   const responses = await Promise.all(
-    backupsToDelete.map((backupARN) =>
-      dynamoDb.deleteBackup({ BackupArn: backupARN }).promise(),
-    ),
+    backupsToDelete.map((backupARN) => {
+      const deleteBackupCommand = new DeleteBackupCommand({
+        BackupArn: backupARN,
+      });
+      return ddbDocClient.send(deleteBackupCommand);
+    }),
   );
 
   const responsesOutput = responses
@@ -130,14 +136,13 @@ async function deleteBackups() {
 
 async function createBackups() {
   const responses = await Promise.all(
-    getTablesToBackup().map((fullTableName) =>
-      dynamoDb
-        .createBackup({
-          BackupName: `${fullTableName}-${currentDateInYYYYMMDD()}`,
-          TableName: fullTableName,
-        })
-        .promise(),
-    ),
+    getTablesToBackup().map((fullTableName) => {
+      const command = new CreateBackupCommand({
+        TableName: fullTableName,
+        BackupName: `${fullTableName}-${currentDateInYYYYMMDD()}`,
+      });
+      return ddbDocClient.send(command);
+    }),
   );
 
   const responsesOutput = responses

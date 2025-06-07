@@ -1,16 +1,17 @@
-import * as AWS from 'aws-sdk';
+import {
+  CreateTableInput,
+  DynamoDBServiceException,
+} from '@aws-sdk/client-dynamodb';
+import { DeleteCommand, PutCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
 
 import { AWSError } from '../errors/AWSError';
-import { initAWSConfig, TABLE_CLOSURES } from '../ext/aws/config';
-import { getDynamoDBBillingDetails } from '../ext/aws/dynamodb';
+import { TABLE_CLOSURES } from '../ext/aws/config';
+import { ddbDocClient, getDynamoDBBillingDetails } from '../ext/aws/dynamodb';
 import { sendDiscordAdminMessage } from '../ext/discord';
 import { Result, type ResultType } from '../lib/Result';
 import { prettifyJSON, wrapUnknownError } from '../utils';
 import { getStage } from '../utils/stage';
 import type { HawkerCentre } from './HawkerCentre';
-
-initAWSConfig();
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 type HawkerCentreInfo = Pick<
   HawkerCentre,
@@ -58,7 +59,7 @@ export class ClosureObject {
     return `${TABLE_CLOSURES}-${getStage()}`;
   }
 
-  static getSchema(): AWS.DynamoDB.CreateTableInput {
+  static getSchema(): CreateTableInput {
     return {
       ...getDynamoDBBillingDetails(),
       TableName: this.getTableName(),
@@ -83,16 +84,18 @@ export class ClosureObject {
 export async function uploadClosures(closures: Closure[]): Promise<void> {
   const closuresTable = ClosureObject.getTableName();
 
+  console.info(
+    `Uploading ${closures.length} closures to table ${closuresTable}`,
+  );
   await Promise.all(
-    closures.map((closure) =>
-      dynamoDb
-        .put({
-          TableName: closuresTable,
-          Item: closure,
-          ConditionExpression: 'attribute_not_exists(id)',
-        })
-        .promise(),
-    ),
+    closures.map((closure) => {
+      const command = new PutCommand({
+        TableName: closuresTable,
+        Item: closure,
+        ConditionExpression: 'attribute_not_exists(id)',
+      });
+      ddbDocClient.send(command);
+    }),
   );
   await sendDiscordAdminMessage([
     `**[${getStage()}]  🌱 SEEDING DB**`,
@@ -107,13 +110,13 @@ export async function addClosure(props: {
   const { closure } = props;
   const shouldSendMessage = props.shouldSendMessage ?? true;
 
-  await dynamoDb
-    .put({
-      TableName: ClosureObject.getTableName(),
-      Item: closure,
-      ConditionExpression: 'attribute_not_exists(id)',
-    })
-    .promise();
+  console.info(`Adding closure entry: ${prettifyJSON(closure)}`);
+  const command = new PutCommand({
+    TableName: ClosureObject.getTableName(),
+    Item: closure,
+    ConditionExpression: 'attribute_not_exists(id)',
+  });
+  ddbDocClient.send(command);
 
   if (shouldSendMessage) {
     await sendDiscordAdminMessage([
@@ -127,44 +130,61 @@ export async function deleteClosure(props: {
   closureId: string;
   hawkerCentreId: number;
   shouldSendMessage?: boolean;
-}): Promise<ResultType<Closure, AWSError | void>> {
+}): Promise<ResultType<Closure, AWSError>> {
   const { closureId, hawkerCentreId } = props;
   const shouldSendMessage = props.shouldSendMessage ?? true;
 
-  const deleteOutput = await dynamoDb
-    .delete({
+  try {
+    console.info(
+      `Deleting closure with closureId=${closureId}, hawkerCentreId=${hawkerCentreId}`,
+    );
+    const command = new DeleteCommand({
       TableName: ClosureObject.getTableName(),
-      Key: { id: closureId, hawkerCentreId },
+      Key: { closureId, hawkerCentreId },
       ReturnValues: 'ALL_OLD',
-    })
-    .promise();
+    });
+    const deleteOutput = await ddbDocClient.send(command);
 
-  if (deleteOutput === null) {
-    return Result.Err(new AWSError());
-  }
-  if (!deleteOutput.Attributes) {
-    return Result.Err();
-  }
+    if (!deleteOutput.Attributes) {
+      throw new Error('Missing attributes in delete output');
+    }
 
-  const closure = deleteOutput.Attributes;
-  if (shouldSendMessage) {
-    await sendDiscordAdminMessage([
-      `**[${getStage()}] DELETED CLOSURE ENTRY**`,
-      `${prettifyJSON(closure)}`,
-    ]);
-  }
+    const closure = deleteOutput.Attributes;
+    if (shouldSendMessage) {
+      await sendDiscordAdminMessage([
+        `**[${getStage()}] DELETED CLOSURE ENTRY**`,
+        `${prettifyJSON(closure)}`,
+      ]);
+    }
 
-  return Result.Ok(closure as Closure);
+    return Result.Ok(closure as Closure);
+  } catch (err) {
+    const errorMessage = (() => {
+      if (err instanceof DynamoDBServiceException) {
+        return err.message;
+      }
+      if (err instanceof Error) {
+        return err.message;
+      }
+      return undefined;
+    })();
+
+    return Result.Err(new AWSError(errorMessage));
+  }
 }
 
 export async function getAllClosures(): Promise<ResultType<Closure[], Error>> {
   try {
-    const scanOutput = await dynamoDb
-      .scan({ TableName: ClosureObject.getTableName() })
-      .promise();
+    console.info(
+      `Fetching all closures from table ${ClosureObject.getTableName()}`,
+    );
+    const command = new ScanCommand({
+      TableName: ClosureObject.getTableName(),
+    });
+    const scanOutput = await ddbDocClient.send(command);
 
     if (!scanOutput.Items) {
-      return Result.Err(new AWSError());
+      throw new AWSError('Missing items in scan output');
     }
 
     return Result.Ok(scanOutput.Items as Closure[]);
