@@ -1,0 +1,113 @@
+service: ihcc-maintenance
+
+frameworkVersion: ^4.17.0
+configValidationMode: error
+
+custom:
+  build:
+    esbuild:
+      bundle: true
+      minify: true
+      sourcemap: false
+      target: 'node20'
+      platform: 'node'
+      treeShaking: true
+  botHandlers: src/bot/handlers
+
+plugins:
+  - serverless-offline
+  - serverless-disable-functions
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  stage: ${opt:stage, 'dev'}
+  region: ${env:REGION}
+  environment:
+    TZ: Asia/Singapore
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+    STAGE: ${self:provider.stage}
+    REGION: ${env:REGION}
+    SENTRY_DSN: ${env:SENTRY_DSN}
+    TABLE_CLOSURES: ${env:TABLE_CLOSURES}
+    TABLE_HC: ${env:TABLE_HC}
+    TABLE_USERS: ${env:TABLE_USERS}
+    TABLE_FEEDBACK: ${env:TABLE_FEEDBACK}
+    TABLE_INPUTS: ${env:TABLE_INPUTS}
+    ARTIFACTS_BUCKET: ${env:ARTIFACTS_BUCKET}
+  layers:
+    common:
+      name: ihcc-common-layer-${self:provider.stage}
+      description: Common dependencies for IHC services
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:CreateBackup
+            - dynamodb:DeleteBackup
+            - dynamodb:ListBackups
+          Resource:
+            - 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_CLOSURES}-${self:provider.stage}'
+            - 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_HC}-${self:provider.stage}'
+            - 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_USERS}-${self:provider.stage}'
+            - 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_FEEDBACK}-${self:provider.stage}'
+            - 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_INPUTS}-${self:provider.stage}'
+            - 'arn:aws:dynamodb:${self:provider.region}:*:table/*/backup/*'
+        - Effect: Allow
+          Action:
+            - s3:CreateBucket
+            - s3:ListBucket
+            - s3:DeleteObject
+            - s3:GetObject
+            - s3:PutObject
+          Resource:
+            - 'arn:aws:s3:::${env:ARTIFACTS_BUCKET}'
+            - 'arn:aws:s3:::${env:ARTIFACTS_BUCKET}/*'
+
+package:
+  patterns:
+    - '!./**'
+    - 'src/**'
+
+functions:
+  runBackupTrigger:
+    handler: ${self:custom.botHandlers}/runBackupTrigger.handler
+    timeout: 30
+    events:
+      - schedule: cron(8 20 ? * sat *)
+    maximumEventAge: 60
+    maximumRetryAttempts: 0
+    layers:
+      - { Ref: CommonLambdaLayer }
+  syncDbTrigger:
+    handler: ${self:custom.botHandlers}/syncDbTrigger.handler
+    timeout: 600
+    events:
+      - schedule: cron(13 20 * * ? *)
+    maximumEventAge: 60
+    maximumRetryAttempts: 0
+    layers:
+      - { Ref: CommonLambdaLayer }
+  checkHealthinessTrigger:
+    handler: ${self:custom.botHandlers}/checkHealthinessTrigger.handler
+    timeout: 600
+    events:
+      - schedule: cron(28 20 * * ? *)
+    maximumEventAge: 60
+    maximumRetryAttempts: 0
+    layers:
+      - { Ref: CommonLambdaLayer }
+  analyseSearchResponsesTrigger:
+    handler: ${self:custom.botHandlers}/analyseSearchResponsesTrigger.handler
+    timeout: 30
+    events:
+      - schedule: cron(38 20 ? * sat *)
+    maximumEventAge: 60
+    maximumRetryAttempts: 0
+    layers:
+      - { Ref: CommonLambdaLayer }

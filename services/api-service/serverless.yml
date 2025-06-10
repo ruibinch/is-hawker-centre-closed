@@ -1,0 +1,95 @@
+service: ihcc-api
+
+frameworkVersion: ^4.17.0
+configValidationMode: error
+
+custom:
+  build:
+    esbuild:
+      bundle: true
+      minify: true
+      sourcemap: false
+      target: 'node20'
+      platform: 'node'
+      treeShaking: true
+  serverHandlers: src/server/handlers
+
+plugins:
+  - serverless-offline
+  - serverless-disable-functions
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  stage: ${opt:stage, 'dev'}
+  region: ${env:REGION}
+  environment:
+    TZ: Asia/Singapore
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+    STAGE: ${self:provider.stage}
+    REGION: ${env:REGION}
+    SENTRY_DSN: ${env:SENTRY_DSN}
+    TABLE_CLOSURES: ${env:TABLE_CLOSURES}
+    TABLE_HC: ${env:TABLE_HC}
+    TABLE_USERS: ${env:TABLE_USERS}
+    TABLE_FEEDBACK: ${env:TABLE_FEEDBACK}
+    TABLE_INPUTS: ${env:TABLE_INPUTS}
+    SERVER_AUTH_TOKEN: ${env:SERVER_AUTH_TOKEN}
+  layers:
+    common:
+      name: ihcc-common-layer-${self:provider.stage}
+      description: Common dependencies for IHC services
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+          Resource:
+            - 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_CLOSURES}-${self:provider.stage}'
+            - 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_HC}-${self:provider.stage}'
+            - 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_USERS}-${self:provider.stage}'
+            - 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_FEEDBACK}-${self:provider.stage}'
+            - 'arn:aws:dynamodb:${self:provider.region}:*:table/${env:TABLE_INPUTS}-${self:provider.stage}'
+
+package:
+  patterns:
+    - '!./**'
+    - 'src/**'
+
+functions:
+  getInputs:
+    handler: ${self:custom.serverHandlers}/getInputs.handler
+    events:
+      - http:
+          method: post
+          path: /api/inputs
+    layers:
+      - { Ref: CommonLambdaLayer }
+  getUsers:
+    handler: ${self:custom.serverHandlers}/getUsers.handler
+    events:
+      - http:
+          method: post
+          path: /api/users
+    layers:
+      - { Ref: CommonLambdaLayer }
+  hcFavouritesCount:
+    handler: ${self:custom.serverHandlers}/hcFavouritesCount.handler
+    events:
+      - http:
+          method: get
+          path: /api/hcFavouritesCount
+    layers:
+      - { Ref: CommonLambdaLayer }
+  statistics:
+    handler: ${self:custom.serverHandlers}/statistics.handler
+    events:
+      - http:
+          method: get
+          path: /api/statistics
+    layers:
+      - { Ref: CommonLambdaLayer }

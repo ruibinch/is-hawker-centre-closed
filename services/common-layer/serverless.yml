@@ -1,0 +1,19 @@
+service: ihcc-common-layer
+
+provider:
+  name: aws
+  runtime: nodejs22.x
+  stage: ${opt:stage, 'dev'}
+  region: ${env:REGION}
+
+layers:
+  common:
+    path: layer
+    name: ${self:service}-${self:provider.stage}
+    description: Common dependencies for IHC services
+    compatibleRuntimes:
+      - nodejs22.x
+    package:
+      patterns:
+        - '!./**'
+        - 'nodejs/**'
