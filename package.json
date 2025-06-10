@@ -49,6 +49,7 @@
     "@types/node": "20.10.0",
     "@typescript-eslint/eslint-plugin": "5.8.1",
     "@typescript-eslint/parser": "5.8.1",
+    "cross-fetch": "^4.1.0",
     "eslint": "8.5.0",
     "eslint-config-airbnb-typescript": "16.1.0",
     "eslint-config-prettier": "8.3.0",

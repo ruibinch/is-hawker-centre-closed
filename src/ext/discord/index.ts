@@ -1,10 +1,4 @@
-import {
-  Client,
-  GatewayIntentBits,
-  TextChannel,
-  Message,
-  ChannelType,
-} from 'discord.js';
+import { Client, GatewayIntentBits, Message, ChannelType } from 'discord.js';
 import dotenv from 'dotenv';
 
 import { notEmpty } from '../../utils';

@@ -18,10 +18,19 @@ custom:
       platform: 'node'
       treeShaking: true
   botHandlers: src/bot/handlers
-  serverHandlers: src/server/handlers
+  apiHandlers: src/api/handlers
   scanNewFeedbackTriggerEnabled:
     dev: false
     prod: true
+  runBackupTriggerEnabled:
+    dev: false
+    prod: true
+  checkHealthinessTriggerEnabled:
+    dev: false
+    prod: true
+  apiEndpointsEnabled:
+    dev: false
+    prod: false # not being used now
 
 plugins:
   - serverless-offline
@@ -191,6 +200,7 @@ functions:
   runBackupTrigger:
     handler: ${self:custom.botHandlers}/runBackupTrigger.handler
     timeout: 30
+    enabled: ${self:custom.runBackupTriggerEnabled.${opt:stage, 'dev'}}
     events:
       # runs every Sat at 20:08 UTC, or 4:08am SGT
       - schedule: cron(8 20 ? * sat *)
@@ -207,6 +217,7 @@ functions:
   checkHealthinessTrigger:
     handler: ${self:custom.botHandlers}/checkHealthinessTrigger.handler
     timeout: 600
+    enabled: ${self:custom.checkHealthinessTriggerEnabled.${opt:stage, 'dev'}}
     events:
       # runs daily at 20:28 UTC, or 4:28am SGT
       - schedule: cron(28 20 * * ? *)
@@ -215,32 +226,37 @@ functions:
   analyseSearchResponsesTrigger:
     handler: ${self:custom.botHandlers}/analyseSearchResponsesTrigger.handler
     timeout: 30
+    enabled: false # not being monitored now
     events:
       # runs every Sat at 20:38 UTC, or 4:38am SGT
       - schedule: cron(38 20 ? * sat *)
     maximumEventAge: 60
     maximumRetryAttempts: 0
-  # server
+  # API
   getInputs:
-    handler: ${self:custom.serverHandlers}/getInputs.handler
+    handler: ${self:custom.apiHandlers}/getInputs.handler
+    enabled: ${self:custom.apiEndpointsEnabled.${opt:stage, 'dev'}}
     events:
       - http:
           method: post
           path: /api/inputs
   getUsers:
-    handler: ${self:custom.serverHandlers}/getUsers.handler
+    handler: ${self:custom.apiHandlers}/getUsers.handler
+    enabled: ${self:custom.apiEndpointsEnabled.${opt:stage, 'dev'}}
     events:
       - http:
           method: post
           path: /api/users
   hcFavouritesCount:
-    handler: ${self:custom.serverHandlers}/hcFavouritesCount.handler
+    handler: ${self:custom.apiHandlers}/hcFavouritesCount.handler
+    enabled: ${self:custom.apiEndpointsEnabled.${opt:stage, 'dev'}}
     events:
       - http:
           method: get
           path: /api/hcFavouritesCount
   statistics:
-    handler: ${self:custom.serverHandlers}/statistics.handler
+    handler: ${self:custom.apiHandlers}/statistics.handler
+    enabled: ${self:custom.apiEndpointsEnabled.${opt:stage, 'dev'}}
     events:
       - http:
           method: get
