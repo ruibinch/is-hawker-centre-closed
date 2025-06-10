@@ -18,7 +18,7 @@ custom:
       platform: 'node'
       treeShaking: true
   botHandlers: src/bot/handlers
-  serverHandlers: src/server/handlers
+  apiHandlers: src/api/handlers
   scanNewFeedbackTriggerEnabled:
     dev: false
     prod: true
@@ -222,25 +222,25 @@ functions:
     maximumRetryAttempts: 0
   # server
   getInputs:
-    handler: ${self:custom.serverHandlers}/getInputs.handler
+    handler: ${self:custom.apiHandlers}/getInputs.handler
     events:
       - http:
           method: post
           path: /api/inputs
   getUsers:
-    handler: ${self:custom.serverHandlers}/getUsers.handler
+    handler: ${self:custom.apiHandlers}/getUsers.handler
     events:
       - http:
           method: post
           path: /api/users
   hcFavouritesCount:
-    handler: ${self:custom.serverHandlers}/hcFavouritesCount.handler
+    handler: ${self:custom.apiHandlers}/hcFavouritesCount.handler
     events:
       - http:
           method: get
           path: /api/hcFavouritesCount
   statistics:
-    handler: ${self:custom.serverHandlers}/statistics.handler
+    handler: ${self:custom.apiHandlers}/statistics.handler
     events:
       - http:
           method: get
