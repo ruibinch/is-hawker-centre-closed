@@ -9,10 +9,14 @@ custom:
   build:
     esbuild:
       bundle: true
-      minify: false
       exclude:
         - '@aws-sdk/*'
         - 'test/**'
+      minify: true
+      sourcemap: false
+      target: 'node22'
+      platform: 'node'
+      treeShaking: true
   botHandlers: src/bot/handlers
   serverHandlers: src/server/handlers
   scanNewFeedbackTriggerEnabled:
@@ -33,7 +37,7 @@ stages:
 
 provider:
   name: aws
-  runtime: nodejs20.x
+  runtime: nodejs22.x
   stage: ${opt:stage, 'dev'}
   region: ${env:REGION}
   environment:
