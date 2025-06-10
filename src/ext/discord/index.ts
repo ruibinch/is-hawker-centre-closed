@@ -1,10 +1,23 @@
-import Discord from 'discord.js';
+import {
+  Client,
+  GatewayIntentBits,
+  TextChannel,
+  Message,
+  ChannelType,
+} from 'discord.js';
 import dotenv from 'dotenv';
 
 import { notEmpty } from '../../utils';
 
 dotenv.config();
-const client = new Discord.Client();
+const client = new Client({
+  intents: [
+    // required for accessing basic server information
+    GatewayIntentBits.Guilds,
+    // required for sending messages
+    GatewayIntentBits.GuildMessages,
+  ],
+});
 // These are not defined using stage params as they are run via standalone scripts as well
 const adminDevChannelId = process.env.DISCORD_ADMIN_DEV_CHANNEL_ID ?? '';
 const adminProdChannelId = process.env.DISCORD_ADMIN_PROD_CHANNEL_ID ?? '';
@@ -22,7 +35,7 @@ export async function sendDiscordAdminMessage(
     ? messageRaw.filter(notEmpty).join('\n')
     : messageRaw;
   const channel = await client.channels.fetch(getAdminChannelId(message));
-  if (!(channel instanceof Discord.TextChannel)) return;
+  if (channel?.type !== ChannelType.GuildText) return;
 
   const discordMessages =
     message.length > DISCORD_MESSAGE_MAX_LENGTH
@@ -54,7 +67,7 @@ export async function sendDiscordAdminMessage(
           })
           .then((_response) => [..._responses, _response]),
       ),
-    Promise.resolve([] as Array<Discord.Message | null>),
+    Promise.resolve([] as Array<Message | null>),
   );
 }
 
@@ -67,7 +80,7 @@ export async function sendDiscordFeedbackMessage(
     ? messageRaw.join('\n')
     : messageRaw;
   const channel = await client.channels.fetch(adminFeedbackChannelId);
-  if (!(channel instanceof Discord.TextChannel)) return;
+  if (channel?.type !== ChannelType.GuildText) return;
 
   await channel.send(message).catch((err) => {
     console.error('[discord > sendDiscordFeedbackMessage]', err);
