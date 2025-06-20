@@ -6,6 +6,8 @@ A Telegram bot that provides an easy way to check on hawker centre closure dates
 
 Link: https://t.me/IsHawkerCentreClosedBot
 
+![Demo](assets/demo.gif)
+
 # Bot
 
 The bot comprises of the following modules:
