@@ -109,9 +109,14 @@ function isCommandSupported(s: string): boolean {
 }
 
 export function makeCommandMessage(
-  s: string,
+  sOriginal: string,
 ): ResultType<TelegramSendMessageParams> {
+  // sOriginal is ascertained to be a command; convert to lowercase to avoid case sensitivity issues
+  const s = sOriginal.toLowerCase();
+
   if (isCommandWithoutExplanation(s)) {
+    // technically not an error; mainly corresponds to commands which do not require any additional input,
+    // i.e. this can already be handled by the handler downstream
     return Result.Err();
   }
 
