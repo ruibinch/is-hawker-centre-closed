@@ -541,7 +541,7 @@ describe('[bot] [integration] Favourites module', () => {
 
     describe("getting list of user's favourites", () => {
       it('["/list"] returns a message prompting to add some favourites', async () => {
-        const inputMessage = '/list';
+        const inputMessage = '/LIST';
         const expectedMessage =
           "You've not added any favourites yet\\. Try adding some using the `/fav` command\\.";
 
@@ -688,7 +688,7 @@ describe('[bot] [integration] Favourites module', () => {
 
     describe("getting list of user's favourites", () => {
       it('["/list"] returns a message prompting to add some favourites', async () => {
-        const inputMessage = '/list';
+        const inputMessage = '/LIST';
         const expectedMessage =
           "You've not added any favourites yet\\. Try adding some using the `/fav` command\\.";
 
@@ -854,7 +854,7 @@ describe('[bot] [integration] Favourites module', () => {
       });
 
       it('["/list"] performs a normal /list command', async () => {
-        const inputMessage = '/list';
+        const inputMessage = '/LIST';
         await callBot(inputMessage);
 
         assertInputSaved(addInputToDBSpy, inputMessage);

@@ -34,7 +34,8 @@ export async function manageFavourites(
   text: string,
   telegramUser: TelegramUser,
 ): Promise<ServiceResponse> {
-  const [command, ...keywordSplit] = text.split(' ');
+  const [commandOrig, ...keywordSplit] = text.split(' ');
+  const command = commandOrig.toLowerCase();
   const keyword = keywordSplit.join(' ');
 
   switch (command) {
